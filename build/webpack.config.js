@@ -26,7 +26,7 @@ function configure ({ production } = {}) {
   }
   const resolve = {
     alias: {
-      '@component': `${srcPath}/components`,
+      '@components': `${srcPath}/components`,
       '@utils': `${srcPath}/utils`,
       '@styles': `${srcPath}/styles`,
       '@assets': `${srcPath}/assets`

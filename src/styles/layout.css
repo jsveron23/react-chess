@@ -1,0 +1,35 @@
+:global(#root) {
+  width: 100vw;
+  height: 100vh;
+  padding: 0 30px;
+}
+
+:global(.l-flex-center) {
+  display: flex;
+  justify-content: center;
+}
+
+:global(.l-flex-middle) {
+  display: flex;
+  align-items: center;
+}
+
+:global(.l-flex-space-between) {
+  display: flex;
+  justify-content: space-between;
+}
+
+:global(.l-flex-space-around) {
+  display: flex;
+  justify-content: space-around;
+}
+
+:global(.l-flex-row) {
+  display: flex;
+  flex-direction: row;
+}
+
+:global(.l-flex-col) {
+  display: flex;
+  flex-direction: column;
+}
