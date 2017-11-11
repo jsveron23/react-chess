@@ -37,16 +37,16 @@ const Plugins = {
 
   /**
    * Get plugins
-   * @param  {String} nodeEnv
+   * @param  {String} env
    * @return {Array}
    */
-  get (nodeEnv) {
-    const flattened = [].concat.apply([], this[nodeEnv])
+  get (env) {
+    const flattened = [].concat.apply([], this[env])
 
     return this.pluginList.concat(
       flattened,
       new webpack.DefinePlugin({
-        'process.env.NODE_ENV': JSON.stringify(nodeEnv)
+        'process.env.NODE_ENV': JSON.stringify(env)
       })
     )
   },
