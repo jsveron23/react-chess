@@ -2,6 +2,6 @@ import Header from './Header'
 import Main from './Main'
 import Menu from './Menu'
 import Board from './Board'
-import File from './File'
+import Rank from './Rank'
 
-export { Header, Main, Menu, Board, File }
+export { Header, Main, Menu, Board, Rank }

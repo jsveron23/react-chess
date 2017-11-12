@@ -1,22 +1,22 @@
 .board {
   width: 400px;
-  margin: 20px 0;
+  margin: 10px 0;
   border: 1px solid #ddd;
   background-color: #a0a0a0;
 }
 
-.rank {
+.file {
   width: 100%;
   height: 50px;
 
   &:nth-child(odd) {
-    & :nth-child(odd) {
+    & span:nth-child(odd) {
       background-color: #fff;
     }
   }
 
   &:nth-child(even) {
-    & :nth-child(even) {
+    & span:nth-child(even) {
       background-color: #fff;
     }
   }

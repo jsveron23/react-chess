@@ -11,6 +11,42 @@ class App extends PureComponent {
     }
   }
 
+  handleClick = evt => {
+    evt.preventDefault()
+
+    const { target } = evt
+    const type = target.getAttribute('data-type')
+    const state = {}
+
+    switch (type) {
+      case '1p': {
+        state.inGame = true
+
+        break
+      }
+
+      case '2p': {
+        state.inGame = true
+
+        break
+      }
+
+      case 'back': {
+        state.inGame = false
+
+        break
+      }
+
+      case 'undo': {
+        //
+
+        break
+      }
+    }
+
+    this.setState(state)
+  }
+
   render () {
     const { inGame } = this.state
 
@@ -19,8 +55,8 @@ class App extends PureComponent {
         <h1>React Chess</h1>
       </Header>,
       <Main key="app-main">
-        <Menu inGame={inGame} />
-        <Board />
+        <Menu inGame={inGame} onClick={this.handleClick} />
+        {inGame && <Board />}
       </Main>
     ]
   }

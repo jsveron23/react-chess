@@ -1,0 +1,35 @@
+.menu {
+  &.menu-main {
+    & li {
+      border-bottom: 1px solid #eee;
+      text-align: center;
+
+      & a {
+        display: block;
+        padding: 5px 0;
+
+        &:hover {
+          color: #fff;
+          background-color: #a0a0a0;
+        }
+      }
+    }
+  }
+
+  &.menu-game {
+    & li {
+      flex: 1;
+      text-align: center;
+
+      & a {
+        display: block;
+        padding: 5px 0;
+
+        &:hover {
+          color: #fff;
+          background-color: #a0a0a0;
+        }
+      }
+    }
+  }
+}
