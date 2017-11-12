@@ -33,7 +33,8 @@ class Board extends Component {
     super(props)
 
     this.state = {
-      notations: [...InitialNotations]
+      notations: [...InitialNotations],
+      selected: ''
     }
 
     this.pieceList = {
@@ -77,7 +78,13 @@ class Board extends Component {
   parseNotation (notation) {
     const [side, piece, ...position] = notation.split('')
 
-    return { side, piece, position }
+    return { side, piece, position: position.join('') }
+  }
+
+  handleClick = (notation) => {
+    const { position } = this.parseNotation(notation)
+
+    this.setState({ selected: position })
   }
 
   /**
@@ -85,6 +92,7 @@ class Board extends Component {
    * @return {JSX}
    */
   render () {
+    const { selected } = this.state
     const ranks = this.rows.split('')
     const files = this.cols.split('')
 
@@ -95,12 +103,20 @@ class Board extends Component {
             <div key={`${rank}`} className={cx(css.rank, 'l-flex-row')}>
               {
                 files.map(file => {
-                  const notation = this.getNotation(`${file}${rank}`)
-                  const { side, piece, position } = this.parseNotation(notation)
+                  const position = `${file}${rank}`
+                  const notation = this.getNotation(position)
+                  const { side, piece } = this.parseNotation(notation)
                   const Piece = this.pieceList[piece]
 
                   return (
-                    <File key={notation || `${file}${rank}`} position={position}>
+                    <File
+                      key={notation || position}
+                      piece={piece}
+                      side={side}
+                      position={position}
+                      selected={selected}
+                      onClick={this.handleClick}
+                    >
                       {Piece && <Piece side={side} />}
                     </File>
                   )
