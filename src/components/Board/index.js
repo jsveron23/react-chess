@@ -1,65 +1,83 @@
 import React, { Component } from 'react'
 import cx from 'classnames'
-import { Rank } from '@components'
+import { File, Pawn, Rook, Bishop, Knight, Queen, King } from '@components'
 import css from './board.css'
-// import PropTypes from 'prop-types'
 
 /**
- * Notations
- * @type {String}
- * @readonly
+ * Initial notations
+ * @example wRa1
+ * w  = white
+ * R  = rook
+ * a1 = position
+ * @example bPa7
+ * b  = black
+ * P  = Pawn
+ * a7 = position
  */
-const RANK = 'hgfedcba'
-
-/**
- * Notations
- * @type {String}
- * @readonly
- */
-const FILE = '87654321'
+const InitialNotations = [
+  'bRa8', 'bNb8', 'bBc8', 'bQd8', 'bKe8', 'bBf8', 'bNg8', 'bRh8',
+  'bPa7', 'bPb7', 'bPc7', 'bPd7', 'bPe7', 'bPf7', 'bPg7', 'bPh7',
+  'wPa2', 'wPb2', 'wPc2', 'wPd2', 'wPe2', 'wPf2', 'wPg2', 'wPh2',
+  'wRa1', 'wNb1', 'wBc1', 'wQd1', 'wKe1', 'wBf1', 'wNg1', 'wRh1'
+]
 
 /**
  * Chess Board component
  * @extends {React.Component}
  */
 class Board extends Component {
-  static map = {
-    w: 'white',
-    b: 'black',
-    R: 'Rook',
-    N: 'Knight',
-    B: 'Bishop',
-    Q: 'Queen',
-    K: 'King',
-    P: 'Pawn'
-  }
-
   /**
    * @param {Object} props
    */
   constructor (props) {
     super(props)
 
-    /**
-     * @example wRa1
-     * w  = white
-     * R  = rook
-     * a1 = notation
-     * @example bPa7
-     * b  = black
-     * P  = Pawn
-     * a7 = notation
-     */
-    const init = [
-      'bRa8', 'bNb8', 'bRh8', 'bQd8', 'bKe8', 'bBc8', 'bNg8', 'bBf8',
-      'bPa7', 'bPb7', 'bPc7', 'bPd7', 'bPe7', 'bPf7', 'bPg7', 'bPh7',
-      'wPa2', 'wPb2', 'wPc2', 'wPd2', 'wPe2', 'wPf2', 'wPg2', 'wPh2',
-      'wRa1', 'wNb1', 'wBc1', 'wQd1', 'wKe1', 'wRh1', 'wNg1', 'wBf1'
-    ]
-
     this.state = {
-      pieces: [...init]
+      notations: [...InitialNotations]
     }
+
+    this.pieceList = {
+      P: Pawn,
+      R: Rook,
+      B: Bishop,
+      N: Knight,
+      Q: Queen,
+      K: King
+    }
+
+    /**
+     * Rank
+     * @type {String}
+     */
+    this.rows = '87654321'
+
+    /**
+     * File
+     * @type {String}
+     */
+    this.cols = 'abcdefgh'
+  }
+
+  /**
+   * Get notation with using position
+   * @param  {String} position
+   * @return {String}
+   */
+  getNotation (position) {
+    const { notations } = this.state
+
+    return notations.find(n => (n.search(position) > -1)) || ''
+  }
+
+  /**
+   * Parse nations
+   * @param  {String} notation
+   * @return {Object}
+   */
+  parseNotation (notation) {
+    const [side, piece, ...position] = notation.split('')
+
+    return { side, piece, position }
   }
 
   /**
@@ -67,16 +85,30 @@ class Board extends Component {
    * @return {JSX}
    */
   render () {
-    const { pieces } = this.state
+    const ranks = this.rows.split('')
+    const files = this.cols.split('')
 
     return (
       <div className={css.board}>
-        {FILE.split('').map(f => (
-          <div key={`file-${f}`} className={cx(css.file, 'l-flex-row')}>
-            {RANK.split('').map(r =>
-              <Rank key={`${r}${f}`} map={Board.map} pieces={pieces} notation={`${r}${f}`} />)}
-          </div>
-        ))}
+        {
+          ranks.map(rank => (
+            <div key={`${rank}`} className={cx(css.rank, 'l-flex-row')}>
+              {
+                files.map(file => {
+                  const notation = this.getNotation(`${file}${rank}`)
+                  const { side, piece, position } = this.parseNotation(notation)
+                  const Piece = this.pieceList[piece]
+
+                  return (
+                    <File key={notation || `${file}${rank}`} position={position}>
+                      {Piece && <Piece side={side} />}
+                    </File>
+                  )
+                })
+              }
+            </div>
+          ))
+        }
       </div>
     )
   }

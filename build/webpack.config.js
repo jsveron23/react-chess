@@ -1,6 +1,6 @@
 const Loaders = require('./webpack/loaders')
 const Plugins = require('./webpack/plugins')
-const { pubPath, srcPath } = require('./libs/path')
+const { pubPath, srcPath, assetsPath } = require('./libs/path')
 const config = require('./config')
 
 /**
@@ -72,7 +72,9 @@ function configure ({ production } = {}) {
     plugins: Plugins.get(nodeEnv),
     context: srcPath,
     devtool: isDev ? 'cheap-module-source-map' : 'nosources-source-map',
-    devServer: isDev ? config.devServer : undefined,
+    devServer: isDev ? Object.assign({}, config.devServer, {
+      contentBase: assetsPath
+    }) : undefined,
     resolve,
     entry,
     module

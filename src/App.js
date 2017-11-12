@@ -2,6 +2,10 @@ import React, { PureComponent } from 'react'
 import { Header, Main, Menu, Board } from '@components'
 import '@styles/app.css'
 
+/**
+ * App component
+ * @extends {React.PureComponent}
+ */
 class App extends PureComponent {
   constructor (props) {
     super(props)
