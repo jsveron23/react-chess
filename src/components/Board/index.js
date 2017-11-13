@@ -59,6 +59,7 @@ class Board extends Component {
 
     this.state = {
       notations: props.initNotations,
+      turn: 'w',
       nextMoves: [],
       selected: ''
     }
@@ -113,7 +114,7 @@ class Board extends Component {
    * @return {JSX}
    */
   render () {
-    const { nextMoves, selected } = this.state
+    const { turn, nextMoves, selected } = this.state
 
     return (
       <div className={css.board}>
@@ -132,6 +133,7 @@ class Board extends Component {
                       key={notation || position}
                       piece={piece}
                       side={side}
+                      turn={turn}
                       position={position}
                       selected={selected}
                       nextMoves={nextMoves}

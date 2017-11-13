@@ -1,4 +1,5 @@
-import React, { Component } from 'react'
+import React from 'react'
+import PropTypes from 'prop-types'
 import css from './pawn.css'
 
 const SVG = {
@@ -8,21 +9,22 @@ const SVG = {
 
 /**
  * Pawn component
- * @extends {React.Component}
+ * @param {Object} props
  */
-class Pawn extends Component {
-  render () {
-    const { side } = this.props
-    const viewBox = SVG[side]
+const Pawn = ({ side }) => {
+  const viewBox = SVG[side]
 
-    return (
-      <img
-        src={`svg/Chess_Pieces.svg#svgView(viewBox(${viewBox}))`}
-        alt="Pawn"
-        className={css.pawn}
-      />
-    )
-  }
+  return (
+    <img
+      src={`svg/Chess_Pieces.svg#svgView(viewBox(${viewBox}))`}
+      alt="Pawn"
+      className={css.pawn}
+    />
+  )
+}
+
+Pawn.propTypes = {
+  side: PropTypes.string.isRequired
 }
 
 export default Pawn
