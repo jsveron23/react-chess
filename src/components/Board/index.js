@@ -11,7 +11,7 @@ import css from './board.css'
  */
 class Board extends Component {
   static propTypes = {
-    initNotations: PropTypes.array
+    notations: PropTypes.array
   }
 
   static defaultProps = {
@@ -27,7 +27,7 @@ class Board extends Component {
      * P  = Pawn
      * a7 = position
      */
-    initNotations: [
+    notations: [
       'bRa8', 'bNb8', 'bBc8', 'bQd8', 'bKe8', 'bBf8', 'bNg8', 'bRh8',
       'bPa7', 'bPb7', 'bPc7', 'bPd7', 'bPe7', 'bPf7', 'bPg7', 'bPh7',
       'wPa2', 'wPb2', 'wPc2', 'wPd2', 'wPe2', 'wPf2', 'wPg2', 'wPh2',
@@ -58,9 +58,9 @@ class Board extends Component {
     super(props)
 
     this.state = {
-      notations: props.initNotations,
+      notations: props.notations,
       turn: 'w',
-      nextMoves: [],
+      movable: [],
       selected: ''
     }
 
@@ -79,33 +79,63 @@ class Board extends Component {
    * @param  {String} position
    * @return {String}
    */
-  getNotation (position) {
+  getCurrentNotation (position) {
     const { notations } = this.state
 
     return notations.find(n => (n.search(position) > -1)) || ''
   }
 
+  passPlaced (position) {
+    const { notations } = this.state
+    const isPlaced = notations.find(n => (n.search(position) > -1)) // && (n.split('')[0] === side)
+
+    return !isPlaced
+  }
+
   /**
    * Handle piece movement
-   * @param {String} notation
+   * @param {Object} notation
    */
-  handlePiece = (notation) => {
-    const { side, piece, position } = Chess.parseNotation(notation)
-    const movement = Chess.getMovement(piece)
+  handlePiece = ({ side, piece, position }) => {
+    const { notations } = this.state
+
+    // get file, rank from position string
     const [file, rank] = position.split('')
-    // const Piece = this.pieceList[piece]
-    const next = movement.map(([x, y]) => {
-      const nextX = x + Chess.getFileIdx(file)
-      const nextY = side === 'w' ? y + parseInt(rank, 10) : parseInt(rank, 10) - y
+
+    // component of piece
+    const Piece = this.pieceList[piece]
+
+    // undertand movement of Chess piece (static)
+    let movable = Piece.movement.map(([x, y]) => {
+      const fileIdx = Chess.getFileIdx(file)
+      const nextX = x + fileIdx
+      const nextY = side === 'w'
+        ? y + parseInt(rank, 10)
+        : parseInt(rank, 10) - y
 
       if (nextX >= 0 && nextY >= 0 && !!Chess.getFile(nextX)) {
-        return `${Chess.getFile(nextX)}${nextY}`
+        const nextPosition = `${Chess.getFile(nextX)}${nextY}`
+
+        return nextPosition
       }
     }).filter(m => !!m)
 
+    // blocked?
+    if (Piece.specials.indexOf('jump') === -1) {
+      const found = notations.filter(notation => {
+        const { position } = Chess.parseNotation(notation)
+
+        return movable.indexOf(position) > -1
+      })
+
+      movable = found.length === 0 ? movable : []
+    } else {
+      movable = movable.filter(m => this.passPlaced(m))
+    }
+
     this.setState({
-      nextMoves: next,
-      selected: position
+      selected: position,
+      movable
     })
   }
 
@@ -114,7 +144,7 @@ class Board extends Component {
    * @return {JSX}
    */
   render () {
-    const { turn, nextMoves, selected } = this.state
+    const { turn, movable, selected } = this.state
 
     return (
       <div className={css.board}>
@@ -124,7 +154,7 @@ class Board extends Component {
               {
                 Board.gridCols.map(file => {
                   const position = `${file}${rank}`
-                  const notation = this.getNotation(position)
+                  const notation = this.getCurrentNotation(position)
                   const { side, piece } = Chess.parseNotation(notation)
                   const Piece = this.pieceList[piece]
 
@@ -136,7 +166,7 @@ class Board extends Component {
                       turn={turn}
                       position={position}
                       selected={selected}
-                      nextMoves={nextMoves}
+                      movable={movable}
                       onClick={this.handlePiece}
                     >
                       {Piece && <Piece side={side} />}

@@ -9,10 +9,20 @@ import css from './file.css'
  */
 class File extends Component {
   static propTypes = {
+    turn: PropTypes.string.isRequired,
+    position: PropTypes.string.isRequired,
+    side: PropTypes.string,
+    movable: PropTypes.array,
+    selected: PropTypes.string,
+    children: PropTypes.node,
     onClick: PropTypes.func
   }
 
   static defaultProps = {
+    side: '',
+    movable: [],
+    selected: '',
+    children: null,
     onClick: function () {}
   }
 
@@ -37,7 +47,7 @@ class File extends Component {
 
     const { side, piece, position, onClick } = this.props
 
-    onClick(`${side}${piece}${position}`)
+    onClick({ side, piece, position })
   }
 
   /**
@@ -45,10 +55,10 @@ class File extends Component {
    * @return {JSX}
    */
   render () {
-    const { turn, side, position, nextMoves, selected, children } = this.props
+    const { turn, side, position, movable, selected, children } = this.props
     const cls = cx(css.fileFloat, 'l-flex-center', 'l-flex-middle', {
       'is-selected': selected === position,
-      'is-nextmove': nextMoves.indexOf(position) > -1
+      'is-nextmove': movable.indexOf(position) > -1
     })
 
     return (

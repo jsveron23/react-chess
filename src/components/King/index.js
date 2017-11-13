@@ -1,21 +1,44 @@
-import React from 'react'
+import React, { PureComponent } from 'react'
+import PropTypes from 'prop-types'
 import css from './king.css'
 
 /**
- * @type {Object}
- * @readonly
+ * King component
+ * @extends {React.PureComponent}
  */
-const KING = {
-  w: [0, 0, 45, 45],
-  b: [0, 45, 45, 45]
+class King extends PureComponent {
+  static coord = {
+    w: [0, 0, 45, 45],
+    b: [0, 45, 45, 45]
+  }
+
+  static movement = [
+    [0, 1], [1, 1], [1, 0], [1, -1],
+    [0, -1], [-1, -1], [-1, 0], [-1, 1]
+  ]
+
+  static specials = ['castling']
+
+  /**
+   * Lifecycle method
+   * @return {JSX}
+   */
+  render () {
+    const { side } = this.props
+    const viewBox = King.coord[side]
+
+    return (
+      <img
+        src={`svg/Chess_Pieces.svg#svgView(viewBox(${viewBox}))`}
+        alt="King"
+        className={css.king}
+      />
+    )
+  }
 }
 
-/**
- * King component
- * @param {Object} props
- */
-const King = ({ side }) => (
-  <img src={`svg/Chess_Pieces.svg#svgView(viewBox(${KING[side]}))`} alt="King" className={css.king} />
-)
+King.propTypes = {
+  side: PropTypes.string.isRequired
+}
 
 export default King
