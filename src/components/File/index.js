@@ -12,13 +12,16 @@ class File extends Component {
   }
 
   render () {
-    const { position, selected, children } = this.props
+    const { position, nextMoves, selected, children } = this.props
 
     return (
-      <span data-position={position} className={cx(css.file, {
-        'is-selected': selected === position
-      })}>
-        <a href="" onClick={this.handleClick}>{children}</a>
+      <span data-position={position} className={css.file}>
+        <div className={cx(css.fileFloat, 'l-flex-center', 'l-flex-middle', {
+          'is-selected': selected === position,
+          'is-nextmove': nextMoves.indexOf(position) > -1
+        })}>
+          <a href="" onClick={this.handleClick}>{children}</a>
+        </div>
       </span>
     )
   }

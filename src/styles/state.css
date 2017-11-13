@@ -1,4 +1,7 @@
 :global(.is-selected) {
   box-shadow: inset 0px 0px 0px 2px #000;
-  opacity: .8;
+}
+
+:global(.is-nextmove) {
+  box-shadow: inset 0px 0px 0px 2px #000;
 }

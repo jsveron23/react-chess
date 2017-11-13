@@ -1,31 +1,56 @@
 import React, { Component } from 'react'
+import PropTypes from 'prop-types'
 import cx from 'classnames'
 import { File, Pawn, Rook, Bishop, Knight, Queen, King } from '@components'
+import { Chess } from '@utils'
 import css from './board.css'
-
-/**
- * Initial notations
- * @example wRa1
- * w  = white
- * R  = rook
- * a1 = position
- * @example bPa7
- * b  = black
- * P  = Pawn
- * a7 = position
- */
-const InitialNotations = [
-  'bRa8', 'bNb8', 'bBc8', 'bQd8', 'bKe8', 'bBf8', 'bNg8', 'bRh8',
-  'bPa7', 'bPb7', 'bPc7', 'bPd7', 'bPe7', 'bPf7', 'bPg7', 'bPh7',
-  'wPa2', 'wPb2', 'wPc2', 'wPd2', 'wPe2', 'wPf2', 'wPg2', 'wPh2',
-  'wRa1', 'wNb1', 'wBc1', 'wQd1', 'wKe1', 'wBf1', 'wNg1', 'wRh1'
-]
 
 /**
  * Chess Board component
  * @extends {React.Component}
  */
 class Board extends Component {
+  static propTypes = {
+    initNotations: PropTypes.array
+  }
+
+  static defaultProps = {
+    /**
+     * @type {Array}
+     * Initial notations
+     * @example wRa1
+     * w  = white
+     * R  = rook
+     * a1 = position
+     * @example bPa7
+     * b  = black
+     * P  = Pawn
+     * a7 = position
+     */
+    initNotations: [
+      'bRa8', 'bNb8', 'bBc8', 'bQd8', 'bKe8', 'bBf8', 'bNg8', 'bRh8',
+      'bPa7', 'bPb7', 'bPc7', 'bPd7', 'bPe7', 'bPf7', 'bPg7', 'bPh7',
+      'wPa2', 'wPb2', 'wPc2', 'wPd2', 'wPe2', 'wPf2', 'wPg2', 'wPh2',
+      'wRa1', 'wNb1', 'wBc1', 'wQd1', 'wKe1', 'wBf1', 'wNg1', 'wRh1'
+    ]
+  }
+
+  /**
+   * Rank
+   * @type {Array}
+   * @static
+   * @readonly
+   */
+  static gridRows = '87654321'.split('')
+
+  /**
+   * File
+   * @type {Array}
+   * @static
+   * @readonly
+   */
+  static gridCols = 'abcdefgh'.split('')
+
   /**
    * @param {Object} props
    */
@@ -33,7 +58,8 @@ class Board extends Component {
     super(props)
 
     this.state = {
-      notations: [...InitialNotations],
+      notations: props.initNotations,
+      nextMoves: [],
       selected: ''
     }
 
@@ -45,18 +71,6 @@ class Board extends Component {
       Q: Queen,
       K: King
     }
-
-    /**
-     * Rank
-     * @type {String}
-     */
-    this.rows = '87654321'
-
-    /**
-     * File
-     * @type {String}
-     */
-    this.cols = 'abcdefgh'
   }
 
   /**
@@ -71,20 +85,27 @@ class Board extends Component {
   }
 
   /**
-   * Parse nations
-   * @param  {String} notation
-   * @return {Object}
+   * Handle piece movement
+   * @param {String} notation
    */
-  parseNotation (notation) {
-    const [side, piece, ...position] = notation.split('')
+  handlePiece = (notation) => {
+    const { side, piece, position } = Chess.parseNotation(notation)
+    const movement = Chess.getMovement(piece)
+    const [file, rank] = position.split('')
+    // const Piece = this.pieceList[piece]
+    const next = movement.map(([x, y]) => {
+      const nextX = x + Chess.getFileIdx(file)
+      const nextY = side === 'w' ? y + parseInt(rank, 10) : parseInt(rank, 10) - y
 
-    return { side, piece, position: position.join('') }
-  }
+      if (nextX >= 0 && nextY >= 0 && !!Chess.getFile(nextX)) {
+        return `${Chess.getFile(nextX)}${nextY}`
+      }
+    }).filter(m => !!m)
 
-  handleClick = (notation) => {
-    const { position } = this.parseNotation(notation)
-
-    this.setState({ selected: position })
+    this.setState({
+      nextMoves: next,
+      selected: position
+    })
   }
 
   /**
@@ -92,20 +113,18 @@ class Board extends Component {
    * @return {JSX}
    */
   render () {
-    const { selected } = this.state
-    const ranks = this.rows.split('')
-    const files = this.cols.split('')
+    const { nextMoves, selected } = this.state
 
     return (
       <div className={css.board}>
         {
-          ranks.map(rank => (
+          Board.gridRows.map(rank => (
             <div key={`${rank}`} className={cx(css.rank, 'l-flex-row')}>
               {
-                files.map(file => {
+                Board.gridCols.map(file => {
                   const position = `${file}${rank}`
                   const notation = this.getNotation(position)
-                  const { side, piece } = this.parseNotation(notation)
+                  const { side, piece } = Chess.parseNotation(notation)
                   const Piece = this.pieceList[piece]
 
                   return (
@@ -115,7 +134,8 @@ class Board extends Component {
                       side={side}
                       position={position}
                       selected={selected}
-                      onClick={this.handleClick}
+                      nextMoves={nextMoves}
+                      onClick={this.handlePiece}
                     >
                       {Piece && <Piece side={side} />}
                     </File>

@@ -1,21 +1,28 @@
-import React from 'react'
+import React, { Component } from 'react'
 import css from './pawn.css'
 
-const Init = {
+const SVG = {
   w: [225, 0, 45, 45],
   b: [225, 45, 45, 45]
 }
 
-const Pawn = ({ side }) => {
-  const viewBox = Init[side]
+/**
+ * Pawn component
+ * @extends {React.Component}
+ */
+class Pawn extends Component {
+  render () {
+    const { side } = this.props
+    const viewBox = SVG[side]
 
-  return (
-    <img
-      src={`svg/Chess_Pieces.svg#svgView(viewBox(${viewBox}))`}
-      alt="Pawn"
-      className={css.pawn}
-    />
-  )
+    return (
+      <img
+        src={`svg/Chess_Pieces.svg#svgView(viewBox(${viewBox}))`}
+        alt="Pawn"
+        className={css.pawn}
+      />
+    )
+  }
 }
 
 export default Pawn
