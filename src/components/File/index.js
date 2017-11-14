@@ -15,7 +15,8 @@ class File extends Component {
     movable: PropTypes.array,
     selected: PropTypes.string,
     children: PropTypes.node,
-    onClick: PropTypes.func
+    onSelect: PropTypes.func,
+    onMove: PropTypes.func
   }
 
   static defaultProps = {
@@ -23,7 +24,8 @@ class File extends Component {
     movable: [],
     selected: '',
     children: null,
-    onClick: function () {}
+    onSelect: function () {},
+    onMove: function () {}
   }
 
   /**
@@ -42,12 +44,20 @@ class File extends Component {
    * Tell current notation
    * @param {Proxy} evt
    */
-  handleClick = evt => {
+  handleSelect = evt => {
     evt.preventDefault()
 
-    const { side, piece, position, onClick } = this.props
+    const { side, piece, position, onSelect } = this.props
 
-    onClick({ side, piece, position })
+    onSelect({ side, piece, position })
+  }
+
+  handleMove = evt => {
+    evt.preventDefault()
+
+    const { movable, position, onMove } = this.props
+
+    movable.indexOf(position) > -1 && onMove(position)
   }
 
   /**
@@ -63,10 +73,10 @@ class File extends Component {
 
     return (
       <span data-position={position} className={css.file}>
-        <div className={cls}>
+        <div className={cls} onClick={this.handleMove}>
           {
             turn === side
-              ? <a href="" onClick={this.handleClick}>{children}</a>
+              ? <a href="" onClick={this.handleSelect}>{children}</a>
               : children
           }
         </div>

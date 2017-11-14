@@ -15,7 +15,7 @@ class Board extends Component {
   }
 
   static defaultProps = {
-    notations: Chess.initNotations
+    notations: Chess.notations
   }
 
   /**
@@ -25,29 +25,35 @@ class Board extends Component {
     super(props)
 
     this.state = {
-      notations: props.notations,
+      notations: [...props.notations],
       turn: 'w',
       movable: [],
       selected: ''
     }
+  }
 
-    this.pieceList = {
+  /**
+   * Get Chess piece component
+   * @param  {String}    piece
+   * @return {Component}
+   */
+  getPiece (piece) {
+    const components = {
       P: Pawn,
       R: Rook,
       B: Bishop,
       N: Knight,
       Q: Queen,
-      K: King
+      K: King,
+      Pawn,
+      Rook,
+      Bishop,
+      Knight,
+      Queen,
+      King
     }
 
-    this.pieceAlias = {
-      P: 'pawn',
-      R: 'rook',
-      B: 'bishop',
-      N: 'knight',
-      Q: 'queen',
-      K: 'king'
-    }
+    return components[piece]
   }
 
   /**
@@ -92,21 +98,15 @@ class Board extends Component {
    * Handle piece movement
    * @param {Object} notation
    */
-  handlePiece = ({ side, piece, position }) => {
+  handleSelect = ({ side, piece, position }) => {
     this.setState(prevState => {
       const { notations } = prevState
 
-      // piece name
-      const pieceName = this.pieceAlias[piece]
-
-      // static value of piece
-      const Piece = Chess[pieceName]
-
       // movement of piece
-      const movement = Piece.movement
+      const movement = Chess.getMovement(piece)
 
       // special movement of piece
-      const specials = Piece.specials
+      const specials = Chess.getSpecials(piece)
 
       // undertand movement of Chess piece
       let movable = Chess.calcMovablePath({ movement, position, side })
@@ -123,36 +123,65 @@ class Board extends Component {
     })
   }
 
+  handleMove = (position) => {
+    this.setState(prevState => {
+      const turn = {
+        w: 'b',
+        b: 'w'
+      }
+
+      const { notations, selected } = prevState
+      const nextNotations = notations.map(n => {
+        let nextNotation = n
+
+        if (n.search(selected) > -1) {
+          const { side, piece } = Chess.parseNotation(n)
+
+          nextNotation = `${side}${piece}${position}`
+        }
+
+        return nextNotation
+      })
+
+      return {
+        notations: nextNotations,
+        turn: turn[prevState.turn],
+        selected: '',
+        movable: []
+      }
+    })
+  }
+
   /**
    * Lifecycle method
    * @return {JSX}
    */
   render () {
     const { turn, movable, selected } = this.state
-    const { files, ranks } = Chess.board
 
     return (
       <div className={css.board}>
         {
-          ranks.map(rank => (
+          Chess.ranks.map(rank => (
             <div key={rank} className={cx(css.rank, 'l-flex-row')}>
               {
-                files.map(file => {
+                Chess.files.map(file => {
                   const position = `${file}${rank}`
-                  const notation = this.getCurrentNotation(position)
-                  const { side, piece } = Chess.parseNotation(notation)
-                  const Piece = this.pieceList[piece]
+                  const currentNotation = this.getCurrentNotation(position)
+                  const { side, piece } = Chess.parseNotation(currentNotation)
+                  const Piece = this.getPiece(piece)
 
                   return (
                     <File
-                      key={notation || position}
+                      key={position}
                       piece={piece}
                       side={side}
                       turn={turn}
                       position={position}
                       selected={selected}
                       movable={movable}
-                      onClick={this.handlePiece}
+                      onSelect={this.handleSelect}
+                      onMove={this.handleMove}
                     >
                       {Piece && <Piece side={side} />}
                     </File>
