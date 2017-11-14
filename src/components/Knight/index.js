@@ -12,13 +12,6 @@ class Knight extends PureComponent {
     b: [135, 45, 45, 45]
   }
 
-  static movement = [
-    [-1, 2], [1, 2], [-1, -2], [1, -2],
-    [-2, 1], [2, 1], [-2, -1], [2, -1]
-  ]
-
-  static specials = ['jump']
-
   /**
    * Lifecycle method
    * @return {JSX}

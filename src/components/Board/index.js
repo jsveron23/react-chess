@@ -15,41 +15,8 @@ class Board extends Component {
   }
 
   static defaultProps = {
-    /**
-     * @type {Array}
-     * Initial notations
-     * @example wRa1
-     * w  = white
-     * R  = rook
-     * a1 = position
-     * @example bPa7
-     * b  = black
-     * P  = Pawn
-     * a7 = position
-     */
-    notations: [
-      'bRa8', 'bNb8', 'bBc8', 'bQd8', 'bKe8', 'bBf8', 'bNg8', 'bRh8',
-      'bPa7', 'bPb7', 'bPc7', 'bPd7', 'bPe7', 'bPf7', 'bPg7', 'bPh7',
-      'wPa2', 'wPb2', 'wPc2', 'wPd2', 'wPe2', 'wPf2', 'wPg2', 'wPh2',
-      'wRa1', 'wNb1', 'wBc1', 'wQd1', 'wKe1', 'wBf1', 'wNg1', 'wRh1'
-    ]
+    notations: Chess.initNotations
   }
-
-  /**
-   * Rank
-   * @type {Array}
-   * @static
-   * @readonly
-   */
-  static gridRows = '87654321'.split('')
-
-  /**
-   * File
-   * @type {Array}
-   * @static
-   * @readonly
-   */
-  static gridCols = 'abcdefgh'.split('')
 
   /**
    * @param {Object} props
@@ -72,6 +39,15 @@ class Board extends Component {
       Q: Queen,
       K: King
     }
+
+    this.pieceAlias = {
+      P: 'pawn',
+      R: 'rook',
+      B: 'bishop',
+      N: 'knight',
+      Q: 'queen',
+      K: 'king'
+    }
   }
 
   /**
@@ -85,11 +61,31 @@ class Board extends Component {
     return notations.find(n => (n.search(position) > -1)) || ''
   }
 
-  passPlaced (position) {
+  /**
+   * Is any piece there?
+   * @param  {String}  position
+   * @return {Boolean}
+   */
+  isPlaced (position) {
     const { notations } = this.state
-    const isPlaced = notations.find(n => (n.search(position) > -1)) // && (n.split('')[0] === side)
 
-    return !isPlaced
+    return !!notations.find(n => (n.search(position) > -1))
+  }
+
+  /**
+   * Is there place blocked?
+   * @param  {Array}   notations
+   * @param  {Array}   movable
+   * @return {Boolean}
+   */
+  isBlocked (notations, movable) {
+    const placed = notations.filter(n => {
+      const { position } = Chess.parseNotation(n)
+
+      return movable.indexOf(position) > -1
+    })
+
+    return placed.length === 0
   }
 
   /**
@@ -97,45 +93,33 @@ class Board extends Component {
    * @param {Object} notation
    */
   handlePiece = ({ side, piece, position }) => {
-    const { notations } = this.state
+    this.setState(prevState => {
+      const { notations } = prevState
 
-    // get file, rank from position string
-    const [file, rank] = position.split('')
+      // piece name
+      const pieceName = this.pieceAlias[piece]
 
-    // component of piece
-    const Piece = this.pieceList[piece]
+      // static value of piece
+      const Piece = Chess[pieceName]
 
-    // undertand movement of Chess piece (static)
-    let movable = Piece.movement.map(([x, y]) => {
-      const fileIdx = Chess.getFileIdx(file)
-      const nextX = x + fileIdx
-      const nextY = side === 'w'
-        ? y + parseInt(rank, 10)
-        : parseInt(rank, 10) - y
+      // movement of piece
+      const movement = Piece.movement
 
-      if (nextX >= 0 && nextY >= 0 && !!Chess.getFile(nextX)) {
-        const nextPosition = `${Chess.getFile(nextX)}${nextY}`
+      // special movement of piece
+      const specials = Piece.specials
 
-        return nextPosition
+      // undertand movement of Chess piece
+      let movable = Chess.calcMovablePath({ movement, position, side })
+
+      // blocked or not?
+      movable = (specials.indexOf('jump') === -1)
+        ? (this.isBlocked(notations, movable) ? movable : [])
+        : movable.filter(m => !this.isPlaced(m))
+
+      return {
+        selected: position,
+        movable
       }
-    }).filter(m => !!m)
-
-    // blocked?
-    if (Piece.specials.indexOf('jump') === -1) {
-      const found = notations.filter(notation => {
-        const { position } = Chess.parseNotation(notation)
-
-        return movable.indexOf(position) > -1
-      })
-
-      movable = found.length === 0 ? movable : []
-    } else {
-      movable = movable.filter(m => this.passPlaced(m))
-    }
-
-    this.setState({
-      selected: position,
-      movable
     })
   }
 
@@ -145,14 +129,15 @@ class Board extends Component {
    */
   render () {
     const { turn, movable, selected } = this.state
+    const { files, ranks } = Chess.board
 
     return (
       <div className={css.board}>
         {
-          Board.gridRows.map(rank => (
-            <div key={`${rank}`} className={cx(css.rank, 'l-flex-row')}>
+          ranks.map(rank => (
+            <div key={rank} className={cx(css.rank, 'l-flex-row')}>
               {
-                Board.gridCols.map(file => {
+                files.map(file => {
                   const position = `${file}${rank}`
                   const notation = this.getCurrentNotation(position)
                   const { side, piece } = Chess.parseNotation(notation)

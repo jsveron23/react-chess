@@ -12,13 +12,6 @@ class King extends PureComponent {
     b: [0, 45, 45, 45]
   }
 
-  static movement = [
-    [0, 1], [1, 1], [1, 0], [1, -1],
-    [0, -1], [-1, -1], [-1, 0], [-1, 1]
-  ]
-
-  static specials = ['castling']
-
   /**
    * Lifecycle method
    * @return {JSX}

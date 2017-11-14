@@ -64,9 +64,11 @@ class File extends Component {
     return (
       <span data-position={position} className={css.file}>
         <div className={cls}>
-          {turn === side
-            ? <a href="" onClick={this.handleClick}>{children}</a>
-            : children}
+          {
+            turn === side
+              ? <a href="" onClick={this.handleClick}>{children}</a>
+              : children
+          }
         </div>
       </span>
     )

@@ -12,12 +12,6 @@ class Pawn extends PureComponent {
     b: [225, 45, 45, 45]
   }
 
-  static movement = [
-    [0, 1]
-  ]
-
-  static specials = ['initDouble', 'enPassant', 'promotion']
-
   /**
    * Lifecycle method
    * @return {JSX}
