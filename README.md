@@ -12,7 +12,7 @@ npm start
 ## Todo
 
 - [x] Movement
-- [x] Blocked (some issues)
+- [x] Blocked
 - [ ] Special movement
 - [ ] Attack
 - [ ] Check, Checkmate

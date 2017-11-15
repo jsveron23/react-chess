@@ -96,9 +96,8 @@ class Board extends Component {
           const filteredDirections = m.map(direction => {
             const openedFiles = direction.map(d => (this.isPlaced(d) ? undefined : d))
             const start = openedFiles.indexOf(undefined)
-            const end = openedFiles.length - 1
 
-            openedFiles.fill(undefined, start, end)
+            start > -1 && openedFiles.fill(undefined, start)
 
             return openedFiles.filter(ofs => !!ofs)
           })
@@ -109,6 +108,8 @@ class Board extends Component {
         movable = movable.map(m => m.map(direction => direction.filter(d => !this.isPlaced(d))))
       }
 
+      console.log(piece, movable)
+
       return {
         selected: position,
         movable
@@ -116,6 +117,10 @@ class Board extends Component {
     })
   }
 
+  /**
+   * Handle after moving
+   * @param {String} position
+   */
   handleMove = (position) => {
     this.setState(prevState => {
       const turn = {
@@ -145,6 +150,11 @@ class Board extends Component {
     })
   }
 
+  /**
+   * Transform multiple dimensional array to single
+   * @param  {Array} movable
+   * @return {Array}
+   */
   flattenMovable (movable) {
     if (movable.length === 0) {
       return movable
