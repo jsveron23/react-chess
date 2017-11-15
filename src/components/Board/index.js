@@ -74,22 +74,6 @@ class Board extends Component {
   }
 
   /**
-   * Is there place blocked?
-   * @param  {Array}   notations
-   * @param  {Array}   movable
-   * @return {Boolean}
-   */
-  // isBlocked (notations, movable) {
-  //   const placed = notations.filter(n => {
-  //     const { position } = Chess.parseNotation(n)
-  //
-  //     return movable.indexOf(position) > -1
-  //   })
-  //
-  //   return placed.length === 0
-  // }
-
-  /**
    * Handle piece movement
    * @param {Object} notation
    */
@@ -101,31 +85,29 @@ class Board extends Component {
       const movement = Chess.getMovement(piece)
 
       // special movement of piece
-      // const specials = Chess.getSpecials(piece)
+      const specials = Chess.getSpecials(piece)
 
       // undertand movement of Chess piece
       let movable = Chess.calcMovablePath({ movement, position, side })
 
       // movable and included blocked
-      // if (specials.indexOf('jump') === -1) {
-      //   movable = movable.map(m => {
-      //     const filteredDirections = m.map(direction => {
-      //       const openedFiles = direction.reduce((a, b) => {
-      //         return this.isPlaced(b) ? [] : a.concat(b)
-      //       })
-      //
-      //       // const isOpened = filteredFiles.reduce((a, b) => {
-      //       //   return
-      //       // })
-      //       //
-      //       return openedFiles
-      //     })
-      //
-      //     return filteredDirections
-      //   })
-      // }
-      //
-      // console.log(movable)
+      if (specials.indexOf('jump') === -1) {
+        movable = movable.map(m => {
+          const filteredDirections = m.map(direction => {
+            const openedFiles = direction.map(d => (this.isPlaced(d) ? undefined : d))
+            const start = openedFiles.indexOf(undefined)
+            const end = openedFiles.length - 1
+
+            openedFiles.fill(undefined, start, end)
+
+            return openedFiles.filter(ofs => !!ofs)
+          })
+
+          return filteredDirections
+        })
+      } else {
+        movable = movable.map(m => m.map(direction => direction.filter(d => !this.isPlaced(d))))
+      }
 
       return {
         selected: position,
@@ -135,32 +117,32 @@ class Board extends Component {
   }
 
   handleMove = (position) => {
-    // this.setState(prevState => {
-    //   const turn = {
-    //     w: 'b',
-    //     b: 'w'
-    //   }
-    //
-    //   const { notations, selected } = prevState
-    //   const nextNotations = notations.map(n => {
-    //     let nextNotation = n
-    //
-    //     if (n.search(selected) > -1) {
-    //       const { side, piece } = Chess.parseNotation(n)
-    //
-    //       nextNotation = `${side}${piece}${position}`
-    //     }
-    //
-    //     return nextNotation
-    //   })
-    //
-    //   return {
-    //     notations: nextNotations,
-    //     turn: turn[prevState.turn],
-    //     selected: '',
-    //     movable: []
-    //   }
-    // })
+    this.setState(prevState => {
+      const turn = {
+        w: 'b',
+        b: 'w'
+      }
+
+      const { notations, selected } = prevState
+      const nextNotations = notations.map(n => {
+        let nextNotation = n
+
+        if (n.search(selected) > -1) {
+          const { side, piece } = Chess.parseNotation(n)
+
+          nextNotation = `${side}${piece}${position}`
+        }
+
+        return nextNotation
+      })
+
+      return {
+        notations: nextNotations,
+        turn: turn[prevState.turn],
+        selected: '',
+        movable: []
+      }
+    })
   }
 
   flattenMovable (movable) {

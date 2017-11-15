@@ -40,8 +40,8 @@ function configure ({ production } = {}) {
       'webpack/hot/only-dev-server'
     )
     module.rules = [
-      Object.assign(Loaders.get('eslint'), { enforce: 'pre' }),
-      Object.assign(Loaders.get('javascript'), { use: ['react-hot-loader/webpack', 'babel-loader'] }),
+      Object.assign({}, Loaders.get('eslint'), { enforce: 'pre' }),
+      Object.assign({}, Loaders.get('javascript'), { use: ['react-hot-loader/webpack', 'babel-loader'] }),
       {
         test: /\.css$/,
         include: [srcPath],
