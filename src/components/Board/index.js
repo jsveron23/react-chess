@@ -30,15 +30,12 @@ class Board extends Component {
       movable: [],
       selected: ''
     }
-  }
 
-  /**
-   * Get Chess piece component
-   * @param  {String}    piece
-   * @return {Component}
-   */
-  getPiece (piece) {
-    const components = {
+    /**
+     * Components
+     * @type {Object}
+     */
+    this.pieces = {
       P: Pawn,
       R: Rook,
       B: Bishop,
@@ -52,8 +49,6 @@ class Board extends Component {
       Queen,
       King
     }
-
-    return components[piece]
   }
 
   /**
@@ -84,15 +79,15 @@ class Board extends Component {
    * @param  {Array}   movable
    * @return {Boolean}
    */
-  isBlocked (notations, movable) {
-    const placed = notations.filter(n => {
-      const { position } = Chess.parseNotation(n)
-
-      return movable.indexOf(position) > -1
-    })
-
-    return placed.length === 0
-  }
+  // isBlocked (notations, movable) {
+  //   const placed = notations.filter(n => {
+  //     const { position } = Chess.parseNotation(n)
+  //
+  //     return movable.indexOf(position) > -1
+  //   })
+  //
+  //   return placed.length === 0
+  // }
 
   /**
    * Handle piece movement
@@ -100,21 +95,37 @@ class Board extends Component {
    */
   handleSelect = ({ side, piece, position }) => {
     this.setState(prevState => {
-      const { notations } = prevState
+      // const { notations } = prevState
 
       // movement of piece
       const movement = Chess.getMovement(piece)
 
       // special movement of piece
-      const specials = Chess.getSpecials(piece)
+      // const specials = Chess.getSpecials(piece)
 
       // undertand movement of Chess piece
       let movable = Chess.calcMovablePath({ movement, position, side })
 
-      // blocked or not?
-      movable = (specials.indexOf('jump') === -1)
-        ? (this.isBlocked(notations, movable) ? movable : [])
-        : movable.filter(m => !this.isPlaced(m))
+      // movable and included blocked
+      // if (specials.indexOf('jump') === -1) {
+      //   movable = movable.map(m => {
+      //     const filteredDirections = m.map(direction => {
+      //       const openedFiles = direction.reduce((a, b) => {
+      //         return this.isPlaced(b) ? [] : a.concat(b)
+      //       })
+      //
+      //       // const isOpened = filteredFiles.reduce((a, b) => {
+      //       //   return
+      //       // })
+      //       //
+      //       return openedFiles
+      //     })
+      //
+      //     return filteredDirections
+      //   })
+      // }
+      //
+      // console.log(movable)
 
       return {
         selected: position,
@@ -124,32 +135,47 @@ class Board extends Component {
   }
 
   handleMove = (position) => {
-    this.setState(prevState => {
-      const turn = {
-        w: 'b',
-        b: 'w'
-      }
+    // this.setState(prevState => {
+    //   const turn = {
+    //     w: 'b',
+    //     b: 'w'
+    //   }
+    //
+    //   const { notations, selected } = prevState
+    //   const nextNotations = notations.map(n => {
+    //     let nextNotation = n
+    //
+    //     if (n.search(selected) > -1) {
+    //       const { side, piece } = Chess.parseNotation(n)
+    //
+    //       nextNotation = `${side}${piece}${position}`
+    //     }
+    //
+    //     return nextNotation
+    //   })
+    //
+    //   return {
+    //     notations: nextNotations,
+    //     turn: turn[prevState.turn],
+    //     selected: '',
+    //     movable: []
+    //   }
+    // })
+  }
 
-      const { notations, selected } = prevState
-      const nextNotations = notations.map(n => {
-        let nextNotation = n
+  flattenMovable (movable) {
+    if (movable.length === 0) {
+      return movable
+    }
 
-        if (n.search(selected) > -1) {
-          const { side, piece } = Chess.parseNotation(n)
+    const flatten = movable.reduce((a, b) => a.concat(b))
+    const shouldFlattened = flatten.every(f => (typeof f === 'string'))
 
-          nextNotation = `${side}${piece}${position}`
-        }
+    if (!shouldFlattened) {
+      return this.flattenMovable(flatten)
+    }
 
-        return nextNotation
-      })
-
-      return {
-        notations: nextNotations,
-        turn: turn[prevState.turn],
-        selected: '',
-        movable: []
-      }
-    })
+    return flatten
   }
 
   /**
@@ -158,6 +184,7 @@ class Board extends Component {
    */
   render () {
     const { turn, movable, selected } = this.state
+    const parsedMovable = this.flattenMovable(movable)
 
     return (
       <div className={css.board}>
@@ -169,7 +196,7 @@ class Board extends Component {
                   const position = `${file}${rank}`
                   const currentNotation = this.getCurrentNotation(position)
                   const { side, piece } = Chess.parseNotation(currentNotation)
-                  const Piece = this.getPiece(piece)
+                  const Piece = this.pieces[piece]
 
                   return (
                     <File
@@ -179,7 +206,7 @@ class Board extends Component {
                       turn={turn}
                       position={position}
                       selected={selected}
-                      movable={movable}
+                      movable={parsedMovable}
                       onSelect={this.handleSelect}
                       onMove={this.handleMove}
                     >
