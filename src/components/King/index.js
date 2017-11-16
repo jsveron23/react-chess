@@ -13,20 +13,36 @@ class King extends PureComponent {
   }
 
   /**
+   * Get ref
+   * @param {Object} el
+   */
+  refContainer = el => {
+    this.refContainer = el
+  }
+
+  /**
+   * Lifecycle method
+   */
+  componentDidMount () {
+    const { translated, doAnimate } = this.props
+
+    if (translated) {
+      const { axis } = translated
+
+      doAnimate(axis, this.refContainer)
+    }
+  }
+
+  /**
    * Lifecycle method
    * @return {JSX}
    */
   render () {
     const { side } = this.props
     const viewBox = King.coord[side]
+    const src = `svg/Chess_Pieces.svg#svgView(viewBox(${viewBox}))`
 
-    return (
-      <img
-        src={`svg/Chess_Pieces.svg#svgView(viewBox(${viewBox}))`}
-        alt="King"
-        className={css.king}
-      />
-    )
+    return <img ref={this.refContainer} src={src} alt="King" className={css.king} />
   }
 }
 

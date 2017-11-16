@@ -13,6 +13,27 @@ class Pawn extends PureComponent {
   }
 
   /**
+   * Get ref
+   * @param {Object} el
+   */
+  refContainer = el => {
+    this.refContainer = el
+  }
+
+  /**
+   * Lifecycle method
+   */
+  componentDidMount () {
+    const { translated, doAnimate } = this.props
+
+    if (translated) {
+      const { axis } = translated
+
+      doAnimate(axis, this.refContainer)
+    }
+  }
+
+  /**
    * Lifecycle method
    * @return {JSX}
    */
@@ -21,7 +42,7 @@ class Pawn extends PureComponent {
     const viewBox = Pawn.coord[side]
     const src = `svg/Chess_Pieces.svg#svgView(viewBox(${viewBox}))`
 
-    return <img src={src} alt="Pawn" className={css.pawn} />
+    return <img ref={this.refContainer} src={src} alt="Pawn" className={css.pawn} />
   }
 }
 

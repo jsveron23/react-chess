@@ -10,21 +10,3 @@
     left: 2px;
   }
 }
-
-:global(.movement-leave) {
-  opacity: 1;
-
-  &:global(.movement-leave-active) {
-    opacity: 0.01;
-    transition: all .3s ease-in;
-  }
-}
-
-:global(.movement-enter) {
-  opacity: 0.01;
-
-  &:global(.movement-enter-active) {
-    opacity: 1;
-    transition: all .3s ease-in;
-  }
-}

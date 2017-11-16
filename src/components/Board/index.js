@@ -49,6 +49,9 @@ class Board extends Component {
       Queen,
       King
     }
+
+    // no need to keep it
+    this.translated = null
   }
 
   /**
@@ -135,9 +138,11 @@ class Board extends Component {
 
           nextNotation = `${side}${piece}${position}`
 
-          // TODO
-          // I guess, it is bad code
-          cb(n, nextNotation)
+          // passing prop to show moving animation
+          this.translated = {
+            notation: nextNotation,
+            axis: Chess.calcAxis(n, nextNotation)
+          }
         }
 
         return nextNotation
@@ -150,6 +155,28 @@ class Board extends Component {
         movable: []
       }
     })
+  }
+
+  /**
+   * Moving animation
+   * @param {Object} axis
+   * @param {Object} el
+   */
+  handleAnimate = (axis, el) => {
+    let style = ''
+
+    if (axis.x !== 0) {
+      const x = -`${axis.x}`
+      style = `${style}left: ${x}px;`
+    }
+
+    if (axis.y !== 0) {
+      style = `${style}top: ${axis.y}px;`
+    }
+
+    el.setAttribute('style', style)
+
+    setTimeout(() => el.setAttribute('style', 'top: 0; left: 0;'), 0)
   }
 
   /**
@@ -172,6 +199,10 @@ class Board extends Component {
     return flatten
   }
 
+  componentDidUpdate () {
+    this.translated = null
+  }
+
   /**
    * Lifecycle method
    * @return {JSX}
@@ -191,6 +222,7 @@ class Board extends Component {
                   const currentNotation = this.getCurrentNotation(position)
                   const { side, piece } = Chess.parseNotation(currentNotation)
                   const Piece = this.pieces[piece]
+                  const shouldAnimate = (this.translated && this.translated.notation === currentNotation)
 
                   return (
                     <File
@@ -204,7 +236,14 @@ class Board extends Component {
                       onSelect={this.handleSelect}
                       onMove={this.handleMove}
                     >
-                      {Piece && <Piece side={side} />}
+                      {
+                        /* no use state, no auto render */
+                        Piece && <Piece
+                          side={side}
+                          translated={shouldAnimate && this.translated}
+                          doAnimate={shouldAnimate && this.handleAnimate}
+                        />
+                      }
                     </File>
                   )
                 })

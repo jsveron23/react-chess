@@ -1,8 +1,6 @@
 import React, { Component } from 'react'
-import ReactCSSTransitionGroup from 'react-addons-css-transition-group'
 import PropTypes from 'prop-types'
 import cx from 'classnames'
-import { Chess } from '@utils'
 import css from './file.css'
 
 /**
@@ -51,9 +49,7 @@ class File extends Component {
 
     const { movable, position, onMove } = this.props
 
-    movable.indexOf(position) > -1 && onMove(position, (prev, next) => {
-      console.log('Moved:', Chess.calcAxis(prev, next))
-    })
+    movable.indexOf(position) > -1 && onMove(position)
   }
 
   /**
@@ -70,18 +66,11 @@ class File extends Component {
     return (
       <span data-position={position} className={css.file}>
         <div className={cls} onClick={this.handleMove}>
-          <ReactCSSTransitionGroup
-            transitionName="movement"
-            transitionEnterTimeout={300}
-            transitionLeaveTimeout={300}
-            style={{ backgroundColor: 'transparent' }}
-          >
-            {
-              turn === side
-                ? <a href="" onClick={this.handleSelect}>{children}</a>
-                : children
-            }
-          </ReactCSSTransitionGroup>
+          {
+            turn === side
+              ? <a href="" onClick={this.handleSelect}>{children}</a>
+              : children
+          }
         </div>
       </span>
     )
