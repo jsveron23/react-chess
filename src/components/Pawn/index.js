@@ -19,14 +19,9 @@ class Pawn extends PureComponent {
   render () {
     const { side } = this.props
     const viewBox = Pawn.coord[side]
+    const src = `svg/Chess_Pieces.svg#svgView(viewBox(${viewBox}))`
 
-    return (
-      <img
-        src={`svg/Chess_Pieces.svg#svgView(viewBox(${viewBox}))`}
-        alt="Pawn"
-        className={css.pawn}
-      />
-    )
+    return <img src={src} alt="Pawn" className={css.pawn} />
   }
 }
 

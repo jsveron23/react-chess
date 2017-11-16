@@ -120,7 +120,7 @@ class Chess {
       /**
        * The movement which configured in 'config.js' file are only showing X, Y axis
        * Which mean it does not tell you where Chess piece in board
-       * So, calculate and ignoring axis if out of grid
+       * Then just filtering outer axis of grid
        */
       const inSqares = direction.map(axisList => {
         return axisList.map(([x, y]) => {
@@ -148,6 +148,27 @@ class Chess {
     })
 
     return movable
+  }
+
+  /**
+   * Calculate movement
+   * @param  {String}  prev
+   * @param  {String}  next
+   * @param  {Number?} pixelSize
+   * @return {Object}
+   * @example b2 to b3 => x0, y50 => transform: translate(0px, 50px)
+   * @example b1 to h3 => x300, y100 => transform: translate(300px, 100px)
+   */
+  static calcAxis (prev, next, pixelSize = 50) {
+    const prevNotation = Chess.parseNotation(prev)
+    const nextNotation = Chess.parseNotation(next)
+    const [prevFile, prevRank] = prevNotation.position.split('')
+    const [nextFile, nextRank] = nextNotation.position.split('')
+
+    return {
+      x: (Chess.getFileIdx(nextFile) - Chess.getFileIdx(prevFile)) * pixelSize,
+      y: (parseInt(nextRank, 10) - parseInt(prevRank, 10)) * pixelSize
+    }
   }
 }
 

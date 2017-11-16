@@ -13,7 +13,7 @@ npm start
 
 - [x] Movement
 - [x] Blocked
-- [ ] Animation
+- [x] Animation
 - [ ] Special movement
 - [ ] Attack
 - [ ] Check, Checkmate

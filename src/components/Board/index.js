@@ -119,7 +119,7 @@ class Board extends Component {
    * Handle after moving
    * @param {String} position
    */
-  handleMove = (position) => {
+  handleMove = (position, cb) => {
     this.setState(prevState => {
       const turn = {
         w: 'b',
@@ -134,6 +134,10 @@ class Board extends Component {
           const { side, piece } = Chess.parseNotation(n)
 
           nextNotation = `${side}${piece}${position}`
+
+          // TODO
+          // I guess, it is bad code
+          cb(n, nextNotation)
         }
 
         return nextNotation
@@ -177,7 +181,7 @@ class Board extends Component {
     const parsedMovable = this.flattenMovable(movable)
 
     return [
-      <div key="board" className={css.board}>
+      <div key="body" className={css.board}>
         {
           Chess.ranks.map(rank => (
             <div key={rank} className={cx(css.rank, 'l-flex-row')}>
@@ -209,7 +213,7 @@ class Board extends Component {
           ))
         }
       </div>,
-      <div className="information">
+      <div key="footer" className="information">
         Turn: {turn === 'w' ? 'White' : 'Black'}
       </div>
     ]

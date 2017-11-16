@@ -1,6 +1,8 @@
 import React, { Component } from 'react'
+import ReactCSSTransitionGroup from 'react-addons-css-transition-group'
 import PropTypes from 'prop-types'
 import cx from 'classnames'
+import { Chess } from '@utils'
 import css from './file.css'
 
 /**
@@ -29,18 +31,6 @@ class File extends Component {
   }
 
   /**
-   * @param {Object} props
-   */
-  constructor (props) {
-    super(props)
-
-    this.state = {
-      name: props.piece,
-      isMoved: false
-    }
-  }
-
-  /**
    * Tell current notation
    * @param {Proxy} evt
    */
@@ -52,12 +42,18 @@ class File extends Component {
     onSelect({ side, piece, position })
   }
 
+  /**
+   * Handle click to move piece
+   * @param {Proxy} evt
+   */
   handleMove = evt => {
     evt.preventDefault()
 
     const { movable, position, onMove } = this.props
 
-    movable.indexOf(position) > -1 && onMove(position)
+    movable.indexOf(position) > -1 && onMove(position, (prev, next) => {
+      console.log('Moved:', Chess.calcAxis(prev, next))
+    })
   }
 
   /**
@@ -74,11 +70,18 @@ class File extends Component {
     return (
       <span data-position={position} className={css.file}>
         <div className={cls} onClick={this.handleMove}>
-          {
-            turn === side
-              ? <a href="" onClick={this.handleSelect}>{children}</a>
-              : children
-          }
+          <ReactCSSTransitionGroup
+            transitionName="movement"
+            transitionEnterTimeout={300}
+            transitionLeaveTimeout={300}
+            style={{ backgroundColor: 'transparent' }}
+          >
+            {
+              turn === side
+                ? <a href="" onClick={this.handleSelect}>{children}</a>
+                : children
+            }
+          </ReactCSSTransitionGroup>
         </div>
       </span>
     )
