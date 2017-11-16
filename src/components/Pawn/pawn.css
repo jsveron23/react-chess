@@ -1,4 +1,23 @@
 .pawn {
   width: 100%;
   height: 100%;
+  /*animation: xAxis 2.5s infinite ease-in;
+
+  &::after {
+    animation: yAxis 2.5s infinite ease-out;
+  }*/
 }
+
+/*@keyframes xAxis {
+  50% {
+    animation-timing-function: ease-in;
+    transform: translateX(400px);
+  }
+}
+
+@keyframes yAxis {
+  50% {
+    animation-timing-function: ease-out;
+    transform: translateY(-400px);
+  }
+}*/

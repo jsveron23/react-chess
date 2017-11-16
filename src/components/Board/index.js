@@ -108,8 +108,6 @@ class Board extends Component {
         movable = movable.map(m => m.map(direction => direction.filter(d => !this.isPlaced(d))))
       }
 
-      console.log(piece, movable)
-
       return {
         selected: position,
         movable
@@ -178,8 +176,8 @@ class Board extends Component {
     const { turn, movable, selected } = this.state
     const parsedMovable = this.flattenMovable(movable)
 
-    return (
-      <div className={css.board}>
+    return [
+      <div key="board" className={css.board}>
         {
           Chess.ranks.map(rank => (
             <div key={rank} className={cx(css.rank, 'l-flex-row')}>
@@ -210,8 +208,11 @@ class Board extends Component {
             </div>
           ))
         }
+      </div>,
+      <div className="information">
+        Turn: {turn === 'w' ? 'White' : 'Black'}
       </div>
-    )
+    ]
   }
 }
 
