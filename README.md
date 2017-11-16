@@ -1,10 +1,10 @@
-# react-chess
+# React Chess
 
-Developing...
+(Developing...) Implemented Chess game with using ReactJS. Pull requests welcome. Thank you.
 
 ## Installation & Start
 
-```
+```bash
 npm install
 npm start
 ```
@@ -20,3 +20,7 @@ npm start
 - [ ] Undo
 - [ ] vs. CPU
 - [ ] Difficulty
+
+## License
+
+[MIT](LICENSE.md)
