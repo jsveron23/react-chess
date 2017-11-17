@@ -8,5 +8,11 @@
     right: 2px;
     bottom: 2px;
     left: 2px;
+
+    & img {
+      position: relative;
+      z-index: 1;
+      transition: all 0.3s linear;
+    }
   }
 }
