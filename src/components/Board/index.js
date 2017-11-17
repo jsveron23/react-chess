@@ -3,6 +3,7 @@ import PropTypes from 'prop-types'
 import cx from 'classnames'
 import { File, Pawn, Rook, Bishop, Knight, Queen, King } from '@components'
 import { Chess, flatten } from '@utils'
+import { NOTATIONS, RANKS, FILES } from '@constants'
 import css from './board.css'
 
 /**
@@ -15,27 +16,32 @@ class Board extends Component {
   }
 
   static defaultProps = {
-    notations: Chess.notations
+    notations: NOTATIONS
   }
 
   /**
+   * GRID
    * @param {Object} props
    */
   constructor (props) {
     super(props)
 
     this.state = {
-      notations: [...props.notations],
+      notations: props.notations,
       turn: 'w',
       movable: [],
       selected: ''
     }
 
-    /**
-     * Components
-     * @type {Object}
-     */
-    this.pieces = {
+    // instant data
+    // reset per update
+    this.translated = null
+
+    this.rAFId = -1
+  }
+
+  getPieceComponent (piece) {
+    const pieceList = {
       P: Pawn,
       R: Rook,
       B: Bishop,
@@ -50,8 +56,7 @@ class Board extends Component {
       King
     }
 
-    // no need to keep it
-    this.translated = null
+    return pieceList[piece]
   }
 
   /**
@@ -59,7 +64,7 @@ class Board extends Component {
    * @param  {String} position
    * @return {String}
    */
-  getCurrentNotation (position) {
+  findNotation (position) {
     const { notations } = this.state
 
     return notations.find(n => (n.search(position) > -1)) || ''
@@ -71,30 +76,7 @@ class Board extends Component {
    * @return {Boolean}
    */
   isPlaced (position) {
-    return !!this.getCurrentNotation(position)
-  }
-
-  /**
-   * Handle piece movement
-   * @param {Object} notation
-   */
-  handleSelect = ({ side, piece, position }) => {
-    this.setState(prevState => {
-      // get Piece component
-      const Piece = this.pieces[piece]
-
-      // movement of piece
-      const { defaults, specials } = Piece.movement
-
-      // undertand movement of Chess piece
-      const movable = Chess.calcMovablePath({ movement: defaults, position, side })
-      const unBlockedMovable = this.filterBlockedPath({ movable, specials })
-
-      return {
-        selected: position,
-        movable: unBlockedMovable
-      }
-    })
+    return !!this.findNotation(position)
   }
 
   /**
@@ -106,21 +88,57 @@ class Board extends Component {
    */
   filterBlockedPath ({ movable, specials }) {
     if (specials.indexOf('jumpover') === -1) {
-      return movable.map(m => {
-        const filteredDirections = m.map(direction => {
-          const openedFiles = direction.map(d => (this.isPlaced(d) ? undefined : d))
-          const start = openedFiles.indexOf(undefined)
-
-          start > -1 && openedFiles.fill(undefined, start)
-
-          return openedFiles.filter(ofs => !!ofs)
-        })
-
-        return filteredDirections
-      })
+      movable = movable.map(m => m.map(this.detectBlockedDirection))
     } else {
-      return movable.map(m => m.map(direction => direction.filter(d => !this.isPlaced(d))))
+      movable = movable.map(m => m.map(this.removePlacedTile))
     }
+
+    return movable
+  }
+
+  /**
+   * Detect blocked direction
+   * @param  {Array} direction
+   * @return {Array}
+   */
+  detectBlockedDirection = direction => {
+    const removedPlacedTile = direction.map(d => (this.isPlaced(d) ? undefined : d))
+    const start = removedPlacedTile.indexOf(undefined)
+
+    // get rid of blocked direction
+    start > -1 && removedPlacedTile.fill(undefined, start)
+
+    return removedPlacedTile.filter(ofs => !!ofs)
+  }
+
+  /**
+   * Remove placed tile
+   * @param  {Array} direction
+   * @return {Array}
+   */
+  removePlacedTile = direction => {
+    return direction.filter(d => !this.isPlaced(d))
+  }
+
+  /**
+   * Handle piece movement
+   * @param {Object} notation
+   */
+  handleSelect = ({ side, piece, position }) => {
+    // get Piece component
+    const Piece = this.getPieceComponent(piece)
+
+    // assigned on each component
+    const { movement } = Piece
+    const { defaults, specials } = movement
+
+    // undertand movement of Chess piece
+    const movable = Chess.calcMovablePath({ movement: defaults, position, side })
+
+    this.setState({
+      selected: position,
+      movable: this.filterBlockedPath({ movable, specials })
+    })
   }
 
   /**
@@ -128,12 +146,12 @@ class Board extends Component {
    * @param {String} position
    */
   handleMove = (position, cb) => {
-    this.setState(prevState => {
-      const turn = {
-        w: 'b',
-        b: 'w'
-      }
+    const turn = {
+      w: 'b',
+      b: 'w'
+    }
 
+    this.setState(prevState => {
       const { notations, selected } = prevState
       const nextNotations = notations.map(n => {
         let nextNotation = n
@@ -144,6 +162,9 @@ class Board extends Component {
           nextNotation = `${side}${piece}${position}`
 
           // passing prop to show moving animation
+          // TODO
+          // get rid of it if it fires side effect
+          // re-implement
           this.translated = {
             notation: nextNotation,
             axis: Chess.calcAxis(n, nextNotation)
@@ -168,6 +189,7 @@ class Board extends Component {
    * @param {Object} el
    */
   handleAnimate = (axis, el) => {
+    const pretendMoving = () => (el.style.cssText = 'top: 0; right: 0;')
     let style = ''
 
     if (axis.x !== 0) {
@@ -180,9 +202,11 @@ class Board extends Component {
 
     el.style.cssText = style
 
-    const rAF = () => (el.style.cssText = 'top: 0; right: 0;')
+    if (this.rAFId) {
+      window.cancelAnimationFrame(this.rAFId)
+    }
 
-    window.requestAnimationFrame(rAF)
+    this.rAFId = window.requestAnimationFrame(pretendMoving)
   }
 
   /**
@@ -190,6 +214,13 @@ class Board extends Component {
    */
   componentDidUpdate () {
     this.translated = null
+  }
+
+  /**
+   * Lifecycle method
+   */
+  componentWillUnmount () {
+    window.cancelAnimationFrame(this.rAFId)
   }
 
   /**
@@ -203,14 +234,14 @@ class Board extends Component {
     return [
       <div key="body" className={css.board}>
         {
-          Chess.ranks.map(rank => (
+          RANKS.map(rank => (
             <div key={rank} className={cx(css.rank, 'l-flex-row')}>
               {
-                Chess.files.map(file => {
+                FILES.map(file => {
                   const position = `${file}${rank}`
-                  const currentNotation = this.getCurrentNotation(position)
+                  const currentNotation = this.findNotation(position)
                   const { side, piece } = Chess.parseNotation(currentNotation)
-                  const Piece = this.pieces[piece]
+                  const Piece = this.getPieceComponent(piece)
                   const shouldAnimate = (this.translated && this.translated.notation === currentNotation)
 
                   return (

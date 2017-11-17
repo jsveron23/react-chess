@@ -64,6 +64,10 @@ class Queen extends PureComponent {
     const viewBox = Queen.coord[side]
     const src = `svg/Chess_Pieces.svg#svgView(viewBox(${viewBox}))`
 
+    // TODO
+    // safari bug
+    // https://stackoverflow.com/a/35850321/3216812
+
     return <img ref={this.refContainer} src={src} alt="Queen" className={css.queen} />
   }
 }
