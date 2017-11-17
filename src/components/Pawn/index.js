@@ -12,6 +12,15 @@ class Pawn extends PureComponent {
     b: [225, 45, 45, 45]
   }
 
+  static movement = {
+    defaults: {
+      vertical: [
+        [[0, 1]]
+      ]
+    },
+    specials: ['initDouble', 'enPassant', 'promotion']
+  }
+
   /**
    * Get ref
    * @param {Object} el

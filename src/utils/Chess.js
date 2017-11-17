@@ -1,5 +1,3 @@
-import { Movement } from '../config'
-
 /**
  * Chess Engine
  */
@@ -49,28 +47,6 @@ class Chess {
     return piece.length === 1
       ? Chess.alias[piece]
       : piece
-  }
-
-  /**
-   * Get default movement of piece
-   * @param  {String} piece
-   * @return {Array}
-   */
-  static getMovement (piece) {
-    const Piece = Chess.getPieceName(piece)
-
-    return Movement[Piece.toLowerCase()].defaults
-  }
-
-  /**
-   * Get special movement of piece
-   * @param  {String} piece
-   * @return {Arrat}
-   */
-  static getSpecials (piece) {
-    const Piece = Chess.getPieceName(piece)
-
-    return Movement[Piece.toLowerCase()].specials
   }
 
   /**

@@ -1,6 +1,6 @@
 # React Chess
 
-(Developing...) Implemented Chess game with using ReactJS. Pull requests welcome. Thank you.
+Implementing Chess game with using ReactJS. Pull requests welcome.
 
 ## Installation & Start
 
@@ -16,7 +16,7 @@ npm start
 - [x] Animation
 - [ ] Special movement
 - [ ] Attack
-- [ ] Check, Checkmate
+- [ ] Check, Checkmate (Shake animation)
 - [ ] Undo
 - [ ] vs. CPU
 - [ ] Difficulty

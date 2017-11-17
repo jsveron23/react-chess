@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import cx from 'classnames'
 import { File, Pawn, Rook, Bishop, Knight, Queen, King } from '@components'
-import { Chess } from '@utils'
+import { Chess, flatten } from '@utils'
 import css from './board.css'
 
 /**
@@ -71,9 +71,7 @@ class Board extends Component {
    * @return {Boolean}
    */
   isPlaced (position) {
-    const { notations } = this.state
-
-    return !!notations.find(n => (n.search(position) > -1))
+    return !!this.getCurrentNotation(position)
   }
 
   /**
@@ -82,40 +80,47 @@ class Board extends Component {
    */
   handleSelect = ({ side, piece, position }) => {
     this.setState(prevState => {
-      // const { notations } = prevState
+      // get Piece component
+      const Piece = this.pieces[piece]
 
       // movement of piece
-      const movement = Chess.getMovement(piece)
-
-      // special movement of piece
-      const specials = Chess.getSpecials(piece)
+      const { defaults, specials } = Piece.movement
 
       // undertand movement of Chess piece
-      let movable = Chess.calcMovablePath({ movement, position, side })
-
-      // movable and included blocked
-      if (specials.indexOf('jump') === -1) {
-        movable = movable.map(m => {
-          const filteredDirections = m.map(direction => {
-            const openedFiles = direction.map(d => (this.isPlaced(d) ? undefined : d))
-            const start = openedFiles.indexOf(undefined)
-
-            start > -1 && openedFiles.fill(undefined, start)
-
-            return openedFiles.filter(ofs => !!ofs)
-          })
-
-          return filteredDirections
-        })
-      } else {
-        movable = movable.map(m => m.map(direction => direction.filter(d => !this.isPlaced(d))))
-      }
+      const movable = Chess.calcMovablePath({ movement: defaults, position, side })
+      const unBlockedMovable = this.filterBlockedPath({ movable, specials })
 
       return {
         selected: position,
-        movable
+        movable: unBlockedMovable
       }
     })
+  }
+
+  /**
+   * Filter blocked path
+   * @param  {Object} args
+   * @param  {Array}  args.movable
+   * @param  {Array}  args.specials
+   * @return {Array}
+   */
+  filterBlockedPath ({ movable, specials }) {
+    if (specials.indexOf('jumpover') === -1) {
+      return movable.map(m => {
+        const filteredDirections = m.map(direction => {
+          const openedFiles = direction.map(d => (this.isPlaced(d) ? undefined : d))
+          const start = openedFiles.indexOf(undefined)
+
+          start > -1 && openedFiles.fill(undefined, start)
+
+          return openedFiles.filter(ofs => !!ofs)
+        })
+
+        return filteredDirections
+      })
+    } else {
+      return movable.map(m => m.map(direction => direction.filter(d => !this.isPlaced(d))))
+    }
   }
 
   /**
@@ -166,8 +171,7 @@ class Board extends Component {
     let style = ''
 
     if (axis.x !== 0) {
-      const x = -`${axis.x}`
-      style = `${style}left: ${x}px;`
+      style = `${style}right: ${axis.x}px;`
     }
 
     if (axis.y !== 0) {
@@ -176,31 +180,14 @@ class Board extends Component {
 
     el.style.cssText = style
 
-    const rAF = () => (el.style.cssText = 'top: 0; left: 0;')
+    const rAF = () => (el.style.cssText = 'top: 0; right: 0;')
 
     window.requestAnimationFrame(rAF)
   }
 
   /**
-   * Transform multiple dimensional array to single
-   * @param  {Array} movable
-   * @return {Array}
+   * Lifecycle method
    */
-  flattenMovable (movable) {
-    if (movable.length === 0) {
-      return movable
-    }
-
-    const flatten = movable.reduce((a, b) => a.concat(b))
-    const shouldFlattened = flatten.every(f => (typeof f === 'string'))
-
-    if (!shouldFlattened) {
-      return this.flattenMovable(flatten)
-    }
-
-    return flatten
-  }
-
   componentDidUpdate () {
     this.translated = null
   }
@@ -211,7 +198,7 @@ class Board extends Component {
    */
   render () {
     const { turn, movable, selected } = this.state
-    const parsedMovable = this.flattenMovable(movable)
+    const parsedMovable = flatten(movable)
 
     return [
       <div key="body" className={css.board}>

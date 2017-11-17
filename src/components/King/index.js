@@ -12,6 +12,28 @@ class King extends PureComponent {
     b: [0, 45, 45, 45]
   }
 
+  static movement = {
+    defaults: {
+      vertical: [
+        [[1, 0]],
+        [[-1, 0]]
+      ],
+
+      horizontal: [
+        [[0, 1]],
+        [[0, -1]]
+      ],
+
+      dragonal: [
+        [[1, 1]],
+        [[1, -1]],
+        [[-1, -1]],
+        [[-1, 1]]
+      ]
+    },
+    specials: ['castling']
+  }
+
   /**
    * Get ref
    * @param {Object} el

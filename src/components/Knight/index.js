@@ -12,6 +12,16 @@ class Knight extends PureComponent {
     b: [135, 45, 45, 45]
   }
 
+  static movement = {
+    defaults: {
+      jumpover: [
+        [[-1, 2], [1, 2], [-1, -2], [1, -2]],
+        [[-2, 1], [2, 1], [-2, -1], [2, -1]]
+      ]
+    },
+    specials: ['jumpover']
+  }
+
   /**
    * Get ref
    * @param {Object} el
