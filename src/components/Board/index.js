@@ -174,9 +174,11 @@ class Board extends Component {
       style = `${style}top: ${axis.y}px;`
     }
 
-    el.setAttribute('style', style)
+    el.style.cssText = style
 
-    setTimeout(() => el.setAttribute('style', 'top: 0; left: 0;'), 0)
+    const rAF = () => (el.style.cssText = 'top: 0; left: 0;')
+
+    window.requestAnimationFrame(rAF)
   }
 
   /**
