@@ -8,10 +8,10 @@
     "node": "8.0.0"
   },
   "scripts": {
-    "clean": "rimraf public",
+    "clean": "./node_modules/.bin/rimraf public",
     "postinstall": "npm run clean & npm run build",
     "heroku": "NODE_ENV=production node server.js",
-    "build": "webpack --config ./config/webpack.config.js --env.production --display-error-details",
+    "build": "./node_modules/.bin/webpack --config ./config/webpack.config.js --env.production --display-error-details",
     "start": "webpack-dev-server --config ./config/webpack.config.js"
   },
   "keywords": [
