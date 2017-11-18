@@ -1,7 +1,7 @@
 const Loaders = require('./webpack/loaders')
 const Plugins = require('./webpack/plugins')
-const { distPath, srcPath, staticPath } = require('../lib/path')
-const config = require('./config')
+const { distPath, srcPath, assetsPath } = require('../lib/path')
+const config = require('./')
 
 /**
  * Create Webpack config with argument which passed from NPM script
@@ -76,7 +76,7 @@ function configure ({ production } = {}) {
     context: srcPath,
     devtool: isDev ? 'cheap-module-source-map' : 'nosources-source-map',
     devServer: isDev ? Object.assign({}, config.devServer, {
-      contentBase: staticPath
+      contentBase: assetsPath
     }) : undefined,
     resolve,
     entry,

@@ -8,7 +8,7 @@
     "node": "8.0.0"
   },
   "scripts": {
-    "clean": "rimraf dist",
+    "clean": "rimraf public",
     "postinstall": "npm run clean & npm run build",
     "heroku": "NODE_ENV=production node server.js",
     "build": "webpack --config ./config/webpack.config.js --env.production --display-error-details",
@@ -30,6 +30,7 @@
     "babel-plugin-transform-object-rest-spread": "^6.26.0",
     "babel-preset-es2015": "^6.24.1",
     "babel-preset-react": "^6.24.1",
+    "copy-webpack-plugin": "^4.2.1",
     "css-loader": "^0.28.7",
     "eslint": "^4.10.0",
     "eslint-config-standard": "^10.2.1",
@@ -37,8 +38,8 @@
     "eslint-plugin-import": "^2.8.0",
     "eslint-plugin-node": "^5.2.1",
     "eslint-plugin-promise": "^3.6.0",
-    "eslint-plugin-standard": "^3.0.1",
     "eslint-plugin-react": "^7.4.0",
+    "eslint-plugin-standard": "^3.0.1",
     "extract-text-webpack-plugin": "^3.0.2",
     "html-webpack-plugin": "^2.30.1",
     "postcss-cssnext": "^3.0.2",
