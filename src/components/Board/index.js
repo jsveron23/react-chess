@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import cx from 'classnames'
-import { File, Pawn, Rook, Bishop, Knight, Queen, King } from '@components'
+import { File, Turn, Pawn, Rook, Bishop, Knight, Queen, King } from '@components'
 import { Chess, flatten } from '@utils'
 import { NOTATIONS, RANKS, FILES } from '@constants'
 import css from './board.css'
@@ -272,9 +272,7 @@ class Board extends Component {
           ))
         }
       </div>,
-      <div key="footer" className="information">
-        Turn: {turn === 'w' ? 'White' : 'Black'}
-      </div>
+      <Turn key="footer" turn={turn} />
     ]
   }
 }

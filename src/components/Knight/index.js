@@ -27,7 +27,7 @@ class Knight extends PureComponent {
    * @param {Object} el
    */
   refContainer = el => {
-    this.refContainer = el
+    this.refElement = el
   }
 
   /**
@@ -39,7 +39,7 @@ class Knight extends PureComponent {
     if (translated) {
       const { axis } = translated
 
-      doAnimate(axis, this.refContainer)
+      doAnimate(axis, this.refElement)
     }
   }
 

@@ -1,0 +1,5 @@
+.turn {
+  & span {
+    padding: 5px;
+  }
+}
