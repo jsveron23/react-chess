@@ -9,7 +9,7 @@
     bottom: 2px;
     left: 2px;
 
-    & img {
+    & svg {
       position: relative;
       z-index: 1;
       transition: all 0.3s linear;

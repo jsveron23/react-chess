@@ -1,8 +1,7 @@
 const webpack = require('webpack')
 const ExtractTextPlugin = require('extract-text-webpack-plugin')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
-const CopyWebpackPlugin = require('copy-webpack-plugin')
-const { distPath, assetsPath } = require('../../lib/path')
+const { assetsPath } = require('../../lib/path')
 const flatten = require('../../lib/flatten')
 
 /**
@@ -30,10 +29,6 @@ const Plugins = {
     new webpack.NamedModulesPlugin()
   ],
   production: [
-    new CopyWebpackPlugin([{
-      from: `${assetsPath}/svg`,
-      to: `${distPath}/svg`
-    }]),
     new ExtractTextPlugin('[name].css'),
     new webpack.optimize.UglifyJsPlugin({
       beautify: false,
