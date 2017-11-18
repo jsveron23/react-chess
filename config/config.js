@@ -1,5 +1,5 @@
 /**
- * The port number of Webpack development server
+ * The port number
  * @type {Number}
  */
 const PORT = process.env.PORT || 3000
@@ -24,7 +24,7 @@ const config = {
    * @see  {@link https://webpack.js.org/configuration/module/#module-noparse}
    */
   noParse: new RegExp([
-    'rimraf'
+    'rimraf', 'express'
   ].join('|'))
 }
 

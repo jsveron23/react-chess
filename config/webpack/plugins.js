@@ -1,7 +1,8 @@
 const webpack = require('webpack')
 const ExtractTextPlugin = require('extract-text-webpack-plugin')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
-const { assetsPath } = require('../libs/path')
+const { staticPath } = require('../../lib/path')
+const flatten = require('../../lib/flatten')
 
 /**
  * Plugins
@@ -20,7 +21,7 @@ const Plugins = {
       inject: 'body',
       chunks: ['vendor', 'app'],
       filename: 'index.html',
-      template: `${assetsPath}/index.html`
+      template: `${staticPath}/index.html`
     })
   ],
   development: [
@@ -41,10 +42,8 @@ const Plugins = {
    * @return {Array}
    */
   get (env) {
-    const flattened = [].concat.apply([], this[env])
-
     return this.pluginList.concat(
-      flattened,
+      flatten(this[env]),
       new webpack.DefinePlugin({
         'process.env.NODE_ENV': JSON.stringify(env)
       })

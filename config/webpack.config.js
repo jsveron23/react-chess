@@ -1,6 +1,6 @@
 const Loaders = require('./webpack/loaders')
 const Plugins = require('./webpack/plugins')
-const { pubPath, srcPath, assetsPath } = require('./libs/path')
+const { distPath, srcPath, staticPath } = require('../lib/path')
 const config = require('./config')
 
 /**
@@ -10,8 +10,8 @@ const config = require('./config')
  * @return {Object}
  */
 function configure ({ production } = {}) {
-  const nodeEnv = production ? 'production' : 'development'
-  const isDev = nodeEnv === 'development'
+  const env = production ? 'production' : 'development'
+  const isDev = env === 'development'
   const entry = {
     app: ['./index'],
     vendor: [
@@ -25,6 +25,8 @@ function configure ({ production } = {}) {
     noParse: config.noParse
   }
   const resolve = {
+    // TODO
+    // windows - require('path')
     alias: {
       '@components': `${srcPath}/components`,
       '@constants': `${srcPath}/constants`,
@@ -34,7 +36,7 @@ function configure ({ production } = {}) {
     }
   }
 
-  if (nodeEnv === 'development') {
+  if (env === 'development') {
     entry.app.unshift(
       'react-hot-loader/patch',
       `webpack-dev-server/client?http://localhost:${config.port}`,
@@ -66,15 +68,15 @@ function configure ({ production } = {}) {
   return {
     target: 'web',
     output: {
-      path: pubPath,
+      path: distPath,
       filename: '[name].js',
       publicPath: '/'
     },
-    plugins: Plugins.get(nodeEnv),
+    plugins: Plugins.get(env),
     context: srcPath,
     devtool: isDev ? 'cheap-module-source-map' : 'nosources-source-map',
     devServer: isDev ? Object.assign({}, config.devServer, {
-      contentBase: assetsPath
+      contentBase: staticPath
     }) : undefined,
     resolve,
     entry,

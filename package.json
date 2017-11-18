@@ -1,6 +1,6 @@
 {
   "name": "react-chess",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "Chess game",
   "main": "index.js",
   "private": true,
@@ -8,13 +8,17 @@
     "node": "8.0.0"
   },
   "scripts": {
-    "postinstall": "npm run build",
-    "build": "webpack --config ./build/webpack.config.js --env.production",
-    "start": "webpack-dev-server --config ./build/webpack.config.js"
+    "clean": "rimraf dist",
+    "postinstall": "npm run clean & npm run build",
+    "heroku": "NODE_ENV=production node server.js",
+    "build": "webpack --config ./config/webpack.config.js --env.production --display-error-details",
+    "start": "webpack-dev-server --config ./config/webpack.config.js"
   },
   "keywords": [
     "react",
-    "chess"
+    "chess",
+    "webpack",
+    "heroku"
   ],
   "author": "Tony Jin <jsveron23@gmail.com>",
   "license": "MIT",
@@ -48,6 +52,7 @@
   },
   "dependencies": {
     "classnames": "^2.2.5",
+    "express": "^4.16.2",
     "prop-types": "^15.6.0",
     "react": "^16.0.0",
     "react-dom": "^16.0.0"

@@ -1,4 +1,4 @@
-const { repoPath, buildPath, srcPath } = require('../libs/path')
+const { repoPath, confPath, srcPath } = require('../../lib/path')
 
 /**
  * Loaders
@@ -34,7 +34,7 @@ const Loaders = {
       loader: 'postcss-loader',
       options: {
         config: {
-          path: `${buildPath}/postcss.config.js`
+          path: `${confPath}/postcss.config.js`
         }
       }
     }
