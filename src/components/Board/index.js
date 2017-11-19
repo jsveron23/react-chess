@@ -30,7 +30,8 @@ class Board extends Component {
       notations: props.notations,
       turn: 'w',
       movable: [],
-      selected: ''
+      selected: '',
+      archives: []
     }
 
     // instant data
@@ -125,9 +126,12 @@ class Board extends Component {
       return {
         notations: nextNotations,
         turn: turn[prevState.turn],
+        archives: Chess.archives(prevState.archives, notations, nextNotations),
         selected: '',
         movable: []
       }
+    }, () => {
+      console.log('History: ', this.state.archives)
     })
   }
 

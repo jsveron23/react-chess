@@ -6,7 +6,7 @@ import { FILES, INITIAL } from '@constants'
  */
 const Chess = {
   /**
-   * Get piece name only
+   * Get full name of Chess piece
    * @param  {String} piece alias or fullname
    * @return {String}       fullname
    */
@@ -33,15 +33,67 @@ const Chess = {
   },
 
   /**
+   * Difference
+   * @param  {Array} n1
+   * @param  {Array} n2
+   * @return {Array}
+   */
+  diff (n1, n2) {
+    return n1.filter((n, idx) => n !== n2[idx])
+  },
+
+  /**
+   * Logging...
+   * @param  {Array} archives
+   * @param  {Array} prevNotations
+   * @param  {Array} nextNotations
+   * @return {Array}
+   */
+  archives (archives, prevNotations, nextNotations) {
+    const clone = archives.slice(0)
+    const [last] = clone.reverse()
+
+    if (!last || Object.keys(last).length === 2) {
+      clone.reverse().push({
+        white: {
+          ts: +new Date(),
+          notations: nextNotations,
+          move: this.diff(nextNotations, prevNotations).join('')
+        }
+      })
+    } else {
+      clone.reverse().splice(-1, 1, {
+        ...last,
+        black: {
+          ts: +new Date(),
+          notations: nextNotations,
+          move: this.diff(nextNotations, last.white.notations).join('')
+        }
+      })
+    }
+
+    return clone
+  },
+
+  /**
    * Is any piece there?
    * @param  {Object}  args
-   * @param  {Array}   notaions
-   * @param  {String}  position
+   * @param  {Array}   args.notaions
+   * @param  {String}  args.position
    * @return {Boolean}
    */
-  isExist ({ notations, position }) {
+  isPiece ({ notations, position }) {
     return !!this.findNotation({ notations, position })
   },
+
+  // /**
+  //  * Check notation
+  //  * @param  {String}  notation
+  //  * @return {Boolean}
+  //  */
+  // isNotation (notation) {
+  //   return /^[w|b][B|K|P|Q|R][a-h][1-8]$/.test(notation)
+  // },
 
   /**
    * Parse notations
@@ -103,7 +155,7 @@ const Chess = {
   },
 
   /**
-   * Get movable path
+   * Get movable path, not check blocked path here
    * @param  {Object} args
    * @param  {Object} args.movement
    * @param  {Object} args.specials
@@ -158,7 +210,7 @@ const Chess = {
    * @return {Array}
    */
   detectBlockedDirection ({ notations, direction }) {
-    const removedPlacedTile = direction.map(d => (Chess.isExist({ notations, position: d }) ? undefined : d))
+    const removedPlacedTile = direction.map(d => (Chess.isPiece({ notations, position: d }) ? undefined : d))
     const start = removedPlacedTile.indexOf(undefined)
 
     // get rid of blocked direction
@@ -175,7 +227,7 @@ const Chess = {
    * @return {Array}
    */
   removePlacedTile ({ notations, direction }) {
-    return direction.filter(d => !Chess.isExist({ notations, position: d }))
+    return direction.filter(d => !Chess.isPiece({ notations, position: d }))
   },
 
   /**
