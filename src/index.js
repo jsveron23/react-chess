@@ -5,7 +5,7 @@ import App from './App'
 
 /**
  * Render App
- * @param {Component} [Component=App]
+ * @param {React.Component} Component
  */
 function render (Component) {
   ReactDOM.render(

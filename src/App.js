@@ -3,10 +3,14 @@ import { Header, Main, Menu, Board } from '@components'
 import '@styles/app.css'
 
 /**
- * App component
+ * Entry point of ReactJS application
  * @extends {React.PureComponent}
  */
 class App extends PureComponent {
+  /**
+   * App componeent
+   * @param {Object} props
+   */
   constructor (props) {
     super(props)
 
@@ -15,42 +19,31 @@ class App extends PureComponent {
     }
   }
 
+  /**
+   * Handles click a menu item
+   * @param {Proxy} evt
+   * @listens
+   */
   handleClick = evt => {
     evt.preventDefault()
 
     const { target } = evt
     const type = target.getAttribute('data-type')
-    const state = {}
-
-    switch (type) {
-      case '1p': {
-        state.inGame = true
-
-        break
-      }
-
-      case '2p': {
-        state.inGame = true
-
-        break
-      }
-
-      case 'back': {
-        state.inGame = false
-
-        break
-      }
-
-      case 'undo': {
-        //
-
-        break
-      }
+    const isInGame = {
+      '1p': true,
+      '2p': true,
+      'back': false
     }
 
-    this.setState(state)
+    this.setState({
+      inGame: isInGame[type]
+    })
   }
 
+  /**
+   * Render
+   * @return {JSX}
+   */
   render () {
     const { inGame } = this.state
 

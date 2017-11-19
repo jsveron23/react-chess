@@ -40,6 +40,11 @@ class Board extends Component {
     this.rAFId = -1
   }
 
+  /**
+   * Get piece component
+   * @param  {String}          piece
+   * @return {React.Component}
+   */
   getPieceComponent (piece) {
     const pieceList = {
       P: Pawn,
@@ -60,84 +65,27 @@ class Board extends Component {
   }
 
   /**
-   * Get notation with using position
-   * @param  {String} position
-   * @return {String}
-   */
-  findNotation (position) {
-    const { notations } = this.state
-
-    return notations.find(n => (n.search(position) > -1)) || ''
-  }
-
-  /**
-   * Is any piece there?
-   * @param  {String}  position
-   * @return {Boolean}
-   */
-  isPlaced (position) {
-    return !!this.findNotation(position)
-  }
-
-  /**
-   * Filter blocked path
-   * @param  {Object} args
-   * @param  {Array}  args.movable
-   * @param  {Array}  args.specials
-   * @return {Array}
-   */
-  filterBlockedPath ({ movable, specials }) {
-    if (specials.indexOf('jumpover') === -1) {
-      movable = movable.map(m => m.map(this.detectBlockedDirection))
-    } else {
-      movable = movable.map(m => m.map(this.removePlacedTile))
-    }
-
-    return movable
-  }
-
-  /**
-   * Detect blocked direction
-   * @param  {Array} direction
-   * @return {Array}
-   */
-  detectBlockedDirection = direction => {
-    const removedPlacedTile = direction.map(d => (this.isPlaced(d) ? undefined : d))
-    const start = removedPlacedTile.indexOf(undefined)
-
-    // get rid of blocked direction
-    start > -1 && removedPlacedTile.fill(undefined, start)
-
-    return removedPlacedTile.filter(ofs => !!ofs)
-  }
-
-  /**
-   * Remove placed tile
-   * @param  {Array} direction
-   * @return {Array}
-   */
-  removePlacedTile = direction => {
-    return direction.filter(d => !this.isPlaced(d))
-  }
-
-  /**
    * Handle piece movement
    * @param {Object} notation
    */
   handleSelect = ({ side, piece, position }) => {
-    // get Piece component
-    const Piece = this.getPieceComponent(piece)
+    this.setState(prevState => {
+      const { notations } = prevState
 
-    // assigned on each component
-    const { movement } = Piece
-    const { defaults, specials } = movement
+      // get Piece component
+      const Piece = this.getPieceComponent(piece)
 
-    // undertand movement of Chess piece
-    const movable = Chess.calcMovablePath({ movement: defaults, position, side })
+      // assigned on each component
+      const { movement } = Piece
+      const { defaults, specials } = movement
 
-    this.setState({
-      selected: position,
-      movable: this.filterBlockedPath({ movable, specials })
+      // undertand movement of Chess piece
+      const movable = Chess.calcMovablePath({ movement: defaults, specials, piece, position, side })
+
+      return {
+        selected: position,
+        movable: Chess.filterBlockedPath({ notations, movable, specials })
+      }
     })
   }
 
@@ -228,7 +176,7 @@ class Board extends Component {
    * @return {JSX}
    */
   render () {
-    const { turn, movable, selected } = this.state
+    const { notations, turn, movable, selected } = this.state
     const parsedMovable = flatten(movable)
 
     return [
@@ -239,7 +187,7 @@ class Board extends Component {
               {
                 FILES.map(file => {
                   const position = `${file}${rank}`
-                  const currentNotation = this.findNotation(position)
+                  const currentNotation = Chess.findNotation({ notations, position })
                   const { side, piece } = Chess.parseNotation(currentNotation)
                   const Piece = this.getPieceComponent(piece)
                   const shouldAnimate = (this.translated && this.translated.notation === currentNotation)

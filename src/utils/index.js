@@ -2,7 +2,7 @@ import Chess from './Chess'
 
 /**
  * Transform multiple dimensional array to single
- * (Not normal flatten way)
+ * (flatten for only Chess)
  * @param  {Array} arr
  * @return {Array}
  */
