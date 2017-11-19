@@ -22,6 +22,9 @@ https://jsveron23-react-chess.herokuapp.com/
 - [ ] Understand enemy Chess piece (attack)
 - [ ] Check, Checkmate (Shake animation)
 - [ ] Implement 'undo' button
+- [ ] Apply responsive design
+- [ ] Apply Redux and React-router
+- [ ] Multiplay
 - [ ] vs. CPU
 - [ ] Difficulty
 
