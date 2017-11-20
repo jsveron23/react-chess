@@ -1,8 +1,8 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import cx from 'classnames'
-import { File, Turn, Pawn, Rook, Bishop, Knight, Queen, King } from '@components'
-import { Chess, flatten } from '@utils'
+import { File, Turn, Pawn, Rook, Bishop, Knight, Queen, King, Archives } from '@components'
+import { Chess, flatten, isExist } from '@utils'
 import { NOTATIONS, RANKS, FILES } from '@constants'
 import css from './board.css'
 
@@ -34,20 +34,7 @@ class Board extends Component {
       archives: []
     }
 
-    // instant data
-    // reset per update
-    this.translated = null
-
-    this.rAFId = -1
-  }
-
-  /**
-   * Get piece component
-   * @param  {String}          piece
-   * @return {React.Component}
-   */
-  getPieceComponent (piece) {
-    const pieceList = {
+    this.pieceList = {
       P: Pawn,
       R: Rook,
       B: Bishop,
@@ -62,7 +49,20 @@ class Board extends Component {
       King
     }
 
-    return pieceList[piece]
+    // instant data
+    // reset per update
+    this.translated = null
+
+    this.rAFId = -1
+  }
+
+  /**
+   * Get piece component
+   * @param  {String}          piece
+   * @return {React.Component}
+   */
+  getPieceComponent (piece) {
+    return this.pieceList[piece]
   }
 
   /**
@@ -130,8 +130,6 @@ class Board extends Component {
         selected: '',
         movable: []
       }
-    }, () => {
-      console.log('History: ', this.state.archives)
     })
   }
 
@@ -180,7 +178,7 @@ class Board extends Component {
    * @return {JSX}
    */
   render () {
-    const { notations, turn, movable, selected } = this.state
+    const { notations, turn, movable, selected, archives } = this.state
     const parsedMovable = flatten(movable)
 
     return [
@@ -224,7 +222,10 @@ class Board extends Component {
           ))
         }
       </div>,
-      <Turn key="footer" turn={turn} />
+      <div key="footer">
+        {isExist(archives) && <Archives archives={archives} />}
+        <Turn turn={turn} />
+      </div>
     ]
   }
 }

@@ -33,13 +33,17 @@ const Chess = {
   },
 
   /**
-   * Difference
+   * Logs momement
    * @param  {Array} n1
    * @param  {Array} n2
    * @return {Array}
    */
-  diff (n1, n2) {
-    return n1.filter((n, idx) => n !== n2[idx])
+  aLog (n1, n2) {
+    return n1.map((n, idx) => {
+      if (n !== n2[idx]) {
+        return `${n} ${n2[idx]}`
+      }
+    }).filter(n => !!n)
   },
 
   /**
@@ -58,7 +62,7 @@ const Chess = {
         white: {
           ts: +new Date(),
           notations: nextNotations,
-          move: this.diff(nextNotations, prevNotations).join('')
+          move: this.aLog(prevNotations, nextNotations)
         }
       })
     } else {
@@ -67,7 +71,7 @@ const Chess = {
         black: {
           ts: +new Date(),
           notations: nextNotations,
-          move: this.diff(nextNotations, last.white.notations).join('')
+          move: this.aLog(last.white.notations, nextNotations)
         }
       })
     }

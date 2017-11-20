@@ -10,5 +10,11 @@ import Knight from './Knight'
 import Queen from './Queen'
 import King from './King'
 import Turn from './Turn'
+import Archives from './Archives'
 
-export { Header, Main, Menu, Board, File, Pawn, Rook, Bishop, Knight, Queen, King, Turn }
+export {
+  Header, Main, Menu,
+  Board, File,
+  Pawn, Rook, Bishop, Knight, Queen, King,
+  Turn, Archives
+}

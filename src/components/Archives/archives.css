@@ -1,0 +1,31 @@
+.archives {
+  margin: 10px 0;
+  background-color: #a0a0a0;
+  color: #000;
+  /*min-height: 150px;*/
+  max-height: 150px;
+  overflow: auto;
+  scroll-behavior: smooth;
+
+  & li {
+    height: 30px;
+    line-height: 30px;
+  }
+
+  & span {
+    & svg {
+      width: 20px;
+      height: 20px;
+      margin: 0 5px;
+    }
+
+    &:first-child {
+      width: 30px;
+      text-align: center;
+    }
+
+    &:not(:first-child) {
+      flex: 1;
+    }
+  }
+}
