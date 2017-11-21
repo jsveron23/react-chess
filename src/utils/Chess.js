@@ -7,29 +7,32 @@ import { FILES, INITIAL } from '@constants'
 const Chess = {
   /**
    * Get full name of Chess piece
-   * @param  {String} piece alias or fullname
+   * @param  {String}  piece alias or fullname
+   * @param  {Object?} alias
    * @return {String}       fullname
    */
-  getPieceName (piece) {
-    return INITIAL[piece] || piece
+  getPieceName (piece, alias = INITIAL) {
+    return alias[piece] || piece
   },
 
   /**
    * Get file char from index number (-1)
    * @param  {Number} idx
+   * @param  {Array?} files
    * @return {String}
    */
-  getFile (idx) {
-    return FILES.join('').charAt(idx - 1)
+  getFile (idx, files = FILES) {
+    return files.join('').charAt(idx - 1)
   },
 
   /**
    * Get index number from file char (+1)
    * @param  {String} char
+   * @param  {Array?} files
    * @return {Number}
    */
-  getFileIdx (char) {
-    return FILES.join('').indexOf(char) + 1
+  getFileIdx (char, files = FILES) {
+    return files.join('').indexOf(char) + 1
   },
 
   /**
@@ -113,8 +116,8 @@ const Chess = {
   /**
    * Get notation with using position
    * @param  {Object} args
-   * @param  {Array}  notaions
-   * @param  {String} position
+   * @param  {Array}  args.notaions
+   * @param  {string} args.position
    * @return {String}
    */
   findNotation ({ notations, position }) {
@@ -173,15 +176,21 @@ const Chess = {
     const movable = Object.keys(movement).map(key => {
       // vertical, horizontal, dragonal
       const direction = movement[key]
+      const clone = direction.slice(0)
+
+      // initDouble
+      if (specials.indexOf('initDouble') > -1 && key === 'vertical' && /^.2|.7$/.test(position)) {
+        clone[0] = [...clone[0], [0, 2]]
+      }
 
       // excludes axis that out of Chessboard
       // each list has axis of 1 direction (up, right, bottom, left)
-      return direction.map(axisList => {
+      return clone.map((axisList, idx) => {
         return axisList.map(this.includeOnlyAvailablePath({ side, position })).filter(d => !!d)
       }).filter(a => (a.length !== 0))
     })
 
-    return movable
+    return [...movable]
   },
 
   /**

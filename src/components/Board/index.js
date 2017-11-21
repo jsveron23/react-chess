@@ -29,8 +29,8 @@ class Board extends Component {
     this.state = {
       notations: props.notations,
       turn: 'w',
-      movable: [],
       selected: '',
+      movable: [],
       archives: []
     }
 
