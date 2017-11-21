@@ -162,6 +162,40 @@ const Chess = {
   },
 
   /**
+   * Calculate special movement
+   * @param  {Object} args
+   * @param  {Array}  args.direction
+   * @param  {Array}  args.specials
+   * @param  {string} args.key
+   * @param  {string} args.position
+   * @return {Array}
+   */
+  calcSpecials ({ direction, specials, key, position }) {
+    let i = specials.length
+
+    while (i--) {
+      const special = specials[i]
+      const specialMove = {
+        initDouble (direction, key, position) {
+          if (key === 'vertical' && /^.2|.7$/.test(position)) {
+            direction[0] = [...direction[0], [0, 2]]
+          }
+
+          return direction
+        }
+      }
+
+      const fn = specialMove[special]
+
+      if (fn) {
+        direction = [...fn(direction, key, position)]
+      }
+    }
+
+    return direction
+  },
+
+  /**
    * Get movable path, not check blocked path here
    * @param  {Object} args
    * @param  {Object} args.movement
@@ -176,12 +210,12 @@ const Chess = {
     const movable = Object.keys(movement).map(key => {
       // vertical, horizontal, dragonal
       const direction = movement[key]
-      const clone = direction.slice(0)
-
-      // initDouble
-      if (specials.indexOf('initDouble') > -1 && key === 'vertical' && /^.2|.7$/.test(position)) {
-        clone[0] = [...clone[0], [0, 2]]
-      }
+      const clone = this.calcSpecials({
+        direction: direction.slice(0),
+        specials,
+        key,
+        position
+      })
 
       // excludes axis that out of Chessboard
       // each list has axis of 1 direction (up, right, bottom, left)
