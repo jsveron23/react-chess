@@ -19,7 +19,7 @@ class King extends PureComponent {
         [[0, -1]]
       ],
 
-      dragonal: [
+      diagonal: [
         [[1, 1]],
         [[1, -1]],
         [[-1, -1]],

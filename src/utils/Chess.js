@@ -124,6 +124,10 @@ const Chess = {
     return notations.find(n => (n.search(position) > -1)) || ''
   },
 
+  deleteNotation ({ notations, position }) {
+    // TODO attack!!
+  },
+
   /**
    * Includes only available path
    * @param  {Object}   args
@@ -168,27 +172,55 @@ const Chess = {
    * @param  {Array}  args.specials
    * @param  {string} args.key
    * @param  {string} args.position
+   * @param  {Array}  args.archives
    * @return {Array}
    */
-  calcSpecials ({ direction, specials, key, position }) {
+  calcSpecials ({ direction, specials, key, position, archives }) {
     let i = specials.length
 
     while (i--) {
       const special = specials[i]
-      const specialMove = {
+      const movementList = {
+        /**
+         * Pawn can move forward 2 squares at initial
+         * @param  {Array}  direction
+         * @param  {String} key
+         * @param  {String} position
+         * @return {Array}
+         */
         initDouble (direction, key, position) {
-          if (key === 'vertical' && /^.2|.7$/.test(position)) {
+          if (key === 'vertical' && /^.(2|7)$/.test(position)) {
             direction[0] = [...direction[0], [0, 2]]
           }
 
           return direction
         }
+
+        // /**
+        //  * Pawn can attack with diagonal movement
+        //  * @return {Array}
+        //  */
+        // enPassant () {
+        //   // TODO need last notations
+        // },
+        //
+        // /**
+        //  * Pawn can promotion (queen only)
+        //  * @return {Array}
+        //  */
+        // promotion () {
+        //   // change piece
+        // },
+        //
+        // castling () {
+        //   //
+        // }
       }
 
-      const fn = specialMove[special]
+      const movementFn = movementList[special]
 
-      if (fn) {
-        direction = [...fn(direction, key, position)]
+      if (movementFn) {
+        direction = [...movementFn(direction, key, position)]
       }
     }
 
@@ -203,9 +235,10 @@ const Chess = {
    * @param  {Object} args.piece
    * @param  {string} args.position
    * @param  {string} args.side
+   * @param  {Array}  args.archives
    * @return {Array}
    */
-  calcMovablePath ({ movement, specials, piece, position, side }) {
+  calcMovablePath ({ movement, specials, piece, position, side, archives }) {
     // calculates movable path
     const movable = Object.keys(movement).map(key => {
       // vertical, horizontal, dragonal
@@ -214,7 +247,8 @@ const Chess = {
         direction: direction.slice(0),
         specials,
         key,
-        position
+        position,
+        archives
       })
 
       // excludes axis that out of Chessboard

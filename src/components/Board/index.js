@@ -81,7 +81,13 @@ class Board extends Component {
       const { defaults, specials } = movement
 
       // undertand movement of Chess piece
-      const movable = Chess.calcMovablePath({ movement: defaults, specials, piece, position, side })
+      const movable = Chess.calcMovablePath({
+        movement: defaults,
+        specials,
+        piece,
+        position,
+        side
+      })
 
       return {
         selected: position,
