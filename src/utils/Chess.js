@@ -178,48 +178,47 @@ const Chess = {
   calcSpecials ({ direction, specials, key, position, archives }) {
     let i = specials.length
     let nextDirection = direction.slice(0)
+    const movementList = {
+      /**
+       * Pawn can move forward 2 squares at initial
+       * @param  {Array}  direction
+       * @param  {String} key
+       * @param  {String} position
+       * @return {Array}
+       */
+      initDouble (direction, key, position) {
+        let newDirection = direction.slice(0)
+
+        if (key === 'vertical' && /^.(2|7)$/.test(position)) {
+          newDirection[0] = [...direction[0], [0, 2]]
+        }
+
+        return newDirection
+      }
+
+      // /**
+      //  * Pawn can attack with diagonal movement
+      //  * @return {Array}
+      //  */
+      // enPassant () {
+      //   // TODO need last notations
+      // },
+      //
+      // /**
+      //  * Pawn can promotion (queen only)
+      //  * @return {Array}
+      //  */
+      // promotion () {
+      //   // change piece
+      // },
+      //
+      // castling () {
+      //   //
+      // }
+    }
 
     while (i--) {
       const special = specials[i]
-      const movementList = {
-        /**
-         * Pawn can move forward 2 squares at initial
-         * @param  {Array}  direction
-         * @param  {String} key
-         * @param  {String} position
-         * @return {Array}
-         */
-        initDouble (direction, key, position) {
-          let newDirection = direction.slice(0)
-
-          if (key === 'vertical' && /^.(2|7)$/.test(position)) {
-            newDirection[0] = [...direction[0], [0, 2]]
-          }
-
-          return newDirection
-        }
-
-        // /**
-        //  * Pawn can attack with diagonal movement
-        //  * @return {Array}
-        //  */
-        // enPassant () {
-        //   // TODO need last notations
-        // },
-        //
-        // /**
-        //  * Pawn can promotion (queen only)
-        //  * @return {Array}
-        //  */
-        // promotion () {
-        //   // change piece
-        // },
-        //
-        // castling () {
-        //   //
-        // }
-      }
-
       const movementFn = movementList[special]
 
       if (movementFn) {
