@@ -177,6 +177,7 @@ const Chess = {
    */
   calcSpecials ({ direction, specials, key, position, archives }) {
     let i = specials.length
+    let nextDirection = direction.slice(0)
 
     while (i--) {
       const special = specials[i]
@@ -189,11 +190,13 @@ const Chess = {
          * @return {Array}
          */
         initDouble (direction, key, position) {
+          let newDirection = direction.slice(0)
+
           if (key === 'vertical' && /^.(2|7)$/.test(position)) {
-            direction[0] = [...direction[0], [0, 2]]
+            newDirection[0] = [...direction[0], [0, 2]]
           }
 
-          return direction
+          return newDirection
         }
 
         // /**
@@ -220,11 +223,11 @@ const Chess = {
       const movementFn = movementList[special]
 
       if (movementFn) {
-        direction = [...movementFn(direction, key, position)]
+        nextDirection = [...movementFn(direction, key, position)]
       }
     }
 
-    return direction
+    return nextDirection
   },
 
   /**
@@ -258,7 +261,7 @@ const Chess = {
       }).filter(a => (a.length !== 0))
     })
 
-    return [...movable]
+    return movable
   },
 
   /**
@@ -270,17 +273,19 @@ const Chess = {
    * @return {Array}
    */
   filterBlockedPath ({ notations, movable, specials }) {
+    let filteredMovable
+
     if (specials.indexOf('jumpover') === -1) {
-      movable = movable.map(m => {
+      filteredMovable = movable.map(m => {
         return m.map(direction => this.detectBlockedDirection({ notations, direction }))
       })
     } else {
-      movable = movable.map(m => {
+      filteredMovable = movable.map(m => {
         return m.map(direction => this.removePlacedTile({ notations, direction }))
       })
     }
 
-    return movable
+    return filteredMovable
   },
 
   /**
