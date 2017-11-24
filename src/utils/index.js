@@ -1,5 +1,3 @@
-import Chess from './Chess'
-
 /**
  * Transform multiple dimensional array to single
  * (flatten for only Chess)
@@ -53,5 +51,3 @@ export function isEmpty (v) {
 export function isExist (v) {
   return !isEmpty(v)
 }
-
-export { Chess }

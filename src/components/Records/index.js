@@ -1,11 +1,11 @@
 import React, { PureComponent } from 'react'
 import PropTypes from 'prop-types'
 import { Pawn, Rook, Bishop, Knight, Queen, King } from '@components'
-import css from './archives.css'
+import css from './records.css'
 
 class Archives extends PureComponent {
   static propTypes = {
-    archives: PropTypes.array.isRequired
+    records: PropTypes.array.isRequired
   }
 
   /**
@@ -47,14 +47,14 @@ class Archives extends PureComponent {
    * @param {HTMLElement} el
    */
   refContainer = (el) => {
-    this.archivesRef = el
+    this.recordsRef = el
   }
 
   /**
    * Lifecycle method
    */
   componentDidUpdate () {
-    this.archivesRef.scrollTop = this.archivesRef.scrollHeight
+    this.recordsRef.scrollTop = this.recordsRef.scrollHeight
   }
 
   /**
@@ -62,12 +62,12 @@ class Archives extends PureComponent {
    * @return {JSX}
    */
   render () {
-    const { archives } = this.props
+    const { records } = this.props
 
     return (
-      <ul ref={this.refContainer} className={css.archives}>
+      <ul ref={this.refContainer} className={css.records}>
         {
-          archives.map((achv, idx) => {
+          records.map((achv, idx) => {
             // white always exist
             const { white, black } = achv
             const wMove = white.move.join(' ')

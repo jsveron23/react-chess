@@ -1,8 +1,9 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import cx from 'classnames'
-import { File, Turn, Pawn, Rook, Bishop, Knight, Queen, King, Archives } from '@components'
-import { Chess, flatten, isExist } from '@utils'
+import { File, Turn, Pawn, Rook, Bishop, Knight, Queen, King, Records } from '@components'
+import { flatten, isExist } from '@utils'
+import Chess from '@utils/Chess'
 import { NOTATIONS, RANKS, FILES } from '@constants'
 import css from './board.css'
 
@@ -31,7 +32,7 @@ class Board extends Component {
       turn: 'w',
       selected: '',
       movable: [],
-      archives: []
+      records: []
     }
 
     this.pieceList = {
@@ -122,7 +123,7 @@ class Board extends Component {
           // re-implement
           this.translated = {
             notation: nextNotation,
-            axis: Chess.calcAxis(n, nextNotation)
+            axis: Chess.convertAxis(n, nextNotation)
           }
         }
 
@@ -132,7 +133,7 @@ class Board extends Component {
       return {
         notations: nextNotations,
         turn: turn[prevState.turn],
-        archives: Chess.archives(prevState.archives, notations, nextNotations),
+        records: Chess.records(prevState.records, notations, nextNotations),
         selected: '',
         movable: []
       }
@@ -184,7 +185,7 @@ class Board extends Component {
    * @return {JSX}
    */
   render () {
-    const { notations, turn, movable, selected, archives } = this.state
+    const { notations, turn, movable, selected, records } = this.state
     const parsedMovable = flatten(movable)
 
     return [
@@ -229,7 +230,7 @@ class Board extends Component {
         }
       </div>,
       <div key="footer">
-        {isExist(archives) && <Archives archives={archives} />}
+        {isExist(records) && <Records records={records} />}
         <Turn turn={turn} />
       </div>
     ]
