@@ -18,7 +18,7 @@ https://jsveron23-react-chess.herokuapp.com/
 - [x] Understand blocked path
 - [x] Implement movement animation
 - [x] Deploy to Heroku
-- [ ] Implement special movement
+- [x] Implement special movement (not all)
 - [ ] Understand enemy Chess piece (attack)
 - [ ] Check, Checkmate (Shake animation)
 - [ ] Implement 'undo' button

@@ -1,5 +1,6 @@
 import { INITIAL, FILES } from '@constants'
-import { initDouble } from './specials'
+import { initDouble, enPassant } from './specials'
+import { isExist } from '@utils'
 
 /**
  * Is any piece there?
@@ -61,11 +62,7 @@ function _findNotation ({ notations, position }) {
  * @return {Array}
  */
 function _diffNotations (n1, n2) {
-  return n1.map((n, idx) => {
-    if (n !== n2[idx]) {
-      return `${n} ${n2[idx]}`
-    }
-  }).filter(n => !!n)
+  return n1.map((n, idx) => (n !== n2[idx] ? `${n} ${n2[idx]}` : '')).filter(n => !!n)
 }
 
 /**
@@ -83,9 +80,9 @@ function _includeAvailable ({ side, position }) {
   const fileIdx = _getFileIdx(file)
 
   /**
-   * @param  {Number}  x
-   * @param  {Number}  y
-   * @return {String?}
+   * @param  {Number} x
+   * @param  {Number} y
+   * @return {String}
    */
   return ([x, y]) => {
     // X is always same for each side
@@ -99,9 +96,7 @@ function _includeAvailable ({ side, position }) {
 
     const fileChar = _getFile(nextX)
 
-    if (nextX > 0 && nextY > 0 && !!fileChar) {
-      return `${fileChar}${nextY}`
-    }
+    return (nextX > 0 && nextY > 0 && !!fileChar) ? `${fileChar}${nextY}` : ''
   }
 }
 
@@ -124,13 +119,42 @@ function _removeUnavailable ({ notations, direction }) {
  * @return {Array}
  */
 function _detectBlocked ({ notations, direction }) {
-  const removedPlacedTile = direction.map(d => (_isPiece({ notations, position: d }) ? undefined : d))
-  const start = removedPlacedTile.indexOf(undefined)
+  const removedPlacedTile = direction.map(d => (_isPiece({ notations, position: d }) ? 'you_shall_not_pass!!' : d))
+  const start = removedPlacedTile.indexOf('you_shall_not_pass!!')
 
   // get rid of blocked direction
   start > -1 && removedPlacedTile.fill(undefined, start)
 
+  // remove all undefined after running fill method
   return removedPlacedTile.filter(ofs => !!ofs)
+}
+
+/**
+ * Routes special move method
+ * @param  {Object} args
+ * @param  {string} args.special
+ * @param  {Array}  args.direction
+ * @param  {string} args.key
+ * @param  {string} args.position
+ * @param  {Array}  args.records
+ * @return {Array?}
+ * TODO
+ * - add notation to recognize special moves
+ */
+function _routeSpecials ({ special, direction, key, position, records }) {
+  switch (`${special}-${key}`) {
+    case 'initDouble-vertical': {
+      return initDouble({ direction, position })
+    }
+
+    case 'enPassant-diagonal': {
+      return enPassant({ direction, position, records })
+    }
+
+    default: {
+      return undefined
+    }
+  }
 }
 
 /**
@@ -140,21 +164,20 @@ function _detectBlocked ({ notations, direction }) {
  * @param  {Array}  args.specials
  * @param  {string} args.key
  * @param  {string} args.position
- * @param  {Array}  args.archives
+ * @param  {Array}  args.records
  * @return {Array}
  */
-function _detectSpecials ({ direction, specials, key, position, archives }) {
-  const movementList = { initDouble }
+function _detectSpecials ({ direction, specials, key, position, records }) {
   let nextDirection = direction.slice(0)
   let i = specials.length
 
   while (i--) {
     const special = specials[i]
-    const movementFn = movementList[special]
+    const specialMove = _routeSpecials({ direction, key, special, position, records })
 
-    // TODO switch
-
-    nextDirection = movementFn ? [...movementFn(direction, key, position)] : nextDirection
+    if (specialMove) {
+      nextDirection = specialMove
+    }
   }
 
   return nextDirection
@@ -188,7 +211,8 @@ class Chess {
   }
 
   /**
-   * Check notation
+   * Check notation (validation)
+   * TODO implement later
    * @param  {String}  notation
    * @return {Boolean}
    */
@@ -198,13 +222,15 @@ class Chess {
 
   /**
    * Logging...
-   * @param  {Array} archives
+   * @param  {Array} records
    * @param  {Array} prevNotations
    * @param  {Array} nextNotations
    * @return {Array}
    */
-  static records (archives, prevNotations, nextNotations) {
-    const clone = archives.slice(0)
+  static records (records, prevNotations, nextNotations) {
+    const clone = records.slice(0)
+    const ts = +new Date() // TODO implement later
+    const notations = nextNotations
     const [last] = clone.reverse()
 
     // original ordering
@@ -213,18 +239,18 @@ class Chess {
     if (!last || Object.keys(last).length === 2) {
       clone.push({
         white: {
-          ts: +new Date(),
-          notations: nextNotations,
-          move: _diffNotations(prevNotations, nextNotations)
+          move: _diffNotations(prevNotations, nextNotations),
+          notations,
+          ts
         }
       })
     } else {
       clone.splice(-1, 1, {
         ...last,
         black: {
-          ts: +new Date(),
-          notations: nextNotations,
-          move: _diffNotations(last.white.notations, nextNotations)
+          move: _diffNotations(last.white.notations, nextNotations),
+          notations,
+          ts
         }
       })
     }
@@ -240,24 +266,34 @@ class Chess {
    * @param  {Object} args.piece
    * @param  {string} args.position
    * @param  {string} args.side
-   * @param  {Array}  args.archives
+   * @param  {Array}  args.records
    * @return {Array}
    */
-  static calcMovablePath ({ movement, specials, piece, position, side, archives }) {
+  static calcMovablePath ({ movement, specials, piece, position, side, records }) {
+    // create all direction for including special moves
+    // e.g. Pawn: it has only vertical move but en-passant will diagonal move
+    const movementObj = Object.assign({}, {
+      vertical: [],
+      horizontal: [],
+      diagonal: []
+    }, movement)
+
     // calculates movable path
-    const movable = Object.keys(movement).map(key => {
-      // vertical, horizontal, dragonal
-      const direction = movement[key]
-      const clone = _detectSpecials({ direction: direction.slice(0), specials, key, position, archives })
+    return Object.keys(movementObj).map(key => {
+      const direction = movementObj[key]
+      const includeSpecials = _detectSpecials({ direction, key, specials, position, records })
 
-      // excludes axis that out of Chessboard
-      // each list has axis of 1 direction (up, right, bottom, left)
-      return clone.map((axisList, idx) => {
-        return axisList.map(_includeAvailable({ side, position })).filter(d => !!d)
-      }).filter(a => (a.length !== 0))
-    })
-
-    return movable
+      if (isExist(includeSpecials)) {
+        // excludes axis that out of Chessboard
+        // each list has axis of 1 more directions (up, right, bottom, left)
+        return includeSpecials
+          .map(axisList => {
+            return axisList
+              .map(_includeAvailable({ side, position }))
+              .filter(d => !!d)
+          }).filter(a => (a.length !== 0))
+      }
+    }).filter(m => !!m)
   }
 
   /**
@@ -269,19 +305,13 @@ class Chess {
    * @return {Array}
    */
   static filterBlockedPath ({ notations, movable, specials }) {
-    let filteredMovable
-
-    if (specials.indexOf('jumpover') === -1) {
-      filteredMovable = movable.map(m => {
-        return m.map(direction => _detectBlocked({ notations, direction }))
+    return movable.map(m => {
+      return m.map(direction => {
+        return (specials.indexOf('jumpover') === -1)
+          ? _detectBlocked({ notations, direction })
+          : _removeUnavailable({ notations, direction })
       })
-    } else {
-      filteredMovable = movable.map(m => {
-        return m.map(direction => _removeUnavailable({ notations, direction }))
-      })
-    }
-
-    return filteredMovable
+    })
   }
 
   /**
@@ -290,18 +320,29 @@ class Chess {
    * @param  {String}  next
    * @param  {Number?} pixelSize
    * @return {Object}
-   * @summary b2 to b3 => x0, y50 => transform: translate(0px, 50px)
-   * @summary b1 to h3 => x300, y100 => transform: translate(300px, 100px)
+   * @description
+   * c2 to c3
+   * => [c(3) - c(3) = 0, 3 - 2 = 1]
+   * => ([0, 1]) x pixel
+   * => [0, 50]
+   * => transform: translate(0px, 50px)
+   * @description
+   * b1 to h3
+   * => [h(8) - b(2) = 6, 3 - 1 = 2]
+   * => ([6, 2]) x pixel
+   * => [300, 100]
+   * => transform: translate(300px, 100px)
    */
   static convertAxis (prev, next, pixelSize = 50) {
     const { position: prevPosition } = _parseNotation(prev)
     const { position: nextPosition } = _parseNotation(next)
     const [prevFile, prevRank] = prevPosition.split('')
     const [nextFile, nextRank] = nextPosition.split('')
-    const x = (_getFileIdx(nextFile) - _getFileIdx(prevFile)) * pixelSize
-    const y = (parseInt(nextRank, 10) - parseInt(prevRank, 10)) * pixelSize
 
-    return { x, y }
+    return {
+      x: (_getFileIdx(nextFile) - _getFileIdx(prevFile)) * pixelSize,
+      y: (parseInt(nextRank, 10) - parseInt(prevRank, 10)) * pixelSize
+    }
   }
 }
 

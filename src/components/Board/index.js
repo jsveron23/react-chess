@@ -72,7 +72,7 @@ class Board extends Component {
    */
   handleSelect = ({ side, piece, position }) => {
     this.setState(prevState => {
-      const { notations } = prevState
+      const { notations, records } = prevState
 
       // get Piece component
       const Piece = this.getPieceComponent(piece)
@@ -87,7 +87,8 @@ class Board extends Component {
         specials,
         piece,
         position,
-        side
+        side,
+        records
       })
 
       return {
