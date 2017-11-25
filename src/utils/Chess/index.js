@@ -8,9 +8,10 @@ import { isExist } from '@utils'
  * @param  {Array}   args.notaions
  * @param  {String}  args.position
  * @return {Boolean}
+ * @access private
  */
-function _isPiece ({ notations, position }) {
-  return !!_findNotation({ notations, position })
+function isPiece ({ notations, position }) {
+  return !!findNotation({ notations, position })
 }
 
 /**
@@ -18,8 +19,9 @@ function _isPiece ({ notations, position }) {
  * @param  {Number} idx
  * @param  {Array?} files
  * @return {String}
+ * @access private
  */
-function _getFile (idx, files = FILES) {
+function getFile (idx, files = FILES) {
   return files.join('').charAt(idx - 1)
 }
 
@@ -28,8 +30,9 @@ function _getFile (idx, files = FILES) {
  * @param  {String} char
  * @param  {Array?} files
  * @return {Number}
+ * @access private
  */
-function _getFileIdx (char, files = FILES) {
+function getFileIdx (char, files = FILES) {
   return files.join('').indexOf(char) + 1
 }
 
@@ -37,8 +40,9 @@ function _getFileIdx (char, files = FILES) {
  * Parse notations
  * @param  {String} notation
  * @return {Object}
+ * @access private
  */
-function _parseNotation (notation) {
+function parseNotation (notation) {
   const [side, piece, ...position] = notation.split('')
 
   return { side, piece, position: position ? position.join('') : undefined }
@@ -50,8 +54,9 @@ function _parseNotation (notation) {
  * @param  {Array}  args.notaions
  * @param  {string} args.position
  * @return {String}
+ * @access private
  */
-function _findNotation ({ notations, position }) {
+function findNotation ({ notations, position }) {
   return notations.find(n => (n.search(position) > -1)) || ''
 }
 
@@ -60,66 +65,60 @@ function _findNotation ({ notations, position }) {
  * @param  {Array} n1
  * @param  {Array} n2
  * @return {Array}
+ * @access private
  */
-function _diffNotations (n1, n2) {
+function diffNotations (n1, n2) {
   return n1.map((n, idx) => (n !== n2[idx] ? `${n} ${n2[idx]}` : '')).filter(n => !!n)
 }
 
 /**
  * Includes only available tiles
  * @param  {Object}   args
+ * @param  {Array}    args.axis
  * @param  {string}   args.side
  * @param  {string}   args.position
- * @return {Function}
+ * @return {String}
+ * @access private
  */
-function _includeAvailable ({ side, position }) {
+function excludeUnavailMoves ({ axis, side, position }) {
+  const [x, y] = axis
+
   // get file, rank from current position
   const [file, rank] = position.split('')
 
   // current X index number
-  const fileIdx = _getFileIdx(file)
+  const fileIdx = getFileIdx(file)
 
-  /**
-   * @param  {Number} x
-   * @param  {Number} y
-   * @return {String}
-   */
-  return ([x, y]) => {
-    // X is always same for each side
-    // 1(a) + 1 = 2(b)
-    const nextX = x + fileIdx
+  // X: 1(a) + 1 = 2(b)
+  const nextX = x + fileIdx
 
-    // Y
-    const nextY = side === 'w'
-      ? y + parseInt(rank, 10)
-      : parseInt(rank, 10) - y
+  // Y: upside down
+  const nextY = side === 'w'
+    ? y + parseInt(rank, 10)
+    : parseInt(rank, 10) - y
 
-    const fileChar = _getFile(nextX)
+  const fileChar = getFile(nextX)
 
-    return (nextX > 0 && nextY > 0 && !!fileChar) ? `${fileChar}${nextY}` : ''
-  }
-}
+  const isAvailMove = (nextX > 0 && nextY > 0 && !!fileChar)
 
-/**
- * Remove placed tile
- * @param  {Object} args
- * @param  {Array}  args.notations
- * @param  {Array}  args.direction
- * @return {Array}
- */
-function _removeUnavailable ({ notations, direction }) {
-  return direction.filter(d => !_isPiece({ notations, position: d }))
+  return isAvailMove ? `${fileChar}${nextY}` : ''
 }
 
 /**
  * Detect blocked direction
  * @param  {Object} args
+ * @param  {Array}  args.specials
  * @param  {Array}  args.notations
  * @param  {Array}  args.direction
  * @return {Array}
+ * @access private
  */
-function _detectBlocked ({ notations, direction }) {
-  const removedPlacedTile = direction.map(d => (_isPiece({ notations, position: d }) ? 'you_shall_not_pass!!' : d))
+function excludeBlocking ({ specials, notations, direction }) {
+  if (specials.includes('jumpover')) {
+    return direction.filter(d => !isPiece({ notations, position: d }))
+  }
+
+  const removedPlacedTile = direction.map(d => (isPiece({ notations, position: d }) ? 'you_shall_not_pass!!' : d))
   const start = removedPlacedTile.indexOf('you_shall_not_pass!!')
 
   // get rid of blocked direction
@@ -138,16 +137,17 @@ function _detectBlocked ({ notations, direction }) {
  * @param  {string} args.position
  * @param  {Array}  args.records
  * @return {Array?}
+ * @access private
  * TODO
- * - add notation to recognize special moves
+ * - add notation on records
  */
-function _routeSpecials ({ special, direction, key, position, records }) {
-  switch (`${special}-${key}`) {
-    case 'initDouble-vertical': {
+function routeSpecials ({ piece, special, direction, key, position, records }) {
+  switch (`${piece}-${special}-${key}`) {
+    case 'P-initDouble-vertical': {
       return initDouble({ direction, position })
     }
 
-    case 'enPassant-diagonal': {
+    case 'P-enPassant-diagonal': {
       return enPassant({ direction, position, records })
     }
 
@@ -166,14 +166,15 @@ function _routeSpecials ({ special, direction, key, position, records }) {
  * @param  {string} args.position
  * @param  {Array}  args.records
  * @return {Array}
+ * @access private
  */
-function _detectSpecials ({ direction, specials, key, position, records }) {
+function includeSpecialMoves ({ piece, direction, specials, key, position, records }) {
   let nextDirection = direction.slice(0)
   let i = specials.length
 
   while (i--) {
-    const special = specials[i]
-    const specialMove = _routeSpecials({ direction, key, special, position, records })
+    const specialName = specials[i]
+    const specialMove = routeSpecials({ piece, direction, key, special: specialName, position, records })
 
     if (specialMove) {
       nextDirection = specialMove
@@ -187,11 +188,53 @@ function _detectSpecials ({ direction, specials, key, position, records }) {
  * Chess engine
  */
 class Chess {
-  static isPiece = _isPiece
-  static getFile = _getFile
-  static getFileIdx = _getFileIdx
-  static parseNotation = _parseNotation
-  static findNotation = _findNotation
+  static isPiece = isPiece
+  static getFile = getFile
+  static getFileIdx = getFileIdx
+  static parseNotation = parseNotation
+  static findNotation = findNotation
+
+  /**
+   * Detect movable path but it does not check blocking path
+   * @param  {Object} args
+   * @param  {Object} args.movement
+   * @param  {Object} args.specials
+   * @param  {Object} args.piece
+   * @param  {string} args.position
+   * @param  {string} args.side
+   * @param  {Array}  args.records
+   * @return {Array}
+   */
+  static detectMovablePath ({ movement, specials, piece, position, side, records }) {
+    // create all direction for including special moves
+    // ignore jump-over move (Knight)
+    // e.g. Pawn moves forward but it can move diagonally when en-passant
+    const extendMovement = Object.assign({}, {
+      vertical: [],
+      horizontal: [],
+      diagonal: []
+    }, movement)
+
+    return Object.keys(extendMovement)
+      // movable => direction => axisList => axis
+      .map(key => {
+        const direction = extendMovement[key]
+
+        // added special direction
+        const includedSpecialMoves = includeSpecialMoves({ piece, direction, key, specials, position, records })
+
+        if (isExist(includedSpecialMoves)) {
+          // excludes axis that out of Chessboard grid
+          // each list contains 1 more direction (up, right, bottom, left)
+          return includedSpecialMoves
+            .map(axisList => {
+              return axisList
+                .map(axis => excludeUnavailMoves({ axis, side, position }))
+                .filter(axis => !!axis)
+            }).filter(axisList => (axisList.length !== 0))
+        }
+      }).filter(movable => !!movable)
+  }
 
   /**
    * Get full name of Chess piece
@@ -239,7 +282,7 @@ class Chess {
     if (!last || Object.keys(last).length === 2) {
       clone.push({
         white: {
-          move: _diffNotations(prevNotations, nextNotations),
+          move: diffNotations(prevNotations, nextNotations),
           notations,
           ts
         }
@@ -248,7 +291,7 @@ class Chess {
       clone.splice(-1, 1, {
         ...last,
         black: {
-          move: _diffNotations(last.white.notations, nextNotations),
+          move: diffNotations(last.white.notations, nextNotations),
           notations,
           ts
         }
@@ -259,44 +302,6 @@ class Chess {
   }
 
   /**
-   * Get movable path, not check blocked path here
-   * @param  {Object} args
-   * @param  {Object} args.movement
-   * @param  {Object} args.specials
-   * @param  {Object} args.piece
-   * @param  {string} args.position
-   * @param  {string} args.side
-   * @param  {Array}  args.records
-   * @return {Array}
-   */
-  static calcMovablePath ({ movement, specials, piece, position, side, records }) {
-    // create all direction for including special moves
-    // e.g. Pawn: it has only vertical move but en-passant will diagonal move
-    const movementObj = Object.assign({}, {
-      vertical: [],
-      horizontal: [],
-      diagonal: []
-    }, movement)
-
-    // calculates movable path
-    return Object.keys(movementObj).map(key => {
-      const direction = movementObj[key]
-      const includeSpecials = _detectSpecials({ direction, key, specials, position, records })
-
-      if (isExist(includeSpecials)) {
-        // excludes axis that out of Chessboard
-        // each list has axis of 1 more directions (up, right, bottom, left)
-        return includeSpecials
-          .map(axisList => {
-            return axisList
-              .map(_includeAvailable({ side, position }))
-              .filter(d => !!d)
-          }).filter(a => (a.length !== 0))
-      }
-    }).filter(m => !!m)
-  }
-
-  /**
    * Filter blocked path
    * @param  {Object} args
    * @param  {Array}  args.notations
@@ -304,13 +309,9 @@ class Chess {
    * @param  {Array}  args.specials
    * @return {Array}
    */
-  static filterBlockedPath ({ notations, movable, specials }) {
+  static excludeBlockedPath ({ notations, movable, specials }) {
     return movable.map(m => {
-      return m.map(direction => {
-        return (specials.indexOf('jumpover') === -1)
-          ? _detectBlocked({ notations, direction })
-          : _removeUnavailable({ notations, direction })
-      })
+      return m.map(direction => excludeBlocking({ specials, notations, direction }))
     })
   }
 
@@ -334,13 +335,16 @@ class Chess {
    * => transform: translate(300px, 100px)
    */
   static convertAxis (prev, next, pixelSize = 50) {
-    const { position: prevPosition } = _parseNotation(prev)
-    const { position: nextPosition } = _parseNotation(next)
+    const { position: prevPosition } = parseNotation(prev)
+    const { position: nextPosition } = parseNotation(next)
     const [prevFile, prevRank] = prevPosition.split('')
     const [nextFile, nextRank] = nextPosition.split('')
 
+    // pixelSize means starting position of animation
+    // the animation looks like moving a component
+    // but it just re-render(re-created, state changed) and animated from starting position
     return {
-      x: (_getFileIdx(nextFile) - _getFileIdx(prevFile)) * pixelSize,
+      x: (getFileIdx(nextFile) - getFileIdx(prevFile)) * pixelSize,
       y: (parseInt(nextRank, 10) - parseInt(prevRank, 10)) * pixelSize
     }
   }

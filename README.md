@@ -14,19 +14,19 @@ https://jsveron23-react-chess.herokuapp.com/
 
 ## Todo
 
-- [x] Implement movement of each Chess piece
-- [x] Understand blocked path
-- [x] Implement movement animation
-- [x] Deploy to Heroku
-- [x] Implement special movement (not all)
-- [ ] Understand enemy Chess piece (attack)
-- [ ] Check, Checkmate (Shake animation)
+- [x] Implement initDouble
+- [x] Implement en-passant
+- [ ] Implement promotion
+- [ ] Implement castling
+- [ ] Implement attack
+- [ ] Implement check, checkmate
 - [ ] Implement 'undo' button
+- [ ] Implement replay
 - [ ] Apply responsive design
-- [ ] Apply Redux and React-router
-- [ ] Multiplay
-- [ ] vs. CPU
-- [ ] Difficulty
+- [ ] Apply Redux
+- [ ] Implement multiplay
+- [ ] Implement vs. CPU
+- [ ] Implement difficulty
 
 ## License
 

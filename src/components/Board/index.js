@@ -82,7 +82,7 @@ class Board extends Component {
       const { defaults, specials } = movement
 
       // undertand movement of Chess piece
-      const movable = Chess.calcMovablePath({
+      const movable = Chess.detectMovablePath({
         movement: defaults,
         specials,
         piece,
@@ -93,7 +93,7 @@ class Board extends Component {
 
       return {
         selected: position,
-        movable: Chess.filterBlockedPath({ notations, movable, specials })
+        movable: Chess.excludeBlockedPath({ notations, movable, specials })
       }
     })
   }
@@ -102,7 +102,7 @@ class Board extends Component {
    * Handle after moving
    * @param {String} position
    */
-  handleMove = (position, cb) => {
+  handleMove = (position) => {
     const turn = {
       w: 'b',
       b: 'w'

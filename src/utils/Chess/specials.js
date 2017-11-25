@@ -4,23 +4,24 @@ import Chess from './'
 /**
  * Pawn moves 2 steps in front of initial
  * @param  {Object} args
- * @param  {Array}  args.direction - axis list
+ * @param  {Array}  args.direction
  * @param  {string} args.position  - current position
  * @return {Array}
  */
 export function initDouble ({ direction, position }) {
+  const isInit = /^.(2|7)$/.test(position)
   const oneStepFurther = [0, 2] // axis
-  let [first] = direction
+  const [firstAxisList] = direction
 
-  if (/^.(2|7)$/.test(position)) {
-    first = [...first, oneStepFurther]
-  }
-
-  return [first]
+  return isInit ? [firstAxisList, [oneStepFurther]] : [firstAxisList]
 }
 
 /**
  * Pawn can attack with diagonal movement
+ * @param  {Object} args
+ * @param  {Array}  args.direction
+ * @param  {string} args.position
+ * @param  {Array}  args.records
  * @return {Array}
  */
 export function enPassant ({ direction, position, records }) {
