@@ -10,7 +10,7 @@ import { isExist } from '@utils'
  * @return {Boolean}
  * @access private
  */
-function isPiece ({ notations, position }) {
+function isPiecePlaced ({ notations, position }) {
   return !!findNotation({ notations, position })
 }
 
@@ -68,7 +68,9 @@ function findNotation ({ notations, position }) {
  * @access private
  */
 function diffNotations (n1, n2) {
-  return n1.map((n, idx) => (n !== n2[idx] ? `${n} ${n2[idx]}` : '')).filter(n => !!n)
+  return n1
+    .map((n, idx) => (n !== n2[idx] ? `${n} ${n2[idx]}` : ''))
+    .filter(n => !!n)
 }
 
 /**
@@ -80,7 +82,7 @@ function diffNotations (n1, n2) {
  * @return {String}
  * @access private
  */
-function excludeUnavailMoves ({ axis, side, position }) {
+function fillAvailTilesOnly ({ axis, side, position }) {
   const [x, y] = axis
 
   // get file, rank from current position
@@ -110,22 +112,30 @@ function excludeUnavailMoves ({ axis, side, position }) {
  * @param  {Array}  args.specials
  * @param  {Array}  args.notations
  * @param  {Array}  args.direction
- * @return {Array}
+ * @return {Array}                 - movable
  * @access private
  */
-function excludeBlocking ({ specials, notations, direction }) {
-  if (specials.includes('jumpover')) {
-    return direction.filter(d => !isPiece({ notations, position: d }))
+function removeBlocking ({ specials, notations, tiles }) {
+  const removedPlaced = tiles.map(tile => {
+    return isPiecePlaced({ notations, position: tile }) ? 'you_shall_not_pass!!' : tile
+  })
+
+  // remove tiles that just placed Chess piece
+  // it does not remove next tiles after removed
+  // NOTE replace it for more understandable
+  // if (specials.includes('jumpover')) {
+  //   return tiles.filter(d => !isPiecePlaced({ notations, position: d }))
+  // }
+
+  if (specials.indexOf('jumpover') === -1) {
+    const start = removedPlaced.indexOf('you_shall_not_pass!!')
+
+    // get rid of blocked tiles
+    start > -1 && removedPlaced.fill(undefined, start)
   }
 
-  const removedPlacedTile = direction.map(d => (isPiece({ notations, position: d }) ? 'you_shall_not_pass!!' : d))
-  const start = removedPlacedTile.indexOf('you_shall_not_pass!!')
-
-  // get rid of blocked direction
-  start > -1 && removedPlacedTile.fill(undefined, start)
-
   // remove all undefined after running fill method
-  return removedPlacedTile.filter(ofs => !!ofs)
+  return removedPlaced.filter(tile => !!tile)
 }
 
 /**
@@ -168,7 +178,7 @@ function routeSpecials ({ piece, special, direction, key, position, records }) {
  * @return {Array}
  * @access private
  */
-function includeSpecialMoves ({ piece, direction, specials, key, position, records }) {
+function incSpecialDirection ({ piece, direction, specials, key, position, records }) {
   let nextDirection = direction.slice(0)
   let i = specials.length
 
@@ -185,10 +195,26 @@ function includeSpecialMoves ({ piece, direction, specials, key, position, recor
 }
 
 /**
+ * Transform axisList to tiles
+ * @param  {Object} args
+ * @param  {Array}  args.axisList
+ * @param  {string} args.side
+ * @param  {string} args.position
+ * @return {Array}
+ * @access private
+ */
+function transformTiles ({ axisList, side, position }) {
+  return axisList
+    // axis => tiles here!
+    .map(axis => fillAvailTilesOnly({ axis, side, position }))
+    .filter(tile => !!tile)
+}
+
+/**
  * Chess engine
  */
 class Chess {
-  static isPiece = isPiece
+  static isPiecePlaced = isPiecePlaced
   static getFile = getFile
   static getFileIdx = getFileIdx
   static parseNotation = parseNotation
@@ -215,25 +241,24 @@ class Chess {
       diagonal: []
     }, movement)
 
-    return Object.keys(extendMovement)
-      // movable => direction => axisList => axis
-      .map(key => {
-        const direction = extendMovement[key]
+    // transform standard movement to movable
+    // - movement = group of direction that included group of axis
+    // - movable = group of tiles
+    return Object.keys(extendMovement).map(key => {
+      // group of axis
+      const direction = extendMovement[key]
 
-        // added special direction
-        const includedSpecialMoves = includeSpecialMoves({ piece, direction, key, specials, position, records })
+      // added special direction
+      const includedSpecials = incSpecialDirection({ piece, direction, key, specials, position, records })
 
-        if (isExist(includedSpecialMoves)) {
-          // excludes axis that out of Chessboard grid
-          // each list contains 1 more direction (up, right, bottom, left)
-          return includedSpecialMoves
-            .map(axisList => {
-              return axisList
-                .map(axis => excludeUnavailMoves({ axis, side, position }))
-                .filter(axis => !!axis)
-            }).filter(axisList => (axisList.length !== 0))
-        }
-      }).filter(movable => !!movable)
+      if (isExist(includedSpecials)) {
+        // excludes axis that out of Chessboard grid
+        // each list contains 1 more direction (up, right, bottom, left)
+        return includedSpecials
+          .map(axisList => transformTiles({ axisList, side, position }))
+          .filter(tiles => (tiles.length !== 0)) // filter necessary only
+      }
+    }).filter(movable => !!movable)
   }
 
   /**
@@ -272,11 +297,11 @@ class Chess {
    */
   static records (records, prevNotations, nextNotations) {
     const clone = records.slice(0)
-    const ts = +new Date() // TODO implement later
     const notations = nextNotations
     const [last] = clone.reverse()
+    const ts = +new Date() // TODO implement later
 
-    // original ordering
+    // rollback - ordering
     clone.reverse()
 
     if (!last || Object.keys(last).length === 2) {
@@ -311,7 +336,7 @@ class Chess {
    */
   static excludeBlockedPath ({ notations, movable, specials }) {
     return movable.map(m => {
-      return m.map(direction => excludeBlocking({ specials, notations, direction }))
+      return m.map(tiles => removeBlocking({ specials, notations, tiles }))
     })
   }
 
