@@ -182,7 +182,9 @@ class Board extends Component {
 
       const { undoRecords, undoNotations } = Chess.undo({ records, counts: 0.5 })
 
-      this.setState(prevState => ({ records: undoRecords, notations: undoNotations, turn: turn[prevState.turn] }))
+      if (undoRecords) {
+        this.setState(prevState => ({ records: undoRecords, notations: undoNotations, turn: turn[prevState.turn] }))
+      }
     }
   }
 

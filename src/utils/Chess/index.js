@@ -386,7 +386,7 @@ class Chess {
     const len = records.length
 
     if (len === 0) {
-      return
+      return {}
     }
 
     const [last] = records.slice(-1)
