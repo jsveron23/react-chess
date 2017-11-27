@@ -1,4 +1,4 @@
-import { INITIAL, FILES } from '@constants'
+import { NOTATIONS, INITIAL, FILES, RANKS } from './constants'
 import { initDouble, enPassant } from './specials'
 import { isExist } from '@utils'
 
@@ -10,7 +10,7 @@ import { isExist } from '@utils'
  * @return {Boolean}
  * @access private
  */
-function isPiecePlaced ({ notations, position }) {
+function isPlaced ({ notations, position }) {
   return !!findNotation({ notations, position })
 }
 
@@ -117,14 +117,14 @@ function fillAvailTilesOnly ({ axis, side, position }) {
  */
 function removeBlocking ({ specials, notations, tiles }) {
   const removedPlaced = tiles.map(tile => {
-    return isPiecePlaced({ notations, position: tile }) ? 'you_shall_not_pass!!' : tile
+    return isPlaced({ notations, position: tile }) ? 'you_shall_not_pass!!' : tile
   })
 
   // remove tiles that just placed Chess piece
   // it does not remove next tiles after removed
   // NOTE replace it for more understandable
   // if (specials.includes('jumpover')) {
-  //   return tiles.filter(d => !isPiecePlaced({ notations, position: d }))
+  //   return tiles.filter(d => !isPlaced({ notations, position: d }))
   // }
 
   if (specials.indexOf('jumpover') === -1) {
@@ -214,7 +214,9 @@ function transformTiles ({ axisList, side, position }) {
  * Chess engine
  */
 class Chess {
-  static isPiecePlaced = isPiecePlaced
+  static NOTATIONS = NOTATIONS
+  static RANKS = RANKS
+  static FILES = FILES
   static getFile = getFile
   static getFileIdx = getFileIdx
   static parseNotation = parseNotation
@@ -243,7 +245,7 @@ class Chess {
 
     // transform standard movement to movable
     // - movement = group of direction that included group of axis
-    // - movable = group of tiles
+    // - movable = group of tiles (readability)
     return Object.keys(extendMovement).map(key => {
       // group of axis
       const direction = extendMovement[key]
@@ -372,6 +374,56 @@ class Chess {
       x: (getFileIdx(nextFile) - getFileIdx(prevFile)) * pixelSize,
       y: (parseInt(nextRank, 10) - parseInt(prevRank, 10)) * pixelSize
     }
+  }
+
+  /**
+   * Undo
+   * @param  {Array}  records
+   * @param  {Number} counts
+   * @return {Object}
+   */
+  static undo ({ records, counts }) {
+    const len = records.length
+
+    if (len === 0) {
+      return
+    }
+
+    const [last] = records.slice(-1)
+    let undoRecords
+    let undoNotations
+
+    if (Object.keys(last).length * counts === 0.5) { // white
+      const { white } = last
+      const { notations, move } = white
+      const [before, after] = move.join('').split(' ')
+
+      undoNotations = notations.map(notation => {
+        if (notation === after) {
+          return before
+        } else {
+          return notation
+        }
+      })
+      undoRecords = records.slice(0, -1)
+    } else { // black
+      const { black } = last
+      const { notations, move } = black
+      const [before, after] = move.join('').split(' ')
+
+      undoNotations = notations.map(notation => {
+        if (notation === after) {
+          return before
+        } else {
+          return notation
+        }
+      })
+      undoRecords = [...records.slice(0, -1), {
+        white: last.white
+      }]
+    }
+
+    return { undoRecords, undoNotations }
   }
 }
 

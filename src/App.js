@@ -1,12 +1,12 @@
-import React, { PureComponent } from 'react'
+import React, { Component } from 'react'
 import { Header, Main, Menu, Board } from '@components'
 import '@styles/app.css'
 
 /**
  * Entry point of ReactJS application
- * @extends {React.PureComponent}
+ * @extends {React.Component}
  */
-class App extends PureComponent {
+class App extends Component {
   /**
    * App componeent
    * @param {Object} props
@@ -15,7 +15,8 @@ class App extends PureComponent {
     super(props)
 
     this.state = {
-      inGame: false
+      inGame: false,
+      type: ''
     }
   }
 
@@ -32,11 +33,13 @@ class App extends PureComponent {
     const isInGame = {
       '1p': true,
       '2p': true,
-      'back': false
+      'back': false,
+      'undo': true
     }
 
     this.setState({
-      inGame: isInGame[type]
+      inGame: isInGame[type],
+      type
     })
   }
 
@@ -45,7 +48,7 @@ class App extends PureComponent {
    * @return {JSX}
    */
   render () {
-    const { inGame } = this.state
+    const { inGame, type } = this.state
 
     return [
       <Header key="app-header">
@@ -53,7 +56,7 @@ class App extends PureComponent {
       </Header>,
       <Main key="app-main">
         <Menu inGame={inGame} onClick={this.handleClick} />
-        {inGame && <Board />}
+        {inGame && <Board actions={type} />}
       </Main>
     ]
   }

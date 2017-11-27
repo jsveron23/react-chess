@@ -2,6 +2,42 @@ import { isEmpty, isExist } from '@utils'
 import Chess from './'
 
 /**
+ * Calculate how many step fowards
+ * @param  {String} moves
+ * @return {Number}
+ */
+const howManyStepFowards = moves => {
+  const diffX = moves
+    .split(' ')
+    .map(notation => (parseInt(notation.substr(-1), 10)))
+    .reduce((prevNotation, currNotation) => (currNotation - prevNotation))
+
+  return Math.abs(diffX)
+}
+
+/**
+ * Predict turn
+ * @param  {Object}  record
+ * @return {Boolean}
+ */
+const isWhiteTurned = record => {
+  return (
+    isEmpty(record) ||
+    (isExist(record) && isExist(record.white) && isExist(record.black))
+  )
+}
+
+/**
+ * Enemy move
+ * @param  {Object} record
+ * @param  {String} propName
+ * @return {Array}
+ */
+const enemyMoves = (record, propName) => {
+  return isExist(record) ? record[propName].move : []
+}
+
+/**
  * Pawn moves 2 steps in front of initial
  * @param  {Object} args
  * @param  {Array}  args.direction
@@ -25,42 +61,6 @@ export function initDouble ({ direction, position }) {
  * @return {Array}
  */
 export function enPassant ({ direction, position, records }) {
-  /**
-   * Calculate how many step fowards
-   * @param  {String} moves
-   * @return {Number}
-   */
-  const howManyStepFowards = moves => {
-    const diffX = moves
-      .split(' ')
-      .map(notation => (parseInt(notation.split('').slice(-1), 10)))
-      .reduce((prevNotation, currNotation) => (currNotation - prevNotation))
-
-    return Math.abs(diffX)
-  }
-
-  /**
-   * Predict turn
-   * @param  {Object}  record
-   * @return {Boolean}
-   */
-  const isWhiteTurned = record => {
-    return (
-      isEmpty(record) ||
-      (isExist(record) && isExist(record.white) && isExist(record.black))
-    )
-  }
-
-  /**
-   * Enemy move
-   * @param  {Object} record
-   * @param  {String} propName
-   * @return {Array}
-   */
-  const enemyMoves = (record, propName) => {
-    return isExist(last) ? record[propName].move : []
-  }
-
   const [last] = records.slice(-1)
   const enemy = { w: 'black', b: 'white' }
   const turn = isWhiteTurned(last) ? 'w' : 'b'

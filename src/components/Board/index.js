@@ -4,7 +4,6 @@ import cx from 'classnames'
 import { File, Turn, Pawn, Rook, Bishop, Knight, Queen, King, Records } from '@components'
 import { flatten, isExist } from '@utils'
 import Chess from '@utils/Chess'
-import { NOTATIONS, RANKS, FILES } from '@constants'
 import css from './board.css'
 
 /**
@@ -17,7 +16,7 @@ class Board extends Component {
   }
 
   static defaultProps = {
-    notations: NOTATIONS
+    notations: Chess.NOTATIONS
   }
 
   /**
@@ -169,6 +168,26 @@ class Board extends Component {
 
   /**
    * Lifecycle method
+   * @param {Object} nextProps
+   */
+  componentWillReceiveProps (nextProps) {
+    const { actions } = nextProps
+    const { records } = this.state
+
+    if (actions === 'undo') {
+      const turn = {
+        w: 'b',
+        b: 'w'
+      }
+
+      const { undoRecords, undoNotations } = Chess.undo({ records, counts: 0.5 })
+
+      this.setState(prevState => ({ records: undoRecords, notations: undoNotations, turn: turn[prevState.turn] }))
+    }
+  }
+
+  /**
+   * Lifecycle method
    */
   componentDidUpdate () {
     this.translated = null
@@ -192,10 +211,10 @@ class Board extends Component {
     return [
       <div key="body" className={css.board}>
         {
-          RANKS.map(rank => (
+          Chess.RANKS.map(rank => (
             <div key={rank} className={cx(css.rank, 'l-flex-row')}>
               {
-                FILES.map(file => {
+                Chess.FILES.map(file => {
                   const position = `${file}${rank}`
                   const currentNotation = Chess.findNotation({ notations, position })
                   const { side, piece } = Chess.parseNotation(currentNotation)
@@ -215,7 +234,6 @@ class Board extends Component {
                       onMove={this.handleMove}
                     >
                       {
-                        /* no use state, no auto render */
                         Piece && <Piece
                           side={side}
                           translated={shouldAnimate && this.translated}

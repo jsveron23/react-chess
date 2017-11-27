@@ -17,6 +17,8 @@ function configure ({ production } = {}) {
     vendor: [
       'react',
       'react-dom',
+      'redux',
+      'react-redux',
       'prop-types',
       'classnames'
     ]
@@ -28,6 +30,8 @@ function configure ({ production } = {}) {
     // TODO
     // windows - require('path')
     alias: {
+      '@actions': `${srcPath}/actions`,
+      '@reducers': `${srcPath}/reducers`,
       '@components': `${srcPath}/components`,
       '@constants': `${srcPath}/constants`,
       '@utils': `${srcPath}/utils`,

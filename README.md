@@ -20,7 +20,7 @@ https://jsveron23-react-chess.herokuapp.com/
 - [ ] Implement castling
 - [ ] Implement attack
 - [ ] Implement check, checkmate
-- [ ] Implement 'undo' button
+- [x] Implement 'undo' button
 - [ ] Implement replay
 - [ ] Apply responsive design
 - [ ] Apply Redux

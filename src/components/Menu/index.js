@@ -12,7 +12,7 @@ const Menu = ({ inGame, onClick }) => {
 
   const items = inGame ? [
     <li key="back-to-main-menu"><a href="" data-type="back" onClick={onClick}>Menu</a></li>,
-    <li key="undo"><a data-type="undo" onClick={onClick}>Undo</a></li>
+    <li key="undo"><a href="" data-type="undo" onClick={onClick}>Undo</a></li>
   ] : [
     // <li key="1p"><a href="" data-type="1p" onClick={onClick}>New - Human vs. Computer</a></li>,
     <li key="2p"><a href="" data-type="2p" onClick={onClick}>New - Human vs. Human</a></li>
