@@ -2,6 +2,10 @@ import { NOTATIONS, INITIAL, FILES, RANKS } from './constants'
 import { initDouble, enPassant } from './specials'
 import { isExist } from '@utils'
 
+// TODO
+// implement!!
+// - isBlocked({ notations, direction, position })
+
 /**
  * Is any piece there?
  * @param  {Object}  args

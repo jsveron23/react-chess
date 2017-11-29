@@ -62,19 +62,23 @@ export function initDouble ({ direction, position }) {
  * @return {Array}
  */
 export function enPassant ({ direction, position, records }) {
+  // TODO
+  // split
+
   const [last] = records.slice(-1)
   const enemy = { w: 'black', b: 'white' }
   const turn = isWhiteTurned(last) ? 'w' : 'b'
   const lastEnemyMoves = enemyMoves(last, enemy[turn])
   const diffX = isExist(lastEnemyMoves) ? howManyStepFowards(lastEnemyMoves[0]) : 0
   const is2Steps = diffX === 2
-  const isAdjusted = parseInt(position.substr(-1), 10) === (isExist(lastEnemyMoves) && parseInt(lastEnemyMoves[0].substr(-1), 10))
+  const currFile = position.substr(-2, 1)
+  const currFileIdx = Chess.getFileIdx(currFile)
+  const enemyFile = isExist(lastEnemyMoves) && lastEnemyMoves[0].substr(-2, 1)
+  const enemyFileIdx = Chess.getFileIdx(enemyFile)
+  const isNext = Math.abs(currFileIdx - enemyFileIdx) === 1
+  const isAdjustedLine = parseInt(position.substr(-1), 10) === (isExist(lastEnemyMoves) && parseInt(lastEnemyMoves[0].substr(-1), 10))
 
-  if (is2Steps && isAdjusted) {
-    const currFile = position.substr(-2, 1)
-    const currFileIdx = Chess.getFileIdx(currFile)
-    const enemyFile = lastEnemyMoves[0].substr(-2, 1)
-    const enemyFileIdx = Chess.getFileIdx(enemyFile)
+  if (is2Steps && isAdjustedLine && isNext) {
     const nextX = enemyFileIdx - currFileIdx
 
     return [[[nextX, 1]]]

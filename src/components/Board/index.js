@@ -81,7 +81,8 @@ class Board extends Component {
       const { defaults, specials } = movement
 
       // undertand movement of Chess piece
-      const movable = Chess.detectMovablePath({
+      // every movement
+      let movable = Chess.detectMovablePath({
         movement: defaults,
         specials,
         piece,
@@ -90,9 +91,12 @@ class Board extends Component {
         records
       })
 
+      // exclude blocked path
+      movable = Chess.excludeBlockedPath({ notations, movable, specials })
+
       return {
         selected: position,
-        movable: Chess.excludeBlockedPath({ notations, movable, specials })
+        movable
       }
     })
   }
