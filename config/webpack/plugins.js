@@ -3,62 +3,61 @@ const ExtractTextPlugin = require('extract-text-webpack-plugin')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
 const { assetsPath } = require('../../lib/path')
 const flatten = require('../../lib/flatten')
-const path = require('path')
 
 /**
  * Plugins
  * @namespace Plugins
  */
 const Plugins = {
-    pluginList: [
-        new webpack.optimize.CommonsChunkPlugin({
-            name: 'vendor',
-            filename: 'vendor.js',
-            minChunks (module) {
-                return module.context && module.context.indexOf('node_modules') !== -1
-            }
-        }),
-        new HtmlWebpackPlugin({
-            inject: 'body',
-            chunks: ['vendor', 'app'],
-            filename: 'index.html',
-            template: path.join(assetsPath,'index.html')
-        })
-    ],
-    development: [
-        new webpack.HotModuleReplacementPlugin(),
-        new webpack.NamedModulesPlugin()
-    ],
-    production: [
-        new ExtractTextPlugin('[name].css'),
-        new webpack.optimize.UglifyJsPlugin({
-            beautify: false,
-            comments: false
-        })
-    ],
+  pluginList: [
+    new webpack.optimize.CommonsChunkPlugin({
+      name: 'vendor',
+      filename: 'vendor.js',
+      minChunks (module) {
+        return module.context && module.context.indexOf('node_modules') !== -1
+      }
+    }),
+    new HtmlWebpackPlugin({
+      inject: 'body',
+      chunks: ['vendor', 'app'],
+      filename: 'index.html',
+      template: `${assetsPath}/index.html`
+    })
+  ],
+  development: [
+    new webpack.HotModuleReplacementPlugin(),
+    new webpack.NamedModulesPlugin()
+  ],
+  production: [
+    new ExtractTextPlugin('[name].css'),
+    new webpack.optimize.UglifyJsPlugin({
+      beautify: false,
+      comments: false
+    })
+  ],
 
-    /**
-     * Get plugins
-     * @param  {String} env
-     * @return {Array}
-     */
-    get (env) {
-        return this.pluginList.concat(
-            flatten(this[env]),
-            new webpack.DefinePlugin({
-                'process.env.NODE_ENV': JSON.stringify(env)
-            })
-        )
-    },
+  /**
+   * Get plugins
+   * @param  {String} env
+   * @return {Array}
+   */
+  get (env) {
+    return this.pluginList.concat(
+      flatten(this[env]),
+      new webpack.DefinePlugin({
+        'process.env.NODE_ENV': JSON.stringify(env)
+      })
+    )
+  },
 
-    /**
-     * Extract single CSS file on production
-     * @param  {Array} use
-     * @return {Array}
-     */
-    extractCSS (use) {
-        return ExtractTextPlugin.extract(use)
-    }
+  /**
+   * Extract single CSS file on production
+   * @param  {Array} use
+   * @return {Array}
+   */
+  extractCSS (use) {
+    return ExtractTextPlugin.extract(use)
+  }
 }
 
 module.exports = Plugins
