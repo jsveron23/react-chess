@@ -7,6 +7,23 @@ import css from './queen.css'
  * @extends {React.PureComponent}
  */
 class Queen extends PureComponent {
+  static propTypes = {
+    side: PropTypes.string.isRequired,
+    translated: PropTypes.oneOfType([
+      PropTypes.bool,
+      PropTypes.object
+    ]),
+    doAnimate: PropTypes.oneOfType([
+      PropTypes.bool,
+      PropTypes.func
+    ])
+  }
+
+  static defaultProps = {
+    translated: null,
+    doAnimate: function () {}
+  }
+
   static movement = {
     defaults: {
       vertical: [
@@ -130,22 +147,6 @@ class Queen extends PureComponent {
       </svg>
     )
   }
-}
-
-Queen.propTypes = {
-  side: PropTypes.string.isRequired,
-  translated: PropTypes.oneOfType([
-    PropTypes.bool,
-    PropTypes.object
-  ]),
-  doAnimate: PropTypes.oneOfType([
-    PropTypes.bool,
-    PropTypes.func
-  ])
-}
-Queen.defaultProps = {
-  translated: null,
-  doAnimate: function () {}
 }
 
 export default Queen

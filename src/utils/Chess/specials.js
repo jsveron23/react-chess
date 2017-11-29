@@ -46,10 +46,11 @@ const enemyMoves = (record, propName) => {
  */
 export function initDouble ({ direction, position }) {
   const isInit = /^.(2|7)$/.test(position)
+  // blockcheck
   const oneStepFurther = [0, 2] // axis
   const [firstAxisList] = direction
 
-  return isInit ? [firstAxisList, [oneStepFurther]] : [firstAxisList]
+  return isInit ? [[...firstAxisList, ...[oneStepFurther]]] : [firstAxisList]
 }
 
 /**

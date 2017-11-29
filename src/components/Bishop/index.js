@@ -7,6 +7,23 @@ import css from './bishop.css'
  * @extends {React.PureComponent}
  */
 class Bishop extends PureComponent {
+  static propTypes = {
+    side: PropTypes.string.isRequired,
+    translated: PropTypes.oneOfType([
+      PropTypes.bool,
+      PropTypes.object
+    ]),
+    doAnimate: PropTypes.oneOfType([
+      PropTypes.bool,
+      PropTypes.func
+    ])
+  }
+
+  static defaultProps = {
+    translated: null,
+    doAnimate: function () {}
+  }
+
   static movement = {
     defaults: {
       diagonal: [
@@ -79,22 +96,6 @@ class Bishop extends PureComponent {
       </svg>
     )
   }
-}
-
-Bishop.propTypes = {
-  side: PropTypes.string.isRequired,
-  translated: PropTypes.oneOfType([
-    PropTypes.bool,
-    PropTypes.object
-  ]),
-  doAnimate: PropTypes.oneOfType([
-    PropTypes.bool,
-    PropTypes.func
-  ])
-}
-Bishop.defaultProps = {
-  translated: null,
-  doAnimate: function () {}
 }
 
 export default Bishop

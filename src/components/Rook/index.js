@@ -7,6 +7,23 @@ import css from './rook.css'
  * @extends {React.PureComponent}
  */
 class Rook extends PureComponent {
+  static propTypes = {
+    side: PropTypes.string.isRequired,
+    translated: PropTypes.oneOfType([
+      PropTypes.bool,
+      PropTypes.object
+    ]),
+    doAnimate: PropTypes.oneOfType([
+      PropTypes.bool,
+      PropTypes.func
+    ])
+  }
+
+  static defaultProps = {
+    translated: null,
+    doAnimate: function () {}
+  }
+
   static movement = {
     defaults: {
       vertical: [
@@ -130,22 +147,6 @@ class Rook extends PureComponent {
       </svg>
     )
   }
-}
-
-Rook.propTypes = {
-  side: PropTypes.string.isRequired,
-  translated: PropTypes.oneOfType([
-    PropTypes.bool,
-    PropTypes.object
-  ]),
-  doAnimate: PropTypes.oneOfType([
-    PropTypes.bool,
-    PropTypes.func
-  ])
-}
-Rook.defaultProps = {
-  translated: null,
-  doAnimate: function () {}
 }
 
 export default Rook

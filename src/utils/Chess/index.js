@@ -131,10 +131,9 @@ function removeBlocking ({ specials, notations, tiles }) {
     const start = removedPlaced.indexOf('you_shall_not_pass!!')
 
     // get rid of blocked tiles
-    start > -1 && removedPlaced.fill(undefined, start)
+    start !== -1 && removedPlaced.fill(undefined, start)
   }
 
-  // remove all undefined after running fill method
   return removedPlaced.filter(tile => !!tile)
 }
 
@@ -337,7 +336,7 @@ class Chess {
    * @return {Array}
    */
   static excludeBlockedPath ({ notations, movable, specials }) {
-    return movable.map(m => {
+    return movable.map(m => { // tile list of direction
       return m.map(tiles => removeBlocking({ specials, notations, tiles }))
     })
   }

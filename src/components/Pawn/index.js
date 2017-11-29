@@ -7,6 +7,23 @@ import css from './pawn.css'
  * @extends {React.PureComponent}
  */
 class Pawn extends PureComponent {
+  static propTypes = {
+    side: PropTypes.string.isRequired,
+    translated: PropTypes.oneOfType([
+      PropTypes.bool,
+      PropTypes.object
+    ]),
+    doAnimate: PropTypes.oneOfType([
+      PropTypes.bool,
+      PropTypes.func
+    ])
+  }
+
+  static defaultProps = {
+    translated: null,
+    doAnimate: function () {}
+  }
+
   static movement = {
     defaults: {
       vertical: [
@@ -64,22 +81,6 @@ class Pawn extends PureComponent {
       </svg>
     )
   }
-}
-
-Pawn.propTypes = {
-  side: PropTypes.string.isRequired,
-  translated: PropTypes.oneOfType([
-    PropTypes.bool,
-    PropTypes.object
-  ]),
-  doAnimate: PropTypes.oneOfType([
-    PropTypes.bool,
-    PropTypes.func
-  ])
-}
-Pawn.defaultProps = {
-  translated: null,
-  doAnimate: function () {}
 }
 
 export default Pawn

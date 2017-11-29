@@ -7,6 +7,23 @@ import css from './knight.css'
  * @extends {React.PureComponent}
  */
 class Knight extends PureComponent {
+  static propTypes = {
+    side: PropTypes.string.isRequired,
+    translated: PropTypes.oneOfType([
+      PropTypes.bool,
+      PropTypes.object
+    ]),
+    doAnimate: PropTypes.oneOfType([
+      PropTypes.bool,
+      PropTypes.func
+    ])
+  }
+
+  static defaultProps = {
+    translated: null,
+    doAnimate: function () {}
+  }
+
   static movement = {
     defaults: {
       jumpover: [
@@ -95,22 +112,6 @@ class Knight extends PureComponent {
       </svg>
     )
   }
-}
-
-Knight.propTypes = {
-  side: PropTypes.string.isRequired,
-  translated: PropTypes.oneOfType([
-    PropTypes.bool,
-    PropTypes.object
-  ]),
-  doAnimate: PropTypes.oneOfType([
-    PropTypes.bool,
-    PropTypes.func
-  ])
-}
-Knight.defaultProps = {
-  translated: null,
-  doAnimate: function () {}
 }
 
 export default Knight

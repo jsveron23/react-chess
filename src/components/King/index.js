@@ -7,6 +7,23 @@ import css from './king.css'
  * @extends {React.PureComponent}
  */
 class King extends PureComponent {
+  static propTypes = {
+    side: PropTypes.string.isRequired,
+    translated: PropTypes.oneOfType([
+      PropTypes.bool,
+      PropTypes.object
+    ]),
+    doAnimate: PropTypes.oneOfType([
+      PropTypes.bool,
+      PropTypes.func
+    ])
+  }
+
+  static defaultProps = {
+    translated: null,
+    doAnimate: function () {}
+  }
+
   static movement = {
     defaults: {
       vertical: [
@@ -109,22 +126,6 @@ class King extends PureComponent {
       </svg>
     )
   }
-}
-
-King.propTypes = {
-  side: PropTypes.string.isRequired,
-  translated: PropTypes.oneOfType([
-    PropTypes.bool,
-    PropTypes.object
-  ]),
-  doAnimate: PropTypes.oneOfType([
-    PropTypes.bool,
-    PropTypes.func
-  ])
-}
-King.defaultProps = {
-  translated: null,
-  doAnimate: function () {}
 }
 
 export default King
