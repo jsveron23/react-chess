@@ -14,10 +14,10 @@ https://jsveron23-react-chess.herokuapp.com/
 
 ## Todo
 
-- [x] Implement initDouble
-- [x] Implement en-passant
-- [ ] Implement promotion
-- [ ] Implement castling
+- [x] Implement 2 steps forward movement of Pawn
+- [x] Implement en-passant movement of Pawn
+- [ ] Implement promotion action of Pawn
+- [ ] Implement castling movement of King with Rook
 - [ ] Implement attack
 - [ ] Implement check, checkmate
 - [x] Implement 'undo' button
