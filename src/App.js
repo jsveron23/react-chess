@@ -50,15 +50,17 @@ class App extends Component {
   render () {
     const { inGame, type } = this.state
 
-    return [
-      <Header key="app-header">
-        <h1>React Chess</h1>
-      </Header>,
-      <Main key="app-main">
-        <Menu inGame={inGame} onClick={this.handleClick} />
-        {inGame && <Board actions={type} />}
-      </Main>
-    ]
+    return (
+      <div style={{ flex: 1 }}>
+        <Header>
+          <h1>React Chess</h1>
+        </Header>
+        <Main key="app-main">
+          <Menu inGame={inGame} onClick={this.handleClick} />
+          {inGame && <Board actions={type} />}
+        </Main>
+      </div>
+    )
   }
 }
 

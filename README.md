@@ -22,8 +22,8 @@ https://jsveron23-react-chess.herokuapp.com/
 - [ ] Implement check, checkmate
 - [x] Implement 'undo' button
 - [ ] Implement export, import
+- [ ] Implement save to localstorage
 - [ ] Implement replay
-- [ ] Apply responsive design
 - [ ] Apply Redux
 - [ ] Implement multiplay
 - [ ] Implement vs. CPU

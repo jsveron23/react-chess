@@ -1,6 +1,8 @@
 :global(#root) {
-  width: 400px;
+  width: 100vw;
+  max-width: 400px;
   height: 100vh;
+  margin: 0 auto;
 }
 
 :global(.l-flex-center) {

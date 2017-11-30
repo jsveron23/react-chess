@@ -1,5 +1,8 @@
 .board {
-  width: 400px;
+  width: 100vw;
+  height: 100vw;
+  max-width: 400px;
+  max-height: 400px;
   margin: 10px 0;
   border: 1px solid #ddd;
   background-color: #a0a0a0;
@@ -7,7 +10,7 @@
 
 .rank {
   width: 100%;
-  height: 50px;
+  height: calc(100% / 8);
 
   &:nth-child(odd) {
     & span:nth-child(odd) {

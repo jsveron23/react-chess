@@ -11,11 +11,13 @@ html {
 
 body {
   font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
-  padding: 20px;
+  height: 100%;
+  overflow: auto;
 
   -webkit-font-smoothing: antialiased;
 }
 
+body,
 h1,
 h2,
 h3,
