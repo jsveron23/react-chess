@@ -20,6 +20,15 @@ export function flatten (arr) {
 }
 
 /**
+ * Remove unnecessary items
+ * @param  {Array} arr
+ * @return {Array}
+ */
+export function diet (arr) {
+  return arr.filter(item => !!item)
+}
+
+/**
  * Difference
  * @param  {Array} a
  * @param  {Array} b

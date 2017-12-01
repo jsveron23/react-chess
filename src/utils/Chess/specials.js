@@ -67,7 +67,6 @@ export function enPassant ({ direction, position, records }) {
 
   const [last] = records.slice(-1)
   const turn = isWhiteTurned(last) ? 'w' : 'b'
-  console.log(Chess.getEnemy(turn), last)
   const lastEnemyMoves = enemyMoves(last, Chess.getEnemy(turn))
   const diffX = isExist(lastEnemyMoves) ? howManyStepFowards(lastEnemyMoves[0]) : 0
   const is2Steps = diffX === 2
