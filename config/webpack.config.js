@@ -1,6 +1,6 @@
 const Loaders = require('./webpack/loaders')
 const Plugins = require('./webpack/plugins')
-const { distPath, srcPath, assetsPath } = require('../lib/path')
+const { distPath, srcPath, assetsPath, getAbsPath } = require('../lib/path')
 const config = require('./')
 
 /**
@@ -27,16 +27,14 @@ function configure ({ production } = {}) {
     noParse: config.noParse
   }
   const resolve = {
-    // TODO
-    // windows - require('path')
     alias: {
-      '@actions': `${srcPath}/actions`,
-      '@reducers': `${srcPath}/reducers`,
-      '@components': `${srcPath}/components`,
-      '@constants': `${srcPath}/constants`,
-      '@utils': `${srcPath}/utils`,
-      '@styles': `${srcPath}/styles`,
-      '@assets': `${srcPath}/assets`
+      '@actions': getAbsPath('src/actions'),
+      '@reducers': getAbsPath('src/reducers'),
+      '@components': getAbsPath('src/components'),
+      '@constants': getAbsPath('src/constants'),
+      '@utils': getAbsPath('src/utils'),
+      '@styles': getAbsPath('src/styles'),
+      '@assets': getAbsPath('src/assets')
     }
   }
 

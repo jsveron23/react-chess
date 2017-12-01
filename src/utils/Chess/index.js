@@ -7,6 +7,240 @@ import { isExist } from '@utils'
 // - isBlocked({ notations, direction, position })
 
 /**
+ * Chess engine
+ */
+class Chess {
+  static NOTATIONS = NOTATIONS
+  static RANKS = RANKS
+  static FILES = FILES
+  static getFile = getFile
+  static getFileIdx = getFileIdx
+  static parseNotation = parseNotation
+  static findNotation = findNotation
+
+  /**
+   * Get enemy
+   * @param  {String} side
+   * @return {Object}
+   */
+  static getEnemy (side) {
+    const enemyList = {
+      w: 'black',
+      b: 'white',
+      white: 'black',
+      black: 'white'
+    }
+
+    return enemyList[side]
+  }
+
+  /**
+   * Detect movable path but it does not check blocking path
+   * @param  {Object} args
+   * @param  {Object} args.movement
+   * @param  {Object} args.specials
+   * @param  {Object} args.piece
+   * @param  {string} args.position
+   * @param  {string} args.side
+   * @param  {Array}  args.records
+   * @return {Array}
+   */
+  static detectMovablePath ({ movement, specials, piece, position, side, records }) {
+    // create all direction for including special moves
+    // ignore jump-over move (Knight)
+    // e.g. Pawn moves forward but it can move diagonally when en-passant
+    const extendMovement = Object.assign({}, {
+      vertical: [],
+      horizontal: [],
+      diagonal: []
+    }, movement)
+
+    // transform standard movement to movable
+    // - movement = group of direction that included group of axis
+    // - movable = group of tiles (readability)
+    return Object.keys(extendMovement).map(key => {
+      // group of axis
+      const direction = extendMovement[key]
+
+      // added special direction
+      const includedSpecials = incSpecialDirection({ piece, direction, key, specials, position, records })
+
+      if (isExist(includedSpecials)) {
+        // excludes axis that out of Chessboard grid
+        // each list contains 1 more direction (up, right, bottom, left)
+        return includedSpecials
+          .map(axisList => transformTiles({ axisList, side, position }))
+          .filter(tiles => (tiles.length !== 0)) // filter necessary only
+      }
+    }).filter(movable => !!movable)
+  }
+
+  /**
+   * Get full name of Chess piece
+   * @param  {String}  piece alias or fullname
+   * @param  {Object?} alias
+   * @return {String}
+   */
+  static getPieceName (piece, alias = INITIAL) {
+    return alias[piece] || piece
+  }
+
+  /**
+   * TODO after attack!!
+   */
+  static removeNotation () {
+    //
+  }
+
+  /**
+   * Check notation (validation)
+   * TODO implement later
+   * @param  {String}  notation
+   * @return {Boolean}
+   */
+  static isNotation (notation) {
+    return /^[w|b][B|K|P|Q|R][a-h][1-8]$/.test(notation)
+  }
+
+  /**
+   * Logging...
+   * @param  {Array} records
+   * @param  {Array} prevNotations
+   * @param  {Array} nextNotations
+   * @return {Array}
+   */
+  static records (records, prevNotations, nextNotations) {
+    const clone = records.slice(0)
+    const notations = nextNotations
+    const [last] = clone.reverse()
+    const ts = +new Date() // TODO implement later
+
+    // rollback - ordering
+    clone.reverse()
+
+    if (!last || Object.keys(last).length === 2) {
+      clone.push({
+        white: {
+          move: diffNotations(prevNotations, nextNotations),
+          notations,
+          ts
+        }
+      })
+    } else {
+      clone.splice(-1, 1, {
+        ...last,
+        black: {
+          move: diffNotations(last.white.notations, nextNotations),
+          notations,
+          ts
+        }
+      })
+    }
+
+    return clone
+  }
+
+  /**
+   * Filter blocked path
+   * @param  {Object} args
+   * @param  {Array}  args.notations
+   * @param  {Array}  args.movable
+   * @param  {Array}  args.specials
+   * @return {Array}
+   */
+  static excludeBlockedPath ({ notations, movable, specials }) {
+    return movable.map(m => { // tile list of direction
+      return m.map(tiles => removeBlocking({ specials, notations, tiles }))
+    })
+  }
+
+  /**
+   * Converts notations to axis number for animations
+   * @param  {String}  prev
+   * @param  {String}  next
+   * @param  {Number?} pixelSize
+   * @return {Object}
+   * @description
+   * c2 to c3
+   * => [c(3) - c(3) = 0, 3 - 2 = 1]
+   * => ([0, 1]) x pixel
+   * => [0, 50]
+   * => transform: translate(0px, 50px)
+   * @description
+   * b1 to h3
+   * => [h(8) - b(2) = 6, 3 - 1 = 2]
+   * => ([6, 2]) x pixel
+   * => [300, 100]
+   * => transform: translate(300px, 100px)
+   */
+  static convertAxis (prev, next, pixelSize = 50) {
+    const { position: prevPosition } = parseNotation(prev)
+    const { position: nextPosition } = parseNotation(next)
+    const [prevFile, prevRank] = prevPosition.split('')
+    const [nextFile, nextRank] = nextPosition.split('')
+
+    // pixelSize means starting position of animation
+    // the animation looks like moving a component
+    // but it just re-render(re-created, state changed) and animated from starting position
+    return {
+      x: (getFileIdx(nextFile) - getFileIdx(prevFile)) * pixelSize,
+      y: (parseInt(nextRank, 10) - parseInt(prevRank, 10)) * pixelSize
+    }
+  }
+
+  /**
+   * Undo
+   * @param  {Array}  records
+   * @param  {Number} counts
+   * @return {Object}
+   */
+  static undo ({ records, counts }) {
+    const len = records.length
+
+    if (len === 0) {
+      return {}
+    }
+
+    const [last] = records.slice(-1)
+    let undoRecords
+    let undoNotations
+
+    // TODO remove duplicated
+    if (Object.keys(last).length * counts === 0.5) { // white
+      const { white } = last
+      const { notations, move } = white
+      const [before, after] = move.join('').split(' ')
+
+      undoNotations = notations.map(notation => {
+        if (notation === after) {
+          return before
+        } else {
+          return notation
+        }
+      })
+      undoRecords = records.slice(0, -1)
+    } else { // black
+      const { black } = last
+      const { notations, move } = black
+      const [before, after] = move.join('').split(' ')
+
+      undoNotations = notations.map(notation => {
+        if (notation === after) {
+          return before
+        } else {
+          return notation
+        }
+      })
+      undoRecords = [...records.slice(0, -1), {
+        white: last.white
+      }]
+    }
+
+    return { undoRecords, undoNotations }
+  }
+}
+
+/**
  * Is any piece there?
  * @param  {Object}  args
  * @param  {Array}   args.notaions
@@ -211,223 +445,6 @@ function transformTiles ({ axisList, side, position }) {
     // axis => tiles here!
     .map(axis => fillAvailTilesOnly({ axis, side, position }))
     .filter(tile => !!tile)
-}
-
-/**
- * Chess engine
- */
-class Chess {
-  static NOTATIONS = NOTATIONS
-  static RANKS = RANKS
-  static FILES = FILES
-  static getFile = getFile
-  static getFileIdx = getFileIdx
-  static parseNotation = parseNotation
-  static findNotation = findNotation
-
-  /**
-   * Detect movable path but it does not check blocking path
-   * @param  {Object} args
-   * @param  {Object} args.movement
-   * @param  {Object} args.specials
-   * @param  {Object} args.piece
-   * @param  {string} args.position
-   * @param  {string} args.side
-   * @param  {Array}  args.records
-   * @return {Array}
-   */
-  static detectMovablePath ({ movement, specials, piece, position, side, records }) {
-    // create all direction for including special moves
-    // ignore jump-over move (Knight)
-    // e.g. Pawn moves forward but it can move diagonally when en-passant
-    const extendMovement = Object.assign({}, {
-      vertical: [],
-      horizontal: [],
-      diagonal: []
-    }, movement)
-
-    // transform standard movement to movable
-    // - movement = group of direction that included group of axis
-    // - movable = group of tiles (readability)
-    return Object.keys(extendMovement).map(key => {
-      // group of axis
-      const direction = extendMovement[key]
-
-      // added special direction
-      const includedSpecials = incSpecialDirection({ piece, direction, key, specials, position, records })
-
-      if (isExist(includedSpecials)) {
-        // excludes axis that out of Chessboard grid
-        // each list contains 1 more direction (up, right, bottom, left)
-        return includedSpecials
-          .map(axisList => transformTiles({ axisList, side, position }))
-          .filter(tiles => (tiles.length !== 0)) // filter necessary only
-      }
-    }).filter(movable => !!movable)
-  }
-
-  /**
-   * Get full name of Chess piece
-   * @param  {String}  piece alias or fullname
-   * @param  {Object?} alias
-   * @return {String}
-   */
-  static getPieceName (piece, alias = INITIAL) {
-    return alias[piece] || piece
-  }
-
-  /**
-   * TODO after attack!!
-   */
-  static removeNotation () {
-    //
-  }
-
-  /**
-   * Check notation (validation)
-   * TODO implement later
-   * @param  {String}  notation
-   * @return {Boolean}
-   */
-  static isNotation (notation) {
-    return /^[w|b][B|K|P|Q|R][a-h][1-8]$/.test(notation)
-  }
-
-  /**
-   * Logging...
-   * @param  {Array} records
-   * @param  {Array} prevNotations
-   * @param  {Array} nextNotations
-   * @return {Array}
-   */
-  static records (records, prevNotations, nextNotations) {
-    const clone = records.slice(0)
-    const notations = nextNotations
-    const [last] = clone.reverse()
-    const ts = +new Date() // TODO implement later
-
-    // rollback - ordering
-    clone.reverse()
-
-    if (!last || Object.keys(last).length === 2) {
-      clone.push({
-        white: {
-          move: diffNotations(prevNotations, nextNotations),
-          notations,
-          ts
-        }
-      })
-    } else {
-      clone.splice(-1, 1, {
-        ...last,
-        black: {
-          move: diffNotations(last.white.notations, nextNotations),
-          notations,
-          ts
-        }
-      })
-    }
-
-    return clone
-  }
-
-  /**
-   * Filter blocked path
-   * @param  {Object} args
-   * @param  {Array}  args.notations
-   * @param  {Array}  args.movable
-   * @param  {Array}  args.specials
-   * @return {Array}
-   */
-  static excludeBlockedPath ({ notations, movable, specials }) {
-    return movable.map(m => { // tile list of direction
-      return m.map(tiles => removeBlocking({ specials, notations, tiles }))
-    })
-  }
-
-  /**
-   * Converts notations to axis number for animations
-   * @param  {String}  prev
-   * @param  {String}  next
-   * @param  {Number?} pixelSize
-   * @return {Object}
-   * @description
-   * c2 to c3
-   * => [c(3) - c(3) = 0, 3 - 2 = 1]
-   * => ([0, 1]) x pixel
-   * => [0, 50]
-   * => transform: translate(0px, 50px)
-   * @description
-   * b1 to h3
-   * => [h(8) - b(2) = 6, 3 - 1 = 2]
-   * => ([6, 2]) x pixel
-   * => [300, 100]
-   * => transform: translate(300px, 100px)
-   */
-  static convertAxis (prev, next, pixelSize = 50) {
-    const { position: prevPosition } = parseNotation(prev)
-    const { position: nextPosition } = parseNotation(next)
-    const [prevFile, prevRank] = prevPosition.split('')
-    const [nextFile, nextRank] = nextPosition.split('')
-
-    // pixelSize means starting position of animation
-    // the animation looks like moving a component
-    // but it just re-render(re-created, state changed) and animated from starting position
-    return {
-      x: (getFileIdx(nextFile) - getFileIdx(prevFile)) * pixelSize,
-      y: (parseInt(nextRank, 10) - parseInt(prevRank, 10)) * pixelSize
-    }
-  }
-
-  /**
-   * Undo
-   * @param  {Array}  records
-   * @param  {Number} counts
-   * @return {Object}
-   */
-  static undo ({ records, counts }) {
-    const len = records.length
-
-    if (len === 0) {
-      return {}
-    }
-
-    const [last] = records.slice(-1)
-    let undoRecords
-    let undoNotations
-
-    if (Object.keys(last).length * counts === 0.5) { // white
-      const { white } = last
-      const { notations, move } = white
-      const [before, after] = move.join('').split(' ')
-
-      undoNotations = notations.map(notation => {
-        if (notation === after) {
-          return before
-        } else {
-          return notation
-        }
-      })
-      undoRecords = records.slice(0, -1)
-    } else { // black
-      const { black } = last
-      const { notations, move } = black
-      const [before, after] = move.join('').split(' ')
-
-      undoNotations = notations.map(notation => {
-        if (notation === after) {
-          return before
-        } else {
-          return notation
-        }
-      })
-      undoRecords = [...records.slice(0, -1), {
-        white: last.white
-      }]
-    }
-
-    return { undoRecords, undoNotations }
-  }
 }
 
 export default Chess

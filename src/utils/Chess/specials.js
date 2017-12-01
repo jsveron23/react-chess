@@ -66,9 +66,9 @@ export function enPassant ({ direction, position, records }) {
   // split
 
   const [last] = records.slice(-1)
-  const enemy = { w: 'black', b: 'white' }
   const turn = isWhiteTurned(last) ? 'w' : 'b'
-  const lastEnemyMoves = enemyMoves(last, enemy[turn])
+  console.log(Chess.getEnemy(turn), last)
+  const lastEnemyMoves = enemyMoves(last, Chess.getEnemy(turn))
   const diffX = isExist(lastEnemyMoves) ? howManyStepFowards(lastEnemyMoves[0]) : 0
   const is2Steps = diffX === 2
   const currFile = position.substr(-2, 1)
@@ -80,20 +80,22 @@ export function enPassant ({ direction, position, records }) {
 
   if (is2Steps && isAdjustedLine && isNext) {
     const nextX = enemyFileIdx - currFileIdx
+    const axis = [nextX, 1]
+    const axisList = [axis]
 
-    return [[[nextX, 1]]]
+    return [axisList]
   }
 
   return [...direction]
 }
-//
-// /**
-//  * Pawn can promotion (queen only atm)
-//  * @return {Array}
-//  */
-// promotion () {
-//   // change piece
-// },
+
+/**
+ * Pawn can promotion (queen only atm)
+ * @return {Array}
+ */
+export function promotion ({ position, notations, records }) {
+  // change piece
+}
 //
 // castling () {
 //   //
