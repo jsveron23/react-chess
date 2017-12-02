@@ -1,7 +1,8 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import cx from 'classnames'
-import { File, Turn, Records, Pawn, Rook, Bishop, Knight, Queen, King } from '@components'
+import { File, Turn, Records } from '@components'
+import { Pawn, Rook, Bishop, Knight, Queen, King } from '@pieces'
 import { flatten, isExist } from '@utils'
 import Chess from '@utils/Chess'
 import css from './board.css'
@@ -214,7 +215,7 @@ class Board extends Component {
                   const position = `${file}${rank}`
                   const currentNotation = Chess.findNotation({ notations, position })
                   const { side, piece } = Chess.parseNotation(currentNotation)
-                  const EnhancedComponent = this.pieceList[piece]
+                  const EnhancedPiece = this.pieceList[piece]
                   const shouldAnimate = (this.translated && this.translated.notation === currentNotation)
 
                   return (
@@ -230,8 +231,8 @@ class Board extends Component {
                       onMove={this.handleMove}
                     >
                       {
-                        EnhancedComponent && (
-                          <EnhancedComponent
+                        EnhancedPiece && (
+                          <EnhancedPiece
                             side={side}
                             translated={shouldAnimate && this.translated}
                             doAnimate={shouldAnimate && this.handleAnimate}

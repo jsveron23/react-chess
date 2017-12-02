@@ -1,6 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import chessPieceWapper from '@components/chessPieceWapper'
+import enhanced from '@pieces/enhanced'
 import css from './pawn.css'
 
 /**
@@ -54,4 +54,4 @@ Pawn.movement = {
   specials: ['initDouble', 'enPassant', 'promotion']
 }
 
-export default chessPieceWapper(Pawn)
+export default enhanced(Pawn)

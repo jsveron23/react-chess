@@ -1,9 +1,13 @@
 import React, { PureComponent } from 'react'
 import PropTypes from 'prop-types'
-import { Pawn, Rook, Bishop, Knight, Queen, King } from '@components'
+import { Pawn, Rook, Bishop, Knight, Queen, King } from '@pieces'
 import css from './records.css'
 
-class Archives extends PureComponent {
+/**
+ * Records component
+ * @extends {React.PureComponent}
+ */
+class Records extends PureComponent {
   static propTypes = {
     records: PropTypes.array.isRequired
   }
@@ -95,4 +99,4 @@ class Archives extends PureComponent {
   }
 }
 
-export default Archives
+export default Records

@@ -1,6 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import chessPieceWapper from '@components/chessPieceWapper'
+import enhanced from '@pieces/enhanced'
 import css from './bishop.css'
 
 /**
@@ -69,4 +69,4 @@ Bishop.movement = {
   specials: []
 }
 
-export default chessPieceWapper(Bishop)
+export default enhanced(Bishop)

@@ -1,12 +1,13 @@
-import React, { Component } from 'react'
+import React, { PureComponent } from 'react'
 
 /**
- * Common API for Chess piece
+ * Common API for Chess piece component
  * @param  {React.Component} WrappedComponent
  * @return {React.Component}
+ * TODO https://github.com/gaearon/react-hot-loader/blob/master/docs/Troubleshooting.md#react-hot-loader-this-component-is-not-accepted-by-hot-loader
  */
-export default function chessPieceWapper (WrappedComponent) {
-  return class extends Component {
+export default function enhanced (WrappedComponent) {
+  return class extends PureComponent {
     static movement = WrappedComponent.movement
 
     /**

@@ -1,6 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import chessPieceWapper from '@components/chessPieceWapper'
+import enhanced from '@pieces/enhanced'
 import css from './rook.css'
 
 /**
@@ -119,4 +119,4 @@ Rook.movement = {
   specials: []
 }
 
-export default chessPieceWapper(Rook)
+export default enhanced(Rook)

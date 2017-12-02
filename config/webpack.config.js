@@ -27,7 +27,7 @@ function configure ({ production } = {}) {
   const resolve = {
     alias: {
       '@components': getAbsPath('src/components'),
-      '@containers': getAbsPath('src/containers'),
+      '@pieces': getAbsPath('src/pieces'),
       '@utils': getAbsPath('src/utils'),
       '@styles': getAbsPath('src/styles'),
       '@assets': getAbsPath('src/assets')
