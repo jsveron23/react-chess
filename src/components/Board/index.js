@@ -1,4 +1,4 @@
-import React, { Component } from 'react'
+import React, { Component, Fragment } from 'react'
 import PropTypes from 'prop-types'
 import cx from 'classnames'
 import { File, Turn, Records } from '@components'
@@ -205,53 +205,53 @@ class Board extends Component {
     const { notations, turn, movable, selected, records } = this.state
     const parsedMovable = flatten(movable)
 
-    return [
-      <div key="body" className={css.board}>
-        {
-          Chess.RANKS.map(rank => (
-            <div key={rank} className={cx(css.rank, 'l-flex-row')}>
-              {
-                Chess.FILES.map(file => {
-                  const position = `${file}${rank}`
-                  const currentNotation = Chess.findNotation({ notations, position })
-                  const { side, piece } = Chess.parseNotation(currentNotation)
-                  const EnhancedPiece = this.pieceList[piece]
-                  const shouldAnimate = (this.translated && this.translated.notation === currentNotation)
+    return (
+      <Fragment>
+        <div className={css.board}>
+          {
+            Chess.RANKS.map(rank => (
+              <div key={rank} className={cx(css.rank, 'l-flex-row')}>
+                {
+                  Chess.FILES.map(file => {
+                    const position = `${file}${rank}`
+                    const currentNotation = Chess.findNotation({ notations, position })
+                    const { side, piece } = Chess.parseNotation(currentNotation)
+                    const EnhancedPiece = this.pieceList[piece]
+                    const shouldAnimate = (this.translated && this.translated.notation === currentNotation)
 
-                  return (
-                    <File
-                      key={position}
-                      piece={piece}
-                      side={side}
-                      turn={turn}
-                      position={position}
-                      selected={selected}
-                      movable={parsedMovable}
-                      onSelect={this.handleSelect}
-                      onMove={this.handleMove}
-                    >
-                      {
-                        EnhancedPiece && (
-                          <EnhancedPiece
-                            side={side}
-                            translated={shouldAnimate && this.translated}
-                            doAnimate={shouldAnimate && this.handleAnimate}
-                          />
-                        )
-                      }
-                    </File>
-                  )
-                })
-              }
-            </div>
-          ))
-        }
-      </div>,
-      <div key="footer">
+                    return (
+                      <File
+                        key={position}
+                        piece={piece}
+                        side={side}
+                        turn={turn}
+                        position={position}
+                        selected={selected}
+                        movable={parsedMovable}
+                        onSelect={this.handleSelect}
+                        onMove={this.handleMove}
+                      >
+                        {
+                          EnhancedPiece && (
+                            <EnhancedPiece
+                              side={side}
+                              translated={shouldAnimate && this.translated}
+                              doAnimate={shouldAnimate && this.handleAnimate}
+                            />
+                          )
+                        }
+                      </File>
+                    )
+                  })
+                }
+              </div>
+            ))
+          }
+        </div>
         {isExist(records) && <Records records={records} />}
         <Turn turn={turn} />
-      </div>
-    ]
+      </Fragment>
+    )
   }
 }
 
