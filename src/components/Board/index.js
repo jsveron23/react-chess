@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import cx from 'classnames'
-import { File, Turn, Pawn, Rook, Bishop, Knight, Queen, King, Records } from '@components'
+import { File, Turn, Records, Pawn, Rook, Bishop, Knight, Queen, King } from '@components'
 import { flatten, isExist } from '@utils'
 import Chess from '@utils/Chess'
 import css from './board.css'
@@ -12,6 +12,7 @@ import css from './board.css'
  */
 class Board extends Component {
   static propTypes = {
+    action: PropTypes.string.isRequired,
     notations: PropTypes.array
   }
 
@@ -25,7 +26,6 @@ class Board extends Component {
   }
 
   /**
-   * GRID
    * @param {Object} props
    */
   constructor (props) {
@@ -45,13 +45,13 @@ class Board extends Component {
       B: Bishop,
       N: Knight,
       Q: Queen,
-      K: King,
-      Pawn,
-      Rook,
-      Bishop,
-      Knight,
-      Queen,
-      King
+      K: King
+    }
+
+    // TODO no alias, into Chess.js
+    this.enemy = {
+      w: 'b',
+      b: 'w'
     }
 
     // instant data
@@ -59,15 +59,6 @@ class Board extends Component {
     this.translated = null
 
     this.rAFId = -1
-  }
-
-  /**
-   * Get piece component
-   * @param  {String}          piece
-   * @return {React.Component}
-   */
-  getPieceComponent (piece) {
-    return this.pieceList[piece]
   }
 
   /**
@@ -79,13 +70,12 @@ class Board extends Component {
       const { notations, records } = prevState
 
       // get Piece component
-      const Piece = this.getPieceComponent(piece)
+      const Piece = this.pieceList[piece]
 
       // assigned on each component
       const { movement } = Piece
       const { defaults, specials } = movement
 
-      // undertand movement of Chess piece
       // every movement
       let movable = Chess.detectMovablePath({
         movement: defaults,
@@ -111,18 +101,13 @@ class Board extends Component {
    * @param {String} position
    */
   handleMove = (position) => {
-    const turn = {
-      w: 'b',
-      b: 'w'
-    }
-
     this.setState(prevState => {
-      const { notations, selected } = prevState
-      const nextNotations = notations.map(n => {
-        let nextNotation = n
+      const { notations, selected, turn, records } = prevState
+      const nextNotations = notations.map(prevNotation => {
+        let nextNotation = prevNotation
 
-        if (n.search(selected) > -1) {
-          const { side, piece } = Chess.parseNotation(n)
+        if (prevNotation.search(selected) > -1) {
+          const { side, piece } = Chess.parseNotation(prevNotation)
 
           nextNotation = `${side}${piece}${position}`
 
@@ -132,7 +117,7 @@ class Board extends Component {
           // re-implement
           this.translated = {
             notation: nextNotation,
-            axis: Chess.convertAxis(n, nextNotation)
+            axis: Chess.convertAxis(prevNotation, nextNotation)
           }
         }
 
@@ -141,8 +126,8 @@ class Board extends Component {
 
       return {
         notations: nextNotations,
-        turn: turn[prevState.turn],
-        records: Chess.records(prevState.records, notations, nextNotations),
+        turn: this.enemy[turn],
+        records: Chess.records(records, notations, nextNotations),
         selected: '',
         movable: []
       }
@@ -180,21 +165,21 @@ class Board extends Component {
    * @param {Object} nextProps
    */
   componentWillReceiveProps (nextProps) {
-    const { actions } = nextProps
-    const { records } = this.state
+    const { action } = nextProps
+    const { records, turn } = this.state
+    const state = {}
 
-    if (actions === 'undo') {
-      const turn = {
-        w: 'b',
-        b: 'w'
-      }
-
+    if (action === 'undo') {
       const { undoRecords, undoNotations } = Chess.undo({ records, counts: 0.5 })
 
       if (undoRecords) {
-        this.setState(prevState => ({ records: undoRecords, notations: undoNotations, turn: turn[prevState.turn] }))
+        state.records = undoRecords
+        state.notations = undoNotations
+        state.turn = this.enemy[turn]
       }
     }
+
+    this.setState(state)
   }
 
   /**
@@ -229,7 +214,7 @@ class Board extends Component {
                   const position = `${file}${rank}`
                   const currentNotation = Chess.findNotation({ notations, position })
                   const { side, piece } = Chess.parseNotation(currentNotation)
-                  const Piece = this.getPieceComponent(piece)
+                  const EnhancedComponent = this.pieceList[piece]
                   const shouldAnimate = (this.translated && this.translated.notation === currentNotation)
 
                   return (
@@ -245,11 +230,13 @@ class Board extends Component {
                       onMove={this.handleMove}
                     >
                       {
-                        Piece && <Piece
-                          side={side}
-                          translated={shouldAnimate && this.translated}
-                          doAnimate={shouldAnimate && this.handleAnimate}
-                        />
+                        EnhancedComponent && (
+                          <EnhancedComponent
+                            side={side}
+                            translated={shouldAnimate && this.translated}
+                            doAnimate={shouldAnimate && this.handleAnimate}
+                          />
+                        )
                       }
                     </File>
                   )

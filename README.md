@@ -24,7 +24,6 @@ https://jsveron23-react-chess.herokuapp.com/
 - [ ] Implement export, import
 - [ ] Implement save to localstorage
 - [ ] Implement replay
-- [ ] Apply Redux
 - [ ] Implement multiplay
 - [ ] Implement vs. CPU
 - [ ] Implement difficulty

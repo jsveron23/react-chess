@@ -17,8 +17,6 @@ function configure ({ production } = {}) {
     vendor: [
       'react',
       'react-dom',
-      'redux',
-      'react-redux',
       'prop-types',
       'classnames'
     ]
@@ -28,10 +26,8 @@ function configure ({ production } = {}) {
   }
   const resolve = {
     alias: {
-      '@actions': getAbsPath('src/actions'),
-      '@reducers': getAbsPath('src/reducers'),
       '@components': getAbsPath('src/components'),
-      '@constants': getAbsPath('src/constants'),
+      '@containers': getAbsPath('src/containers'),
       '@utils': getAbsPath('src/utils'),
       '@styles': getAbsPath('src/styles'),
       '@assets': getAbsPath('src/assets')
