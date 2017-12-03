@@ -8,6 +8,8 @@ import React, { PureComponent } from 'react'
  */
 export default function enhanced (WrappedComponent) {
   return class extends PureComponent {
+    static propTypes = WrappedComponent.propTypes
+    static defaultProps = WrappedComponent.defaultProps
     static movement = WrappedComponent.movement
 
     /**

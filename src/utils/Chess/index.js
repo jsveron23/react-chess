@@ -1,5 +1,6 @@
 import { initDouble, enPassant } from './specials'
 import { isExist, diet } from '@utils'
+import Archives from './archives'
 
 /**
  * Ranks
@@ -43,6 +44,9 @@ class Chess {
 
   static getFile = getFile
   static getFileIdx = getFileIdx
+
+  static records = Archives.save
+  static undo = Archives.revert
 
   /**
    * Get enemy
@@ -139,36 +143,6 @@ class Chess {
   }
 
   /**
-   * Logging...
-   * @param  {Array}  records
-   * @param  {Array}  prevNotations
-   * @param  {Array}  nextNotations
-   * @param  {Number} ts            - timestamp
-   * @return {Array}
-   */
-  static records (records, prevNotations, nextNotations, ts = +new Date()) {
-    const [last] = records.slice(-1)
-    const shouldAddItem = !last || Object.keys(last).length === 2
-
-    return shouldAddItem
-      ? records.concat({
-        white: {
-          move: diffNotations(prevNotations, nextNotations),
-          notations: nextNotations,
-          ts
-        }
-      })
-      : [...records.slice(0, -1), {
-        ...last,
-        black: {
-          move: diffNotations(last.white.notations, nextNotations),
-          notations: nextNotations,
-          ts
-        }
-      }]
-  }
-
-  /**
    * Converts notations to axis number for animations
    * @param  {String}  prev
    * @param  {String}  next
@@ -202,33 +176,6 @@ class Chess {
       x: (getFileIdx(nextFile) - getFileIdx(prevFile)) * pixelSize,
       y: (parseInt(nextRank, 10) - parseInt(prevRank, 10)) * pixelSize
     }
-  }
-
-  /**
-   * Undo
-   * @param  {Array}  records
-   * @param  {Number} counts
-   * @return {Object}
-   */
-  static undo ({ records, counts }) {
-    const len = records.length
-
-    if (len === 0) {
-      return {}
-    }
-
-    const [last] = records.slice(-1)
-    const { white, black } = last
-    const isWhite = Object.keys(last).length * counts === 0.5
-    const { notations, move } = isWhite ? white : black
-    const [before, after] = move.join('').split(' ')
-    const undoNotations = notations.map(notation => (notation === after ? before : notation))
-    const excludeLast = records.slice(0, -1)
-    const undoRecords = isWhite
-      ? excludeLast // removed last item
-      : [...excludeLast, { white: last.white }] // removed last item but add white move only
-
-    return { undoRecords, undoNotations }
   }
 }
 
@@ -288,19 +235,6 @@ function parseNotation (notation) {
  */
 function findNotation ({ notations, position }) {
   return notations.find(n => (n.search(position) > -1)) || ''
-}
-
-/**
- * Return different moves between previous and currunt notations
- * @param  {Array} n1
- * @param  {Array} n2
- * @return {Array}
- * @access private
- */
-function diffNotations (n1, n2) {
-  const diff = n1.map((n, idx) => (n !== n2[idx] ? `${n} ${n2[idx]}` : ''))
-
-  return diet(diff)
 }
 
 /**
@@ -374,7 +308,7 @@ function removeBlocking ({ specials, notations, tiles }) {
  * TODO
  * - add notation on records
  */
-function routeSpecials ({ piece, special, direction, key, position, records }) {
+function routeSpecials ({ notations, piece, special, direction, key, position, records }) {
   switch (`${piece}-${special}-${key}`) {
     case 'P-initDouble-vertical': {
       return initDouble({ direction, position })
@@ -384,6 +318,10 @@ function routeSpecials ({ piece, special, direction, key, position, records }) {
       return enPassant({ direction, position, records })
     }
 
+    // case 'P-promotion-vertical': {
+    //   return promotion({ notations, records })
+    // }
+
     default: {
       return undefined
     }
@@ -391,7 +329,7 @@ function routeSpecials ({ piece, special, direction, key, position, records }) {
 }
 
 /**
- * Calculate special movement
+ * Calculate special movement (before moving)
  * @param  {Object} args
  * @param  {Array}  args.direction
  * @param  {Array}  args.specials

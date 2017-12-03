@@ -99,9 +99,9 @@ class Board extends Component {
 
   /**
    * Handle after moving
-   * @param {String} position
+   * @param {String} nextPosition
    */
-  handleMove = (position) => {
+  handleMove = (nextPosition) => {
     this.setState(prevState => {
       const { notations, selected, turn, records } = prevState
       const nextNotations = notations.map(prevNotation => {
@@ -110,7 +110,7 @@ class Board extends Component {
         if (prevNotation.search(selected) > -1) {
           const { side, piece } = Chess.parseNotation(prevNotation)
 
-          nextNotation = `${side}${piece}${position}`
+          nextNotation = `${side}${piece}${nextPosition}`
 
           // passing prop to show moving animation
           // TODO
@@ -125,13 +125,41 @@ class Board extends Component {
         return nextNotation
       })
 
+      // TODO
+      // - promotion here!
+      // - new notations
+      // - records
+      // - need to refactoring (before moving, after moving, event)
+
       return {
         notations: nextNotations,
         turn: this.enemy[turn],
-        records: Chess.records(records, notations, nextNotations),
+        records: Chess.records({ records, prevNotations: notations, nextNotations }),
         selected: '',
         movable: []
       }
+    // }, () => {
+    //   // after moving
+    //   // TODO
+    //   // - need to seperate special methods
+    //   // - refactoring
+    //   // - improve readability
+    //   const { notations, records } = this.state
+    //
+    //   // get last
+    //   const [last] = records.slice(-1)
+    //   const [move] = (last.black && last.black.move) || last.white.move
+    //   const [notation] = move.split(' ').filter(m => (m.search(nextPosition) > -1))
+    //   const { piece } = Chess.parseNotation(notation)
+    //
+    //   Chess.routeSpecials({
+    //     piece,
+    //     special: 'promotion',
+    //     key: 'vertical',
+    //     notations,
+    //     position: nextPosition,
+    //     records
+    //   })
     })
   }
 

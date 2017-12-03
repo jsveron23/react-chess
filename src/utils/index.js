@@ -20,6 +20,42 @@ export function flatten (arr) {
 }
 
 /**
+ * Get last item of array
+ * @return {*}
+ */
+export function getLastItem ({
+  items = [],
+  shouldStrip = false
+}) {
+  const [last] = items.slice(-1)
+
+  return shouldStrip ? last : [last]
+}
+
+/**
+ * Push item but no update original items
+ * @return {Array}
+ */
+export function push ({
+  items = [],
+  data,
+  isNew = true
+}) {
+  return isNew ? items.concat(data) : replaceLast({ items, data })
+}
+
+/**
+ * Like push but replace last item
+ * @return {Array}
+ */
+export function replaceLast ({
+  items = [],
+  data
+}) {
+  return [...items.slice(0, -1), data]
+}
+
+/**
  * Remove unnecessary items
  * @param  {Array} arr
  * @return {Array}

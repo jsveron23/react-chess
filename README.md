@@ -27,6 +27,7 @@ https://jsveron23-react-chess.herokuapp.com/
 - [ ] Implement multiplay
 - [ ] Implement vs. CPU
 - [ ] Implement difficulty
+- [ ] Apply TDD
 
 ## License
 
