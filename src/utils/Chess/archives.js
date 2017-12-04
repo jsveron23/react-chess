@@ -1,9 +1,23 @@
 import * as Utils from '@utils'
+import Notations from './notations'
 
 /**
  * Archives of Chess records (per match)
  */
 class Archives {
+  static isWhiteTurned = _isWhiteTurned
+
+  /**
+   * Get move
+   * @return {Array}
+   */
+  static getMove ({
+    record = {},
+    side = ''
+  }) {
+    return Utils.isExist(record) ? record[side].move : []
+  }
+
   /**
    * Save records data
    * @return {Array}
@@ -15,7 +29,7 @@ class Archives {
     ts = +new Date() // no need currently
   }) {
     const lastItem = Utils.getLastItem({ items: records, shouldStrip: true })
-    const isCompletedSingleRecord = Object.keys(lastItem).length === 2
+    const isCompletedSingleRecord = Object.keys(lastItem || {}).length === 2
     const isNew = Utils.isEmpty(lastItem) || isCompletedSingleRecord
     const data = isNew ? {
       white: {
@@ -57,7 +71,7 @@ class Archives {
 
     const lastItem = Utils.getLastItem({ items: records, shouldStrip: true })
     const { white, black } = lastItem
-    const isWhite = _isWhiteTurn({ record: lastItem, rate: counts })
+    const isWhite = _isWhiteTurned({ record: lastItem, rate: counts })
     const { notations, move } = _parseRecord({ record: isWhite ? white : black })
     const { before, after } = _parseMove({ move })
     const excludedLastItem = records.slice(0, -1)
@@ -85,7 +99,7 @@ function _parseRecord ({
  * Detect turn from last record item
  * @return {Boolean}
  */
-function _isWhiteTurn ({
+function _isWhiteTurned ({
   record = {},
   // 1 turn => did white, black
   // 0.5 turn => white
@@ -110,22 +124,25 @@ function _parseMove ({
 }
 
 /**
- * Revert a turn from notations
+ * Revert a turn
  * @return {Array}
- * TODO move to notations class
  */
 function _revertNotations ({
   notations = [],
   before = '',
   after = ''
 }) {
-  return notations.map(notation => (notation === after ? before : notation))
+  return Notations.update({
+    notations,
+    cb (notation) {
+      return notation === after ? before : notation
+    }
+  })
 }
 
 /**
  * Return different moves between previous and currunt notations
  * @return {Array}
- * TODO move to notations class
  */
 function _transformMove ({
   n1 = [],

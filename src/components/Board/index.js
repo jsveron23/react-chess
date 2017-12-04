@@ -108,7 +108,7 @@ class Board extends Component {
         let nextNotation = prevNotation
 
         if (prevNotation.search(selected) > -1) {
-          const { side, piece } = Chess.parseNotation(prevNotation)
+          const { side, piece } = Chess.parseNotation({ notation: prevNotation })
 
           nextNotation = `${side}${piece}${nextPosition}`
 
@@ -150,7 +150,7 @@ class Board extends Component {
     //   const [last] = records.slice(-1)
     //   const [move] = (last.black && last.black.move) || last.white.move
     //   const [notation] = move.split(' ').filter(m => (m.search(nextPosition) > -1))
-    //   const { piece } = Chess.parseNotation(notation)
+    //   const { piece } = Chess.parseNotation({ notation })
     //
     //   Chess.routeSpecials({
     //     piece,
@@ -243,7 +243,7 @@ class Board extends Component {
                   Chess.FILES.map(file => {
                     const position = `${file}${rank}`
                     const currentNotation = Chess.findNotation({ notations, position })
-                    const { side, piece } = Chess.parseNotation(currentNotation)
+                    const { side, piece } = Chess.parseNotation({ notation: currentNotation })
                     const EnhancedPiece = this.pieceList[piece]
                     const shouldAnimate = (this.translated && this.translated.notation === currentNotation)
 

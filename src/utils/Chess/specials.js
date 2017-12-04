@@ -1,51 +1,55 @@
-import { isEmpty, isExist } from '@utils'
+import * as Utils from '@utils'
 import Chess from './'
+import Archives from './archives'
 
 /**
- * Calculate how many step fowards
- * @param  {String} moves
- * @return {Number}
+ * Specials
  */
-const howManyStepFowards = moves => {
-  const diffX = moves
-    .split(' ')
-    .map(notation => (parseInt(notation.substr(-1), 10)))
-    .reduce((prevNotation, currNotation) => (currNotation - prevNotation))
+class Specials {
+  /**
+   * Calculate special movement (before moving)
+   * @return {Array}
+   */
+  static incSpecialDirection ({
+    direction = [],
+    specials = [],
+    records = [],
+    piece = '',
+    key = '',
+    position = ''
+  }) {
+    let nextDirection = direction.slice(0)
+    let i = specials.length
 
-  return Math.abs(diffX)
+    while (i--) {
+      const specialName = specials[i]
+      const specialMove = _routeSpecials({
+        special: specialName,
+        piece,
+        direction,
+        key,
+        position,
+        records
+      })
+
+      if (specialMove) {
+        nextDirection = specialMove
+      }
+    }
+
+    return nextDirection
+  }
 }
 
 /**
- * Predict turn
- * @param  {Object}  record
- * @return {Boolean}
- */
-const isWhiteTurned = record => {
-  return (
-    isEmpty(record) ||
-    (isExist(record) && isExist(record.white) && isExist(record.black))
-  )
-}
-
-/**
- * Enemy move
- * @param  {Object} record
- * @param  {String} propName
+ * Pawn moves 2 steps in front of initial (before moving)
  * @return {Array}
  */
-const enemyMoves = (record, propName) => {
-  return isExist(record) ? record[propName].move : []
-}
-
-/**
- * Pawn moves 2 steps in front of initial
- * @param  {Object} args
- * @param  {Array}  args.direction
- * @param  {string} args.position  - current position
- * @return {Array}
- */
-export function initDouble ({ direction, position }) {
-  const isInit = /^.(2|7)$/.test(position)
+function _initDouble ({
+  direction = [],
+  position = ''
+}) {
+  const isInit = _isFirstStepPawn({ position })
   // blockcheck
   const oneStepFurther = [0, 2] // axis
   const [firstAxisList] = direction
@@ -54,48 +58,113 @@ export function initDouble ({ direction, position }) {
 }
 
 /**
- * Pawn can attack with diagonal movement
- * @param  {Object} args
- * @param  {Array}  args.direction
- * @param  {string} args.position
- * @param  {Array}  args.records
+ * Routes special move
+ * @return {Array?}
+ */
+function _routeSpecials ({
+  notations = [],
+  direction = [],
+  records = [],
+  piece = '',
+  special = '',
+  key = '',
+  position = ''
+}) {
+  switch (`${piece}-${special}-${key}`) {
+    case 'P-initDouble-vertical': {
+      return _initDouble({ direction, position })
+    }
+
+    case 'P-enPassant-diagonal': {
+      return _enPassant({ direction, position, records })
+    }
+
+    // case 'P-promotion-vertical': {
+    //   return promotion({ notations, records })
+    // }
+
+    default: {
+      return undefined
+    }
+  }
+}
+
+/**
+ * Pawn moves diagonal and attack
  * @return {Array}
  */
-export function enPassant ({ direction, position, records }) {
-  // TODO
-  // split
+function _enPassant ({
+  direction = [],
+  records = [],
+  position = ''
+}) {
+  const lastItem = Utils.getLastItem({ items: records, shouldStrip: true })
 
-  const [last] = records.slice(-1)
-  const turn = isWhiteTurned(last) ? 'w' : 'b'
-  const lastEnemyMoves = enemyMoves(last, Chess.getEnemy(turn))
-  const diffX = isExist(lastEnemyMoves) ? howManyStepFowards(lastEnemyMoves[0]) : 0
-  const is2Steps = diffX === 2
-  const currFile = position.substr(-2, 1)
-  const currFileIdx = Chess.getFileIdx(currFile)
-  const enemyFile = isExist(lastEnemyMoves) && lastEnemyMoves[0].substr(-2, 1)
-  const enemyFileIdx = Chess.getFileIdx(enemyFile)
-  const isNext = Math.abs(currFileIdx - enemyFileIdx) === 1
-  const isAdjustedLine = parseInt(position.substr(-1), 10) === (isExist(lastEnemyMoves) && parseInt(lastEnemyMoves[0].substr(-1), 10))
+  if (Utils.isEmpty(lastItem)) {
+    return [...direction]
+  }
 
-  if (is2Steps && isAdjustedLine && isNext) {
-    const nextX = enemyFileIdx - currFileIdx
-    const axis = [nextX, 1]
-    const axisList = [axis]
+  const turn = _isWhiteTurned({ record: lastItem }) ? 'white' : 'black'
+  const enemy = Chess.getEnemy({ side: turn })
+  const [enemyMove] = Archives.getMove({ record: lastItem, side: enemy })
 
-    return [axisList]
+  if (Utils.isExist(enemyMove)) {
+    const howManyStep = _howManyStepPawn({ move: enemyMove })
+    const [myFile, myRank] = position.split('')
+    const myFileIdx = Chess.getFileIdx(myFile)
+    const [enemyFile, enemyRank] = `${enemyMove.substr(-2, 1)}${enemyMove.substr(-1)}`.split('')
+    const enemyFileIdx = Chess.getFileIdx(enemyFile)
+    const isSibling = Math.abs(myFileIdx - enemyFileIdx) === 1
+    const isAdjustedLine = parseInt(myRank, 10) === parseInt(enemyRank, 10)
+
+    if ((howManyStep === 2) && isAdjustedLine && isSibling) {
+      const nextX = enemyFileIdx - myFileIdx
+      const axis = [nextX, 1]
+      const axisList = [axis]
+
+      return [axisList]
+    }
   }
 
   return [...direction]
 }
 
 /**
- * Pawn can promotion (queen only atm)
- * @return {Array}
+ * Is ready to first step?
+ * @return {Boolean}
  */
-export function promotion ({ position, notations, records }) {
-  // change piece
+function _isFirstStepPawn ({
+  position = ''
+}) {
+  return /^.(2|7)$/.test(position)
 }
-//
-// castling () {
-//   //
-// }
+
+/**
+ * Detect turn
+ * @return {Boolean}
+ */
+function _isWhiteTurned ({
+  record = {}
+}) {
+  return (
+    Utils.isEmpty(record) ||
+    (Utils.isExist(record) && Object.keys(record).length === 2)
+  )
+}
+
+/**
+ * Calculate how many step fowards
+ * @return {Number}
+ */
+function _howManyStepPawn ({
+  move = ''
+}) {
+  const steps = move
+    .split(' ')
+    .map(notation => (parseInt(notation.substr(-1), 10)))
+    .reduce((prevNotation, currNotation) => (currNotation - prevNotation))
+
+  return Math.abs(steps)
+}
+
+export default Specials

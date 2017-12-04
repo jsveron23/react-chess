@@ -1,5 +1,6 @@
-import { initDouble, enPassant } from './specials'
+import Specials from './specials'
 import { isExist, diet } from '@utils'
+import Notations from './notations'
 import Archives from './archives'
 
 /**
@@ -16,20 +17,6 @@ const RANKS = ['8', '7', '6', '5', '4', '3', '2', '1']
  */
 const FILES = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h']
 
-/**
- * Alias
- * @type {Object}
- * @readonly
- */
-const INITIAL = {
-  P: 'Pawn',
-  R: 'Rook',
-  N: 'Knight',
-  B: 'Bishop',
-  Q: 'Queen',
-  K: 'King'
-}
-
 // TODO
 // implement!!
 // - isBlocked({ notations, direction, position })
@@ -41,19 +28,20 @@ const INITIAL = {
 class Chess {
   static RANKS = RANKS
   static FILES = FILES
-
   static getFile = getFile
   static getFileIdx = getFileIdx
-
+  static parseNotation = Notations.parse
+  static findNotation = Notations.find
   static records = Archives.save
   static undo = Archives.revert
 
   /**
    * Get enemy
-   * @param  {String} side
    * @return {Object}
    */
-  static getEnemy (side) {
+  static getEnemy ({
+    side = ''
+  }) {
     const oppositeSide = {
       w: 'black',
       b: 'white',
@@ -66,16 +54,16 @@ class Chess {
 
   /**
    * Detect movable path but it does not check blocking path
-   * @param  {Object} args
-   * @param  {Object} args.movement
-   * @param  {Object} args.specials
-   * @param  {Object} args.piece
-   * @param  {string} args.position
-   * @param  {string} args.side
-   * @param  {Array}  args.records
    * @return {Array}
    */
-  static detectMovablePath ({ movement, specials, piece, position, side, records }) {
+  static detectMovablePath ({
+    movement = {},
+    specials = {},
+    records = [],
+    piece = '',
+    position = '',
+    side = ''
+  }) {
     // add all direction for adding special moves while process
     // -> not add jump-over move (Knight)
     // e.g. Pawn moves straightly only but it can move diagonally when en-passant
@@ -93,7 +81,7 @@ class Chess {
       const direction = extendMovement[key]
 
       // added special direction
-      const includedSpecialDirection = incSpecialDirection({ piece, direction, key, specials, position, records })
+      const includedSpecialDirection = Specials.incSpecialDirection({ piece, direction, key, specials, position, records })
 
       if (isExist(includedSpecialDirection)) {
         const transformedDirection = includedSpecialDirection.map(axisList => transformTiles({ axisList, side, position }))
@@ -121,25 +109,20 @@ class Chess {
 
   /**
    * Get full name of Chess piece
-   * @param  {String}  piece alias or fullname
-   * @param  {Object?} alias
+   * @param  {String} piece alias or fullname
    * @return {String}
    */
-  static getPieceName (piece, alias = INITIAL) {
-    return alias[piece] || piece
-  }
+  static getPieceName (piece) {
+    const initial = {
+      P: 'Pawn',
+      R: 'Rook',
+      N: 'Knight',
+      B: 'Bishop',
+      Q: 'Queen',
+      K: 'King'
+    }
 
-  static parseNotation = parseNotation
-  static findNotation = findNotation
-
-  /**
-   * Check notation (validation)
-   * TODO implement later
-   * @param  {String}  notation
-   * @return {Boolean}
-   */
-  static isNotation (notation) {
-    return /^[w|b][B|K|P|Q|R][a-h][1-8]$/.test(notation)
+    return initial[piece] || piece
   }
 
   /**
@@ -163,8 +146,8 @@ class Chess {
    * TODO calculate pixelSize automatically
    */
   static convertAxis (prev, next, pixelSize = 50) {
-    const { position: prevPosition } = parseNotation(prev)
-    const { position: nextPosition } = parseNotation(next)
+    const { position: prevPosition } = Notations.parse({ notation: prev })
+    const { position: nextPosition } = Notations.parse({ notation: next })
     const [prevFile, prevRank] = prevPosition.split('')
     const [nextFile, nextRank] = nextPosition.split('')
 
@@ -188,7 +171,7 @@ class Chess {
  * @access private
  */
 function isPlaced ({ notations, position }) {
-  return !!findNotation({ notations, position })
+  return !!Notations.find({ notations, position })
 }
 
 /**
@@ -211,30 +194,6 @@ function getFile (idx, files = FILES) {
  */
 function getFileIdx (char, files = FILES) {
   return files.join('').indexOf(char) + 1
-}
-
-/**
- * Parse notations
- * @param  {String} notation
- * @return {Object}
- * @access private
- */
-function parseNotation (notation) {
-  const [side, piece, ...position] = notation.split('')
-
-  return { side, piece, position: position ? position.join('') : undefined }
-}
-
-/**
- * Get notation with using position
- * @param  {Object} args
- * @param  {Array}  args.notaions
- * @param  {string} args.position
- * @return {String}
- * @access private
- */
-function findNotation ({ notations, position }) {
-  return notations.find(n => (n.search(position) > -1)) || ''
 }
 
 /**
@@ -293,73 +252,6 @@ function removeBlocking ({ specials, notations, tiles }) {
   }
 
   return diet(removedPlaced)
-}
-
-/**
- * Routes special move method
- * @param  {Object} args
- * @param  {string} args.special
- * @param  {Array}  args.direction
- * @param  {string} args.key
- * @param  {string} args.position
- * @param  {Array}  args.records
- * @return {Array?}
- * @access private
- * TODO
- * - add notation on records
- */
-function routeSpecials ({ notations, piece, special, direction, key, position, records }) {
-  switch (`${piece}-${special}-${key}`) {
-    case 'P-initDouble-vertical': {
-      return initDouble({ direction, position })
-    }
-
-    case 'P-enPassant-diagonal': {
-      return enPassant({ direction, position, records })
-    }
-
-    // case 'P-promotion-vertical': {
-    //   return promotion({ notations, records })
-    // }
-
-    default: {
-      return undefined
-    }
-  }
-}
-
-/**
- * Calculate special movement (before moving)
- * @param  {Object} args
- * @param  {Array}  args.direction
- * @param  {Array}  args.specials
- * @param  {string} args.key
- * @param  {string} args.position
- * @param  {Array}  args.records
- * @return {Array}
- * @access private
- */
-function incSpecialDirection ({ piece, direction, specials, key, position, records }) {
-  let nextDirection = direction.slice(0)
-  let i = specials.length
-
-  while (i--) {
-    const specialName = specials[i]
-    const specialMove = routeSpecials({
-      special: specialName,
-      piece,
-      direction,
-      key,
-      position,
-      records
-    })
-
-    if (specialMove) {
-      nextDirection = specialMove
-    }
-  }
-
-  return nextDirection
 }
 
 /**
