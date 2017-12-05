@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 import cx from 'classnames'
 import { File, Turn, Records } from '@components'
 import { Pawn, Rook, Bishop, Knight, Queen, King } from '@pieces'
-import { flatten, isExist } from '@utils'
+import * as Utils from '@utils'
 import Chess from '@utils/Chess'
 import css from './board.css'
 
@@ -101,7 +101,7 @@ class Board extends Component {
    * Handle after moving
    * @param {String} nextPosition
    */
-  handleMove = (nextPosition) => {
+  handleMove = nextPosition => {
     this.setState(prevState => {
       const { notations, selected, turn, records } = prevState
       const nextNotations = notations.map(prevNotation => {
@@ -125,12 +125,6 @@ class Board extends Component {
         return nextNotation
       })
 
-      // TODO
-      // - promotion here!
-      // - new notations
-      // - records
-      // - need to refactoring (before moving, after moving, event)
-
       return {
         notations: nextNotations,
         turn: this.enemy[turn],
@@ -138,28 +132,6 @@ class Board extends Component {
         selected: '',
         movable: []
       }
-    // }, () => {
-    //   // after moving
-    //   // TODO
-    //   // - need to seperate special methods
-    //   // - refactoring
-    //   // - improve readability
-    //   const { notations, records } = this.state
-    //
-    //   // get last
-    //   const [last] = records.slice(-1)
-    //   const [move] = (last.black && last.black.move) || last.white.move
-    //   const [notation] = move.split(' ').filter(m => (m.search(nextPosition) > -1))
-    //   const { piece } = Chess.parseNotation({ notation })
-    //
-    //   Chess.routeSpecials({
-    //     piece,
-    //     special: 'promotion',
-    //     key: 'vertical',
-    //     notations,
-    //     position: nextPosition,
-    //     records
-    //   })
     })
   }
 
@@ -213,9 +185,39 @@ class Board extends Component {
 
   /**
    * Lifecycle method
+   * @param {Object} nextProps
+   * @param {Object} prevState
    */
-  componentDidUpdate () {
+  componentDidUpdate (prevProps, prevState) {
     this.translated = null
+
+    // TODO promotion
+    // implement without refactoring!!
+    const { selected, records } = this.state
+
+    // after moving
+    if (Utils.isEmpty(selected)) {
+      const lastItem = Utils.getLastItem({ items: records, shouldStrip: true })
+      const { white, black } = lastItem
+
+      if (Utils.isExist(black)) {
+        const [piece, x, y] = black.move.join('').substr(-3, 3)
+
+        if (piece === 'P' && +y === 1) {
+          console.log('Queen black!!', x, y)
+        }
+      } else if (Utils.isExist(white)) {
+        const [piece, x, y] = white.move.join('').substr(-3, 3)
+
+        if (piece === 'P' && +y === 8) {
+          console.log('Queen white!!', x, y)
+        }
+      }
+
+      // updates notations and records
+      // performance issue
+      // this.setState({ notations, records })
+    }
   }
 
   /**
@@ -231,7 +233,7 @@ class Board extends Component {
    */
   render () {
     const { notations, turn, movable, selected, records } = this.state
-    const parsedMovable = flatten(movable)
+    const parsedMovable = Utils.flatten(movable)
 
     return (
       <Fragment>
@@ -276,7 +278,7 @@ class Board extends Component {
             ))
           }
         </div>
-        {isExist(records) && <Records records={records} />}
+        {Utils.isExist(records) && <Records records={records} />}
         <Turn turn={turn} />
       </Fragment>
     )
