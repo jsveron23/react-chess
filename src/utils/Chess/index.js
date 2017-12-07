@@ -1,5 +1,5 @@
 import Specials from './specials'
-import { isExist, diet } from '@utils'
+import * as Utils from '@utils'
 import Notations from './notations'
 import Archives from './archives'
 
@@ -32,6 +32,7 @@ class Chess {
   static getFileIdx = getFileIdx
   static parseNotation = Notations.parse
   static findNotation = Notations.find
+  static updateNotation = Notations.update
   static records = Archives.save
   static undo = Archives.revert
 
@@ -50,6 +51,46 @@ class Chess {
     }
 
     return oppositeSide[side]
+  }
+
+  /**
+   * Transform piece
+   * @return {Array}
+   */
+  static transformTo ({
+    notations = [],
+    records = [],
+    to = ''
+  }) {
+    const lastItem = Utils.getLastItem({ items: records, shouldStrip: true })
+    const { white, black } = lastItem
+    const hasBlackRecord = Utils.isExist(black)
+    const move = Archives.getMove({
+      record: lastItem,
+      side: hasBlackRecord ? 'black' : 'white'
+    })
+    const [piece, x, y] = move.join('').substr(-3, 3)
+    const pendingArgs = {
+      notations: [...notations],
+      willTransformTo: 'Q',
+      x,
+      y
+    }
+    let promotedNotations = [...notations]
+
+    if (Utils.isExist(black) && piece === 'P' && +y === 1) {
+      promotedNotations = Specials.promotion({
+        ...pendingArgs,
+        side: 'b'
+      })
+    } else if (Utils.isExist(white) && piece === 'P' && +y === 8) {
+      promotedNotations = Specials.promotion({
+        ...pendingArgs,
+        side: 'w'
+      })
+    }
+
+    return promotedNotations
   }
 
   /**
@@ -83,14 +124,14 @@ class Chess {
       // added special direction
       const includedSpecialDirection = Specials.incSpecialDirection({ piece, direction, key, specials, position, records })
 
-      if (isExist(includedSpecialDirection)) {
+      if (Utils.isExist(includedSpecialDirection)) {
         const transformedDirection = includedSpecialDirection.map(axisList => transformTiles({ axisList, side, position }))
 
         return transformedDirection.filter(tiles => (tiles.length !== 0))
       }
     })
 
-    return diet(movable)
+    return Utils.diet(movable)
   }
 
   /**
@@ -251,7 +292,7 @@ function removeBlocking ({ specials, notations, tiles }) {
     start !== -1 && removedPlaced.fill(undefined, start)
   }
 
-  return diet(removedPlaced)
+  return Utils.diet(removedPlaced)
 }
 
 /**
@@ -266,7 +307,7 @@ function removeBlocking ({ specials, notations, tiles }) {
 function transformTiles ({ axisList, side, position }) {
   const availTiles = axisList.map(axis => fillAvailTilesOnly({ axis, side, position }))
 
-  return diet(availTiles)
+  return Utils.diet(availTiles)
 }
 
 export default Chess

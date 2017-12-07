@@ -8,9 +8,10 @@ import css from './pawn.css'
  * @param  {Object} props
  * @return {JSX}
  */
-const Pawn = ({ side, refContainer }) => (
+const Pawn = ({ side, refContainer, onTransitionEnd }) => (
   <svg
     ref={refContainer}
+    onTransitionEnd={onTransitionEnd}
     xmlns="http://www.w3.org/2000/svg"
     version="1.1"
     width="45"

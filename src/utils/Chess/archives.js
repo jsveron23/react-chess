@@ -40,7 +40,7 @@ class Archives {
     } : {
       ...lastItem,
       black: {
-        move: _transformMove({ n1: lastItem.white.notations, n2: nextNotations }),
+        move: _transformMove({ n1: prevNotations, n2: nextNotations }),
         notations: nextNotations,
         ts
       }
@@ -134,9 +134,8 @@ function _revertNotations ({
 }) {
   return Notations.update({
     notations,
-    cb (notation) {
-      return notation === after ? before : notation
-    }
+    asEqual: after,
+    updateTo: before
   })
 }
 

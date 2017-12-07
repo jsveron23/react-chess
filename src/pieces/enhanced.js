@@ -38,12 +38,13 @@ export default function enhanced (WrappedComponent) {
      * @return {JSX}
      */
     render () {
-      const { side } = this.props
+      const { side, onAnimationEnd } = this.props
 
       return (
         <WrappedComponent
           refContainer={this.refContainer}
           side={side}
+          onTransitionEnd={onAnimationEnd}
         />
       )
     }

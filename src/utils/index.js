@@ -1,10 +1,11 @@
 /**
  * Transform multiple dimensional array to single
- * (flatten for only Chess)
- * @param  {Array} arr
+ * (this method for only for Chess)
  * @return {Array}
  */
-export function flatten (arr) {
+export function flatten ({
+  arr = []
+}) {
   if (arr.length === 0) {
     return arr
   }
@@ -13,7 +14,7 @@ export function flatten (arr) {
   const shouldFlattened = flattenedArr.every(f => (typeof f === 'string'))
 
   if (!shouldFlattened) {
-    return flatten(flattenedArr)
+    return flatten({ arr: flattenedArr })
   }
 
   return flattenedArr

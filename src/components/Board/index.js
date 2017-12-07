@@ -36,6 +36,7 @@ class Board extends Component {
       notations: props.notations,
       turn: 'w',
       selected: '',
+      isMoving: false,
       movable: [],
       records: []
     }
@@ -129,8 +130,26 @@ class Board extends Component {
         notations: nextNotations,
         turn: this.enemy[turn],
         records: Chess.records({ records, prevNotations: notations, nextNotations }),
+        isMoving: true,
         selected: '',
         movable: []
+      }
+    })
+  }
+
+  /**
+   * Fire after finishing transition
+   */
+  handleAnimationEnd = () => {
+    // after moving
+    this.setState({ isMoving: false }, () => {
+      const { notations, records, selected } = this.state
+
+      // TODO create event
+      if (Utils.isEmpty(selected)) {
+        const nextNotations = Chess.transformTo({ notations, records })
+
+        this.setState({ notations: nextNotations })
       }
     })
   }
@@ -190,34 +209,6 @@ class Board extends Component {
    */
   componentDidUpdate (prevProps, prevState) {
     this.translated = null
-
-    // TODO promotion
-    // implement without refactoring!!
-    const { selected, records } = this.state
-
-    // after moving
-    if (Utils.isEmpty(selected)) {
-      const lastItem = Utils.getLastItem({ items: records, shouldStrip: true })
-      const { white, black } = lastItem
-
-      if (Utils.isExist(black)) {
-        const [piece, x, y] = black.move.join('').substr(-3, 3)
-
-        if (piece === 'P' && +y === 1) {
-          console.log('Queen black!!', x, y)
-        }
-      } else if (Utils.isExist(white)) {
-        const [piece, x, y] = white.move.join('').substr(-3, 3)
-
-        if (piece === 'P' && +y === 8) {
-          console.log('Queen white!!', x, y)
-        }
-      }
-
-      // updates notations and records
-      // performance issue
-      // this.setState({ notations, records })
-    }
   }
 
   /**
@@ -233,7 +224,7 @@ class Board extends Component {
    */
   render () {
     const { notations, turn, movable, selected, records } = this.state
-    const parsedMovable = Utils.flatten(movable)
+    const parsedMovable = Utils.flatten({ arr: movable })
 
     return (
       <Fragment>
@@ -267,6 +258,7 @@ class Board extends Component {
                               side={side}
                               translated={shouldAnimate && this.translated}
                               doAnimate={shouldAnimate && this.handleAnimate}
+                              onAnimationEnd={this.handleAnimationEnd}
                             />
                           )
                         }

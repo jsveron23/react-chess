@@ -38,9 +38,12 @@ class Notations {
    */
   static update ({
     notations = [],
-    cb = function () {}
+    asEqual,
+    updateTo
   }) {
-    return notations.map(cb)
+    return notations.map(function (notation) {
+      return notation === asEqual ? updateTo : notation
+    })
   }
 
   /**

@@ -7,6 +7,24 @@ import Archives from './archives'
  */
 class Specials {
   /**
+   * Promotion
+   * @return {Array}
+   */
+  static promotion ({
+    notations = [],
+    willTransformTo = 'Q',
+    side = '',
+    x = '',
+    y = ''
+  }) {
+    return Chess.updateNotation({
+      notations,
+      asEqual: `${side}P${x}${y}`,
+      updateTo: `${side}${willTransformTo}${x}${y}`
+    })
+  }
+
+  /**
    * Calculate special movement (before moving)
    * @return {Array}
    */
@@ -58,7 +76,7 @@ function _initDouble ({
 }
 
 /**
- * Routes special move
+ * Routes special move, before moving (for detect path)
  * @return {Array?}
  */
 function _routeSpecials ({
@@ -78,10 +96,6 @@ function _routeSpecials ({
     case 'P-enPassant-diagonal': {
       return _enPassant({ direction, position, records })
     }
-
-    // case 'P-promotion-vertical': {
-    //   return promotion({ notations, records })
-    // }
 
     default: {
       return undefined
