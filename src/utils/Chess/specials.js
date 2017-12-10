@@ -12,7 +12,6 @@ class Specials {
    */
   static promotion ({
     notations = [],
-    willTransformTo = 'Q',
     side = '',
     x = '',
     y = ''
@@ -20,7 +19,7 @@ class Specials {
     return Chess.updateNotation({
       notations,
       asEqual: `${side}P${x}${y}`,
-      updateTo: `${side}${willTransformTo}${x}${y}`
+      updateTo: `${side}Q${x}${y}`
     })
   }
 
@@ -28,7 +27,7 @@ class Specials {
    * Calculate special movement (before moving)
    * @return {Array}
    */
-  static incSpecialDirection ({
+  static includSpecialDirection ({
     direction = [],
     specials = [],
     records = [],
@@ -112,7 +111,7 @@ function _enPassant ({
   records = [],
   position = ''
 }) {
-  const lastItem = Utils.getLastItem({ items: records, shouldStrip: true })
+  const lastItem = Utils.getLastItem(records, true)
 
   if (Utils.isEmpty(lastItem)) {
     return [...direction]

@@ -1,58 +1,54 @@
 /**
  * Transform multiple dimensional array to single
- * (this method for only for Chess)
+ * (this method only for Chess)
+ * @param  {Array} items
  * @return {Array}
  */
-export function flatten ({
-  arr = []
-}) {
-  if (arr.length === 0) {
-    return arr
+export function flatten (items) {
+  if (items.length === 0) {
+    return items
   }
 
-  const flattenedArr = arr.reduce((a, b) => a.concat(b))
-  const shouldFlattened = flattenedArr.every(f => (typeof f === 'string'))
+  const flattenedItems = items.reduce((a, b) => a.concat(b))
+  const shouldFlattened = flattenedItems.some(f => (typeof f === 'string'))
 
   if (!shouldFlattened) {
-    return flatten({ arr: flattenedArr })
+    return flatten(flattenedItems)
   }
 
-  return flattenedArr
+  return flattenedItems
 }
 
 /**
  * Get last item of array
+ * @param  {Array}    items
+ * @param  {Boolean?} strip
  * @return {*}
  */
-export function getLastItem ({
-  items = [],
-  shouldStrip = false
-}) {
+export function getLastItem (items, strip = false) {
   const [last] = items.slice(-1)
 
-  return shouldStrip ? last : [last]
+  return strip ? last : [last]
 }
 
 /**
  * Push item but no update original items
+ * @param  {Array}    items
+ * @param  {*}        data
+ * @param  {Boolean?} isNew
  * @return {Array}
  */
-export function push ({
-  items = [],
-  data,
-  isNew = true
-}) {
-  return isNew ? items.concat(data) : replaceLast({ items, data })
+export function push (items, data, isNew = true) {
+  return isNew ? items.concat(data) : replaceLast(items, data)
 }
 
 /**
  * Like push but replace last item
+ * @param  {Array} items
+ * @param  {*}     data
  * @return {Array}
  */
-export function replaceLast ({
-  items = [],
-  data
-}) {
+export function replaceLast (items, data) {
   return [...items.slice(0, -1), data]
 }
 
@@ -77,23 +73,23 @@ export function diff (a, b) {
 
 /**
  * Is it empty?
- * @param  {*}       v - variable
+ * @param  {*}       value
  * @return {boolean}
  */
-export function isEmpty (v) {
+export function isEmpty (value) {
   return (
-    v === null ||
-    v === undefined ||
-    (v.hasOwnProperty('length') && v.length === 0) ||
-    (v.constructor === Object && Object.keys(v).length === 0)
+    value === null ||
+    value === undefined ||
+    (value.hasOwnProperty('length') && value.length === 0) ||
+    (value.constructor === Object && Object.keys(value).length === 0)
   )
 }
 
 /**
  * Is it exist?
- * @param  {*}       v - variable
+ * @param  {*}       value
  * @return {boolean}
  */
-export function isExist (v) {
-  return !isEmpty(v)
+export function isExist (value) {
+  return !isEmpty(value)
 }

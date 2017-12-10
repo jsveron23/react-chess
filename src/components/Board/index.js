@@ -65,6 +65,7 @@ class Board extends Component {
 
   /**
    * Handle piece movement
+   * ; after selecting = before moving
    * @param {Object} notation
    */
   handleSelect = ({ side, piece, position }) => {
@@ -100,6 +101,7 @@ class Board extends Component {
 
   /**
    * Handle after moving
+   * ; animatiom start
    * @param {String} nextPosition
    */
   handleMove = nextPosition => {
@@ -139,8 +141,9 @@ class Board extends Component {
 
   /**
    * Fire after finishing transition
+   * ; animation end = after moving
    */
-  handleAnimationEnd = () => {
+  handleAnimateEnd = () => {
     // after moving
     this.setState({ isMoving: false }, () => {
       const { notations, records, selected } = this.state
@@ -224,7 +227,7 @@ class Board extends Component {
    */
   render () {
     const { notations, turn, movable, selected, records } = this.state
-    const parsedMovable = Utils.flatten({ arr: movable })
+    const parsedMovable = Utils.flatten(movable)
 
     return (
       <Fragment>
@@ -258,7 +261,7 @@ class Board extends Component {
                               side={side}
                               translated={shouldAnimate && this.translated}
                               doAnimate={shouldAnimate && this.handleAnimate}
-                              onAnimationEnd={this.handleAnimationEnd}
+                              onAnimateEnd={this.handleAnimateEnd}
                             />
                           )
                         }

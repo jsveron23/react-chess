@@ -13,9 +13,11 @@ class Archives {
    */
   static getMove ({
     record = {},
-    side = ''
+    side = 'white'
   }) {
-    return Utils.isExist(record) ? record[side].move : []
+    const { move } = record[side]
+
+    return move || []
   }
 
   /**
@@ -26,31 +28,21 @@ class Archives {
     records = [],
     prevNotations = [],
     nextNotations = [],
-    ts = +new Date() // no need currently
+    ts = +new Date() // TODO implement later
   }) {
-    const lastItem = Utils.getLastItem({ items: records, shouldStrip: true })
+    const lastItem = Utils.getLastItem(records, true)
     const isCompletedSingleRecord = Object.keys(lastItem || {}).length === 2
     const isNew = Utils.isEmpty(lastItem) || isCompletedSingleRecord
-    const data = isNew ? {
-      white: {
-        move: _transformMove({ n1: prevNotations, n2: nextNotations }),
-        notations: nextNotations,
-        ts
-      }
-    } : {
-      ...lastItem,
-      black: {
-        move: _transformMove({ n1: prevNotations, n2: nextNotations }),
-        notations: nextNotations,
-        ts
-      }
+    const payload = {
+      move: _transformMove({ n1: prevNotations, n2: nextNotations }),
+      notations: nextNotations,
+      ts
     }
+    const data = isNew
+      ? { white: payload }
+      : { ...lastItem, black: payload }
 
-    return Utils.push({
-      items: records,
-      data,
-      isNew
-    })
+    return Utils.push(records, data, isNew)
   }
 
   /**
@@ -69,7 +61,7 @@ class Archives {
       return {}
     }
 
-    const lastItem = Utils.getLastItem({ items: records, shouldStrip: true })
+    const lastItem = Utils.getLastItem(records, true)
     const { white, black } = lastItem
     const isWhite = _isWhiteTurned({ record: lastItem, rate: counts })
     const { notations, move } = _parseRecord({ record: isWhite ? white : black })
@@ -77,7 +69,7 @@ class Archives {
     const excludedLastItem = records.slice(0, -1)
 
     return {
-      undoRecords: isWhite ? excludedLastItem : [...excludedLastItem, { white }],
+      undoRecords: isWhite ? excludedLastItem : Utils.replaceLast(records, { white }),
       undoNotations: _revertNotations({ notations, before, after })
     }
   }
@@ -103,7 +95,7 @@ function _isWhiteTurned ({
   record = {},
   // 1 turn => did white, black
   // 0.5 turn => white
-  // TODO find more readability word to expanin
+  // TODO find more readability word to explain
   rate = 0.5
 }) {
   return Object.keys(record).length * rate === 0.5
