@@ -8,9 +8,10 @@ import css from './knight.css'
  * @param  {Object} props
  * @return {JSX}
  */
-const Knight = ({ side, refContainer }) => (
+const Knight = ({ side, refContainer, onTransitionEnd }) => (
   <svg
     ref={refContainer}
+    onTransitionEnd={onTransitionEnd}
     xmlns="http://www.w3.org/2000/svg"
     version="1.1"
     width="45"
@@ -59,20 +60,13 @@ const Knight = ({ side, refContainer }) => (
 )
 
 Knight.propTypes = {
+  refContainer: PropTypes.func.isRequired,
   side: PropTypes.string.isRequired,
-  translated: PropTypes.oneOfType([
-    PropTypes.bool,
-    PropTypes.object
-  ]),
-  doAnimate: PropTypes.oneOfType([
-    PropTypes.bool,
-    PropTypes.func
-  ])
+  onTransitionEnd: PropTypes.func
 }
 
 Knight.defaultProps = {
-  translated: null,
-  doAnimate: function () {}
+  onTransitionEnd: function () {}
 }
 
 Knight.movement = {
@@ -85,4 +79,4 @@ Knight.movement = {
   specials: ['jumpover']
 }
 
-export default enhanced(Knight)
+export default enhanced(Knight, 'N')

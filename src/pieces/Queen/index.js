@@ -8,9 +8,10 @@ import css from './queen.css'
  * @param  {Object} props
  * @return {JSX}
  */
-const Queen = ({ side, refContainer }) => (
+const Queen = ({ side, refContainer, onTransitionEnd }) => (
   <svg
     ref={refContainer}
+    onTransitionEnd={onTransitionEnd}
     xmlns="http://www.w3.org/2000/svg"
     version="1.1"
     width="45"
@@ -82,20 +83,13 @@ const Queen = ({ side, refContainer }) => (
 )
 
 Queen.propTypes = {
+  refContainer: PropTypes.func.isRequired,
   side: PropTypes.string.isRequired,
-  translated: PropTypes.oneOfType([
-    PropTypes.bool,
-    PropTypes.object
-  ]),
-  doAnimate: PropTypes.oneOfType([
-    PropTypes.bool,
-    PropTypes.func
-  ])
+  onTransitionEnd: PropTypes.func
 }
 
 Queen.defaultProps = {
-  translated: null,
-  doAnimate: function () {}
+  onTransitionEnd: function () {}
 }
 
 Queen.movement = {
@@ -120,4 +114,4 @@ Queen.movement = {
   specials: []
 }
 
-export default enhanced(Queen)
+export default enhanced(Queen, 'Q')

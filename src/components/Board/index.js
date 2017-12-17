@@ -2,7 +2,7 @@ import React, { Component, Fragment } from 'react'
 import PropTypes from 'prop-types'
 import cx from 'classnames'
 import { File, Turn, Records } from '@components'
-import { Pawn, Rook, Bishop, Knight, Queen, King } from '@pieces'
+import { getPiece } from '@pieces'
 import * as Utils from '@utils'
 import Chess from '@utils/Chess'
 import css from './board.css'
@@ -41,15 +41,6 @@ class Board extends Component {
       records: []
     }
 
-    this.pieceList = {
-      P: Pawn,
-      R: Rook,
-      B: Bishop,
-      N: Knight,
-      Q: Queen,
-      K: King
-    }
-
     // TODO no alias, into Chess.js
     this.enemy = {
       w: 'b',
@@ -60,6 +51,7 @@ class Board extends Component {
     // reset per update
     this.translated = null
 
+    // requestAnimationFrame
     this.rAFId = -1
   }
 
@@ -70,27 +62,14 @@ class Board extends Component {
    */
   handleSelect = ({ side, piece, position }) => {
     this.setState(prevState => {
-      const { notations, records } = prevState
-
-      // get Piece component
-      const Piece = this.pieceList[piece]
-
-      // assigned on each component
-      const { movement } = Piece
+      const { movement } = getPiece(piece)
       const { defaults, specials } = movement
 
       // every movement
-      let movable = Chess.detectMovablePath({
-        movement: defaults,
-        specials,
-        piece,
-        position,
-        side,
-        records
-      })
+      let movable = Chess.detectMovablePath({ ...prevState, side, piece, position, specials, movement: defaults })
 
       // exclude blocked path
-      movable = Chess.excludeBlockedPath({ notations, movable, specials })
+      movable = Chess.excludeBlockedPath({ ...prevState, movable, specials })
 
       return {
         selected: position,
@@ -121,7 +100,7 @@ class Board extends Component {
           // re-implement
           this.translated = {
             notation: nextNotation,
-            axis: Chess.convertAxis(prevNotation, nextNotation)
+            axis: Chess.convertAxis({ prev: prevNotation, next: nextNotation })
           }
         }
 
@@ -141,18 +120,21 @@ class Board extends Component {
 
   /**
    * Fire after finishing transition
-   * ; animation end = after moving
+   * ; after moving
+   * @param {String} piece
    */
-  handleAnimateEnd = () => {
-    // after moving
-    this.setState({ isMoving: false }, () => {
-      const { notations, records, selected } = this.state
+  handleAnimateEnd = (piece) => {
+    this.setState(prevState => {
+      const { notations, records, selected } = prevState
+      let nextNotations = [...notations]
 
-      // TODO create event
-      if (Utils.isEmpty(selected)) {
-        const nextNotations = Chess.transformTo({ notations, records })
+      if (Utils.isEmpty(selected) && piece === 'P') {
+        nextNotations = Chess.transformTo({ notations, records, action: 'promotion' })
+      }
 
-        this.setState({ notations: nextNotations })
+      return {
+        isMoving: false,
+        notations: nextNotations
       }
     })
   }
@@ -240,7 +222,7 @@ class Board extends Component {
                     const position = `${file}${rank}`
                     const currentNotation = Chess.findNotation({ notations, position })
                     const { side, piece } = Chess.parseNotation({ notation: currentNotation })
-                    const EnhancedPiece = this.pieceList[piece]
+                    const EnhancedPiece = getPiece(piece)
                     const shouldAnimate = (this.translated && this.translated.notation === currentNotation)
 
                     return (

@@ -124,9 +124,9 @@ function _enPassant ({
   if (Utils.isExist(enemyMove)) {
     const howManyStep = _howManyStepPawn({ move: enemyMove })
     const [myFile, myRank] = position.split('')
-    const myFileIdx = Chess.getFileIdx(myFile)
+    const myFileIdx = Chess.getFileIdx({ char: myFile })
     const [enemyFile, enemyRank] = `${enemyMove.substr(-2, 1)}${enemyMove.substr(-1)}`.split('')
-    const enemyFileIdx = Chess.getFileIdx(enemyFile)
+    const enemyFileIdx = Chess.getFileIdx({ char: enemyFile })
     const isSibling = Math.abs(myFileIdx - enemyFileIdx) === 1
     const isAdjustedLine = parseInt(myRank, 10) === parseInt(enemyRank, 10)
 

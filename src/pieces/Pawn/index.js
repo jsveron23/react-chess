@@ -30,20 +30,13 @@ const Pawn = ({ side, refContainer, onTransitionEnd }) => (
 )
 
 Pawn.propTypes = {
+  refContainer: PropTypes.func.isRequired,
   side: PropTypes.string.isRequired,
-  translated: PropTypes.oneOfType([
-    PropTypes.bool,
-    PropTypes.object
-  ]),
-  doAnimate: PropTypes.oneOfType([
-    PropTypes.bool,
-    PropTypes.func
-  ])
+  onTransitionEnd: PropTypes.func
 }
 
 Pawn.defaultProps = {
-  translated: null,
-  doAnimate: function () {}
+  onTransitionEnd: function () {}
 }
 
 Pawn.movement = {
@@ -55,4 +48,4 @@ Pawn.movement = {
   specials: ['initDouble', 'enPassant', 'promotion']
 }
 
-export default enhanced(Pawn)
+export default enhanced(Pawn, 'P')

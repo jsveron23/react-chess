@@ -7,9 +7,10 @@ import css from './rook.css'
  * Rook component
  * @extends {React.PureComponent}
  */
-const Rook = ({ side, refContainer }) => (
+const Rook = ({ side, refContainer, onTransitionEnd }) => (
   <svg
     ref={refContainer}
+    onTransitionEnd={onTransitionEnd}
     xmlns="http://www.w3.org/2000/svg"
     version="1.1"
     width="45"
@@ -91,20 +92,13 @@ const Rook = ({ side, refContainer }) => (
 )
 
 Rook.propTypes = {
+  refContainer: PropTypes.func.isRequired,
   side: PropTypes.string.isRequired,
-  translated: PropTypes.oneOfType([
-    PropTypes.bool,
-    PropTypes.object
-  ]),
-  doAnimate: PropTypes.oneOfType([
-    PropTypes.bool,
-    PropTypes.func
-  ])
+  onTransitionEnd: PropTypes.func
 }
 
 Rook.defaultProps = {
-  translated: null,
-  doAnimate: function () {}
+  onTransitionEnd: function () {}
 }
 
 Rook.movement = {
@@ -119,4 +113,4 @@ Rook.movement = {
   specials: []
 }
 
-export default enhanced(Rook)
+export default enhanced(Rook, 'R')

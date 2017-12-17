@@ -8,9 +8,10 @@ import css from './bishop.css'
  * @param  {Object} props
  * @return {JSX}
  */
-const Bishop = ({ side, refContainer }) => (
+const Bishop = ({ side, refContainer, onTransitionEnd }) => (
   <svg
     ref={refContainer}
+    onTransitionEnd={onTransitionEnd}
     xmlns="http://www.w3.org/2000/svg"
     version="1.1"
     width="45"
@@ -41,20 +42,13 @@ const Bishop = ({ side, refContainer }) => (
 )
 
 Bishop.ropTypes = {
+  refContainer: PropTypes.func.isRequired,
   side: PropTypes.string.isRequired,
-  translated: PropTypes.oneOfType([
-    PropTypes.bool,
-    PropTypes.object
-  ]),
-  doAnimate: PropTypes.oneOfType([
-    PropTypes.bool,
-    PropTypes.func
-  ])
+  onTransitionEnd: PropTypes.func
 }
 
 Bishop.defaultProps = {
-  translated: null,
-  doAnimate: function () {}
+  onTransitionEnd: function () {}
 }
 
 Bishop.movement = {
@@ -69,4 +63,4 @@ Bishop.movement = {
   specials: []
 }
 
-export default enhanced(Bishop)
+export default enhanced(Bishop, 'B')

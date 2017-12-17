@@ -11,6 +11,7 @@ class File extends Component {
   static propTypes = {
     turn: PropTypes.string.isRequired,
     position: PropTypes.string.isRequired,
+    piece: PropTypes.string,
     side: PropTypes.string,
     movable: PropTypes.array,
     selected: PropTypes.string,
@@ -21,6 +22,7 @@ class File extends Component {
 
   static defaultProps = {
     side: '',
+    piece: '',
     movable: [],
     selected: '',
     children: null,

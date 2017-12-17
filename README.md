@@ -2,10 +2,11 @@
 
 Implementing Chess game with using ReactJS. Pull requests welcome.
 
-## Installation
+## Installation & Start
 
 ```bash
 npm install
+npm start
 ```
 
 ## Example
@@ -27,7 +28,6 @@ https://jsveron23-react-chess.herokuapp.com/
 - [ ] Implement multiplay
 - [ ] Implement vs. CPU
 - [ ] Implement difficulty
-- [ ] Apply TDD
 
 ## License
 
