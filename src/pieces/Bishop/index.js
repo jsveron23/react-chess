@@ -1,6 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import enhanced from '@pieces/enhanced'
+import enhancer from '@utils/Enhancer/piece'
 import css from './bishop.css'
 
 /**
@@ -8,9 +8,9 @@ import css from './bishop.css'
  * @param  {Object} props
  * @return {JSX}
  */
-const Bishop = ({ side, refContainer, onTransitionEnd }) => (
+const Bishop = ({ side, getRef, onTransitionEnd }) => (
   <svg
-    ref={refContainer}
+    ref={getRef}
     onTransitionEnd={onTransitionEnd}
     xmlns="http://www.w3.org/2000/svg"
     version="1.1"
@@ -42,7 +42,7 @@ const Bishop = ({ side, refContainer, onTransitionEnd }) => (
 )
 
 Bishop.ropTypes = {
-  refContainer: PropTypes.func.isRequired,
+  getRef: PropTypes.func.isRequired,
   side: PropTypes.string.isRequired,
   onTransitionEnd: PropTypes.func
 }
@@ -63,4 +63,5 @@ Bishop.movement = {
   specials: []
 }
 
-export default enhanced(Bishop, 'B')
+const enhancedBishop = enhancer(Bishop, 'B')
+export default enhancedBishop

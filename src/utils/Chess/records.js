@@ -1,67 +1,71 @@
-import * as Utils from '@utils'
+import { isEmpty, diet, push, getLastItem, replaceLast } from '@utils'
 import Notations from './notations'
 
 /**
- * Archives of Chess records (per match)
+ * Chess records (per match)
+ * @namespace Records
  */
-class Archives {
-  static isWhiteTurned = _isWhiteTurned
+const Records = {
+  isWhiteTurned: _isWhiteTurned,
 
   /**
    * Get move
    * @return {Array}
    */
-  static getMove ({
+  getMove ({
     record = {},
     side = 'white'
   }) {
     const { move } = record[side]
 
     return move || []
-  }
+  },
 
   /**
    * Save records data
-   * @return {Array}
+   * @param  {Array}    records
+   * @param  {Array}    prevNotations
+   * @return {Function}
    */
-  static save ({
+  save ({
     records = [],
-    prevNotations = [],
-    nextNotations = [],
-    ts = +new Date() // TODO implement later
+    notations = [],
+    ts = +new Date()
   }) {
-    const lastItem = Utils.getLastItem(records, true)
-    const isCompletedSingleRecord = Object.keys(lastItem || {}).length === 2
-    const isNew = Utils.isEmpty(lastItem) || isCompletedSingleRecord
-    const payload = {
-      move: _transformMove({ n1: prevNotations, n2: nextNotations }),
-      notations: nextNotations,
-      ts
-    }
-    const data = isNew
-      ? { white: payload }
-      : { ...lastItem, black: payload }
+    /**
+     * @param  {Array} nextNotations
+     * @return {Array}
+     */
+    return (nextNotations) => {
+      const [lastItem] = getLastItem(records)
+      const isCompletedSingleRecord = Object.keys(lastItem || {}).length === 2
+      const isNew = isEmpty(lastItem) || isCompletedSingleRecord
+      const payload = {
+        move: _transformMove({ n1: notations, n2: nextNotations }),
+        notations,
+        ts
+      }
+      const data = isNew
+        ? { white: payload }
+        : { ...lastItem, black: payload }
 
-    return Utils.push(records, data, isNew)
-  }
+      return push(records, data, isNew)
+    }
+  },
 
   /**
    * Undo
    * +0.5 = undo 1 move from array
    * +1 = undo 2 moves from array
-   * @return {Object}
    */
-  static revert ({
-    records = [],
-    counts = 0.5
-  }) {
+  revert: (records) => (counts = 0.5) => {
     const len = records.length
 
     if (len === 0) {
       return {}
     }
 
-    const lastItem = Utils.getLastItem(records, true)
+    const [lastItem] = getLastItem(records)
     const { white, black } = lastItem
     const isWhite = _isWhiteTurned({ record: lastItem, rate: counts })
     const { notations, move } = _parseRecord({ record: isWhite ? white : black })
@@ -69,8 +73,8 @@ class Archives {
     const excludedLastItem = records.slice(0, -1)
 
     return {
-      undoRecords: isWhite ? excludedLastItem : Utils.replaceLast(records, { white }),
-      undoNotations: _revertNotations({ notations, before, after })
+      revertedRecords: isWhite ? excludedLastItem : replaceLast(records, { white }),
+      revertedNotations: _revertNotations({ notations, before, after })
     }
   }
 }
@@ -145,7 +149,7 @@ function _transformMove ({
       : ''
   })
 
-  return Utils.diet(diff)
+  return diet(diff)
 }
 
-export default Archives
+export default Records

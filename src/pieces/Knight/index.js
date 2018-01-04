@@ -1,6 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import enhanced from '@pieces/enhanced'
+import enhancer from '@utils/Enhancer/piece'
 import css from './knight.css'
 
 /**
@@ -8,9 +8,9 @@ import css from './knight.css'
  * @param  {Object} props
  * @return {JSX}
  */
-const Knight = ({ side, refContainer, onTransitionEnd }) => (
+const Knight = ({ side, getRef, onTransitionEnd }) => (
   <svg
-    ref={refContainer}
+    ref={getRef}
     onTransitionEnd={onTransitionEnd}
     xmlns="http://www.w3.org/2000/svg"
     version="1.1"
@@ -60,7 +60,7 @@ const Knight = ({ side, refContainer, onTransitionEnd }) => (
 )
 
 Knight.propTypes = {
-  refContainer: PropTypes.func.isRequired,
+  getRef: PropTypes.func.isRequired,
   side: PropTypes.string.isRequired,
   onTransitionEnd: PropTypes.func
 }
@@ -79,4 +79,5 @@ Knight.movement = {
   specials: ['jumpover']
 }
 
-export default enhanced(Knight, 'N')
+const enhancedKnight = enhancer(Knight, 'N')
+export default enhancedKnight

@@ -51,7 +51,7 @@ class Main extends Component {
         />
         {
           isPlaying &&
-          <Board action={action} />
+            <Board action={action} />
         }
       </main>
     )

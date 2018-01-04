@@ -1,6 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import enhanced from '@pieces/enhanced'
+import enhancer from '@utils/Enhancer/piece'
 import css from './queen.css'
 
 /**
@@ -8,9 +8,9 @@ import css from './queen.css'
  * @param  {Object} props
  * @return {JSX}
  */
-const Queen = ({ side, refContainer, onTransitionEnd }) => (
+const Queen = ({ side, getRef, onTransitionEnd }) => (
   <svg
-    ref={refContainer}
+    ref={getRef}
     onTransitionEnd={onTransitionEnd}
     xmlns="http://www.w3.org/2000/svg"
     version="1.1"
@@ -83,7 +83,7 @@ const Queen = ({ side, refContainer, onTransitionEnd }) => (
 )
 
 Queen.propTypes = {
-  refContainer: PropTypes.func.isRequired,
+  getRef: PropTypes.func.isRequired,
   side: PropTypes.string.isRequired,
   onTransitionEnd: PropTypes.func
 }
@@ -114,4 +114,5 @@ Queen.movement = {
   specials: []
 }
 
-export default enhanced(Queen, 'Q')
+const enhancedQueen = enhancer(Queen, 'Q')
+export default enhancedQueen

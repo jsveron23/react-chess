@@ -1,35 +1,65 @@
 /**
- * Transform multiple dimensional array to single
- * (this method only for Chess)
+ * Compose
+ * @param  {...Function} fns
+ * @return {*}
+ */
+export const compose = (...fns) => x => fns.reduceRight((v, f) => f(v), x)
+
+/**
+ * Pipe
+ * @param  {...Function} fns
+ * @return {*}
+ */
+export const pipe = (...fns) => x => fns.reduce((v, f) => f(v), x)
+
+/**
+ * Is string?
+ * @param  {*}       value
+ * @return {boolean}
+ */
+export const isString = (value) => (typeof value === 'string')
+
+/**
+ * Is number
+ * @param  {*}
+ * @return {boolean}
+ */
+export const isNumber = (value) => (typeof value === 'number')
+
+/**
+ * Flatten
  * @param  {Array} items
  * @return {Array}
  */
-export function flatten (items) {
+export const flatten = (items) => items.reduce((a, b) => a.concat(b))
+
+/**
+ * Transform multiple dimensional array to single
+ * @param  {Array} items
+ * @return {Array}
+ * TODO make it better!
+ */
+export function multipleFlatten (items) {
   if (items.length === 0) {
     return items
   }
 
-  const flattenedItems = items.reduce((a, b) => a.concat(b))
-  const shouldFlattened = flattenedItems.some(f => (typeof f === 'string'))
+  const flattened = flatten(items)
+  const isFlattened = flattened.every(isString)
 
-  if (!shouldFlattened) {
-    return flatten(flattenedItems)
+  if (!isFlattened) {
+    return multipleFlatten(flattened)
   }
 
-  return flattenedItems
+  return flattened
 }
 
 /**
  * Get last item of array
- * @param  {Array}    items
- * @param  {Boolean?} strip
- * @return {*}
+ * @param  {Array} items
+ * @return {Array}
  */
-export function getLastItem (items, strip = false) {
-  const [last] = items.slice(-1)
-
-  return strip ? last : [last]
-}
+export const getLastItem = (items) => items.slice(-1)
 
 /**
  * Push item but no update original items
@@ -38,9 +68,10 @@ export function getLastItem (items, strip = false) {
  * @param  {Boolean?} isNew
  * @return {Array}
  */
-export function push (items, data, isNew = true) {
-  return isNew ? items.concat(data) : replaceLast(items, data)
-}
+export const push = (items, data, isNew = true) =>
+  isNew
+    ? items.concat(data)
+    : replaceLast(items, data)
 
 /**
  * Like push but replace last item
@@ -48,18 +79,14 @@ export function push (items, data, isNew = true) {
  * @param  {*}     data
  * @return {Array}
  */
-export function replaceLast (items, data) {
-  return [...items.slice(0, -1), data]
-}
+export const replaceLast = (items, data) => [...items.slice(0, -1), data]
 
 /**
  * Remove unnecessary items
  * @param  {Array} arr
  * @return {Array}
  */
-export function diet (arr) {
-  return arr.filter(item => !!item)
-}
+export const diet = arr => arr.filter(item => !!item)
 
 /**
  * Difference
@@ -67,29 +94,23 @@ export function diet (arr) {
  * @param  {Array} b
  * @return {Array}
  */
-export function diff (a, b) {
-  return a.filter((n, idx) => n !== b[idx])
-}
+export const diff = (a, b) => a.filter((n, idx) => n !== b[idx])
 
 /**
  * Is it empty?
  * @param  {*}       value
  * @return {boolean}
  */
-export function isEmpty (value) {
-  return (
-    value === null ||
-    value === undefined ||
-    (value.hasOwnProperty('length') && value.length === 0) ||
-    (value.constructor === Object && Object.keys(value).length === 0)
-  )
-}
+export const isEmpty = value => (
+  value === null ||
+  value === undefined ||
+  (value.hasOwnProperty('length') && value.length === 0) ||
+  (value.constructor === Object && Object.keys(value).length === 0)
+)
 
 /**
  * Is it exist?
  * @param  {*}       value
  * @return {boolean}
  */
-export function isExist (value) {
-  return !isEmpty(value)
-}
+export const isExist = value => !isEmpty(value)

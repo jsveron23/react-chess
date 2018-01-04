@@ -27,22 +27,25 @@ function configure ({ production } = {}) {
   const resolve = {
     alias: {
       '@components': getAbsPath('src/components'),
+      '@containers': getAbsPath('src/containers'),
       '@pieces': getAbsPath('src/pieces'),
       '@utils': getAbsPath('src/utils'),
       '@styles': getAbsPath('src/styles'),
-      '@assets': getAbsPath('src/assets')
+      '@assets': getAbsPath('src/assets'),
+      '@actions': getAbsPath('src/actions'),
+      '@reducers': getAbsPath('src/reducers'),
+      '@store': getAbsPath('src/store')
     }
   }
 
   if (env === 'development') {
     entry.app.unshift(
-      'react-hot-loader/patch',
       `webpack-dev-server/client?http://localhost:${config.port}`,
       'webpack/hot/only-dev-server'
     )
     module.rules = [
       Object.assign({}, Loaders.get('eslint'), { enforce: 'pre' }),
-      Object.assign({}, Loaders.get('javascript'), { use: ['react-hot-loader/webpack', 'babel-loader'] }),
+      Loaders.get('javascript'),
       {
         test: /\.css$/,
         include: [srcPath],

@@ -1,15 +1,15 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import enhanced from '@pieces/enhanced'
+import enhancer from '@utils/Enhancer/piece'
 import css from './rook.css'
 
 /**
  * Rook component
  * @extends {React.PureComponent}
  */
-const Rook = ({ side, refContainer, onTransitionEnd }) => (
+const Rook = ({ side, getRef, onTransitionEnd }) => (
   <svg
-    ref={refContainer}
+    ref={getRef}
     onTransitionEnd={onTransitionEnd}
     xmlns="http://www.w3.org/2000/svg"
     version="1.1"
@@ -92,7 +92,7 @@ const Rook = ({ side, refContainer, onTransitionEnd }) => (
 )
 
 Rook.propTypes = {
-  refContainer: PropTypes.func.isRequired,
+  getRef: PropTypes.func.isRequired,
   side: PropTypes.string.isRequired,
   onTransitionEnd: PropTypes.func
 }
@@ -113,4 +113,5 @@ Rook.movement = {
   specials: []
 }
 
-export default enhanced(Rook, 'R')
+const enhancedRook = enhancer(Rook, 'R')
+export default enhancedRook

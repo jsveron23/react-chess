@@ -1,6 +1,6 @@
-import * as Utils from '@utils'
+import { isEmpty, isExist, getLastItem } from '@utils'
 import Chess from './'
-import Archives from './archives'
+import Records from './records'
 
 /**
  * Specials
@@ -27,7 +27,7 @@ class Specials {
    * Calculate special movement (before moving)
    * @return {Array}
    */
-  static includSpecialDirection ({
+  static includeSpecialDirection ({
     direction = [],
     specials = [],
     records = [],
@@ -111,22 +111,22 @@ function _enPassant ({
   records = [],
   position = ''
 }) {
-  const lastItem = Utils.getLastItem(records, true)
+  const [lastItem] = getLastItem(records)
 
-  if (Utils.isEmpty(lastItem)) {
+  if (isEmpty(lastItem)) {
     return [...direction]
   }
 
   const turn = _isWhiteTurned({ record: lastItem }) ? 'white' : 'black'
-  const enemy = Chess.getEnemy({ side: turn })
-  const [enemyMove] = Archives.getMove({ record: lastItem, side: enemy })
+  const enemy = Chess.getEnemy(turn)
+  const [enemyMove] = Records.getMove({ record: lastItem, side: enemy })
 
-  if (Utils.isExist(enemyMove)) {
+  if (isExist(enemyMove)) {
     const howManyStep = _howManyStepPawn({ move: enemyMove })
     const [myFile, myRank] = position.split('')
-    const myFileIdx = Chess.getFileIdx({ char: myFile })
+    const myFileIdx = Chess.getFileIdx(myFile)
     const [enemyFile, enemyRank] = `${enemyMove.substr(-2, 1)}${enemyMove.substr(-1)}`.split('')
-    const enemyFileIdx = Chess.getFileIdx({ char: enemyFile })
+    const enemyFileIdx = Chess.getFileIdx(enemyFile)
     const isSibling = Math.abs(myFileIdx - enemyFileIdx) === 1
     const isAdjustedLine = parseInt(myRank, 10) === parseInt(enemyRank, 10)
 
@@ -160,8 +160,8 @@ function _isWhiteTurned ({
   record = {}
 }) {
   return (
-    Utils.isEmpty(record) ||
-    (Utils.isExist(record) && Object.keys(record).length === 2)
+    isEmpty(record) ||
+    (isExist(record) && Object.keys(record).length === 2)
   )
 }
 

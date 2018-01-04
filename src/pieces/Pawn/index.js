@@ -1,6 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import enhanced from '@pieces/enhanced'
+import enhancer from '@utils/Enhancer/piece'
 import css from './pawn.css'
 
 /**
@@ -8,9 +8,9 @@ import css from './pawn.css'
  * @param  {Object} props
  * @return {JSX}
  */
-const Pawn = ({ side, refContainer, onTransitionEnd }) => (
+const Pawn = ({ side, getRef, onTransitionEnd }) => (
   <svg
-    ref={refContainer}
+    ref={getRef}
     onTransitionEnd={onTransitionEnd}
     xmlns="http://www.w3.org/2000/svg"
     version="1.1"
@@ -30,7 +30,7 @@ const Pawn = ({ side, refContainer, onTransitionEnd }) => (
 )
 
 Pawn.propTypes = {
-  refContainer: PropTypes.func.isRequired,
+  getRef: PropTypes.func.isRequired,
   side: PropTypes.string.isRequired,
   onTransitionEnd: PropTypes.func
 }
@@ -48,4 +48,5 @@ Pawn.movement = {
   specials: ['initDouble', 'enPassant', 'promotion']
 }
 
-export default enhanced(Pawn, 'P')
+const enhancedPawn = enhancer(Pawn, 'P')
+export default enhancedPawn

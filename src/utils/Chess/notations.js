@@ -1,62 +1,68 @@
-import * as Utils from '@utils'
-
 /**
  * Notations
  */
-class Notations {
+const Notations = {
+  parse: _parse,
+
   /**
    * Validate
+   * @param  {String}  notation
    * @return {Boolean}
    */
-  static is ({
-    notation = ''
-  }) {
-    return /^[w|b][B|K|P|Q|R][a-h][1-8]$/.test(notation)
-  }
+  is: (notation) => /^[w|b][B|K|P|Q|R][a-h][1-8]$/.test(notation),
 
   /**
    * Find specific notation
    * @return {String}
    */
-  static find ({
-    notations = [],
-    position = '',
-    cb = function () {}
-  }) {
-    cb = Utils.isExist(position)
-      ? notation => (notation.search(position) > -1)
-      : cb
-
-    const found = notations.find(cb)
+  find: (notations) => (position) => {
+    const found = notations.find(notation => (notation.search(position) > -1))
 
     return found || ''
-  }
+  },
 
   /**
    * Update notations
    * @return {Array}
    */
-  static update ({
+  update: ({
     notations = [],
     asEqual,
     updateTo
-  }) {
-    return notations.map(function (notation) {
-      return notation === asEqual ? updateTo : notation
-    })
-  }
+  }) => notations.map((notation) => (notation === asEqual ? updateTo : notation)),
 
   /**
-   * Parse a notation
-   * @return {Object}
+   * Transform next notations
+   * @return {Function}
    */
-  static parse ({
-    notation = ''
-  }) {
-    const [side, piece, ...position] = notation.split('')
+  transformNext: ({
+    currPosition = '',
+    nextPosition = '',
+    cb = function () {}
+  }) => (prevNotations) => prevNotations.map(prevNotation => {
+    let nextNotation = prevNotation
 
-    return { side, piece, position: position ? position.join('') : undefined }
-  }
+    if (prevNotation.search(currPosition) > -1) {
+      const { side, piece } = _parse(prevNotation)
+
+      nextNotation = `${side}${piece}${nextPosition}`
+
+      cb(prevNotation, nextNotation)
+    }
+
+    return nextNotation
+  })
+}
+
+/**
+ * Parse a notation
+ * @param  {String} notation
+ * @return {Object}
+ */
+function _parse (notation) {
+  const [side, piece, ...position] = notation.split('')
+
+  return { side, piece, position: position ? position.join('') : undefined }
 }
 
 export default Notations

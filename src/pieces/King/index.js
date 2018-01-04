@@ -1,6 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import enhanced from '@pieces/enhanced'
+import enhancer from '@utils/Enhancer/piece'
 import css from './king.css'
 
 /**
@@ -8,9 +8,9 @@ import css from './king.css'
  * @param  {Object} props
  * @return {JSX}
  */
-const King = ({ side, refContainer, onTransitionEnd }) => (
+const King = ({ side, getRef, onTransitionEnd }) => (
   <svg
-    ref={refContainer}
+    ref={getRef}
     onTransitionEnd={onTransitionEnd}
     xmlns="http://www.w3.org/2000/svg"
     version="1.1"
@@ -62,7 +62,7 @@ const King = ({ side, refContainer, onTransitionEnd }) => (
 )
 
 King.propTypes = {
-  refContainer: PropTypes.func.isRequired,
+  getRef: PropTypes.func.isRequired,
   side: PropTypes.string.isRequired,
   onTransitionEnd: PropTypes.func
 }
@@ -93,4 +93,5 @@ King.movement = {
   specials: ['castling']
 }
 
-export default enhanced(King, 'K')
+const enhancedKing = enhancer(King, 'K')
+export default enhancedKing

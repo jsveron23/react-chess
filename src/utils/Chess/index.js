@@ -1,12 +1,47 @@
-import * as Utils from '@utils'
+import { isEmpty, isExist, diet, push, getLastItem } from '@utils'
 import Specials from './specials'
 import Notations from './notations'
-import Archives from './archives'
+import Records from './records'
 
 // TODO
 // implement!!
 // - isBlocked({ notations, direction, position })
 // - removeNotation({ ?? })
+
+/**
+ * Piece initial
+ * @type {Object}
+ */
+const INITIAL = {
+  P: 'Pawn',
+  R: 'Rook',
+  N: 'Knight',
+  B: 'Bishop',
+  Q: 'Queen',
+  K: 'King'
+}
+
+/**
+ * Chess piece color
+ * @type {Object}
+ */
+const SIDE = {
+  w: 'white',
+  b: 'black',
+  white: 'white',
+  black: 'black'
+}
+
+/**
+ * Enemy piece color
+ * @type {Object}
+ */
+const ENEMY = {
+  w: 'black',
+  b: 'white',
+  white: 'black',
+  black: 'white'
+}
 
 /**
  * Ranks
@@ -29,102 +64,97 @@ const FILES = Object.freeze(['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h'])
 const Chess = {
   RANKS,
   FILES,
-  getFile: _getFile,
-  getFileIdx: _getFileIdx,
   parseNotation: Notations.parse,
   findNotation: Notations.find,
   updateNotation: Notations.update,
-  records: Archives.save,
-  undo: Archives.revert,
+  transformNextNotations: Notations.transformNext,
+  records: Records.save,
+  undo: Records.revert,
+
+  /**
+   * Get full name of Chess piece
+   * @param  {String}  alias
+   * @param  {Object?} initial
+   * @return {String}
+   */
+  getPieceName: (alias, initial = INITIAL) => initial[alias] || alias,
+
+  /**
+   * Get file char from index number (-1)
+   * @param  {Number} idx
+   * @param  {Array?} files
+   * @return {String}
+   */
+  getFile: (idx, files = FILES) => files.join('').charAt(idx - 1),
+
+  /**
+   * Get index number from file char (+1)
+   * @param  {String} char
+   * @param  {Array?} files
+   * @return {Number}
+   */
+  getFileIdx: (char, files = FILES) => (files.join('').indexOf(char) + 1),
 
   /**
    * Get side
+   * @param  {String}  alias
+   * @param  {Object?} side
    * @return {String}
    */
-  getSide ({
-    propName = ''
-  }) {
-    const side = {
-      w: 'white',
-      b: 'black'
-    }
-
-    return side[propName]
-  },
+  getSide: (alias, side = SIDE) => side[alias],
 
   /**
    * Get enemy
+   * @param  {String}  side
+   * @param  {Object?} enemy
    * @return {String}
    */
-  getEnemy ({
-    side = ''
-  }) {
-    const oppositeSide = {
-      w: 'black',
-      b: 'white',
-      white: 'black',
-      black: 'white'
-    }
-
-    return oppositeSide[side]
-  },
+  getEnemy: (side, enemy = ENEMY) => enemy[side],
 
   /**
-   * Transform piece
-   * @return {Array}
+   * Dispatch
+   * @param  {action}   action
+   * @return {Function}
    */
-  transformTo ({
-    notations = [],
-    records = [],
-    position = '',
-    action = ''
-  }) {
-    const nextNotations = [...notations]
-    const lastItem = Utils.getLastItem(records, true)
-    const { white, black } = lastItem
-    const hasBlackLog = Utils.isExist(black)
-    const move = Archives.getMove({
-      record: lastItem,
-      side: hasBlackLog ? 'black' : 'white'
-    })
-    const [x, y] = move.join('').substr(-2, 2) // ['???? ??(??)']
-    const payload = { notations: nextNotations, x, y }
-    let transformedNotations = nextNotations
+  dispatch (action) {
+    const { type, payload } = action
 
-    switch (action) {
-      case 'promotion': {
-        if (+y === 1 && Utils.isExist(black)) {
-          transformedNotations = Specials.promotion({ ...payload, side: 'b' })
-        } else if (+y === 8 && Utils.isExist(white)) {
-          transformedNotations = Specials.promotion({ ...payload, side: 'w' })
+    // reducer
+    switch (type) {
+      case 'PROMOTION': {
+        const { notations, records } = payload
+        const [lastItem] = getLastItem(records)
+        const { white, black } = lastItem
+        const [x, y] = Records.getMove({
+          record: lastItem,
+          side: isExist(black) ? 'black' : 'white'
+        }).join('').substr(-2, 2) // ['???? ??(??)']
+        const data = { notations: [...notations], x, y }
+        let transformedNotations = [...notations]
+
+        // can promotion
+        if (+y === 1 && isExist(black)) {
+          transformedNotations = Specials.promotion({ ...data, side: 'b' })
+        } else if (+y === 8 && isExist(white)) {
+          transformedNotations = Specials.promotion({ ...data, side: 'w' })
         }
 
         return transformedNotations
       }
 
-      case 'remove': {
-        // TODO implement
-        return transformedNotations
-      }
-
       default: {
-        return nextNotations
+        const { notations } = payload
+
+        return [...notations]
       }
     }
   },
 
   /**
    * Detect movable path but it does not check blocking path
-   * @return {Array}
+   * @return {Function}
    */
-  detectMovablePath ({
-    movement = {},
-    specials = {},
-    records = [],
-    piece = '',
-    position = '',
-    side = ''
-  }) {
+  getRawMovableData: ({ piece, position, side, records }) => ({ defaults, specials }) => {
     // add all direction for adding special moves while process
     // -> not add jump-over move (Knight)
     // e.g. Pawn moves straightly only but it can move diagonally when en-passant
@@ -132,7 +162,7 @@ const Chess = {
       vertical: [],
       horizontal: [],
       diagonal: []
-    }, movement)
+    }, defaults)
 
     // transform standard movement to movable
     // - movement => group of direction that included group of axis (calculate)
@@ -142,28 +172,23 @@ const Chess = {
       const direction = extendMovement[key]
 
       // added special direction
-      const specialDirection = Specials.includSpecialDirection({ piece, direction, key, specials, position, records })
+      const specialDirection = Specials.includeSpecialDirection({ piece, direction, key, specials, position, records })
 
-      if (Utils.isExist(specialDirection)) {
-        const transformedDirection = specialDirection.map(axisList => _transformTiles({ axisList, side, position }))
-
-        return transformedDirection.filter(tiles => (tiles.length !== 0))
+      if (isExist(specialDirection)) {
+        return specialDirection
+          .map(axisList => _transformTiles({ axisList, side, position }))
+          .filter(tiles => (tiles.length !== 0))
       }
     })
 
-    return Utils.diet(movable)
+    return diet(movable)
   },
 
   /**
    * Filter blocked path
-   * @return {Array}
+   * @return {Function}
    */
-  excludeBlockedPath ({
-    notations = [],
-    movable = [],
-    specials = [],
-    turn = ''
-  }) {
+  rejectBlockedMovableData: ({ notations, turn, specials }) => (movable) => {
     return movable.map(m => { // tile list of direction
       return m.map(tiles => {
         const enemyTiles = _includeEnemyPiece({ notations, tiles, turn })
@@ -172,22 +197,22 @@ const Chess = {
         let [lastTile] = nonBlockedTiles.slice(-1)
         let shouldMerge = false
 
-        lastTile = Utils.isEmpty(lastTile) ? firstTile : lastTile
+        lastTile = isEmpty(lastTile) ? firstTile : lastTile
 
-        if (Utils.isExist(firstTile) && firstTile !== lastTile && Utils.isExist(enemyTiles)) {
+        if (isExist(firstTile) && firstTile !== lastTile && isExist(enemyTiles)) {
           const firstFile = firstTile.substr(-1)
           const lastFile = lastTile.substr(-1)
           const [fistEnemyTile] = enemyTiles
           const enemyFile = fistEnemyTile.substr(-1)
 
-          if (Utils.isExist(enemyFile) && +firstFile > +lastFile) {
+          if (isExist(enemyFile) && +firstFile > +lastFile) {
             shouldMerge = +enemyFile > +lastFile
-          } else if (Utils.isExist(enemyFile) && +firstFile < +lastFile) {
+          } else if (isExist(enemyFile) && +firstFile < +lastFile) {
             shouldMerge = +enemyFile < +lastFile
           }
         }
 
-        const mergedPath = shouldMerge ? nonBlockedTiles : Utils.push(nonBlockedTiles, enemyTiles)
+        const mergedPath = shouldMerge ? nonBlockedTiles : push(nonBlockedTiles, enemyTiles)
 
         console.log(nonBlockedTiles, enemyTiles)
 
@@ -197,26 +222,9 @@ const Chess = {
   },
 
   /**
-   * Get full name of Chess piece
-   * @return {String}
-   */
-  getPieceName ({
-    piece = ''
-  }) {
-    const initial = {
-      P: 'Pawn',
-      R: 'Rook',
-      N: 'Knight',
-      B: 'Bishop',
-      Q: 'Queen',
-      K: 'King'
-    }
-
-    return initial[piece] || piece
-  },
-
-  /**
    * Converts notations to axis number for animations
+   * @param  {String} prevNotation
+   * @param  {String} nextNotation
    * @return {Object}
    * @description
    * c2 to c3
@@ -232,13 +240,9 @@ const Chess = {
    * => transform: translate(300px, 100px)
    * TODO calculate pixelSize automatically
    */
-  convertAxis ({
-    prev = '',
-    next = '',
-    pixelSize = 50
-  }) {
-    const { position: prevPosition } = Notations.parse({ notation: prev })
-    const { position: nextPosition } = Notations.parse({ notation: next })
+  convertAxis (prevNotation, nextNotation, pixelSize = 50) {
+    const { position: prevPosition } = Notations.parse(prevNotation)
+    const { position: nextPosition } = Notations.parse(nextNotation)
     const [prevFile, prevRank] = prevPosition.split('')
     const [nextFile, nextRank] = nextPosition.split('')
 
@@ -247,8 +251,8 @@ const Chess = {
     // but it just re-render(re-created, state changed) and animated from starting position
     // pretend moving component
     return {
-      x: (_getFileIdx({ char: nextFile }) - _getFileIdx({ char: prevFile })) * pixelSize,
-      y: (parseInt(nextRank, 10) - parseInt(prevRank, 10)) * pixelSize
+      x: (Chess.getFileIdx(nextFile) - Chess.getFileIdx(prevFile)) * pixelSize,
+      y: (+nextRank - +prevRank) * pixelSize
     }
   }
 }
@@ -271,14 +275,15 @@ function _includeEnemyPiece ({
     const isPlaced = _isPlaced({ notations, position: tile })
 
     if (!isEnemy && !isTargeted) {
-      const found = Chess.findNotation({ notations, position: tile })
+      const findNotation = Chess.findNotation(notations)
+      const found = findNotation(tile)
 
       console.log('found!!', found)
 
-      if (Utils.isExist(found)) {
+      if (isExist(found)) {
         const side = found.substr(0, 1)
-        const tileSide = Chess.getSide({ propName: side })
-        const myEnemy = Chess.getEnemy({ side: turn })
+        const tileSide = Chess.getSide(side)
+        const myEnemy = Chess.getEnemy(turn)
 
         // TODO common argument name
         if (tileSide === myEnemy) {
@@ -298,7 +303,7 @@ function _includeEnemyPiece ({
     }
   })
 
-  return Utils.diet(contactableEnemyPieces)
+  return diet(contactableEnemyPieces)
 }
 
 /**
@@ -309,29 +314,9 @@ function _isPlaced ({
   notations = [],
   position = ''
 }) {
-  return !!Notations.find({ notations, position })
-}
+  const findNotation = Notations.find(notations)
 
-/**
- * Get file char from index number (-1)
- * @return {String}
- */
-function _getFile ({
-  idx,
-  files = FILES
-}) {
-  return files.join('').charAt(idx - 1)
-}
-
-/**
- * Get index number from file char (+1)
- * @return {Number}
- */
-function _getFileIdx ({
-  char = '',
-  files = FILES
-}) {
-  return files.join('').indexOf(char) + 1
+  return !!findNotation(position)
 }
 
 /**
@@ -345,17 +330,17 @@ function _fillAvailTilesOnly ({
 }) {
   const [x, y] = axis
   const [file, rank] = position.split('')
-  const fileIdx = _getFileIdx({ char: file })
+  const fileIdx = Chess.getFileIdx(file)
 
   // X: 1(a) + 1 = 2(b)
   const nextX = x + fileIdx
 
   // Y: upside down
-  const nextY = side === 'w'
+  const nextY = side === 'white'
     ? y + parseInt(rank, 10)
     : parseInt(rank, 10) - y
 
-  const fileChar = _getFile({ idx: nextX })
+  const fileChar = Chess.getFile(nextX)
   const isAvailMove = (nextX > 0 && nextY > 0 && !!fileChar)
 
   return isAvailMove ? `${fileChar}${nextY}` : ''
@@ -385,7 +370,7 @@ function _removeBlocking ({
     start !== -1 && removedPlaced.fill(undefined, start)
   }
 
-  return Utils.diet(removedPlaced)
+  return diet(removedPlaced)
 }
 
 /**
@@ -399,7 +384,7 @@ function _transformTiles ({
 }) {
   const availTiles = axisList.map(axis => _fillAvailTilesOnly({ axis, side, position }))
 
-  return Utils.diet(availTiles)
+  return diet(availTiles)
 }
 
 export default Chess

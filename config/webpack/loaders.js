@@ -17,7 +17,7 @@ const Loaders = {
     javascript: {
       test: /\.js$/,
       include: [srcPath],
-      use: ['babel-loader']
+      loader: 'babel-loader'
     },
     style: 'style-loader',
     css: {

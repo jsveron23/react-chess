@@ -7,20 +7,3 @@
   border: 1px solid #ddd;
   background-color: #a0a0a0;
 }
-
-.rank {
-  width: 100%;
-  height: calc(100% / 8);
-
-  &:nth-child(odd) {
-    & span:nth-child(odd) {
-      background-color: #fff;
-    }
-  }
-
-  &:nth-child(even) {
-    & span:nth-child(even) {
-      background-color: #fff;
-    }
-  }
-}
