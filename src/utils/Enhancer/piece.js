@@ -4,9 +4,8 @@ import PropTypes from 'prop-types'
 /**
  * Common API for Chess piece component
  * @param  {React.Component} WrappedComponent
- * @param  {String}          piece
+ * @param  {string}          piece
  * @return {React.Component}
- * TODO https://github.com/gaearon/react-hot-loader/blob/master/docs/Troubleshooting.md#react-hot-loader-this-component-is-not-accepted-by-hot-loader
  */
 const enhancer = (WrappedComponent, piece) => class extends PureComponent {
   static propTypes = {
@@ -15,7 +14,7 @@ const enhancer = (WrappedComponent, piece) => class extends PureComponent {
       PropTypes.bool,
       PropTypes.object
     ]),
-    doAnimate: PropTypes.oneOfType([
+    onAnimate: PropTypes.oneOfType([
       PropTypes.bool,
       PropTypes.func
     ]),
@@ -29,41 +28,16 @@ const enhancer = (WrappedComponent, piece) => class extends PureComponent {
 
   static movement = WrappedComponent.movement
 
-  /**
-   * Get ref
-   * @param {Object} el
-   */
-  refContainer = el => {
-    this.refElement = el
-  }
-
-  /**
-   * Lifecycle method
-   */
   componentDidMount () {
-    const { translated, doAnimate } = this.props
+    const { translated, onAnimate } = this.props
 
     if (translated) {
       const { axis } = translated
 
-      doAnimate(axis, this.refElement)
+      onAnimate(axis, this.refElement)
     }
   }
 
-  /**
-   * Handle animate end
-   * @listens
-   */
-  handleTransitionEnd = () => {
-    const { onAnimateEnd } = this.props
-
-    onAnimateEnd(piece)
-  }
-
-  /**
-   * Lifecycle method
-   * @return {JSX}
-   */
   render () {
     const { side } = this.props
 
@@ -74,6 +48,23 @@ const enhancer = (WrappedComponent, piece) => class extends PureComponent {
         side={side}
       />
     )
+  }
+
+  /**
+   * Get ref
+   * @param {Object} el
+   */
+  refContainer = el => {
+    this.refElement = el
+  }
+
+  /**
+   * Handle animation end
+   */
+  handleTransitionEnd = () => {
+    const { onAnimateEnd } = this.props
+
+    onAnimateEnd(piece)
   }
 }
 

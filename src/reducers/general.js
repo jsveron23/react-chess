@@ -36,6 +36,10 @@ const reducer = (state = initialState, action) => {
       return { ...state, command: payload }
     }
 
+    case 'RESET_COMMAND': {
+      return { ...state, command: '' }
+    }
+
     case 'SET_TURN': {
       return { ...state, turn: payload }
     }

@@ -19,6 +19,10 @@ const reducer = (state = initialState, action) => {
       return [...payload]
     }
 
+    case 'RESET_NOTATIONS': {
+      return [...initialState]
+    }
+
     default: {
       return state
     }

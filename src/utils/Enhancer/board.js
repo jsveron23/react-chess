@@ -64,21 +64,29 @@ const enhancer = (WrappedComponent) => class extends PureComponent {
     } = nextProps
 
     if (!isPlaying) {
+      // TODO set reset every thing until implement resume menu
       console.log('ISN\'T PLAYING!')
-      // TODO set reset every thing
     }
 
     if (command === 'undo') {
       const undo = Chess.undo
       const getPrevTurn = Chess.getEnemy
 
-      revert({ undo, getPrevTurn })
+      revert({
+        undo,
+        getPrevTurn
+      })
     }
   }
 
   render () {
     const { currPosition } = this.state
-    const { isPlaying, notations, movable, turn } = this.props
+    const {
+      isPlaying,
+      notations,
+      movable,
+      turn
+    } = this.props
 
     if (!isPlaying) {
       return null
@@ -92,16 +100,16 @@ const enhancer = (WrappedComponent) => class extends PureComponent {
         translated={this.translated}
         selected={currPosition}
         onSelect={this.handleSelect}
-        onAnimate={this.handleAnimateBegin}
-        onMoveBegin={this.handleMove}
-        onMoveEnd={this.handleAnimateEnd}
+        onMove={this.handleMove}
+        onAnimate={this.handleAnimate}
+        onAnimateEnd={this.handleAnimateEnd}
       />
     )
   }
 
   /**
    * Set calculated axis to create moving animation
-   * @see @utils/Chess/index.js#transformNextNotations
+   * @see @utils/Chess/notations.js#transformNext
    */
   setAxis = (prevNotation, nextNotation) => {
     const axis = Chess.convertAxis(prevNotation, nextNotation)
@@ -142,8 +150,15 @@ const enhancer = (WrappedComponent) => class extends PureComponent {
   handleMove = (nextPosition) => {
     const { currPosition } = this.state
     const { notations, records, setNext, resetMovable } = this.props
-    const getNextNotations = Chess.transformNextNotations({ currPosition, nextPosition, cb: this.setAxis })
-    const getNextRecords = Chess.records({ records, notations })
+    const getNextNotations = Chess.transformNextNotations({
+      setAxis: this.setAxis,
+      currPosition,
+      nextPosition
+    })
+    const getNextRecords = Chess.records({
+      records,
+      notations
+    })
     const getNextTurn = Chess.getEnemy
 
     this.setState({
@@ -157,9 +172,10 @@ const enhancer = (WrappedComponent) => class extends PureComponent {
 
   /**
    * Handle animation begin
+   * @see @utils/Enhancer/piece.js#onAnimate
    * TODO performance up (only CSS)
    */
-  handleAnimateBegin = (axis, el) => {
+  handleAnimate = (axis, el) => {
     const pretendMoving = (element) => (cssText) => (/* rAF */) => (element.style.cssText = cssText)
     const animateTo = pretendMoving(el)
     const animateFn = animateTo('top: 0; right: 0;')
@@ -184,6 +200,7 @@ const enhancer = (WrappedComponent) => class extends PureComponent {
 
   /**
    * Handle animation end
+   * @see @utils/Enhancer/piece.js#onAnimateEnd
    */
   handleAnimateEnd = (piece) => {
     const { currPosition } = this.state

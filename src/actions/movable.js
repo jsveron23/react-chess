@@ -3,26 +3,24 @@ import { compose } from '@utils'
 /**
  * Set Movable
  * @param  {Object}   args
- * @param  {Function} args.getOriginalMovableData
- * @param  {Function} args.getFilteredMovableData
- * @param  {Array}    args.defaults
- * @param  {Array}    args.specials
  * @return {Function}
  */
-export const setMovable = ({ getOriginalMovableData, getFilteredMovableData, ...movement }) => (dispatch, getState) => {
+export const setMovable = (args) => (dispatch, getState) => {
+  const { getOriginalMovableData, getFilteredMovableData, ...movement } = args
   const getMovable = compose(getFilteredMovableData, getOriginalMovableData)
   const movable = getMovable(movement)
-
-  dispatch({
+  const action = {
     type: 'SET_MOVABLE',
     payload: movable
-  })
-
-  return Promise.resolve()
-}
-
-export function resetMovable () {
-  return {
-    type: 'RESET_MOVABLE'
   }
+
+  return Promise.resolve(action)
+    .then(dispatch)
 }
+
+/**
+ * Reset movable after moving
+ */
+export const resetMovable = () => ({
+  type: 'RESET_MOVABLE'
+})

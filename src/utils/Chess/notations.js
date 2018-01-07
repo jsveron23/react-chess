@@ -1,25 +1,23 @@
 /**
  * Notations
+ * @namespace Notations
  */
 const Notations = {
   parse: _parse,
 
   /**
-   * Validate
-   * @param  {String}  notation
-   * @return {Boolean}
+   * Validate a notation
+   * @param  {string}  notation
+   * @return {boolean}
    */
   is: (notation) => /^[w|b][B|K|P|Q|R][a-h][1-8]$/.test(notation),
 
   /**
    * Find specific notation
-   * @return {String}
+   * @return {string}
    */
-  find: (notations) => (position) => {
-    const found = notations.find(notation => (notation.search(position) > -1))
-
-    return found || ''
-  },
+  find: (notations) => (position) =>
+    (notations.find((notation) => (notation.search(position) > -1))) || '',
 
   /**
    * Update notations
@@ -35,34 +33,35 @@ const Notations = {
    * Transform next notations
    * @return {Function}
    */
-  transformNext: ({
-    currPosition = '',
-    nextPosition = '',
-    cb = function () {}
-  }) => (prevNotations) => prevNotations.map(prevNotation => {
-    let nextNotation = prevNotation
+  getNext: ({ currPosition, nextPosition, setAxis }) =>
+    (prevNotations) => prevNotations.map((prevNotation) => {
+      let nextNotation = prevNotation
 
-    if (prevNotation.search(currPosition) > -1) {
-      const { side, piece } = _parse(prevNotation)
+      if (prevNotation.search(currPosition) > -1) {
+        const { side, piece } = _parse(prevNotation)
 
-      nextNotation = `${side}${piece}${nextPosition}`
+        nextNotation = `${side}${piece}${nextPosition}`
 
-      cb(prevNotation, nextNotation)
-    }
+        setAxis(prevNotation, nextNotation)
+      }
 
-    return nextNotation
-  })
+      return nextNotation
+    })
 }
 
 /**
  * Parse a notation
- * @param  {String} notation
+ * @param  {string} notation
  * @return {Object}
  */
 function _parse (notation) {
   const [side, piece, ...position] = notation.split('')
 
-  return { side, piece, position: position ? position.join('') : undefined }
+  return {
+    position: position ? position.join('') : undefined,
+    side,
+    piece
+  }
 }
 
 export default Notations

@@ -21,7 +21,7 @@ export const isString = (value) => (typeof value === 'string')
 
 /**
  * Is number
- * @param  {*}
+ * @param  {*}       value
  * @return {boolean}
  */
 export const isNumber = (value) => (typeof value === 'number')
@@ -31,15 +31,14 @@ export const isNumber = (value) => (typeof value === 'number')
  * @param  {Array} items
  * @return {Array}
  */
-export const flatten = (items) => items.reduce((a, b) => a.concat(b))
+export const flatten = (items = []) => items.reduce((a, b) => a.concat(b))
 
 /**
  * Transform multiple dimensional array to single
  * @param  {Array} items
  * @return {Array}
- * TODO make it better!
  */
-export function multipleFlatten (items) {
+export const deepFlatten = (items) => {
   if (items.length === 0) {
     return items
   }
@@ -48,7 +47,7 @@ export function multipleFlatten (items) {
   const isFlattened = flattened.every(isString)
 
   if (!isFlattened) {
-    return multipleFlatten(flattened)
+    return deepFlatten(flattened)
   }
 
   return flattened

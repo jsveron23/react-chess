@@ -3,7 +3,7 @@ import thunk from 'redux-thunk'
 import reducers from '@reducers'
 
 /**
- * Configure Store
+ * Configure store
  * @return {Object}
  */
 function configureStore () {

@@ -18,17 +18,16 @@ class File extends Component {
     selected: PropTypes.string,
     children: PropTypes.node,
     onSelect: PropTypes.func,
-    onMoveBegin: PropTypes.func
+    onMove: PropTypes.func
   }
 
   static defaultProps = {
     side: '',
     piece: '',
-    movable: [],
     selected: '',
-    children: null,
+    movable: [],
     onSelect: function () {},
-    onMoveBegin: function () {}
+    onMove: function () {}
   }
 
   /**
@@ -51,10 +50,10 @@ class File extends Component {
   handleClickSquare = evt => {
     evt.preventDefault()
 
-    const { movable, position, onMoveBegin } = this.props
+    const { movable, position, onMove } = this.props
 
     if (movable.includes(position)) {
-      onMoveBegin(position)
+      onMove(position)
     }
   }
 

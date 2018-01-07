@@ -6,7 +6,7 @@ import '@styles/app.css'
 
 /**
  * App Component
- * @extends {React.Component}
+ * @return {JSX}
  */
 const App = props => (
   <main style={{ flex: 1 }}>

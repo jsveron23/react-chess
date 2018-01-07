@@ -2,7 +2,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { Rank, File } from '@components'
 import { getPiece } from '@pieces'
-import { multipleFlatten } from '@utils'
+import { deepFlatten } from '@utils'
 import Chess from '@utils/Chess'
 import css from './board.css'
 
@@ -19,17 +19,17 @@ const Board = (props) => {
     selected,
     translated,
     onSelect,
-    onMoveBegin,
-    onMoveEnd,
-    onAnimate
+    onMove,
+    onAnimate,
+    onAnimateEnd
   } = props
   const findNotation = Chess.findNotation(notations)
   let fileProps = {
-    movable: multipleFlatten(movable),
+    movable: deepFlatten(movable),
     selected,
     turn,
     onSelect,
-    onMoveBegin
+    onMove
   }
 
   return (
@@ -56,8 +56,8 @@ const Board = (props) => {
                   <EnhancedPiece
                     side={side}
                     translated={shouldAnimate && translated}
-                    doAnimate={shouldAnimate && onAnimate}
-                    onAnimateEnd={onMoveEnd}
+                    onAnimate={shouldAnimate && onAnimate}
+                    onAnimateEnd={onAnimateEnd}
                   />
                 )}
               </File>
@@ -74,8 +74,8 @@ Board.propTypes = {
   turn: PropTypes.string.isRequired,
   selected: PropTypes.string.isRequired,
   onSelect: PropTypes.func.isRequired,
-  onMoveBegin: PropTypes.func.isRequired,
-  onMoveEnd: PropTypes.func.isRequired,
+  onMove: PropTypes.func.isRequired,
+  onAnimateEnd: PropTypes.func.isRequired,
   onAnimate: PropTypes.func.isRequired,
   movable: PropTypes.array,
   translated: PropTypes.object

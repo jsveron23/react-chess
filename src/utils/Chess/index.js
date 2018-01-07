@@ -67,7 +67,7 @@ const Chess = {
   parseNotation: Notations.parse,
   findNotation: Notations.find,
   updateNotation: Notations.update,
-  transformNextNotations: Notations.transformNext,
+  transformNextNotations: Notations.getNext,
   records: Records.save,
   undo: Records.revert,
 
