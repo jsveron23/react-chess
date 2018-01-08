@@ -1,6 +1,6 @@
 import React, { PureComponent } from 'react'
 import PropTypes from 'prop-types'
-import { isEmpty } from '@utils'
+import { isEmpty, isExist } from '@utils'
 import Chess from '@utils/Chess'
 
 /**
@@ -22,6 +22,7 @@ const enhancer = (WrappedComponent) => class extends PureComponent {
     setMovable: PropTypes.func,
     setTurn: PropTypes.func,
     resetMovable: PropTypes.func,
+    resetMatch: PropTypes.func,
     revert: PropTypes.func
   }
 
@@ -33,6 +34,7 @@ const enhancer = (WrappedComponent) => class extends PureComponent {
     setMovable: function () {},
     setTurn: function () {},
     resetMovable: function () {},
+    resetMatch: function () {},
     revert: function () {}
   }
 
@@ -60,12 +62,15 @@ const enhancer = (WrappedComponent) => class extends PureComponent {
     const {
       isPlaying,
       command,
+      records,
+      resetMatch,
       revert
     } = nextProps
 
-    if (!isPlaying) {
-      // TODO set reset every thing until implement resume menu
-      console.log('ISN\'T PLAYING!')
+    if (!isPlaying && isExist(records)) {
+      // TODO
+      // - reset until implement resume
+      resetMatch()
     }
 
     if (command === 'undo') {

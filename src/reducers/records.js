@@ -14,6 +14,10 @@ const reducer = (state = initialState, action) => {
       return [...payload]
     }
 
+    case 'RESET_RECORDS': {
+      return []
+    }
+
     default: {
       return state
     }

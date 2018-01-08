@@ -1,5 +1,5 @@
-import { setNotations } from '@actions/notations'
-import { setRecords } from '@actions/records'
+import { setNotations, resetNotations } from '@actions/notations'
+import { setRecords, resetRecords } from '@actions/records'
 import { isExist, diff } from '@utils'
 
 /**
@@ -29,6 +29,7 @@ export const setNext = (fns) => (dispatch, getState) => {
  * Undo previous turn
  * @param  {Object}   args
  * @return {Function}
+ * TODO implement undo-redo
  */
 export const revert = (args) => (dispatch, getState) => {
   dispatch({ type: 'REVERT' })
@@ -55,6 +56,21 @@ export const revert = (args) => (dispatch, getState) => {
 
   return Promise.resolve({ type: 'REVERT_DONE' })
     .then(dispatch)
+}
+
+/**
+ * Reset match
+ * @return {Function}
+ */
+export const resetMatch = () => (dispatch) => {
+  dispatch({
+    type: 'RESET_MATCH',
+    payload: 'white'
+  })
+  dispatch(resetNotations())
+  dispatch(resetRecords())
+
+  return Promise.resolve()
 }
 
 /**

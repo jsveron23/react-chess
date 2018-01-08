@@ -1,6 +1,6 @@
 import { connect } from 'react-redux'
 import { Board } from '@components'
-import { setNext, setTurn, revert } from '@actions/general'
+import { setNext, setTurn, resetMatch, revert } from '@actions/general'
 import { setNotations } from '@actions/notations'
 import { setRecords } from '@actions/records'
 import { setMovable, resetMovable } from '@actions/movable'
@@ -32,6 +32,7 @@ const applyConnect = connect(mapStateToProps, {
   setMovable,
   setTurn,
   resetMovable,
+  resetMatch,
   revert
 })
 
