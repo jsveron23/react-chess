@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 import { Rank, File } from '@components'
 import { getPiece } from '@pieces'
 import { deepFlatten } from '@utils'
-import Chess from '@utils/Chess'
+import Chess, { RANKS, FILES } from '@utils/Chess'
 import css from './board.css'
 
 /**
@@ -11,19 +11,20 @@ import css from './board.css'
  * @param  {Object} props
  * @return {JSX}
  */
-const Board = (props) => {
-  const {
-    turn,
-    notations,
-    movable,
-    selected,
-    translated,
-    onSelect,
-    onMove,
-    onAnimate,
-    onAnimateEnd
-  } = props
+const Board = ({
+  notations,
+  movable,
+  selected,
+  turn,
+  translated,
+  onSelect,
+  onMove,
+  onAnimate,
+  onAnimateEnd
+}) => {
   const findNotation = Chess.findNotation(notations)
+  const parseNotation = Chess.parseNotation
+  const getSide = Chess.getSide
   let fileProps = {
     movable: deepFlatten(movable),
     selected,
@@ -34,18 +35,18 @@ const Board = (props) => {
 
   return (
     <div className={css.board}>
-      {Chess.RANKS.map(rank => (
+      {RANKS.map(rank => (
         <Rank key={rank}>
-          {Chess.FILES.map(file => {
+          {FILES.map(file => {
             const position = `${file}${rank}`
             const currentNotation = findNotation(position)
-            const { side, piece } = Chess.parseNotation(currentNotation)
+            const { side, piece } = parseNotation(currentNotation)
             const EnhancedPiece = getPiece(piece)
             const shouldAnimate = (translated && translated.notation === currentNotation)
 
             fileProps = {
               ...fileProps,
-              side: Chess.getSide(side),
+              side: getSide(side),
               position,
               piece
             }

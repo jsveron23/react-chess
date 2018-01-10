@@ -4,10 +4,7 @@ const HtmlWebpackPlugin = require('html-webpack-plugin')
 const { assetsPath } = require('../../lib/path')
 const flatten = require('../../lib/flatten')
 
-/**
- * Plugins
- * @namespace Plugins
- */
+/** @namespace Plugins */
 const Plugins = {
   pluginList: [
     new webpack.optimize.CommonsChunkPlugin({
@@ -24,10 +21,12 @@ const Plugins = {
       template: `${assetsPath}/index.html`
     })
   ],
+
   development: [
     new webpack.HotModuleReplacementPlugin(),
     new webpack.NamedModulesPlugin()
   ],
+
   production: [
     new ExtractTextPlugin('[name].css'),
     new webpack.optimize.UglifyJsPlugin({
@@ -36,12 +35,7 @@ const Plugins = {
     })
   ],
 
-  /**
-   * Get plugins
-   * @param  {String} env
-   * @return {Array}
-   */
-  get (env) {
+  get (env = '') {
     return this.pluginList.concat(
       flatten(this[env]),
       new webpack.DefinePlugin({
@@ -50,11 +44,6 @@ const Plugins = {
     )
   },
 
-  /**
-   * Extract single CSS file on production
-   * @param  {Array} use
-   * @return {Array}
-   */
   extractCSS (use) {
     return ExtractTextPlugin.extract(use)
   }

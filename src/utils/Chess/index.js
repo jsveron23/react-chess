@@ -1,4 +1,4 @@
-import { isEmpty, isExist, diet, push, getLastItem } from '@utils'
+import { isEmpty, isExist, diet, push } from '@utils'
 import Specials from './specials'
 import Notations from './notations'
 import Records from './records'
@@ -12,64 +12,64 @@ import Records from './records'
  * Piece initial
  * @type {Object}
  */
-const INITIAL = {
+export const INITIAL = Object.freeze({
   P: 'Pawn',
   R: 'Rook',
   N: 'Knight',
   B: 'Bishop',
   Q: 'Queen',
   K: 'King'
-}
+})
 
 /**
  * Chess piece color
  * @type {Object}
  */
-const SIDE = {
+export const SIDE = Object.freeze({
   w: 'white',
   b: 'black',
   white: 'white',
   black: 'black'
-}
+})
 
 /**
  * Enemy piece color
  * @type {Object}
  */
-const ENEMY = {
+export const ENEMY = Object.freeze({
   w: 'black',
   b: 'white',
   white: 'black',
   black: 'white'
-}
+})
 
 /**
  * Ranks
  * @type {Array}
  * @readonly
  */
-const RANKS = Object.freeze(['8', '7', '6', '5', '4', '3', '2', '1'])
+export const RANKS = Object.freeze(['8', '7', '6', '5', '4', '3', '2', '1'])
 
 /**
  * Files
  * @type {Array}
  * @readonly
  */
-const FILES = Object.freeze(['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h'])
+export const FILES = Object.freeze(['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h'])
 
 /**
  * Chess engine
  * @namespace Chess
  */
 const Chess = {
-  RANKS,
-  FILES,
   parseNotation: Notations.parse,
   findNotation: Notations.find,
   updateNotation: Notations.update,
   transformNextNotations: Notations.getNext,
   records: Records.save,
   undo: Records.revert,
+  getMove: Records.getMove,
+  promotion: Specials.promotion,
 
   /**
    * Get full name of Chess piece
@@ -93,7 +93,7 @@ const Chess = {
    * @param  {Array?} files
    * @return {Number}
    */
-  getFileIdx: (char, files = FILES) => (files.join('').indexOf(char) + 1),
+  getFileIdx: (char, files = FILES) => files.join('').indexOf(char) + 1,
 
   /**
    * Get side
@@ -110,45 +110,6 @@ const Chess = {
    * @return {String}
    */
   getEnemy: (side, enemy = ENEMY) => enemy[side],
-
-  /**
-   * Dispatch
-   * @param  {action}   action
-   * @return {Function}
-   */
-  dispatch (action) {
-    const { type, payload } = action
-
-    // reducer
-    switch (type) {
-      case 'PROMOTION': {
-        const { notations, records } = payload
-        const [lastItem] = getLastItem(records)
-        const { white, black } = lastItem
-        const [x, y] = Records.getMove({
-          record: lastItem,
-          side: isExist(black) ? 'black' : 'white'
-        }).join('').substr(-2, 2) // ['???? ??(??)']
-        const data = { notations: [...notations], x, y }
-        let transformedNotations = [...notations]
-
-        // can promotion
-        if (+y === 1 && isExist(black)) {
-          transformedNotations = Specials.promotion({ ...data, side: 'b' })
-        } else if (+y === 8 && isExist(white)) {
-          transformedNotations = Specials.promotion({ ...data, side: 'w' })
-        }
-
-        return transformedNotations
-      }
-
-      default: {
-        const { notations } = payload
-
-        return [...notations]
-      }
-    }
-  },
 
   /**
    * Detect movable path but it does not check blocking path
@@ -212,7 +173,9 @@ const Chess = {
           }
         }
 
-        const mergedPath = shouldMerge ? nonBlockedTiles : push(nonBlockedTiles, enemyTiles)
+        const mergedPath = shouldMerge
+          ? nonBlockedTiles
+          : push(nonBlockedTiles, enemyTiles)
 
         console.log(nonBlockedTiles, enemyTiles)
 
@@ -240,7 +203,7 @@ const Chess = {
    * => transform: translate(300px, 100px)
    * TODO calculate pixelSize automatically
    */
-  convertAxis (prevNotation, nextNotation, pixelSize = 50) {
+  convertAxis: (pixelSize = 50) => (prevNotation, nextNotation) => {
     const { position: prevPosition } = Notations.parse(prevNotation)
     const { position: nextPosition } = Notations.parse(nextNotation)
     const [prevFile, prevRank] = prevPosition.split('')

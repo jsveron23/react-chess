@@ -3,8 +3,9 @@ import { Board } from '@components'
 import { setNext, setTurn, resetMatch, revert } from '@actions/general'
 import { setNotations } from '@actions/notations'
 import { setRecords } from '@actions/records'
-import { setMovable, resetMovable } from '@actions/movable'
+import { setMovable, doPromotion, resetMovable } from '@actions/movable'
 import enhancer from '@utils/Enhancer/board'
+import { compose } from '@utils'
 
 /**
  * @param  {Object} state
@@ -24,16 +25,19 @@ function mapStateToProps ({ general, notations, records, movable }) {
   }
 }
 
-const enhancedBoard = enhancer(Board)
-const applyConnect = connect(mapStateToProps, {
-  setNext,
-  setNotations,
-  setRecords,
-  setMovable,
-  setTurn,
-  resetMovable,
-  resetMatch,
-  revert
-})
+const applyConnect = compose(
+  connect(mapStateToProps, {
+    setNext,
+    setNotations,
+    setRecords,
+    setMovable,
+    setTurn,
+    doPromotion,
+    resetMovable,
+    resetMatch,
+    revert
+  }),
+  enhancer
+)
 
-export default applyConnect(enhancedBoard)
+export default applyConnect(Board)

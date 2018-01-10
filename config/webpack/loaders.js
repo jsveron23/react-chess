@@ -1,9 +1,6 @@
 const { repoPath, confPath, srcPath } = require('../../lib/path')
 
-/**
- * Loaders
- * @namespace Loaders
- */
+/** @namespace Loaders */
 const Loaders = {
   loaderList: {
     eslint: {
@@ -40,17 +37,15 @@ const Loaders = {
     }
   },
 
-  /**
-   * Get loaders
-   * @param  {String}       type
-   * @return {Array|String}
-   */
-  get (type) {
-    const loaders = type.split(' ').map(t => this.loaderList[t]).filter(t => !!t)
+  get (type = '') {
+    const loaders = type
+      .split(' ')
+      .map(t => this.loaderList[t])
+      .filter(t => !!t)
     let loader
 
     if (loaders.length === 0) {
-      console.log(`No '${type}' loader!`)
+      console.log(`'${type}' loader not found!`)
     } else if (loaders.length === 1) {
       [loader] = loaders
     }

@@ -34,7 +34,7 @@ export const isNumber = (value) => (typeof value === 'number')
 export const flatten = (items = []) => items.reduce((a, b) => a.concat(b))
 
 /**
- * Transform multiple dimensional array to single
+ * Deep flatten
  * @param  {Array} items
  * @return {Array}
  */

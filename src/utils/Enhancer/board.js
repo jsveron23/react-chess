@@ -21,6 +21,7 @@ const enhancer = (WrappedComponent) => class extends PureComponent {
     setRecords: PropTypes.func,
     setMovable: PropTypes.func,
     setTurn: PropTypes.func,
+    doPromotion: PropTypes.func,
     resetMovable: PropTypes.func,
     resetMatch: PropTypes.func,
     revert: PropTypes.func
@@ -33,6 +34,7 @@ const enhancer = (WrappedComponent) => class extends PureComponent {
     setRecords: function () {},
     setMovable: function () {},
     setTurn: function () {},
+    doPromotion: function () {},
     resetMovable: function () {},
     resetMatch: function () {},
     revert: function () {}
@@ -55,7 +57,7 @@ const enhancer = (WrappedComponent) => class extends PureComponent {
   }
 
   componentWillUnmount () {
-    window.cancelAnimationFrame(this.rAFId)
+    this.cancelRAF()
   }
 
   componentWillReceiveProps (nextProps) {
@@ -102,8 +104,8 @@ const enhancer = (WrappedComponent) => class extends PureComponent {
         notations={notations}
         movable={movable}
         turn={turn}
-        translated={this.translated}
         selected={currPosition}
+        translated={this.translated}
         onSelect={this.handleSelect}
         onMove={this.handleMove}
         onAnimate={this.handleAnimate}
@@ -113,20 +115,30 @@ const enhancer = (WrappedComponent) => class extends PureComponent {
   }
 
   /**
+   * Cancel requestAnimationFrame
+   */
+  cancelRAF () {
+    window.cancelAnimationFrame(this.rAFId)
+
+    return Promise.resolve(this.rAFId)
+  }
+
+  /**
    * Set calculated axis to create moving animation
    * @see @utils/Chess/notations.js#transformNext
    */
   setAxis = (prevNotation, nextNotation) => {
-    const axis = Chess.convertAxis(prevNotation, nextNotation)
+    const convertAxis = Chess.convertAxis(/* pixelSize */)
+    const axis = convertAxis(prevNotation, nextNotation)
 
     // TODO
-    // get rid of it if it fires side effect
-    // re-implement
-    // not good for understanding code flow
+    // re-implement without context(this)
     this.translated = {
       notation: nextNotation,
       axis
     }
+
+    return Promise.resolve(this.translated)
   }
 
   /**
@@ -135,14 +147,41 @@ const enhancer = (WrappedComponent) => class extends PureComponent {
    * @see @utils/Chess/index.js#getRawMovableData
    * @see @utils/Chess/index.js#rejectBlockedMovableData
    */
-  handleSelect = ({ side, piece, position, defaults, specials }) => {
-    const { notations, records, turn, setMovable } = this.props
-    const getOriginalMovableData = Chess.getRawMovableData({ side, piece, position, records })
-    const getFilteredMovableData = Chess.rejectBlockedMovableData({ notations, turn, specials })
+  handleSelect = ({
+    side,
+    piece,
+    position,
+    defaults,
+    specials
+  }) => {
+    const {
+      notations,
+      records,
+      turn,
+      setMovable
+    } = this.props
+    const getOriginalMovableData = Chess.getRawMovableData({
+      side,
+      piece,
+      position,
+      records
+    })
+    const getFilteredMovableData = Chess.rejectBlockedMovableData({
+      notations,
+      turn,
+      specials
+    })
 
     this.setState({
       currPosition: position
-    }, () => setMovable({ getOriginalMovableData, getFilteredMovableData, defaults, specials }))
+    }, () => {
+      setMovable({
+        getOriginalMovableData,
+        getFilteredMovableData,
+        defaults,
+        specials
+      })
+    })
   }
 
   /**
@@ -154,31 +193,39 @@ const enhancer = (WrappedComponent) => class extends PureComponent {
    */
   handleMove = (nextPosition) => {
     const { currPosition } = this.state
-    const { notations, records, setNext, resetMovable } = this.props
-    const getNextNotations = Chess.transformNextNotations({
-      setAxis: this.setAxis,
-      currPosition,
-      nextPosition
-    })
-    const getNextRecords = Chess.records({
+    const {
+      notations,
       records,
-      notations
-    })
-    const getNextTurn = Chess.getEnemy
+      setNext,
+      resetMovable
+    } = this.props
 
     this.setState({
       isMoving: true,
       currPosition: ''
     }, () => {
-      setNext({ getNextNotations, getNextRecords, getNextTurn })
-        .then(() => resetMovable())
+      const getNextNotations = Chess.transformNextNotations({
+        setAxis: this.setAxis,
+        currPosition,
+        nextPosition
+      })
+
+      const getNextRecords = Chess.records({
+        records,
+        notations
+      })
+
+      setNext({
+        getNextTurn: Chess.getEnemy,
+        getNextNotations,
+        getNextRecords
+      }).then(() => resetMovable())
     })
   }
 
   /**
    * Handle animation begin
    * @see @utils/Enhancer/piece.js#onAnimate
-   * TODO performance up (only CSS)
    */
   handleAnimate = (axis, el) => {
     const pretendMoving = (element) => (cssText) => (/* rAF */) => (element.style.cssText = cssText)
@@ -196,9 +243,8 @@ const enhancer = (WrappedComponent) => class extends PureComponent {
 
     el.style.cssText = style
 
-    if (this.rAFId) {
-      window.cancelAnimationFrame(this.rAFId)
-    }
+    // cancel before starting if already exist
+    this.cancelRAF()
 
     this.rAFId = window.requestAnimationFrame(animateFn)
   }
@@ -209,9 +255,8 @@ const enhancer = (WrappedComponent) => class extends PureComponent {
    */
   handleAnimateEnd = (piece) => {
     const { currPosition } = this.state
-    const { notations, records, setNotations } = this.props
+    const { doPromotion } = this.props
     const isAfterMoving = isEmpty(currPosition)
-    const checkUpdate = (nextNotations) => (notation, idx) => (notation !== nextNotations[idx])
 
     this.setState({
       isMoving: false
@@ -219,14 +264,14 @@ const enhancer = (WrappedComponent) => class extends PureComponent {
       if (isAfterMoving) {
         switch (piece) {
           case 'P': {
-            const nextNotations = Chess.dispatch({
-              type: 'PROMOTION',
-              payload: { notations, records }
-            })
-            const isUpdated = checkUpdate(nextNotations)
-            const isChanged = notations.some(isUpdated)
+            const getMove = Chess.getMove
+            const promotion = Chess.promotion
 
-            isChanged && setNotations(nextNotations)
+            doPromotion({
+              checkUpdate: (nextNotations) => (notation, idx) => (notation !== nextNotations[idx]),
+              getMove,
+              promotion
+            })
 
             break
           }

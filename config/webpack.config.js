@@ -1,14 +1,8 @@
 const Loaders = require('./webpack/loaders')
 const Plugins = require('./webpack/plugins')
 const { distPath, srcPath, assetsPath, getAbsPath } = require('../lib/path')
-const config = require('./')
+const { noParse, port, devServer } = require('./')
 
-/**
- * Create Webpack config with argument which passed from NPM script
- * @param  {Object} args
- * @param  {string} args.production
- * @return {Object}
- */
 function configure ({ production } = {}) {
   const env = production ? 'production' : 'development'
   const isDev = env === 'development'
@@ -22,7 +16,7 @@ function configure ({ production } = {}) {
     ]
   }
   const module = {
-    noParse: config.noParse
+    noParse
   }
   const resolve = {
     alias: {
@@ -38,32 +32,32 @@ function configure ({ production } = {}) {
     }
   }
 
+  // loaders
+  const eslintLoader = Object.assign({}, Loaders.get('eslint'), {
+    enforce: 'pre'
+  })
+  const jsLoader = Loaders.get('javascript')
+  const cssLoader = {
+    test: /\.css$/,
+    include: [srcPath],
+    use: Loaders.get('style css postcss')
+  }
+
   if (env === 'development') {
     entry.app.unshift(
-      `webpack-dev-server/client?http://localhost:${config.port}`,
+      `webpack-dev-server/client?http://localhost:${port}`,
       'webpack/hot/only-dev-server'
     )
-    module.rules = [
-      Object.assign({}, Loaders.get('eslint'), { enforce: 'pre' }),
-      Loaders.get('javascript'),
-      {
-        test: /\.css$/,
-        include: [srcPath],
-        use: Loaders.get('style css postcss')
-      }
-    ]
+
+    module.rules = [eslintLoader, jsLoader, cssLoader]
   } else {
-    module.rules = [
-      Loaders.get('javascript'),
-      {
-        test: /\.css$/,
-        include: srcPath,
-        use: Plugins.extractCSS({
-          fallback: Loaders.get('style'),
-          use: Loaders.get('css postcss')
-        })
-      }
-    ]
+    module.rules = [jsLoader, {
+      ...cssLoader,
+      use: Plugins.extractCSS({
+        fallback: Loaders.get('style'),
+        use: Loaders.get('css postcss')
+      })
+    }]
   }
 
   return {
@@ -76,7 +70,7 @@ function configure ({ production } = {}) {
     plugins: Plugins.get(env),
     context: srcPath,
     devtool: isDev ? 'cheap-module-source-map' : 'nosources-source-map',
-    devServer: isDev ? Object.assign({}, config.devServer, {
+    devServer: isDev ? Object.assign({}, devServer, {
       contentBase: assetsPath
     }) : undefined,
     resolve,
