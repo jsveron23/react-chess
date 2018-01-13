@@ -54,13 +54,15 @@ function configure ({ production } = {}) {
 
     module.rules = [eslintLoader, jsLoader, cssLoader]
   } else {
-    module.rules = [jsLoader, {
-      ...cssLoader,
-      use: Plugins.extractCSS({
-        fallback: Loaders.get('style'),
-        use: Loaders.get('css postcss')
+    module.rules = [
+      jsLoader,
+      Object.assign({}, cssLoader, {
+        use: Plugins.extractCSS({
+          fallback: Loaders.get('style'),
+          use: Loaders.get('css postcss')
+        })
       })
-    }]
+    ]
   }
 
   return {
