@@ -7,9 +7,12 @@ import { isExist, getLastItem, compose } from '@utils'
  * @return {Function}
  */
 export const setMovable = (args) => (dispatch, getState) => {
-  const { getOriginalMovableData, getFilteredMovableData, ...movement } = args
-  const getMovable = compose(getFilteredMovableData, getOriginalMovableData)
-  const movable = getMovable(movement)
+  const { getOriginalMovableData, getFilteredMovableData, defaults, specials } = args
+  const getCompleteMovableData = compose(
+    getFilteredMovableData,
+    getOriginalMovableData
+  )
+  const movable = getCompleteMovableData({ defaults, specials } /* movement */)
 
   return Promise.resolve({
     type: 'SET_MOVABLE',
@@ -23,7 +26,7 @@ export const setMovable = (args) => (dispatch, getState) => {
  * @return {Function}
  */
 export const doPromotion = (fns) => (dispatch, getState) => {
-  dispatch({ type: 'DO_PROMOTION' })
+  dispatch({ type: 'CHECK_PROMOTION' })
 
   const { notations, records } = getState()
   const { getMove, promotion, checkUpdate } = fns
@@ -49,7 +52,7 @@ export const doPromotion = (fns) => (dispatch, getState) => {
     dispatch(setNotations(nextNotations))
   }
 
-  return Promise.resolve({ type: 'DO_PROMOTION_DONE' })
+  return Promise.resolve({ type: 'CHECK_PROMOTION_DONE' })
     .then(dispatch)
 }
 

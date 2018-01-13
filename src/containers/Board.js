@@ -1,6 +1,6 @@
 import { connect } from 'react-redux'
 import { Board } from '@components'
-import { setNext, setTurn, resetMatch, revert } from '@actions/general'
+import { setNext, setTurn, setAxis, resetMatch, revert } from '@actions/general'
 import { setNotations } from '@actions/notations'
 import { setRecords } from '@actions/records'
 import { setMovable, doPromotion, resetMovable } from '@actions/movable'
@@ -12,7 +12,7 @@ import { compose } from '@utils'
  * @return {Object}
  */
 function mapStateToProps ({ general, notations, records, movable }) {
-  const { screen, command, turn } = general
+  const { screen, command, turn, axis } = general
   const isPlaying = screen !== 'main'
 
   return {
@@ -21,7 +21,8 @@ function mapStateToProps ({ general, notations, records, movable }) {
     notations,
     records,
     movable,
-    turn
+    turn,
+    axis
   }
 }
 
@@ -32,6 +33,7 @@ const applyConnect = compose(
     setRecords,
     setMovable,
     setTurn,
+    setAxis,
     doPromotion,
     resetMovable,
     resetMatch,

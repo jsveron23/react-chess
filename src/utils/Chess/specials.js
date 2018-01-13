@@ -16,11 +16,12 @@ class Specials {
     x = '',
     y = ''
   }) {
-    return Chess.updateNotation({
-      notations,
+    const update = Chess.updateNotation({
       asEqual: `${side}P${x}${y}`,
       updateTo: `${side}Q${x}${y}`
     })
+
+    return update(notations)
   }
 
   /**
@@ -128,7 +129,7 @@ function _enPassant ({
     const [enemyFile, enemyRank] = `${enemyMove.substr(-2, 1)}${enemyMove.substr(-1)}`.split('')
     const enemyFileIdx = Chess.getFileIdx(enemyFile)
     const isSibling = Math.abs(myFileIdx - enemyFileIdx) === 1
-    const isAdjustedLine = parseInt(myRank, 10) === parseInt(enemyRank, 10)
+    const isAdjustedLine = +myRank === +enemyRank
 
     if ((howManyStep === 2) && isAdjustedLine && isSibling) {
       const nextX = enemyFileIdx - myFileIdx
@@ -174,7 +175,7 @@ function _howManyStepPawn ({
 }) {
   const steps = move
     .split(' ')
-    .map(notation => (parseInt(notation.substr(-1), 10)))
+    .map(notation => +notation.substr(-1))
     .reduce((prevNotation, currNotation) => (currNotation - prevNotation))
 
   return Math.abs(steps)

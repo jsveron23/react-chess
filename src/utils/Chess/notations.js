@@ -1,3 +1,5 @@
+import Chess from './'
+
 /**
  * Notations
  * @namespace Notations
@@ -16,37 +18,38 @@ const Notations = {
    * Find specific notation
    * @return {string}
    */
-  find: (notations) => (position) =>
-    (notations.find((notation) => (notation.search(position) > -1))) || '',
+  find (notations) {
+    return (position) => (notations.find((notation) => (notation.search(position) > -1))) || ''
+  },
 
   /**
    * Update notations
    * @return {Array}
    */
-  update: ({
-    notations = [],
-    asEqual,
-    updateTo
-  }) => notations.map((notation) => (notation === asEqual ? updateTo : notation)),
+  update ({ asEqual, updateTo }) {
+    return (notations) => notations.map((notation) => (notation === asEqual ? updateTo : notation))
+  },
 
   /**
-   * Transform next notations
+   * Return next notations
    * @return {Function}
    */
-  getNext: ({ currPosition, nextPosition, setAxis }) =>
-    (prevNotations) => prevNotations.map((prevNotation) => {
-      let nextNotation = prevNotation
+  getNext ({ currPosition, nextPosition, setAxis }) {
+    return (currNotations) => currNotations.map((notation) => {
+      let nextNotation = notation
 
-      if (prevNotation.search(currPosition) > -1) {
-        const { side, piece } = _parse(prevNotation)
+      if (notation.search(currPosition) > -1) {
+        const getAxis = Chess.convertAxis(notation)
+        const { side, piece } = _parse(notation)
 
         nextNotation = `${side}${piece}${nextPosition}`
 
-        setAxis(prevNotation, nextNotation)
+        setAxis({ nextNotation, getAxis })
       }
 
       return nextNotation
     })
+  }
 }
 
 /**
@@ -58,7 +61,9 @@ function _parse (notation) {
   const [side, piece, ...position] = notation.split('')
 
   return {
-    position: position ? position.join('') : undefined,
+    position: position
+      ? position.join('')
+      : undefined,
     side,
     piece
   }

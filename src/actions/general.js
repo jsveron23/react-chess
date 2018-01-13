@@ -4,7 +4,7 @@ import { isExist, diff } from '@utils'
 
 /**
  * Refresh board to perform next turn and starting animation
- * @param  {Function} fns
+ * @param  {...Function} fns
  * @return {Function}
  */
 export const setNext = (fns) => (dispatch, getState) => {
@@ -56,6 +56,23 @@ export const revert = (args) => (dispatch, getState) => {
 
   return Promise.resolve({ type: 'REVERT_DONE' })
     .then(dispatch)
+}
+
+/**
+ * Set axis for performing animation
+ * @param {Object} args
+ */
+export const setAxis = (args) => {
+  const { getAxis, nextNotation } = args
+  const axis = getAxis(nextNotation)
+
+  return {
+    type: 'SET_AXIS',
+    payload: {
+      notation: nextNotation,
+      axis
+    }
+  }
 }
 
 /**

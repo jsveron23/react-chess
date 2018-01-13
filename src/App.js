@@ -8,7 +8,7 @@ import '@styles/app.css'
  * App Component
  * @return {JSX}
  */
-const App = props => (
+const App = (props) => (
   <main style={{ flex: 1 }}>
     <Header title="React Chess" />
     <Menu />
@@ -18,4 +18,6 @@ const App = props => (
   </main>
 )
 
-export default hot(module)(App)
+const applyHot = hot(module)
+
+export default applyHot(App)

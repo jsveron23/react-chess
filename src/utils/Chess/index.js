@@ -1,4 +1,5 @@
 import { isEmpty, isExist, diet, push } from '@utils'
+import { INITIAL, SIDE, ENEMY, RANKS, FILES } from './constants'
 import Specials from './specials'
 import Notations from './notations'
 import Records from './records'
@@ -8,54 +9,7 @@ import Records from './records'
 // - isBlocked({ notations, direction, position })
 // - removeNotation({ ?? })
 
-/**
- * Piece initial
- * @type {Object}
- */
-export const INITIAL = Object.freeze({
-  P: 'Pawn',
-  R: 'Rook',
-  N: 'Knight',
-  B: 'Bishop',
-  Q: 'Queen',
-  K: 'King'
-})
-
-/**
- * Chess piece color
- * @type {Object}
- */
-export const SIDE = Object.freeze({
-  w: 'white',
-  b: 'black',
-  white: 'white',
-  black: 'black'
-})
-
-/**
- * Enemy piece color
- * @type {Object}
- */
-export const ENEMY = Object.freeze({
-  w: 'black',
-  b: 'white',
-  white: 'black',
-  black: 'white'
-})
-
-/**
- * Ranks
- * @type {Array}
- * @readonly
- */
-export const RANKS = Object.freeze(['8', '7', '6', '5', '4', '3', '2', '1'])
-
-/**
- * Files
- * @type {Array}
- * @readonly
- */
-export const FILES = Object.freeze(['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h'])
+export { INITIAL, SIDE, ENEMY, RANKS, FILES }
 
 /**
  * Chess engine
@@ -186,9 +140,7 @@ const Chess = {
 
   /**
    * Converts notations to axis number for animations
-   * @param  {String} prevNotation
-   * @param  {String} nextNotation
-   * @return {Object}
+   * @return {Return}
    * @description
    * c2 to c3
    * => [c(3) - c(3) = 0, 3 - 2 = 1]
@@ -203,18 +155,19 @@ const Chess = {
    * => transform: translate(300px, 100px)
    * TODO calculate pixelSize automatically
    */
-  convertAxis: (pixelSize = 50) => (prevNotation, nextNotation) => {
-    const { position: prevPosition } = Notations.parse(prevNotation)
+  convertAxis: (currNotation, pixelSize = 50) => (nextNotation) => {
+    const { position: currPosition } = Notations.parse(currNotation)
     const { position: nextPosition } = Notations.parse(nextNotation)
-    const [prevFile, prevRank] = prevPosition.split('')
+    const [prevFile, prevRank] = currPosition.split('')
     const [nextFile, nextRank] = nextPosition.split('')
+    const getIdx = Chess.getFileIdx
 
     // pixelSize means starting position of animation
     // the animation looks like moving a component
     // but it just re-render(re-created, state changed) and animated from starting position
     // pretend moving component
     return {
-      x: (Chess.getFileIdx(nextFile) - Chess.getFileIdx(prevFile)) * pixelSize,
+      x: (getIdx(nextFile) - getIdx(prevFile)) * pixelSize,
       y: (+nextRank - +prevRank) * pixelSize
     }
   }

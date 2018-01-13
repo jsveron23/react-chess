@@ -15,12 +15,14 @@ const enhancer = (WrappedComponent) => class extends PureComponent {
     records: PropTypes.array.isRequired,
     movable: PropTypes.array.isRequired,
     turn: PropTypes.string.isRequired,
+    axis: PropTypes.object.isRequired,
     command: PropTypes.string,
     setNext: PropTypes.func,
     setNotations: PropTypes.func,
     setRecords: PropTypes.func,
     setMovable: PropTypes.func,
     setTurn: PropTypes.func,
+    setAxis: PropTypes.func,
     doPromotion: PropTypes.func,
     resetMovable: PropTypes.func,
     resetMatch: PropTypes.func,
@@ -34,6 +36,7 @@ const enhancer = (WrappedComponent) => class extends PureComponent {
     setRecords: function () {},
     setMovable: function () {},
     setTurn: function () {},
+    setAxis: function () {},
     doPromotion: function () {},
     resetMovable: function () {},
     resetMatch: function () {},
@@ -48,12 +51,7 @@ const enhancer = (WrappedComponent) => class extends PureComponent {
       isMoving: false
     }
 
-    this.translated = null
     this.rAFId = -1
-  }
-
-  componentDidUpdate () {
-    this.translated = null
   }
 
   componentWillUnmount () {
@@ -70,8 +68,7 @@ const enhancer = (WrappedComponent) => class extends PureComponent {
     } = nextProps
 
     if (!isPlaying && isExist(records)) {
-      // TODO
-      // - reset until implement resume
+      // TODO reset until implement resume
       resetMatch()
     }
 
@@ -92,7 +89,8 @@ const enhancer = (WrappedComponent) => class extends PureComponent {
       isPlaying,
       notations,
       movable,
-      turn
+      turn,
+      axis
     } = this.props
 
     if (!isPlaying) {
@@ -105,7 +103,7 @@ const enhancer = (WrappedComponent) => class extends PureComponent {
         movable={movable}
         turn={turn}
         selected={currPosition}
-        translated={this.translated}
+        translated={axis}
         onSelect={this.handleSelect}
         onMove={this.handleMove}
         onAnimate={this.handleAnimate}
@@ -124,57 +122,43 @@ const enhancer = (WrappedComponent) => class extends PureComponent {
   }
 
   /**
-   * Set calculated axis to create moving animation
-   * @see @utils/Chess/notations.js#transformNext
-   */
-  setAxis = (prevNotation, nextNotation) => {
-    const convertAxis = Chess.convertAxis(/* pixelSize */)
-    const axis = convertAxis(prevNotation, nextNotation)
-
-    // TODO
-    // re-implement without context(this)
-    this.translated = {
-      notation: nextNotation,
-      axis
-    }
-
-    return Promise.resolve(this.translated)
-  }
-
-  /**
    * Handle drawing movable squares
    * @see @components#<File />
    * @see @utils/Chess/index.js#getRawMovableData
    * @see @utils/Chess/index.js#rejectBlockedMovableData
    */
-  handleSelect = ({
-    side,
-    piece,
-    position,
-    defaults,
-    specials
-  }) => {
+  handleSelect = (args) => {
+    const {
+      side,
+      piece,
+      position,
+      defaults,
+      specials
+    } = args
+
     const {
       notations,
       records,
       turn,
       setMovable
     } = this.props
-    const getOriginalMovableData = Chess.getRawMovableData({
-      side,
-      piece,
-      position,
-      records
-    })
-    const getFilteredMovableData = Chess.rejectBlockedMovableData({
-      notations,
-      turn,
-      specials
-    })
 
     this.setState({
       currPosition: position
     }, () => {
+      const getOriginalMovableData = Chess.getRawMovableData({
+        side,
+        piece,
+        position,
+        records
+      })
+
+      const getFilteredMovableData = Chess.rejectBlockedMovableData({
+        notations,
+        turn,
+        specials
+      })
+
       setMovable({
         getOriginalMovableData,
         getFilteredMovableData,
@@ -197,6 +181,7 @@ const enhancer = (WrappedComponent) => class extends PureComponent {
       notations,
       records,
       setNext,
+      setAxis,
       resetMovable
     } = this.props
 
@@ -205,7 +190,7 @@ const enhancer = (WrappedComponent) => class extends PureComponent {
       currPosition: ''
     }, () => {
       const getNextNotations = Chess.transformNextNotations({
-        setAxis: this.setAxis,
+        setAxis,
         currPosition,
         nextPosition
       })
@@ -264,11 +249,12 @@ const enhancer = (WrappedComponent) => class extends PureComponent {
       if (isAfterMoving) {
         switch (piece) {
           case 'P': {
+            const checkUpdate = (nextNotations) => (notation, idx) => (notation !== nextNotations[idx])
             const getMove = Chess.getMove
             const promotion = Chess.promotion
 
             doPromotion({
-              checkUpdate: (nextNotations) => (notation, idx) => (notation !== nextNotations[idx]),
+              checkUpdate,
               getMove,
               promotion
             })

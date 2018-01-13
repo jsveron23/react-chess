@@ -1,21 +1,27 @@
 const initialState = {
   /**
    * [main, 1p, 2p]
-   * @type {String}
+   * @type {string}
    */
   screen: 'main',
 
   /**
    * [undo, reset, resume]
-   * @type {String}
+   * @type {string}
    */
   command: '',
 
   /**
    * [white, black]
-   * @type {String}
+   * @type {string}
    */
-  turn: 'white'
+  turn: 'white',
+
+  /**
+   * To perform animation
+   * @type {object}
+   */
+  axis: {}
 }
 
 /**
@@ -38,6 +44,10 @@ const reducer = (state = initialState, action) => {
 
     case 'RESET_COMMAND': {
       return { ...state, command: '' }
+    }
+
+    case 'SET_AXIS': {
+      return { ...state, axis: payload }
     }
 
     case 'SET_TURN': {

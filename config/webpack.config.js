@@ -11,6 +11,9 @@ function configure ({ production } = {}) {
     vendor: [
       'react',
       'react-dom',
+      'react-redux',
+      'redux',
+      'redux-thunk',
       'prop-types',
       'classnames'
     ]
