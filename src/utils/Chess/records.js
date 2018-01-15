@@ -128,11 +128,12 @@ function _revertNotations ({
   before = '',
   after = ''
 }) {
-  return Notations.update({
-    notations,
+  const applyUpdate = Notations.update({
     asEqual: after,
     updateTo: before
   })
+
+  return applyUpdate(notations)
 }
 
 /**
