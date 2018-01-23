@@ -1,6 +1,6 @@
 import React from 'react'
 import { hot } from 'react-hot-loader'
-import { Header } from '@components'
+import { Main, Header } from '@components'
 import { Menu, Board, Records, Turn } from '@containers'
 import '@styles/app.css'
 
@@ -9,13 +9,13 @@ import '@styles/app.css'
  * @return {JSX}
  */
 const App = (props) => (
-  <main style={{ flex: 1 }}>
+  <Main>
     <Header title="React Chess" />
     <Menu />
     <Board />
     <Records />
     <Turn />
-  </main>
+  </Main>
 )
 
 const applyHot = hot(module)

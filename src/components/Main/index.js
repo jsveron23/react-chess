@@ -1,61 +1,16 @@
-import React, { Component } from 'react'
-import { Header, Menu, Board } from '@components'
+import React from 'react'
+import PropTypes from 'prop-types'
+import css from './main.css'
 
 /**
  * Main component
- * @extends Component
+ * @param  {Object}
+ * @return {JSX}
  */
-class Main extends Component {
-  /**
-   * @param {Object} props
-   */
-  constructor (props) {
-    super(props)
+const Main = ({ children }) => <main className={css.main}>{children}</main>
 
-    this.state = {
-      action: 'main'
-    }
-  }
-
-  /**
-   * Handles click a menu item
-   * @param {Proxy} evt
-   * @listens
-   */
-  handleClick = evt => {
-    evt.preventDefault()
-
-    const { target } = evt
-    const action = target.getAttribute('data-action')
-
-    this.setState({ action })
-  }
-
-  /**
-   * Lifecycle method
-   * @return {JSX}
-   */
-  render () {
-    const { action } = this.state
-    const actionsList = ['1p', '2p', 'undo']
-    const isPlaying = actionsList.includes(action)
-
-    return (
-      <main style={{ flex: 1 }}>
-        <Header>
-          <h1>React Chess</h1>
-        </Header>
-        <Menu
-          isPlaying={isPlaying}
-          onClick={this.handleClick}
-        />
-        {
-          isPlaying &&
-            <Board action={action} />
-        }
-      </main>
-    )
-  }
+Main.propTypes = {
+  children: PropTypes.node.isRequired
 }
 
 export default Main
