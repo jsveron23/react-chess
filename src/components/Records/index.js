@@ -55,10 +55,16 @@ class Records extends PureComponent {
         {
           records.map((rec, idx) => {
             const { white, black } = rec
-            const wMove = white.move.join(' ')
+
+            // white
+            const wMove = white.move
             const WPiece = getComponent(wMove)
-            const bMove = black && black.move.join(' ')
+
+            // black
+            const bMove = black && black.move
             const BPiece = bMove && getComponent(bMove)
+
+            // path
             const wPath = getPath(wMove)
             const bPath = bMove && getPath(bMove)
 

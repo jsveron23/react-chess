@@ -1,6 +1,6 @@
 import React, { PureComponent } from 'react'
 import PropTypes from 'prop-types'
-import { isEmpty, isExist } from '@utils'
+import { isEmpty, isExist, compose } from '@utils'
 import Chess from '@utils/Chess'
 
 /**
@@ -18,12 +18,9 @@ const enhancer = (WrappedComponent) => class extends PureComponent {
     axis: PropTypes.object.isRequired,
     command: PropTypes.string,
     setNext: PropTypes.func,
-    setNotations: PropTypes.func,
-    setRecords: PropTypes.func,
     setMovable: PropTypes.func,
-    setTurn: PropTypes.func,
     setAxis: PropTypes.func,
-    doPromotion: PropTypes.func,
+    promotion: PropTypes.func,
     resetMovable: PropTypes.func,
     resetMatch: PropTypes.func,
     revert: PropTypes.func
@@ -32,12 +29,9 @@ const enhancer = (WrappedComponent) => class extends PureComponent {
   static defaultProps = {
     command: '',
     setNext: function () {},
-    setNotations: function () {},
-    setRecords: function () {},
     setMovable: function () {},
-    setTurn: function () {},
     setAxis: function () {},
-    doPromotion: function () {},
+    promotion: function () {},
     resetMovable: function () {},
     resetMatch: function () {},
     revert: function () {}
@@ -68,16 +62,16 @@ const enhancer = (WrappedComponent) => class extends PureComponent {
     } = nextProps
 
     if (!isPlaying && isExist(records)) {
-      // TODO reset until implement resume
+      // TODO reset until implement resume menu
       resetMatch()
     }
 
-    if (command === 'undo') {
-      const undo = Chess.undo
+    if (command === 'undo' && isExist(records)) {
+      const applyUndo = Chess.undo(records)
       const getPrevTurn = Chess.getEnemy
 
       revert({
-        undo,
+        applyUndo,
         getPrevTurn
       })
     }
@@ -136,42 +130,30 @@ const enhancer = (WrappedComponent) => class extends PureComponent {
       specials
     } = args
 
-    const {
-      notations,
-      records,
-      turn,
-      setMovable
-    } = this.props
-
     this.setState({
       currPosition: position
     }, () => {
-      const getOriginalMovableData = Chess.getRawMovableData({
-        side,
-        piece,
-        position,
-        records
-      })
-
-      const getFilteredMovableData = Chess.rejectBlockedMovableData({
+      const {
         notations,
+        records,
         turn,
-        specials
-      })
+        setMovable
+      } = this.props
 
-      setMovable({
-        getOriginalMovableData,
-        getFilteredMovableData,
-        defaults,
-        specials
-      })
+      const movable = compose(
+        Chess.excludeBlocked(notations)(turn, specials),
+        Chess.includeSpecial(records)(piece, position, specials),
+        Chess.getMovableData(position, side)
+      )(defaults)
+
+      setMovable(movable)
     })
   }
 
   /**
    * Handle move when click a square
    * @see @components#<File />
-   * @see @utils/Chess/index.js#transformNextNotations
+   * @see @utils/Chess/index.js#getNextNotations
    * @see @utils/Chess/index.js#records
    * @see @utils/Chess/index.js#getEnemy
    */
@@ -189,21 +171,13 @@ const enhancer = (WrappedComponent) => class extends PureComponent {
       isMoving: true,
       currPosition: ''
     }, () => {
-      const getNextNotations = Chess.transformNextNotations({
-        setAxis,
-        currPosition,
-        nextPosition
-      })
-
-      const getNextRecords = Chess.records({
-        records,
-        notations
-      })
+      const getNextNotations = Chess.getNextNotations(currPosition, nextPosition)(setAxis)
+      const getNextRecords = Chess.saveRecords(records, notations)(/* timestamp */)
 
       setNext({
         getNextTurn: Chess.getEnemy,
-        getNextNotations,
-        getNextRecords
+        getNextRecords,
+        getNextNotations
       }).then(() => resetMovable())
     })
   }
@@ -213,7 +187,7 @@ const enhancer = (WrappedComponent) => class extends PureComponent {
    * @see @utils/Enhancer/piece.js#onAnimate
    */
   handleAnimate = (axis, el) => {
-    const pretendMoving = (element) => (cssText) => (/* rAF */) => (element.style.cssText = cssText)
+    const pretendMoving = (element) => (cssText) => () => (element.style.cssText = cssText)
     const animateTo = pretendMoving(el)
     const animateFn = animateTo('top: 0; right: 0;')
     let style = ''
@@ -239,24 +213,28 @@ const enhancer = (WrappedComponent) => class extends PureComponent {
    * @see @utils/Enhancer/piece.js#onAnimateEnd
    */
   handleAnimateEnd = (piece) => {
-    const { currPosition } = this.state
-    const { doPromotion } = this.props
-    const isAfterMoving = isEmpty(currPosition)
-
     this.setState({
       isMoving: false
     }, () => {
+      const { currPosition } = this.state
+      const { promotion } = this.props
+      const isAfterMoving = isEmpty(currPosition)
+
       if (isAfterMoving) {
         switch (piece) {
           case 'P': {
-            const checkUpdate = (nextNotations) => (notation, idx) => (notation !== nextNotations[idx])
-            const getMove = Chess.getMove
-            const promotion = Chess.promotion
-
-            doPromotion({
-              checkUpdate,
+            const {
               getMove,
-              promotion
+              getAlias,
+              updateNotations,
+              detectLastTurn
+            } = Chess
+
+            promotion({
+              getMove,
+              getAlias,
+              updateNotations,
+              detectLastTurn
             })
 
             break

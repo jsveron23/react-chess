@@ -45,7 +45,7 @@ Pawn.movement = {
       [[0, 1]]
     ]
   },
-  specials: ['initDouble', 'enPassant', 'promotion']
+  specials: ['doubleStep', 'enPassant', 'promotion']
 }
 
 const enhancedPawn = enhancer(Pawn, 'P')

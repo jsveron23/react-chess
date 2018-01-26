@@ -1,306 +1,330 @@
-import { isEmpty, isExist, diet, push } from '@utils'
-import { INITIAL, SIDE, ENEMY, RANKS, FILES } from './constants'
-import Specials from './specials'
-import Notations from './notations'
-import Records from './records'
-
-// TODO
-// implement!!
-// - isBlocked({ notations, direction, position })
-// - removeNotation({ ?? })
-
-export { INITIAL, SIDE, ENEMY, RANKS, FILES }
+import * as Utils from '@utils'
+import * as Helpers from './helpers'
+import { RANKS, FILES } from './constants'
 
 /**
  * Chess engine
- * @namespace Chess
  */
-const Chess = {
-  parseNotation: Notations.parse,
-  findNotation: Notations.find,
-  updateNotation: Notations.update,
-  transformNextNotations: Notations.getNext,
-  records: Records.save,
-  undo: Records.revert,
-  getMove: Records.getMove,
-  promotion: Specials.promotion,
+class Chess {
+  static getSide = Helpers.getSide
+  static getEnemy = Helpers.getEnemy
+  static getAlias = Helpers.getAlias
+  static detectLastTurn = Helpers.detectLastTurn
+  static parseNotation = Helpers.parseNotation
+  static findNotation = Helpers.findNotation
+  static updateNotations = Helpers.updateNotations
+  static getMove = Helpers.getMove
 
   /**
-   * Get full name of Chess piece
-   * @param  {String}  alias
-   * @param  {Object?} initial
-   * @return {String}
-   */
-  getPieceName: (alias, initial = INITIAL) => initial[alias] || alias,
-
-  /**
-   * Get file char from index number (-1)
-   * @param  {Number} idx
-   * @param  {Array?} files
-   * @return {String}
-   */
-  getFile: (idx, files = FILES) => files.join('').charAt(idx - 1),
-
-  /**
-   * Get index number from file char (+1)
-   * @param  {String} char
-   * @param  {Array?} files
-   * @return {Number}
-   */
-  getFileIdx: (char, files = FILES) => files.join('').indexOf(char) + 1,
-
-  /**
-   * Get side
-   * @param  {String}  alias
-   * @param  {Object?} side
-   * @return {String}
-   */
-  getSide: (alias, side = SIDE) => side[alias],
-
-  /**
-   * Get enemy
-   * @param  {String}  side
-   * @param  {Object?} enemy
-   * @return {String}
-   */
-  getEnemy: (side, enemy = ENEMY) => enemy[side],
-
-  /**
-   * Detect movable path but it does not check blocking path
+   * Save records data
    * @return {Function}
    */
-  getRawMovableData: ({ piece, position, side, records }) => ({ defaults, specials }) => {
-    // add all direction for adding special moves while process
-    // -> not add jump-over move (Knight)
-    // e.g. Pawn moves straightly only but it can move diagonally when en-passant
-    const extendMovement = Object.assign({}, {
-      vertical: [],
-      horizontal: [],
-      diagonal: []
-    }, defaults)
+  static saveRecords (records, notations) {
+    const transform = Helpers.transformMove(notations)
+    const [lastItem] = Utils.getLastItem(records)
+    const isCompletedRec = Helpers.isCompletedRecord(lastItem)
+    const isNew = Utils.isEmpty(lastItem) || isCompletedRec // new or next record
 
-    // transform standard movement to movable
-    // - movement => group of direction that included group of axis (calculate)
-    // - movable => group of tiles (readability, display)
-    const movable = Object.keys(extendMovement).map(key => {
-      // group of axis
-      const direction = extendMovement[key]
+    return (ts = +new Date()) => (nextNotations) => {
+      const move = transform(nextNotations)
+      const payload = { move, notations, ts }
+      const data = isNew
+        ? { white: payload }
+        : { ...lastItem, black: payload }
 
-      // added special direction
-      const specialDirection = Specials.includeSpecialDirection({ piece, direction, key, specials, position, records })
+      return Utils.push(records, data, isNew)
+    }
+  }
 
-      if (isExist(specialDirection)) {
-        return specialDirection
-          .map(axisList => _transformTiles({ axisList, side, position }))
-          .filter(tiles => (tiles.length !== 0))
+  /**
+   * Undo
+   * @return {Function}
+   * TODO fix cannot move once after undo
+   */
+  static undo (records) {
+    return () => {
+      if (Utils.isEmpty(records)) {
+        return {}
       }
-    })
 
-    return diet(movable)
-  },
+      const [lastItem] = Utils.getLastItem(records)
+      const { white, black } = lastItem
+      const isWhite = Helpers.detectLastTurn(lastItem) === 'white'
+      const log = isWhite ? white : black
+      const { notations, move } = Helpers.parseLog(log)
+      const { before, after } = Helpers.parseMove(move)
+      const excludedLastItem = records.slice(0, -1)
+      const revertedNotations = Helpers.revertNotations(before, after)(notations)
+
+      return {
+        revertedRecords: isWhite ? excludedLastItem : Utils.replaceLast(records, { white }),
+        revertedNotations
+      }
+    }
+  }
 
   /**
-   * Filter blocked path
+   * Return next notations
    * @return {Function}
    */
-  rejectBlockedMovableData: ({ notations, turn, specials }) => (movable) => {
-    return movable.map(m => { // tile list of direction
-      return m.map(tiles => {
-        const enemyTiles = _includeEnemyPiece({ notations, tiles, turn })
-        const nonBlockedTiles = _removeBlocking({ specials, notations, tiles })
-        const [firstTile] = nonBlockedTiles
-        let [lastTile] = nonBlockedTiles.slice(-1)
-        let shouldMerge = false
+  static getNextNotations (currPosition, nextPosition) {
+    return (setAxis) => (notations) => notations.map((n) => {
+      if (n.search(currPosition) > -1) {
+        const getAxis = Chess.convertAxis(n)(/* pixelSize */)
+        const { side, piece } = Helpers.parseNotation(n)
+        const nextNotation = `${side}${piece}${nextPosition}`
 
-        lastTile = isEmpty(lastTile) ? firstTile : lastTile
+        /** @see @actions/general.js */
+        setAxis({
+          axis: getAxis(nextNotation),
+          notation: nextNotation // for comparing
+        })
 
-        if (isExist(firstTile) && firstTile !== lastTile && isExist(enemyTiles)) {
-          const firstFile = firstTile.substr(-1)
-          const lastFile = lastTile.substr(-1)
-          const [fistEnemyTile] = enemyTiles
-          const enemyFile = fistEnemyTile.substr(-1)
+        return nextNotation
+      }
 
-          if (isExist(enemyFile) && +firstFile > +lastFile) {
-            shouldMerge = +enemyFile > +lastFile
-          } else if (isExist(enemyFile) && +firstFile < +lastFile) {
-            shouldMerge = +enemyFile < +lastFile
-          }
-        }
-
-        const mergedPath = shouldMerge
-          ? nonBlockedTiles
-          : push(nonBlockedTiles, enemyTiles)
-
-        console.log(nonBlockedTiles, enemyTiles)
-
-        return mergedPath
-      })
+      return n
     })
-  },
+  }
 
   /**
    * Converts notations to axis number for animations
-   * @return {Return}
+   * @return {Function}
    * @description
-   * c2 to c3
-   * => [c(3) - c(3) = 0, 3 - 2 = 1]
-   * => ([0, 1]) x pixel
-   * => [0, 50]
-   * => transform: translate(0px, 50px)
-   * @description
-   * b1 to h3
+   * # b1 to h3
    * => [h(8) - b(2) = 6, 3 - 1 = 2]
    * => ([6, 2]) x pixel
    * => [300, 100]
    * => transform: translate(300px, 100px)
    * TODO calculate pixelSize automatically
    */
-  convertAxis: (currNotation, pixelSize = 50) => (nextNotation) => {
-    const { position: currPosition } = Notations.parse(currNotation)
-    const { position: nextPosition } = Notations.parse(nextNotation)
-    const [prevFile, prevRank] = currPosition.split('')
-    const [nextFile, nextRank] = nextPosition.split('')
-    const getIdx = Chess.getFileIdx
+  static convertAxis (currNotation) {
+    const procParse = Utils.compose(Helpers.parsePosition, Helpers.parseNotation)
+    const {
+      file: prevFile,
+      rank: prevRank
+    } = procParse(currNotation)
 
-    // pixelSize means starting position of animation
-    // the animation looks like moving a component
-    // but it just re-render(re-created, state changed) and animated from starting position
-    // pretend moving component
-    return {
-      x: (getIdx(nextFile) - getIdx(prevFile)) * pixelSize,
-      y: (+nextRank - +prevRank) * pixelSize
+    return (pixelSize = 50) => (nextNotation) => {
+      const {
+        file: nextFile,
+        rank: nextRank
+      } = procParse(nextNotation)
+      const x = (Helpers.getFileIdx(nextFile) - Helpers.getFileIdx(prevFile)) * pixelSize
+      const y = (parseInt(nextRank, 10) - parseInt(prevRank, 10)) * pixelSize
+
+      return { x, y }
     }
   }
-}
 
-/**
- * Include enemy piece for each direction
- * @return {Array}
- */
-function _includeEnemyPiece ({
-  notations = [],
-  tiles = [],
-  turn = ''
-}) {
-  // TODO
-  // - refactoring!
-  // - reduce loop
-  let isEnemy = false
-  let isTargeted = false
-  const contactableEnemyPieces = tiles.map(tile => {
-    const isPlaced = _isPlaced({ notations, position: tile })
+  /**
+   * Get movable data from transfromed movement
+   * @return {Function}
+   */
+  static getMovableData (position, side) {
+    const { file, rank } = Helpers.parsePosition(position)
+    const fileIdx = Helpers.getFileIdx(file)
 
-    if (!isEnemy && !isTargeted) {
-      const findNotation = Chess.findNotation(notations)
-      const found = findNotation(tile)
+    /**
+     * Transform axisList to tiles
+     * @return {Array}
+     */
+    const transformTiles = (axisList) => axisList.reduce((list, axis) => {
+      const [x, y] = axis
 
-      console.log('found!!', found)
+      // X: 1(a) + 1 = 2(b)
+      const nextX = x + fileIdx
 
-      if (isExist(found)) {
-        const side = found.substr(0, 1)
-        const tileSide = Chess.getSide(side)
-        const myEnemy = Chess.getEnemy(turn)
+      // Y: upside down
+      const nextY = side === 'white'
+        ? y + parseInt(rank, 10)
+        : parseInt(rank, 10) - y
 
-        // TODO common argument name
-        if (tileSide === myEnemy) {
-          isEnemy = true
-        } else {
-          // pretent target exist
-          // to ignore target after blocked
-          isTargeted = true
+      const fileChar = Helpers.getFile(nextX) // it remove outside of board
+      const isInside = (nextX > 0 && nextY > 0 && nextY < 9 && !!fileChar)
+
+      return isInside ? [...list, `${fileChar}${nextY}`] : list
+    }, [])
+
+    return (defaults) =>
+      Object.keys(defaults).map((mvName) => defaults[mvName].map(transformTiles))
+  }
+
+  /**
+   * Add special move to movable data
+   * @return {Function}
+   */
+  static includeSpecial (records) {
+    const [lastItem] = Utils.getLastItem(records)
+    const turn = Helpers.detectTurn(lastItem)
+
+    return (piece, position, specials) => (movable) => {
+      /**
+       * @param  {Array}  m
+       * @param  {string} mvName
+       * @return {Array}
+       */
+      const pawnReducer = (m, mvName) => {
+        switch (mvName) {
+          case 'doubleStep': {
+            const isFirstStep = /^.(2|7)$/.test(position)
+
+            if (!isFirstStep) {
+              return m
+            }
+
+            const apply = doubleStep(turn)
+
+            return apply(m)
+          }
+
+          case 'enPassant': {
+            if (Utils.isEmpty(lastItem)) {
+              return m
+            }
+
+            const apply = enPassant(turn, position, lastItem)
+
+            return apply(m)
+          }
+
+          default: {
+            return m
+          }
         }
       }
+
+      if (piece === 'P') {
+        return movable.map((m) => specials.reduce(pawnReducer, m))
+      } else if (piece === 'K') {
+        // TODO castling
+      }
+
+      return movable
     }
-
-    if (isPlaced && isEnemy && !isTargeted) {
-      isTargeted = true
-
-      return tile
-    }
-  })
-
-  return diet(contactableEnemyPieces)
-}
-
-/**
- * Is any piece there?
- * @return {Boolean}
- */
-function _isPlaced ({
-  notations = [],
-  position = ''
-}) {
-  const findNotation = Notations.find(notations)
-
-  return !!findNotation(position)
-}
-
-/**
- * Includes only available tiles
- * @return {String}
- */
-function _fillAvailTilesOnly ({
-  axis = [],
-  side = '',
-  position = ''
-}) {
-  const [x, y] = axis
-  const [file, rank] = position.split('')
-  const fileIdx = Chess.getFileIdx(file)
-
-  // X: 1(a) + 1 = 2(b)
-  const nextX = x + fileIdx
-
-  // Y: upside down
-  const nextY = side === 'white'
-    ? y + parseInt(rank, 10)
-    : parseInt(rank, 10) - y
-
-  const fileChar = Chess.getFile(nextX)
-  const isAvailMove = (nextX > 0 && nextY > 0 && !!fileChar)
-
-  return isAvailMove ? `${fileChar}${nextY}` : ''
-}
-
-/**
- * Detect blocked direction
- * @return {Array}
- */
-function _removeBlocking ({
-  specials = [],
-  notations = [],
-  tiles = []
-}) {
-  const removedPlaced = tiles.map((tile, idx) => {
-    const isPlaced = _isPlaced({ notations, position: tile })
-
-    return isPlaced ? 'you_shall_not_pass!!' : tile
-  })
-
-  const cannotJump = specials.indexOf('jumpover') === -1
-
-  if (cannotJump) {
-    const start = removedPlaced.indexOf('you_shall_not_pass!!')
-
-    // get rid of blocked tiles
-    start !== -1 && removedPlaced.fill(undefined, start)
   }
 
-  return diet(removedPlaced)
+  /**
+   * Filter blocked path to movable data (include enemy)
+   * @return {Function}
+   */
+  static excludeBlocked (notations) {
+    const checkPlaced = Helpers.isThere(notations)
+    const find = Helpers.findNotation(notations)
+
+    return (turn, specials) => (movable) => movable.map((m) => {
+      const cannotJump = specials.indexOf('jumpover') === -1
+
+      return m.map((tiles) => {
+        let isBlocked = false
+        let enemyTile = ''
+
+        return tiles
+          .reduce((nonBlocked, tile) => {
+            if (Utils.isEmpty(enemyTile)) {
+              const found = find(tile)
+              const { side, position } = Helpers.parseNotation(found)
+
+              // 1 enemy per direction
+              const isEnemyExist = (
+                !isBlocked &&
+                Utils.isEmpty(enemyTile) && Utils.isExist(side) &&
+                Helpers.getEnemy(turn) === Helpers.getSide(side)
+              )
+
+              if (isEnemyExist) {
+                enemyTile = position
+              }
+            }
+
+            const isPlaced = checkPlaced(tile)
+            const canJump = !cannotJump
+
+            // everything except Knight
+            const exceptKnight = isPlaced && !isBlocked && cannotJump
+
+            // only for Knight
+            const only4Knight = isPlaced && canJump
+
+            // after blocked, remove all tiles
+            const afterBlocked = isBlocked
+
+            if (exceptKnight || afterBlocked || only4Knight) {
+              if (exceptKnight) {
+                isBlocked = true
+              }
+
+              return nonBlocked
+            }
+
+            return [...nonBlocked, tile]
+          }, [])
+          .concat(enemyTile) // include enemy tile
+      })
+    })
+  }
 }
 
 /**
- * Transform axisList to tiles
- * @return {Array}
+ * Pawn moves 2 steps forward
+ * @return {Function}
  */
-function _transformTiles ({
-  axisList = [],
-  side = '',
-  position = ''
-}) {
-  const availTiles = axisList.map(axis => _fillAvailTilesOnly({ axis, side, position }))
+function doubleStep (turn) {
+  const applyOneMoreStep = Helpers.increaseRank(turn)
 
-  return diet(availTiles)
+  return (m) => {
+    const [tiles] = m
+    const [tile] = tiles
+    const oneMoreStep = applyOneMoreStep(tile)
+    const mergedStep = Utils.push(tiles, oneMoreStep)
+
+    return [mergedStep]
+  }
+}
+
+/**
+ * Pawn moves diagonal and attack
+ * @return {Function}
+ */
+function enPassant (turn, position, lastItem) {
+  const isWhiteTurn = turn === 'white'
+  const enemyMove = Utils.compose(
+    Helpers.getMove(lastItem),
+    Helpers.getEnemy,
+    Helpers.detectTurn)(lastItem)
+
+  if (Utils.isEmpty(enemyMove)) {
+    return (movable) => movable
+  }
+
+  // get myself
+  const { file: myFile, rank: myRank } = Helpers.parsePosition(position)
+  const myFileIdx = Helpers.getFileIdx(myFile)
+
+  // get enemy
+  const enemyPosition = `${enemyMove.substr(-2, 1)}${enemyMove.substr(-1)}`
+  const { file: enemyFile, rank: enemyRank } = Helpers.parsePosition(enemyPosition)
+  const enemyFileIdx = Helpers.getFileIdx(enemyFile)
+
+  // check
+  const howManyLastStep = Helpers.getHowManyStepVertical(enemyMove)
+  const isSibling = Math.abs(myFileIdx - enemyFileIdx) === 1
+  const isAdjustedLine = +myRank === +enemyRank
+
+  return (m) => {
+    // valid
+    if ((howManyLastStep === 2) && isAdjustedLine && isSibling) {
+      const nextRank = isWhiteTurn
+        ? parseInt(enemyRank, 10) + 1
+        : parseInt(enemyRank, 10) - 1
+      const diagonal = `${enemyFile}${nextRank}`
+
+      return [...m, [diagonal]]
+    }
+
+    return m
+  }
 }
 
 export default Chess
+export { RANKS, FILES }

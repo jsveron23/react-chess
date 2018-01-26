@@ -1,6 +1,6 @@
 import { setNotations, resetNotations } from '@actions/notations'
 import { setRecords, resetRecords } from '@actions/records'
-import { isExist, diff } from '@utils'
+import { diff } from '@utils'
 
 /**
  * Refresh board to perform next turn and starting animation
@@ -8,8 +8,6 @@ import { isExist, diff } from '@utils'
  * @return {Function}
  */
 export const setNext = (fns) => (dispatch, getState) => {
-  dispatch({ type: 'SET_NEXT' })
-
   const { general, notations: currNotations } = getState()
   const { getNextNotations, getNextRecords, getNextTurn } = fns
   const { turn } = general
@@ -21,69 +19,53 @@ export const setNext = (fns) => (dispatch, getState) => {
   dispatch(setNotations(nextNotations))
   dispatch(setRecords(nextRecords))
 
-  return Promise.resolve({ type: 'SET_NEXT_DONE' })
+  return Promise.resolve({ type: 'SET_NEXT' })
     .then(dispatch)
 }
 
 /**
  * Undo previous turn
- * @param  {Object}   args
+ * @param  {...Function} fns
  * @return {Function}
  * TODO implement undo-redo
  */
-export const revert = (args) => (dispatch, getState) => {
-  dispatch({ type: 'REVERT' })
+export const revert = (fns) => (dispatch, getState) => {
+  const { notations, general } = getState()
+  const { applyUndo, getPrevTurn } = fns
+  const { revertedRecords, revertedNotations } = applyUndo()
+  const isDiff = diff(notations, revertedNotations)
 
-  const { notations, general, records } = getState()
+  if (isDiff) {
+    const { turn } = general
+    const prevTurn = getPrevTurn(turn)
 
-  if (isExist(records)) {
-    const { undo, getPrevTurn, counts } = args
-    const applyUndo = undo(records)
-    const { revertedRecords, revertedNotations } = applyUndo(counts)
-    const isDiff = diff(notations, revertedNotations)
-
-    if (isDiff) {
-      const { turn } = general
-      const prevTurn = getPrevTurn(turn)
-
-      dispatch(setRecords(revertedRecords))
-      dispatch(setNotations(revertedNotations))
-      dispatch(setTurn(prevTurn))
-    }
-
-    dispatch(resetCommand())
+    dispatch(setRecords(revertedRecords))
+    dispatch(setNotations(revertedNotations))
+    dispatch(setTurn(prevTurn))
   }
 
-  return Promise.resolve({ type: 'REVERT_DONE' })
+  dispatch(resetCommand())
+
+  return Promise.resolve({ type: 'REVERT' })
     .then(dispatch)
 }
 
 /**
  * Set axis for performing animation
- * @param {Object} args
+ * @param  {Object} payload
+ * @return {Object}
  */
-export const setAxis = (args) => {
-  const { getAxis, nextNotation } = args
-  const axis = getAxis(nextNotation)
-
-  return {
-    type: 'SET_AXIS',
-    payload: {
-      notation: nextNotation,
-      axis
-    }
-  }
-}
+export const setAxis = (payload) => ({
+  type: 'SET_AXIS',
+  payload
+})
 
 /**
  * Reset match
  * @return {Function}
  */
 export const resetMatch = () => (dispatch) => {
-  dispatch({
-    type: 'RESET_MATCH',
-    payload: 'white'
-  })
+  dispatch(setTurn('white'))
   dispatch(resetNotations())
   dispatch(resetRecords())
 
@@ -92,7 +74,8 @@ export const resetMatch = () => (dispatch) => {
 
 /**
  * Set current screen
- * @param {string} screen
+ * @param  {string} screen
+ * @return {Object}
  */
 export const setScreen = (screen) => ({
   type: 'SET_SCREEN',
@@ -101,7 +84,8 @@ export const setScreen = (screen) => ({
 
 /**
  * Set command to do
- * @param {string} command
+ * @param  {string} command
+ * @return {Object}
  */
 export const setCommand = (command) => ({
   type: 'SET_COMMAND',
@@ -110,7 +94,8 @@ export const setCommand = (command) => ({
 
 /**
  * Reset command after doing dommand
- * @param {string} command
+ * @param  {string} command
+ * @return {Object}
  */
 export const resetCommand = () => ({
   type: 'RESET_COMMAND'
@@ -118,7 +103,8 @@ export const resetCommand = () => ({
 
 /**
  * Set turn
- * @param {string} turn
+ * @param  {string} turn
+ * @return {Object}
  */
 export const setTurn = (turn) => ({
   type: 'SET_TURN',

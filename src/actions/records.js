@@ -3,6 +3,6 @@ export const setRecords = (records) => ({
   payload: records
 })
 
-export const resetRecords = (records) => ({
+export const resetRecords = () => ({
   type: 'RESET_RECORDS'
 })

@@ -22,10 +22,13 @@ const Board = ({
   onAnimate,
   onAnimateEnd
 }) => {
-  const findNotation = Chess.findNotation(notations)
-  const parseNotation = Chess.parseNotation
-  const getSide = Chess.getSide
-  let fileProps = {
+  const {
+    findNotation,
+    parseNotation,
+    getSide
+  } = Chess
+  const find = findNotation(notations)
+  const defProps = {
     movable: deepFlatten(movable),
     selected,
     turn,
@@ -39,13 +42,12 @@ const Board = ({
         <Rank key={rank}>
           {FILES.map(file => {
             const position = `${file}${rank}`
-            const currentNotation = findNotation(position)
+            const currentNotation = find(position)
             const { side, piece } = parseNotation(currentNotation)
             const EnhancedPiece = getPiece(piece)
             const shouldAnimate = (translated && translated.notation === currentNotation)
-
-            fileProps = {
-              ...fileProps,
+            const fileProps = {
+              ...defProps,
               side: getSide(side),
               position,
               piece

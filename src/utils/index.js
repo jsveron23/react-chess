@@ -82,10 +82,14 @@ export const replaceLast = (items, data) => [...items.slice(0, -1), data]
 
 /**
  * Remove unnecessary items
- * @param  {Array} arr
+ * @param  {Array|Function} v
  * @return {Array}
  */
-export const diet = arr => arr.filter(item => !!item)
+export function diet (v) {
+  return Array.isArray(v)
+    ? v.filter((item) => isExist(item))
+    : isExist(v)
+}
 
 /**
  * Difference
@@ -93,18 +97,30 @@ export const diet = arr => arr.filter(item => !!item)
  * @param  {Array} b
  * @return {Array}
  */
-export const diff = (a, b) => a.filter((n, idx) => n !== b[idx])
+export function diff (a, b) {
+  return a.filter((n, idx) => n !== b[idx])
+}
+
+/**
+ * Difference check
+ * @param  {*}       a
+ * @param  {*}       b
+ * @return {boolean}
+ */
+export function isDiff (a, b) {
+  return a !== b
+}
 
 /**
  * Is it empty?
- * @param  {*}       value
+ * @param  {*}       v
  * @return {boolean}
  */
-export const isEmpty = value => (
-  value === null ||
-  value === undefined ||
-  (value.hasOwnProperty('length') && value.length === 0) ||
-  (value.constructor === Object && Object.keys(value).length === 0)
+export const isEmpty = (v) => (
+  v === null ||
+  v === undefined ||
+  (v.hasOwnProperty('length') && v.length === 0) ||
+  (v.constructor === Object && Object.keys(v).length === 0)
 )
 
 /**

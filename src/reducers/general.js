@@ -54,10 +54,6 @@ const reducer = (state = initialState, action) => {
       return { ...state, turn: payload }
     }
 
-    case 'RESET_MATCH': {
-      return { ...state, turn: payload }
-    }
-
     default: {
       return state
     }

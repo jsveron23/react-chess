@@ -1,64 +1,75 @@
 import { setNotations } from '@actions/notations'
-import { isExist, getLastItem, compose } from '@utils'
+import { getLastItem } from '@utils'
 
 /**
  * Set Movable
- * @param  {Object}   args
- * @return {Function}
+ * @return {Object}
  */
-export const setMovable = (args) => (dispatch, getState) => {
-  const { getOriginalMovableData, getFilteredMovableData, defaults, specials } = args
-  const getCompleteMovableData = compose(
-    getFilteredMovableData,
-    getOriginalMovableData
-  )
-  const movable = getCompleteMovableData({ defaults, specials } /* movement */)
-
-  return Promise.resolve({
+export function setMovable (movable) {
+  return {
     type: 'SET_MOVABLE',
     payload: movable
-  }).then(dispatch)
+  }
 }
 
 /**
- * Promotion - Pawn
- * @param  {Function} fns
+ * Promotion
+ * @param  {...Function} fns
  * @return {Function}
  */
-export const doPromotion = (fns) => (dispatch, getState) => {
-  dispatch({ type: 'CHECK_PROMOTION' })
+export function promotion (fns) {
+  const {
+    getMove,
+    getAlias,
+    updateNotations,
+    detectLastTurn
+  } = fns
 
-  const { notations, records } = getState()
-  const { getMove, promotion, checkUpdate } = fns
-  const [lastItem] = getLastItem(records)
-  const { white, black } = lastItem
-  const [x, y] = getMove({
-    record: lastItem,
-    side: isExist(black) ? 'black' : 'white'
-  }).join('').substr(-2, 2) // ['???? ??(??)']
-  const data = { notations, x, y }
-  let nextNotations = [...notations]
+  /**
+   * Generate 'x, y' for updating and return alias of last turn
+   * @param  {Array}  records
+   * @return {Object}
+   */
+  const gen4NextProc = (records) => {
+    const [lastItem] = getLastItem(records)
+    const lastTurn = detectLastTurn(lastItem)
+    const side = getAlias(lastTurn)
+    const getXY = getMove(lastItem)
+    const [x, y] = getXY(lastTurn)
+      .substr(-2, 2) // ['???? ??(??)']
 
-  if (+y === 1 && isExist(black)) {
-    nextNotations = promotion({ ...data, side: 'b' })
-  } else if (+y === 8 && isExist(white)) {
-    nextNotations = promotion({ ...data, side: 'w' })
+    return { x, y, side }
   }
 
-  const isUpdate = checkUpdate(nextNotations)
-  const isChanged = notations.some(isUpdate)
+  return (dispatch, getState) => {
+    const {
+      notations,
+      records
+    } = getState()
 
-  if (isChanged) {
-    dispatch(setNotations(nextNotations))
+    return Promise.resolve(gen4NextProc(records))
+      .then(({ x, y, side }) => {
+        const isEdge = /1|8/.test(+y)
+
+        if (isEdge) {
+          const update = updateNotations(`${side}P${x}${y}`, `${side}Q${x}${y}`)
+          const nextNotations = update(notations)
+
+          dispatch(setNotations(nextNotations))
+        }
+
+        return { type: 'PROMOTION' }
+      })
+      .then(dispatch)
   }
-
-  return Promise.resolve({ type: 'CHECK_PROMOTION_DONE' })
-    .then(dispatch)
 }
 
 /**
  * Reset movable after moving
+ * @return {Object}
  */
-export const resetMovable = () => ({
-  type: 'RESET_MOVABLE'
-})
+export function resetMovable () {
+  return {
+    type: 'RESET_MOVABLE'
+  }
+}

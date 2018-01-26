@@ -34,6 +34,15 @@ export const ENEMY = Object.freeze({
 })
 
 /**
+ * Alias
+ * @type {Object}
+ */
+export const ALIAS = Object.freeze({
+  white: 'w',
+  black: 'b'
+})
+
+/**
  * Ranks
  * @type {Array}
  * @readonly
@@ -46,3 +55,9 @@ export const RANKS = Object.freeze(['8', '7', '6', '5', '4', '3', '2', '1'])
  * @readonly
  */
 export const FILES = Object.freeze(['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h'])
+
+/**
+ * RegExp, a notation
+ * @type {RegExp}
+ */
+export const REG_NOTATION = /^[w|b][B|K|P|Q|R][a-h][1-8]$/

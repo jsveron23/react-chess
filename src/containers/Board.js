@@ -3,7 +3,7 @@ import { Board } from '@components'
 import { setNext, setTurn, setAxis, resetMatch, revert } from '@actions/general'
 import { setNotations } from '@actions/notations'
 import { setRecords } from '@actions/records'
-import { setMovable, doPromotion, resetMovable } from '@actions/movable'
+import { setMovable, promotion, resetMovable } from '@actions/movable'
 import enhancer from '@utils/Enhancer/board'
 import { compose } from '@utils'
 
@@ -34,7 +34,7 @@ const applyConnect = compose(
     setMovable,
     setTurn,
     setAxis,
-    doPromotion,
+    promotion,
     resetMovable,
     resetMatch,
     revert
