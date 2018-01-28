@@ -1,8 +1,21 @@
-export const setRecords = (records) => ({
-  type: 'SET_RECORDS',
-  payload: records
-})
+/**
+ * Set records
+ * @param  {Array}  records
+ * @return {Object}
+ */
+export function setRecords (records) {
+  return {
+    type: 'SET_RECORDS',
+    payload: records
+  }
+}
 
-export const resetRecords = () => ({
-  type: 'RESET_RECORDS'
-})
+/**
+ * Reset records
+ * @return {Object}
+ */
+export function resetRecords () {
+  return {
+    type: 'RESET_RECORDS'
+  }
+}

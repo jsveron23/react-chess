@@ -18,6 +18,7 @@ const enhancer = (WrappedComponent) => class extends PureComponent {
     axis: PropTypes.object.isRequired,
     command: PropTypes.string,
     setNext: PropTypes.func,
+    setNotations: PropTypes.func,
     setMovable: PropTypes.func,
     setAxis: PropTypes.func,
     promotion: PropTypes.func,
@@ -29,6 +30,7 @@ const enhancer = (WrappedComponent) => class extends PureComponent {
   static defaultProps = {
     command: '',
     setNext: function () {},
+    setNotations: function () {},
     setMovable: function () {},
     setAxis: function () {},
     promotion: function () {},
@@ -217,25 +219,17 @@ const enhancer = (WrappedComponent) => class extends PureComponent {
       isMoving: false
     }, () => {
       const { currPosition } = this.state
-      const { promotion } = this.props
+      const { notations, records, setNotations } = this.props
       const isAfterMoving = isEmpty(currPosition)
 
       if (isAfterMoving) {
         switch (piece) {
           case 'P': {
-            const {
-              getMove,
-              getAlias,
-              updateNotations,
-              detectLastTurn
-            } = Chess
+            const nextNotations = Chess.promotion(notations)(records)
 
-            promotion({
-              getMove,
-              getAlias,
-              updateNotations,
-              detectLastTurn
-            })
+            if (isExist(nextNotations)) {
+              setNotations(nextNotations)
+            }
 
             break
           }

@@ -1,9 +1,8 @@
 import { connect } from 'react-redux'
 import { Board } from '@components'
-import { setNext, setTurn, setAxis, resetMatch, revert } from '@actions/general'
+import { setNext, setAxis, resetMatch, revert } from '@actions/general'
 import { setNotations } from '@actions/notations'
-import { setRecords } from '@actions/records'
-import { setMovable, promotion, resetMovable } from '@actions/movable'
+import { setMovable, resetMovable } from '@actions/movable'
 import enhancer from '@utils/Enhancer/board'
 import { compose } from '@utils'
 
@@ -30,11 +29,8 @@ const applyConnect = compose(
   connect(mapStateToProps, {
     setNext,
     setNotations,
-    setRecords,
     setMovable,
-    setTurn,
     setAxis,
-    promotion,
     resetMovable,
     resetMatch,
     revert

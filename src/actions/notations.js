@@ -1,15 +1,21 @@
 /**
  * Set notations
- * @param {Array} notations
+ * @param  {Array}  notations
+ * @return {Object}
  */
-export const setNotations = (notations) => ({
-  type: 'SET_NOTATIONS',
-  payload: notations
-})
+export function setNotations (notations) {
+  return {
+    type: 'SET_NOTATIONS',
+    payload: notations
+  }
+}
 
 /**
  * Reset notations
+ * @return {Object}
  */
-export const resetNotations = () => ({
-  type: 'RESET_NOTATIONS'
-})
+export function resetNotations () {
+  return {
+    type: 'RESET_NOTATIONS'
+  }
+}

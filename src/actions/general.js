@@ -7,20 +7,22 @@ import { diff } from '@utils'
  * @param  {...Function} fns
  * @return {Function}
  */
-export const setNext = (fns) => (dispatch, getState) => {
-  const { general, notations: currNotations } = getState()
-  const { getNextNotations, getNextRecords, getNextTurn } = fns
-  const { turn } = general
-  const nextTurn = getNextTurn(turn)
-  const nextNotations = getNextNotations(currNotations)
-  const nextRecords = getNextRecords(nextNotations)
+export function setNext (fns) {
+  return (dispatch, getState) => {
+    const { general, notations: currNotations } = getState()
+    const { getNextNotations, getNextRecords, getNextTurn } = fns
+    const { turn } = general
+    const nextTurn = getNextTurn(turn)
+    const nextNotations = getNextNotations(currNotations)
+    const nextRecords = getNextRecords(nextNotations)
 
-  dispatch(setTurn(nextTurn))
-  dispatch(setNotations(nextNotations))
-  dispatch(setRecords(nextRecords))
+    dispatch(setTurn(nextTurn))
+    dispatch(setNotations(nextNotations))
+    dispatch(setRecords(nextRecords))
 
-  return Promise.resolve({ type: 'SET_NEXT' })
-    .then(dispatch)
+    return Promise.resolve({ type: 'SET_NEXT' })
+      .then(dispatch)
+  }
 }
 
 /**
@@ -29,25 +31,27 @@ export const setNext = (fns) => (dispatch, getState) => {
  * @return {Function}
  * TODO implement undo-redo
  */
-export const revert = (fns) => (dispatch, getState) => {
-  const { notations, general } = getState()
-  const { applyUndo, getPrevTurn } = fns
-  const { revertedRecords, revertedNotations } = applyUndo()
-  const isDiff = diff(notations, revertedNotations)
+export function revert (fns) {
+  return (dispatch, getState) => {
+    const { notations, general } = getState()
+    const { applyUndo, getPrevTurn } = fns
+    const { revertedRecords, revertedNotations } = applyUndo()
+    const isDiff = diff(notations, revertedNotations)
 
-  if (isDiff) {
-    const { turn } = general
-    const prevTurn = getPrevTurn(turn)
+    if (isDiff) {
+      const { turn } = general
+      const prevTurn = getPrevTurn(turn)
 
-    dispatch(setRecords(revertedRecords))
-    dispatch(setNotations(revertedNotations))
-    dispatch(setTurn(prevTurn))
+      dispatch(setRecords(revertedRecords))
+      dispatch(setNotations(revertedNotations))
+      dispatch(setTurn(prevTurn))
+    }
+
+    dispatch(resetCommand())
+
+    return Promise.resolve({ type: 'REVERT' })
+      .then(dispatch)
   }
-
-  dispatch(resetCommand())
-
-  return Promise.resolve({ type: 'REVERT' })
-    .then(dispatch)
 }
 
 /**
@@ -55,21 +59,25 @@ export const revert = (fns) => (dispatch, getState) => {
  * @param  {Object} payload
  * @return {Object}
  */
-export const setAxis = (payload) => ({
-  type: 'SET_AXIS',
-  payload
-})
+export function setAxis (payload) {
+  return {
+    type: 'SET_AXIS',
+    payload
+  }
+}
 
 /**
  * Reset match
  * @return {Function}
  */
-export const resetMatch = () => (dispatch) => {
-  dispatch(setTurn('white'))
-  dispatch(resetNotations())
-  dispatch(resetRecords())
+export function resetMatch () {
+  return (dispatch) => {
+    dispatch(setTurn('white'))
+    dispatch(resetNotations())
+    dispatch(resetRecords())
 
-  return Promise.resolve()
+    return Promise.resolve()
+  }
 }
 
 /**
@@ -77,36 +85,44 @@ export const resetMatch = () => (dispatch) => {
  * @param  {string} screen
  * @return {Object}
  */
-export const setScreen = (screen) => ({
-  type: 'SET_SCREEN',
-  payload: screen
-})
+export function setScreen (screen) {
+  return {
+    type: 'SET_SCREEN',
+    payload: screen
+  }
+}
 
 /**
  * Set command to do
  * @param  {string} command
  * @return {Object}
  */
-export const setCommand = (command) => ({
-  type: 'SET_COMMAND',
-  payload: command
-})
+export function setCommand (command) {
+  return {
+    type: 'SET_COMMAND',
+    payload: command
+  }
+}
 
 /**
  * Reset command after doing dommand
  * @param  {string} command
  * @return {Object}
  */
-export const resetCommand = () => ({
-  type: 'RESET_COMMAND'
-})
+export function resetCommand () {
+  return {
+    type: 'RESET_COMMAND'
+  }
+}
 
 /**
  * Set turn
  * @param  {string} turn
  * @return {Object}
  */
-export const setTurn = (turn) => ({
-  type: 'SET_TURN',
-  payload: turn
-})
+export function setTurn (turn) {
+  return {
+    type: 'SET_TURN',
+    payload: turn
+  }
+}

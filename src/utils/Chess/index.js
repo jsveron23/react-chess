@@ -55,11 +55,11 @@ class Chess {
       const { before, after } = Helpers.parseMove(move)
       const excludedLastItem = records.slice(0, -1)
       const revertedNotations = Helpers.revertNotations(before, after)(notations)
+      const revertedRecords = isWhite
+        ? excludedLastItem
+        : Utils.replaceLast(records, { white })
 
-      return {
-        revertedRecords: isWhite ? excludedLastItem : Utils.replaceLast(records, { white }),
-        revertedNotations
-      }
+      return { revertedRecords, revertedNotations }
     }
   }
 
@@ -226,10 +226,10 @@ class Chess {
               const { side, position } = Helpers.parseNotation(found)
 
               // 1 enemy per direction
+              const isEnemy = Helpers.getEnemy(turn) === Helpers.getSide(side)
               const isEnemyExist = (
-                !isBlocked &&
-                Utils.isEmpty(enemyTile) && Utils.isExist(side) &&
-                Helpers.getEnemy(turn) === Helpers.getSide(side)
+                !isBlocked && isEnemy &&
+                Utils.isEmpty(enemyTile) && Utils.isExist(side)
               )
 
               if (isEnemyExist) {
@@ -263,6 +263,39 @@ class Chess {
       })
     })
   }
+
+  /**
+   * Promotion
+   * @return {Function}
+   */
+  static promotion (notations) {
+    /**
+     * Generate 'x, y' for updating and return alias of last turn
+     * @param  {Array}  records
+     * @return {Object}
+     */
+    const gen4NextProc = (records) => {
+      const [lastItem] = Utils.getLastItem(records)
+      const lastTurn = Helpers.detectLastTurn(lastItem)
+      const side = Helpers.getAlias(lastTurn)
+      const getXY = Helpers.getMove(lastItem)
+      const [x, y] = getXY(lastTurn).substr(-2, 2) // ['???? ??(??)']
+
+      return { x, y, side }
+    }
+
+    return (records) => {
+      const { x, y, side } = gen4NextProc(records)
+      const isEdge = /1|8/.test(y)
+
+      if (isEdge) {
+        const update = Helpers.updateNotations(`${side}P${x}${y}`, `${side}Q${x}${y}`)
+        const nextNotations = update(notations)
+
+        return nextNotations
+      }
+    }
+  }
 }
 
 /**
@@ -291,7 +324,8 @@ function enPassant (turn, position, lastItem) {
   const enemyMove = Utils.compose(
     Helpers.getMove(lastItem),
     Helpers.getEnemy,
-    Helpers.detectTurn)(lastItem)
+    Helpers.detectTurn
+  )(lastItem)
 
   if (Utils.isEmpty(enemyMove)) {
     return (movable) => movable
