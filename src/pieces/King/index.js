@@ -73,12 +73,12 @@ King.defaultProps = {
 
 King.movement = {
   defaults: {
-    vertical: [
+    horizontal: [
       [[1, 0]],
       [[-1, 0]]
     ],
 
-    horizontal: [
+    vertical: [
       [[0, 1]],
       [[0, -1]]
     ],

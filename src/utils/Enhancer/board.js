@@ -120,8 +120,8 @@ const enhancer = (WrappedComponent) => class extends PureComponent {
   /**
    * Handle drawing movable squares
    * @see @components#<File />
-   * @see @utils/Chess/index.js#getRawMovableData
-   * @see @utils/Chess/index.js#rejectBlockedMovableData
+   * @see @utils/Chess/index.js#getMovableData
+   * @see @utils/Chess/index.js#rejectBlocked
    */
   handleSelect = (args) => {
     const {
@@ -156,7 +156,7 @@ const enhancer = (WrappedComponent) => class extends PureComponent {
    * Handle move when click a square
    * @see @components#<File />
    * @see @utils/Chess/index.js#getNextNotations
-   * @see @utils/Chess/index.js#records
+   * @see @utils/Chess/index.js#saveRecords
    * @see @utils/Chess/index.js#getEnemy
    */
   handleMove = (nextPosition) => {

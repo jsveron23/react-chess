@@ -164,7 +164,7 @@ class Chess {
        * @param  {string} mvName
        * @return {Array}
        */
-      const pawnReducer = (m, mvName) => {
+      const controlPawn = (m, mvName) => {
         switch (mvName) {
           case 'doubleStep': {
             const isFirstStep = /^.(2|7)$/.test(position)
@@ -173,9 +173,7 @@ class Chess {
               return m
             }
 
-            const apply = doubleStep(turn)
-
-            return apply(m)
+            return doubleStep(turn)(m)
           }
 
           case 'enPassant': {
@@ -183,9 +181,7 @@ class Chess {
               return m
             }
 
-            const apply = enPassant(turn, position, lastItem)
-
-            return apply(m)
+            return enPassant(turn, position, lastItem)(m)
           }
 
           default: {
@@ -195,7 +191,7 @@ class Chess {
       }
 
       if (piece === 'P') {
-        return movable.map((m) => specials.reduce(pawnReducer, m))
+        return movable.map((m) => specials.reduce(controlPawn, m))
       } else if (piece === 'K') {
         // TODO castling
       }
@@ -350,8 +346,6 @@ function enPassant (turn, position, lastItem) {
         ? parseInt(enemyRank, 10) + 1
         : parseInt(enemyRank, 10) - 1
       const diagonal = `${enemyFile}${nextRank}`
-
-      console.log([...m, [diagonal]])
 
       return [...m, [diagonal]]
     }
