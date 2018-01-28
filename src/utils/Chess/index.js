@@ -269,32 +269,30 @@ class Chess {
    * @return {Function}
    */
   static promotion (notations) {
-    /**
-     * Generate 'x, y' for updating and return alias of last turn
-     * @param  {Array}  records
-     * @return {Object}
-     */
-    const gen4NextProc = (records) => {
-      const [lastItem] = Utils.getLastItem(records)
-      const lastTurn = Helpers.detectLastTurn(lastItem)
-      const side = Helpers.getAlias(lastTurn)
-      const getXY = Helpers.getMove(lastItem)
-      const [x, y] = getXY(lastTurn).substr(-2, 2) // ['???? ??(??)']
+    return (records) => promotion(notations, records)
+  }
+}
 
-      return { x, y, side }
-    }
+/**
+ * Promotion
+ * @return {Array?}
+ */
+function promotion (notations, records) {
+  const [lastItem] = Utils.getLastItem(records)
+  const lastTurn = Helpers.detectLastTurn(lastItem)
+  const move = Helpers.getMove(lastItem)(lastTurn)
+  const { after } = Helpers.parseMove(move)
+  const [x, y] = after.substr(-2, 2)
+  const side = Helpers.getAlias(lastTurn)
+  const isEdge = /1|8/.test(y)
 
-    return (records) => {
-      const { x, y, side } = gen4NextProc(records)
-      const isEdge = /1|8/.test(y)
+  if (isEdge) {
+    const from = `${side}P${x}${y}`
+    const to = `${side}Q${x}${y}`
+    const update = Helpers.updateNotations(from, to)
+    const nextNotations = update(notations)
 
-      if (isEdge) {
-        const update = Helpers.updateNotations(`${side}P${x}${y}`, `${side}Q${x}${y}`)
-        const nextNotations = update(notations)
-
-        return nextNotations
-      }
-    }
+    return nextNotations
   }
 }
 
@@ -327,7 +325,7 @@ function enPassant (turn, position, lastItem) {
     Helpers.detectTurn
   )(lastItem)
 
-  if (Utils.isEmpty(enemyMove)) {
+  if (Utils.isEmpty(enemyMove) || enemyMove.substr(1, 1) !== 'P') {
     return (movable) => movable
   }
 
@@ -352,6 +350,8 @@ function enPassant (turn, position, lastItem) {
         ? parseInt(enemyRank, 10) + 1
         : parseInt(enemyRank, 10) - 1
       const diagonal = `${enemyFile}${nextRank}`
+
+      console.log([...m, [diagonal]])
 
       return [...m, [diagonal]]
     }
