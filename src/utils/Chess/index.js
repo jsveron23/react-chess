@@ -27,10 +27,10 @@ class Chess {
 
     return (ts = +new Date()) => (nextNotations) => {
       const move = transform(nextNotations)
-      const payload = { move, notations, ts }
+      const log = { move, notations, ts }
       const data = isNew
-        ? { white: payload }
-        : { ...lastItem, black: payload }
+        ? { white: log }
+        : { ...lastItem, black: log }
 
       return Utils.push(records, data, isNew)
     }
@@ -39,21 +39,22 @@ class Chess {
   /**
    * Undo
    * @return {Function}
-   * TODO fix cannot move once after undo
+   * TODO fix cannot move piece once after undo
    */
   static undo (records) {
-    return () => {
-      if (Utils.isEmpty(records)) {
-        return {}
-      }
+    if (Utils.isEmpty(records)) {
+      return () => ({})
+    }
 
+    const excludedLastItem = records.slice(0, -1)
+
+    return () => {
       const [lastItem] = Utils.getLastItem(records)
-      const { white, black } = lastItem
       const isWhite = Helpers.detectLastTurn(lastItem) === 'white'
+      const { white, black } = lastItem
       const log = isWhite ? white : black
       const { notations, move } = Helpers.parseLog(log)
       const { before, after } = Helpers.parseMove(move)
-      const excludedLastItem = records.slice(0, -1)
       const revertedNotations = Helpers.revertNotations(before, after)(notations)
       const revertedRecords = isWhite
         ? excludedLastItem
@@ -68,9 +69,37 @@ class Chess {
    * @return {Function}
    */
   static getNextNotations (currPosition, nextPosition) {
+    const procParse = Utils.compose(Helpers.parsePosition, Helpers.parseNotation)
+
+    /**
+     * Converts notations to axis number for animations
+     * @return {Function}
+     * @description
+     * # b1 to h3
+     * => [h(8) - b(2) = 6, 3 - 1 = 2]
+     * => ([6, 2]) x pixel
+     * => [300, 100]
+     * => transform: translate(300px, 100px)
+     * TODO calculate pixelSize automatically
+     */
+    const convertAxis = (currNotation) => (pixelSize = 50) => (nextNotation) => {
+      const {
+        file: prevFile,
+        rank: prevRank
+      } = procParse(currNotation)
+      const {
+        file: nextFile,
+        rank: nextRank
+      } = procParse(nextNotation)
+      const x = (Helpers.getFileIdx(nextFile) - Helpers.getFileIdx(prevFile)) * pixelSize
+      const y = (parseInt(nextRank, 10) - parseInt(prevRank, 10)) * pixelSize
+
+      return { x, y }
+    }
+
     return (setAxis) => (notations) => notations.map((n) => {
       if (n.search(currPosition) > -1) {
-        const getAxis = Chess.convertAxis(n)(/* pixelSize */)
+        const getAxis = convertAxis(n)(/* pixelSize */)
         const { side, piece } = Helpers.parseNotation(n)
         const nextNotation = `${side}${piece}${nextPosition}`
 
@@ -85,36 +114,6 @@ class Chess {
 
       return n
     })
-  }
-
-  /**
-   * Converts notations to axis number for animations
-   * @return {Function}
-   * @description
-   * # b1 to h3
-   * => [h(8) - b(2) = 6, 3 - 1 = 2]
-   * => ([6, 2]) x pixel
-   * => [300, 100]
-   * => transform: translate(300px, 100px)
-   * TODO calculate pixelSize automatically
-   */
-  static convertAxis (currNotation) {
-    const procParse = Utils.compose(Helpers.parsePosition, Helpers.parseNotation)
-    const {
-      file: prevFile,
-      rank: prevRank
-    } = procParse(currNotation)
-
-    return (pixelSize = 50) => (nextNotation) => {
-      const {
-        file: nextFile,
-        rank: nextRank
-      } = procParse(nextNotation)
-      const x = (Helpers.getFileIdx(nextFile) - Helpers.getFileIdx(prevFile)) * pixelSize
-      const y = (parseInt(nextRank, 10) - parseInt(prevRank, 10)) * pixelSize
-
-      return { x, y }
-    }
   }
 
   /**
@@ -158,40 +157,41 @@ class Chess {
     const [lastItem] = Utils.getLastItem(records)
     const turn = Helpers.detectTurn(lastItem)
 
-    return (piece, position, specials) => (movable) => {
-      /**
-       * @param  {Array}  m
-       * @param  {string} mvName
-       * @return {Array}
-       */
-      const controlPawn = (m, mvName) => {
-        switch (mvName) {
-          case 'doubleStep': {
-            const isFirstStep = /^.(2|7)$/.test(position)
+    /**
+     * Control special move of Pawn
+     * @return {Array}
+     */
+    const controlPawn = (position) => (m, mvName) => {
+      switch (mvName) {
+        case 'doubleStep': {
+          const isFirstStep = /^.(2|7)$/.test(position)
 
-            if (!isFirstStep) {
-              return m
-            }
-
-            return doubleStep(turn)(m)
-          }
-
-          case 'enPassant': {
-            if (Utils.isEmpty(lastItem)) {
-              return m
-            }
-
-            return enPassant(turn, position, lastItem)(m)
-          }
-
-          default: {
+          if (!isFirstStep) {
             return m
           }
+
+          return doubleStep(turn)(m)
+        }
+
+        case 'enPassant': {
+          if (Utils.isEmpty(lastItem)) {
+            return m
+          }
+
+          return enPassant(position, lastItem)(m)
+        }
+
+        default: {
+          return m
         }
       }
+    }
 
+    return (piece, position, specials) => (movable) => {
       if (piece === 'P') {
-        return movable.map((m) => specials.reduce(controlPawn, m))
+        const detectSpecial = controlPawn(position)
+
+        return movable.map((m) => specials.reduce(detectSpecial, m))
       } else if (piece === 'K') {
         // TODO castling
       }
@@ -242,7 +242,7 @@ class Chess {
             // only for Knight
             const only4Knight = isPlaced && canJump
 
-            // after blocked, remove all tiles
+            // after blocked, remove leftover tiles (ignore)
             const afterBlocked = isBlocked
 
             if (exceptKnight || afterBlocked || only4Knight) {
@@ -312,40 +312,41 @@ function doubleStep (turn) {
 /**
  * Pawn moves diagonal and attack
  * @return {Function}
+ * TODO remove after
  */
-function enPassant (turn, position, lastItem) {
-  const isWhiteTurn = turn === 'white'
+function enPassant (position, lastItem) {
   const enemyMove = Utils.compose(
     Helpers.getMove(lastItem),
     Helpers.getEnemy,
     Helpers.detectTurn
   )(lastItem)
+  const isPawn = enemyMove.substr(1, 1) === 'P'
 
-  if (Utils.isEmpty(enemyMove) || enemyMove.substr(1, 1) !== 'P') {
-    return (movable) => movable
+  if (Utils.isEmpty(enemyMove) || !isPawn) {
+    return (m) => m
   }
+
+  const turn = Helpers.detectTurn(lastItem)
 
   // get myself
   const { file: myFile, rank: myRank } = Helpers.parsePosition(position)
   const myFileIdx = Helpers.getFileIdx(myFile)
 
   // get enemy
-  const enemyPosition = `${enemyMove.substr(-2, 1)}${enemyMove.substr(-1)}`
+  const enemyPosition = enemyMove.substr(-2)
   const { file: enemyFile, rank: enemyRank } = Helpers.parsePosition(enemyPosition)
   const enemyFileIdx = Helpers.getFileIdx(enemyFile)
 
   // check
   const howManyLastStep = Helpers.getHowManyStepVertical(enemyMove)
+  const isDoubleStep = howManyLastStep === 2
   const isSibling = Math.abs(myFileIdx - enemyFileIdx) === 1
-  const isAdjustedLine = +myRank === +enemyRank
+  const isAdjustedLine = parseInt(myRank, 10) === parseInt(enemyRank, 10)
 
   return (m) => {
     // valid
-    if ((howManyLastStep === 2) && isAdjustedLine && isSibling) {
-      const nextRank = isWhiteTurn
-        ? parseInt(enemyRank, 10) + 1
-        : parseInt(enemyRank, 10) - 1
-      const diagonal = `${enemyFile}${nextRank}`
+    if (isDoubleStep && isAdjustedLine && isSibling) {
+      const diagonal = Helpers.increaseRank(turn)(enemyPosition)
 
       return [...m, [diagonal]]
     }

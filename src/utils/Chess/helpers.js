@@ -221,8 +221,6 @@ export function detectTurn (rec = {}) {
   const isCompletedRec = isCompletedRecord(rec)
   const isWhite = isEmpty(rec) || (isExist(rec) && isCompletedRec)
 
-  // Object.keys(rec).length * rate === 0.5
-
   return isWhite ? 'white' : 'black'
 }
 

@@ -3,14 +3,14 @@
  * @param  {...Function} fns
  * @return {*}
  */
-export const compose = (...fns) => x => fns.reduceRight((v, f) => f(v), x)
+export const compose = (...fns) => (x) => fns.reduceRight((v, f) => f(v), x)
 
 /**
  * Pipe
  * @param  {...Function} fns
  * @return {*}
  */
-export const pipe = (...fns) => x => fns.reduce((v, f) => f(v), x)
+export const pipe = (...fns) => (x) => fns.reduce((v, f) => f(v), x)
 
 /**
  * Is string?
@@ -85,11 +85,9 @@ export const replaceLast = (items, data) => [...items.slice(0, -1), data]
  * @param  {Array|Function} v
  * @return {Array}
  */
-export function diet (v) {
-  return Array.isArray(v)
-    ? v.filter((item) => isExist(item))
-    : isExist(v)
-}
+export const diet = (v) => Array.isArray(v)
+  ? v.filter((item) => isExist(item))
+  : isExist(v)
 
 /**
  * Difference
@@ -97,9 +95,7 @@ export function diet (v) {
  * @param  {Array} b
  * @return {Array}
  */
-export function diff (a, b) {
-  return a.filter((n, idx) => n !== b[idx])
-}
+export const diff = (a, b) => a.filter((n, idx) => n !== b[idx])
 
 /**
  * Difference check
@@ -107,9 +103,7 @@ export function diff (a, b) {
  * @param  {*}       b
  * @return {boolean}
  */
-export function isDiff (a, b) {
-  return a !== b
-}
+export const isDiff = (a, b) => (JSON.stringify(a) !== JSON.stringify(b))
 
 /**
  * Is it empty?
@@ -128,4 +122,4 @@ export const isEmpty = (v) => (
  * @param  {*}       value
  * @return {boolean}
  */
-export const isExist = value => !isEmpty(value)
+export const isExist = (value) => !isEmpty(value)
