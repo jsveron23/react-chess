@@ -1,6 +1,7 @@
 import React, { PureComponent } from 'react'
 import PropTypes from 'prop-types'
-import { isEmpty, isExist, compose } from '@utils'
+import { getPiece } from '@pieces'
+import { isEmpty, isExist } from '@utils'
 import Chess from '@utils/Chess'
 
 /**
@@ -43,6 +44,7 @@ const enhancer = (WrappedComponent) => class extends PureComponent {
     super(props)
 
     this.state = {
+      check: '',
       currPosition: '',
       isMoving: false
     }
@@ -80,7 +82,7 @@ const enhancer = (WrappedComponent) => class extends PureComponent {
   }
 
   render () {
-    const { currPosition } = this.state
+    const { check, currPosition } = this.state
     const {
       isPlaying,
       notations,
@@ -97,6 +99,7 @@ const enhancer = (WrappedComponent) => class extends PureComponent {
       <WrappedComponent
         notations={notations}
         movable={movable}
+        check={check}
         turn={turn}
         selected={currPosition}
         translated={axis}
@@ -120,8 +123,7 @@ const enhancer = (WrappedComponent) => class extends PureComponent {
   /**
    * Handle drawing movable squares
    * @see @components#<File />
-   * @see @utils/Chess/index.js#getMovableData
-   * @see @utils/Chess/index.js#rejectBlocked
+   * @see @utils/Chess/index.js#getMovable
    */
   handleSelect = (args) => {
     const {
@@ -138,15 +140,13 @@ const enhancer = (WrappedComponent) => class extends PureComponent {
       const {
         notations,
         records,
-        turn,
         setMovable
       } = this.props
 
-      const movable = compose(
-        Chess.excludeBlocked(notations)(turn, specials),
-        Chess.includeSpecial(records)(piece, position, specials),
-        Chess.getMovableData(position, side)
-      )(defaults)
+      // TODO if 'check' own king, no movable
+
+      const getMovable = Chess.getMovable(notations, records)(piece, position, side)
+      const movable = getMovable(defaults, specials)
 
       setMovable(movable)
     })
@@ -165,8 +165,8 @@ const enhancer = (WrappedComponent) => class extends PureComponent {
       notations,
       records,
       setNext,
-      setAxis,
-      resetMovable
+      resetMovable,
+      setAxis
     } = this.props
 
     this.setState({
@@ -218,14 +218,21 @@ const enhancer = (WrappedComponent) => class extends PureComponent {
     this.setState({
       isMoving: false
     }, () => {
+      const {
+        notations,
+        records,
+        turn,
+        setNotations
+      } = this.props
       const { currPosition } = this.state
-      const { notations, records, setNotations } = this.props
       const isAfterMoving = isEmpty(currPosition)
 
       if (isAfterMoving) {
+        let nextNotations
+
         switch (piece) {
           case 'P': {
-            const nextNotations = Chess.promotion(notations)(records)
+            nextNotations = Chess.promotion(notations)(records)
 
             if (isExist(nextNotations)) {
               setNotations(nextNotations)
@@ -238,6 +245,31 @@ const enhancer = (WrappedComponent) => class extends PureComponent {
             // TODO castling
           }
         }
+
+        nextNotations = nextNotations || [...notations]
+
+        // ever direction
+        const leadPiece = 'Q'
+        const { movement: leadMovement } = getPiece(leadPiece)
+        const { defaults: leadDefault } = leadMovement
+
+        // cache common methods
+        const find = Chess.findNotation(nextNotations)
+        const getSight = Chess.predictSight(nextNotations)
+        const isCheck = Chess.isCheck({ find, getSight, getPiece })(turn)
+
+        // is checked?
+        const sideAlias = Chess.getAlias(turn)
+        const kingNotation = find(`${sideAlias}K`)
+        const { position: kingPosition } = Chess.parseNotation(kingNotation)
+        const kingSight = getSight(leadPiece, kingPosition, turn)(leadDefault)
+        const isChecked = isCheck(kingPosition, kingSight)
+
+        // TODO replace last record and add +
+
+        this.setState({
+          check: isChecked ? kingNotation : ''
+        })
       }
     })
   }

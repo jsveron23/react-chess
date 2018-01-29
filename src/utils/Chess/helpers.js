@@ -122,7 +122,16 @@ export function parseNotation (notation) {
  * @return {Function}
  */
 export function findNotation (notations) {
-  return (position) => notations.find((notation) => (notation.search(position) > -1)) || ''
+  return (v) => notations.find((notation) => (notation.search(v) > -1)) || ''
+}
+
+/**
+ * Find notations
+ * @param  {Array}    notations
+ * @return {Function}
+ */
+export function findNotations (notations) {
+  return (v) => notations.filter((notation) => (notation.search(v) > -1))
 }
 
 /**

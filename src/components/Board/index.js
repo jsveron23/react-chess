@@ -15,6 +15,7 @@ const Board = ({
   notations,
   movable,
   selected,
+  check,
   turn,
   translated,
   onSelect,
@@ -58,6 +59,7 @@ const Board = ({
                 {EnhancedPiece && (
                   <EnhancedPiece
                     side={side}
+                    check={check === currentNotation ? check : ''}
                     translated={shouldAnimate && translated}
                     onAnimate={shouldAnimate && onAnimate}
                     onAnimateEnd={onAnimateEnd}

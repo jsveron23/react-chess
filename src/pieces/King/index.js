@@ -1,5 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
+import cx from 'classnames'
 import enhancer from '@utils/Enhancer/piece'
 import css from './king.css'
 
@@ -8,7 +9,7 @@ import css from './king.css'
  * @param  {Object} props
  * @return {JSX}
  */
-const King = ({ side, getRef, onTransitionEnd }) => (
+const King = ({ side, check, getRef, onTransitionEnd }) => (
   <svg
     ref={getRef}
     onTransitionEnd={onTransitionEnd}
@@ -20,7 +21,7 @@ const King = ({ side, getRef, onTransitionEnd }) => (
     aria-labelledby="title"
   >
     <title id={`king-${side}`}>King({side})</title>
-    <g className={css.king}>
+    <g className={cx(css.king, { 'is-shaking': check })}>
       <path d="M 22.5,11.63 L 22.5,6" style={{ fill: 'none', stroke: '#000000', strokeLinejoin: 'miter' }} />
       <path d="M 20,8 L 25,8" style={{ fill: 'none', stroke: '#000000', strokeLinejoin: 'miter' }} />
       {

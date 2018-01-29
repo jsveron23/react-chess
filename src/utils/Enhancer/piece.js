@@ -10,6 +10,7 @@ import PropTypes from 'prop-types'
 const enhancer = (WrappedComponent, piece) => class extends PureComponent {
   static propTypes = {
     side: PropTypes.string.isRequired,
+    check: PropTypes.string,
     translated: PropTypes.oneOfType([
       PropTypes.bool,
       PropTypes.object
@@ -22,6 +23,7 @@ const enhancer = (WrappedComponent, piece) => class extends PureComponent {
   }
 
   static defaultProps = {
+    check: '',
     translated: null,
     onAnimateEnd: function () {}
   }
@@ -39,13 +41,14 @@ const enhancer = (WrappedComponent, piece) => class extends PureComponent {
   }
 
   render () {
-    const { side } = this.props
+    const { check, side } = this.props
 
     return (
       <WrappedComponent
-        getRef={this.refContainer}
+        getRef={this.getRef}
         onTransitionEnd={this.handleTransitionEnd}
         side={side}
+        check={check}
       />
     )
   }
@@ -54,7 +57,7 @@ const enhancer = (WrappedComponent, piece) => class extends PureComponent {
    * Get ref
    * @param {Object} el
    */
-  refContainer = el => {
+  getRef = (el) => {
     this.refElement = el
   }
 

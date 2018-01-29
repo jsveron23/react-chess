@@ -1,6 +1,6 @@
 import { setNotations, resetNotations } from '@actions/notations'
 import { setRecords, resetRecords } from '@actions/records'
-import { diff } from '@utils'
+import { isDiff } from '@utils'
 
 /**
  * Refresh board to perform next turn and starting animation
@@ -8,12 +8,13 @@ import { diff } from '@utils'
  * @return {Function}
  */
 export function setNext (fns) {
+  const { getNextNotations, getNextRecords, getNextTurn } = fns
+
   return (dispatch, getState) => {
-    const { general, notations: currNotations } = getState()
-    const { getNextNotations, getNextRecords, getNextTurn } = fns
+    const { general, notations } = getState()
     const { turn } = general
     const nextTurn = getNextTurn(turn)
-    const nextNotations = getNextNotations(currNotations)
+    const nextNotations = getNextNotations(notations)
     const nextRecords = getNextRecords(nextNotations)
 
     dispatch(setTurn(nextTurn))
@@ -29,16 +30,15 @@ export function setNext (fns) {
  * Undo previous turn
  * @param  {...Function} fns
  * @return {Function}
- * TODO implement undo-redo
  */
 export function revert (fns) {
+  const { applyUndo, getPrevTurn } = fns
+
   return (dispatch, getState) => {
     const { notations, general } = getState()
-    const { applyUndo, getPrevTurn } = fns
     const { revertedRecords, revertedNotations } = applyUndo()
-    const isDiff = diff(notations, revertedNotations)
 
-    if (isDiff) {
+    if (isDiff(notations, revertedNotations)) {
       const { turn } = general
       const prevTurn = getPrevTurn(turn)
 
@@ -76,7 +76,8 @@ export function resetMatch () {
     dispatch(resetNotations())
     dispatch(resetRecords())
 
-    return Promise.resolve()
+    return Promise.resolve({ type: 'RESET_MATCH' })
+      .then(dispatch)
   }
 }
 

@@ -12,39 +12,12 @@ class Records extends PureComponent {
     records: PropTypes.array.isRequired
   }
 
-  /**
-   * Get piece component
-   * @param  {String}          move
-   * @return {React.Component}
-   */
-  getPieceComponent = (move) => getPiece(move.charAt(1))
-
-  /**
-   * Get path
-   * @param  {String} move
-   * @return {String}
-   */
-  getPath = (move) => move.split(' ').map(m => m.substr(2)).join(' -> ')
-
-  /**
-   * Get ref
-   * @param {HTMLElement} el
-   */
-  getRef = (el) => (this.recordsRef = el)
-
-  /**
-   * Lifecycle method
-   */
   componentDidUpdate () {
     const { scrollHeight } = this.recordsRef
 
     this.recordsRef.scrollTop = scrollHeight
   }
 
-  /**
-   * Lifecycle method
-   * @return {JSX}
-   */
   render () {
     const { records } = this.props
     const getPath = this.getPath
@@ -84,6 +57,26 @@ class Records extends PureComponent {
       </ul>
     )
   }
+
+  /**
+   * Get piece component
+   * @param  {String}          move
+   * @return {React.Component}
+   */
+  getPieceComponent = (move) => getPiece(move.charAt(1))
+
+  /**
+   * Get path
+   * @param  {String} move
+   * @return {String}
+   */
+  getPath = (move) => move.split(' ').map(m => m.substr(2)).join('-')
+
+  /**
+   * Get ref
+   * @param {HTMLElement} el
+   */
+  getRef = (el) => (this.recordsRef = el)
 }
 
 export default Records

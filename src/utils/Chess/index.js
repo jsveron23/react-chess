@@ -12,8 +12,63 @@ class Chess {
   static detectLastTurn = Helpers.detectLastTurn
   static parseNotation = Helpers.parseNotation
   static findNotation = Helpers.findNotation
+  static findNotations = Helpers.findNotations
   static updateNotations = Helpers.updateNotations
   static getMove = Helpers.getMove
+
+  /**
+   * Predict next movement by movable data
+   * @return {Function}
+   */
+  static predictSight (notations) {
+    const getMovable = Chess.getMovable(notations)
+
+    return (piece, position, turn) => (defaults) => Utils.compose(
+      Utils.deepFlatten,
+      getMovable(piece, position, turn)
+    )(defaults).filter(Utils.diet)
+  }
+
+  /**
+   * Is check?
+   * @return {boolean}
+   */
+  static isCheck (fns) {
+    // TODO
+    const { find, getSight, getPiece } = fns
+
+    return (turn) => (kingPosition, kingSight) => kingSight.reduce((isAble2Check, tile) => {
+      const found = find(tile)
+
+      if (!isAble2Check && Utils.isExist(found)) {
+        const { piece, position } = Helpers.parseNotation(found)
+
+        // TODO
+        const { movement } = getPiece(piece)
+        const { defaults } = movement
+
+        const enemy = Helpers.getEnemy(turn)
+        const sight = getSight(piece, position, enemy)(defaults)
+        const checker = sight.indexOf(kingPosition) > -1
+
+        return !!checker
+      }
+
+      return isAble2Check
+    }, false)
+  }
+
+  /**
+   * Get complete movable data (composition)
+   * @return {Function}
+   */
+  static getMovable (notations, records = []) {
+    return (piece, position, side) => (defaults, specials = []) => Utils.compose(
+      excludeBlocked(notations)(side, specials),
+      includeSpecial(records)(piece, position, side, specials),
+      getMovableData(position, side)
+    )(defaults)
+  }
 
   /**
    * Save records data
@@ -82,7 +137,7 @@ class Chess {
      * => transform: translate(300px, 100px)
      * TODO calculate pixelSize automatically
      */
-    const convertAxis = (currNotation) => (pixelSize = 50) => (nextNotation) => {
+    const convertAxis = (pixelSize = 50) => (currNotation) => (nextNotation) => {
       const {
         file: prevFile,
         rank: prevRank
@@ -99,7 +154,7 @@ class Chess {
 
     return (setAxis) => (notations) => notations.map((n) => {
       if (n.search(currPosition) > -1) {
-        const getAxis = convertAxis(n)(/* pixelSize */)
+        const getAxis = convertAxis(/* pixelSize */)(n)
         const { side, piece } = Helpers.parseNotation(n)
         const nextNotation = `${side}${piece}${nextPosition}`
 
@@ -117,156 +172,160 @@ class Chess {
   }
 
   /**
-   * Get movable data from transfromed movement
-   * @return {Function}
-   */
-  static getMovableData (position, side) {
-    const { file, rank } = Helpers.parsePosition(position)
-    const fileIdx = Helpers.getFileIdx(file)
-
-    /**
-     * Transform axisList to tiles
-     * @return {Array}
-     */
-    const transformTiles = (axisList) => axisList.reduce((list, axis) => {
-      const [x, y] = axis
-
-      // X: 1(a) + 1 = 2(b)
-      const nextX = x + fileIdx
-
-      // Y: upside down
-      const nextY = side === 'white'
-        ? y + parseInt(rank, 10)
-        : parseInt(rank, 10) - y
-
-      const fileChar = Helpers.getFile(nextX) // it remove outside of board
-      const isInside = (nextX > 0 && nextY > 0 && nextY < 9 && !!fileChar)
-
-      return isInside ? [...list, `${fileChar}${nextY}`] : list
-    }, [])
-
-    return (defaults) =>
-      Object.keys(defaults).map((mvName) => defaults[mvName].map(transformTiles))
-  }
-
-  /**
-   * Add special move to movable data
-   * @return {Function}
-   */
-  static includeSpecial (records) {
-    const [lastItem] = Utils.getLastItem(records)
-    const turn = Helpers.detectTurn(lastItem)
-
-    /**
-     * Control special move of Pawn
-     * @return {Array}
-     */
-    const controlPawn = (position) => (m, mvName) => {
-      switch (mvName) {
-        case 'doubleStep': {
-          const isFirstStep = /^.(2|7)$/.test(position)
-
-          if (!isFirstStep) {
-            return m
-          }
-
-          return doubleStep(turn)(m)
-        }
-
-        case 'enPassant': {
-          if (Utils.isEmpty(lastItem)) {
-            return m
-          }
-
-          return enPassant(position, lastItem)(m)
-        }
-
-        default: {
-          return m
-        }
-      }
-    }
-
-    return (piece, position, specials) => (movable) => {
-      if (piece === 'P') {
-        const detectSpecial = controlPawn(position)
-
-        return movable.map((m) => specials.reduce(detectSpecial, m))
-      } else if (piece === 'K') {
-        // TODO castling
-      }
-
-      return movable
-    }
-  }
-
-  /**
-   * Filter blocked path to movable data (include enemy)
-   * @return {Function}
-   */
-  static excludeBlocked (notations) {
-    const checkPlaced = Helpers.isThere(notations)
-    const find = Helpers.findNotation(notations)
-
-    return (turn, specials) => (movable) => movable.map((m) => {
-      const cannotJump = specials.indexOf('jumpover') === -1
-
-      return m.map((tiles) => {
-        let isBlocked = false
-        let enemyTile = ''
-
-        return tiles
-          .reduce((nonBlocked, tile) => {
-            if (Utils.isEmpty(enemyTile)) {
-              const found = find(tile)
-              const { side, position } = Helpers.parseNotation(found)
-
-              // 1 enemy per direction
-              const isEnemy = Helpers.getEnemy(turn) === Helpers.getSide(side)
-              const isEnemyExist = (
-                !isBlocked && isEnemy &&
-                Utils.isEmpty(enemyTile) && Utils.isExist(side)
-              )
-
-              if (isEnemyExist) {
-                enemyTile = position
-              }
-            }
-
-            const isPlaced = checkPlaced(tile)
-            const canJump = !cannotJump
-
-            // everything except Knight
-            const exceptKnight = isPlaced && !isBlocked && cannotJump
-
-            // only for Knight
-            const only4Knight = isPlaced && canJump
-
-            // after blocked, remove leftover tiles (ignore)
-            const afterBlocked = isBlocked
-
-            if (exceptKnight || afterBlocked || only4Knight) {
-              if (exceptKnight) {
-                isBlocked = true
-              }
-
-              return nonBlocked
-            }
-
-            return [...nonBlocked, tile]
-          }, [])
-          .concat(enemyTile) // include enemy tile
-      })
-    })
-  }
-
-  /**
    * Promotion
    * @return {Function}
    */
   static promotion (notations) {
     return (records) => promotion(notations, records)
   }
+}
+
+/**
+ * Get movable data from movement
+ * @return {Function}
+ */
+function getMovableData (position, side) {
+  const { file, rank } = Helpers.parsePosition(position)
+  const fileIdx = Helpers.getFileIdx(file)
+
+  /**
+   * Transform axisList to tiles
+   * @return {Array}
+   */
+  const transformTiles = (axisList) => axisList.reduce((list, axis) => {
+    const [x, y] = axis
+
+    // X: 1(a) + 1 = 2(b)
+    const nextX = x + fileIdx
+
+    // Y: upside down
+    const nextY = side === 'white'
+      ? y + parseInt(rank, 10)
+      : parseInt(rank, 10) - y
+
+    const fileChar = Helpers.getFile(nextX) // it removes outside of board
+    const isInside = (nextX > 0 && nextY > 0 && nextY < 9 && !!fileChar)
+
+    return isInside ? [...list, `${fileChar}${nextY}`] : list
+  }, [])
+
+  return (defaults) =>
+    Object.keys(defaults).map((mvName) => defaults[mvName].map(transformTiles))
+}
+
+/**
+ * Add special move to movable data
+ * @return {Function}
+ */
+function includeSpecial (records) {
+  const [lastItem] = Utils.getLastItem(records)
+
+  /**
+   * Control special move of Pawn
+   * @return {Array}
+   */
+  const controlPawn = (position) => (turn) => (m, mvName) => {
+    switch (mvName) {
+      case 'doubleStep': {
+        const isFirstStep = /^.(2|7)$/.test(position)
+
+        if (!isFirstStep) {
+          return m
+        }
+
+        return doubleStep(turn)(m)
+      }
+
+      case 'enPassant': {
+        if (Utils.isEmpty(lastItem)) {
+          return m
+        }
+
+        return enPassant(position, lastItem)(m)
+      }
+
+      default: {
+        return m
+      }
+    }
+  }
+
+  return (piece, position, turn, specials) => (movable) => {
+    if (piece === 'P') {
+      const detectSpecial = controlPawn(position)(turn)
+
+      return movable.map((m) => specials.reduce(detectSpecial, m))
+    } else if (piece === 'K') {
+      // TODO castling
+    }
+
+    return movable
+  }
+}
+
+/**
+ * Filter blocked path to movable data (include enemy)
+ * @return {Function}
+ */
+function excludeBlocked (notations) {
+  const checkPlace = Helpers.isThere(notations)
+  const find = Helpers.findNotation(notations)
+
+  return (turn, specials) => (movable) => movable.map((m) => {
+    const cannotJump = specials.indexOf('jumpover') === -1
+
+    return m.map((tiles) => {
+      let isBlocked = false
+      let enemyTile = ''
+
+      return tiles
+        .reduce((nonBlocked, tile) => {
+          if (Utils.isEmpty(enemyTile)) {
+            const found = find(tile)
+            const { side, position } = Helpers.parseNotation(found) // piece
+
+            // 1 enemy per direction
+            const isEnemy = Helpers.getEnemy(turn) === Helpers.getSide(side)
+            const isEnemyExist = (
+              !isBlocked && isEnemy &&
+              Utils.isEmpty(enemyTile) && Utils.isExist(side)
+            )
+
+            // TODO check 'check' after moving
+            // if (!isBlocked && isEnemy && Utils.isExist(piece) && piece === 'K') {
+            //   console.log('Check: ', side, piece, tile)
+            // }
+
+            if (isEnemyExist) {
+              enemyTile = position
+            }
+          }
+
+          const isPlaced = checkPlace(tile)
+          const canJump = !cannotJump
+
+          // everything except Knight
+          const exceptKnight = isPlaced && !isBlocked && cannotJump
+
+          // only for Knight
+          const only4Knight = isPlaced && canJump
+
+          // after blocked, remove leftover tiles (ignore)
+          const afterBlocked = isBlocked
+
+          if (exceptKnight || afterBlocked || only4Knight) {
+            if (exceptKnight) {
+              isBlocked = true
+            }
+
+            return nonBlocked
+          }
+
+          return [...nonBlocked, tile]
+        }, [])
+        .concat(enemyTile) // include enemy tile
+    })
+  })
 }
 
 /**
