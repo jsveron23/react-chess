@@ -20,8 +20,6 @@ class Records extends PureComponent {
 
   render () {
     const { records } = this.props
-    const getPath = this.getPath
-    const getComponent = this.getPieceComponent
 
     return (
       <ul ref={this.getRef} className={css.records}>
@@ -30,16 +28,16 @@ class Records extends PureComponent {
             const { white, black } = rec
 
             // white
-            const wMove = white.move
-            const WPiece = getComponent(wMove)
+            const { move: wMove } = white
+            const WPiece = this.getComponent(wMove)
 
             // black
             const bMove = black && black.move
-            const BPiece = bMove && getComponent(bMove)
+            const BPiece = bMove && this.getComponent(bMove)
 
             // path
-            const wPath = getPath(wMove)
-            const bPath = bMove && getPath(bMove)
+            const wPath = this.getPath(wMove)
+            const bPath = bMove && this.getPath(bMove)
 
             return (
               <li key={wMove || bMove} className="l-flex-row">
@@ -63,14 +61,23 @@ class Records extends PureComponent {
    * @param  {String}          move
    * @return {React.Component}
    */
-  getPieceComponent = (move) => getPiece(move.charAt(1))
+  getComponent = (move) => getPiece(move.charAt(1))
 
   /**
    * Get path
    * @param  {String} move
    * @return {String}
+   * TODO optimize later
    */
-  getPath = (move) => move.split(' ').map(m => m.substr(2)).join('-')
+  getPath = (move) => {
+    const seperator = move.substr(4, 1)
+    const path = move
+      .split(seperator)
+      .map(m => m.substr(2))
+      .join(seperator)
+
+    return path
+  }
 
   /**
    * Get ref

@@ -2,7 +2,6 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { Rank, File } from '@components'
 import { getPiece } from '@pieces'
-import { deepFlatten } from '@utils'
 import Chess, { RANKS, FILES } from '@utils/Chess'
 import css from './board.css'
 
@@ -23,14 +22,9 @@ const Board = ({
   onAnimate,
   onAnimateEnd
 }) => {
-  const {
-    findNotation,
-    parseNotation,
-    getSide
-  } = Chess
-  const find = findNotation(notations)
+  const findNotation = Chess.findNotation(notations)
   const defProps = {
-    movable: deepFlatten(movable),
+    movable,
     selected,
     turn,
     onSelect,
@@ -43,13 +37,13 @@ const Board = ({
         <Rank key={rank}>
           {FILES.map(file => {
             const position = `${file}${rank}`
-            const currentNotation = find(position)
-            const { side, piece } = parseNotation(currentNotation)
+            const currentNotation = findNotation(position)
+            const { side, piece } = Chess.parseNotation(currentNotation)
             const EnhancedPiece = getPiece(piece)
             const shouldAnimate = (translated && translated.notation === currentNotation)
             const fileProps = {
               ...defProps,
-              side: getSide(side),
+              side: Chess.getSide(side),
               position,
               piece
             }
@@ -60,7 +54,7 @@ const Board = ({
                   <EnhancedPiece
                     side={side}
                     check={check === currentNotation ? check : ''}
-                    translated={shouldAnimate && translated}
+                    translated={shouldAnimate ? translated : {}}
                     onAnimate={shouldAnimate && onAnimate}
                     onAnimateEnd={onAnimateEnd}
                   />
@@ -83,10 +77,12 @@ Board.propTypes = {
   onAnimateEnd: PropTypes.func.isRequired,
   onAnimate: PropTypes.func.isRequired,
   movable: PropTypes.array,
-  translated: PropTypes.object
+  translated: PropTypes.object,
+  check: PropTypes.string
 }
 Board.defaultProps = {
-  movable: []
+  movable: [],
+  check: ''
 }
 
 export default Board

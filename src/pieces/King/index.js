@@ -19,6 +19,9 @@ const King = ({ side, check, getRef, onTransitionEnd }) => (
     height="45"
     viewBox="0 0 45 45"
     aria-labelledby="title"
+    style={{
+      backgroundColor: check ? 'rgba(255, 0, 0, .8)' : 'transparent'
+    }}
   >
     <title id={`king-${side}`}>King({side})</title>
     <g className={cx(css.king, { 'is-shaking': check })}>
@@ -65,10 +68,12 @@ const King = ({ side, check, getRef, onTransitionEnd }) => (
 King.propTypes = {
   getRef: PropTypes.func.isRequired,
   side: PropTypes.string.isRequired,
+  check: PropTypes.string,
   onTransitionEnd: PropTypes.func
 }
 
 King.defaultProps = {
+  check: '',
   onTransitionEnd: function () {}
 }
 

@@ -1,5 +1,6 @@
 import React, { PureComponent } from 'react'
 import PropTypes from 'prop-types'
+import { isExist } from '@utils'
 
 /**
  * Common API for Chess piece component
@@ -10,11 +11,8 @@ import PropTypes from 'prop-types'
 const enhancer = (WrappedComponent, piece) => class extends PureComponent {
   static propTypes = {
     side: PropTypes.string.isRequired,
+    translated: PropTypes.object,
     check: PropTypes.string,
-    translated: PropTypes.oneOfType([
-      PropTypes.bool,
-      PropTypes.object
-    ]),
     onAnimate: PropTypes.oneOfType([
       PropTypes.bool,
       PropTypes.func
@@ -24,7 +22,7 @@ const enhancer = (WrappedComponent, piece) => class extends PureComponent {
 
   static defaultProps = {
     check: '',
-    translated: null,
+    translated: {},
     onAnimateEnd: function () {}
   }
 
@@ -33,7 +31,7 @@ const enhancer = (WrappedComponent, piece) => class extends PureComponent {
   componentDidMount () {
     const { translated, onAnimate } = this.props
 
-    if (translated) {
+    if (isExist(translated)) {
       const { axis } = translated
 
       onAnimate(axis, this.refElement)
@@ -64,10 +62,12 @@ const enhancer = (WrappedComponent, piece) => class extends PureComponent {
   /**
    * Handle animation end
    */
-  handleTransitionEnd = () => {
-    const { onAnimateEnd } = this.props
+  handleTransitionEnd = (evt) => {
+    const { translated, onAnimateEnd } = this.props
 
-    onAnimateEnd(piece)
+    if (isExist(translated)) {
+      onAnimateEnd(piece)
+    }
   }
 }
 

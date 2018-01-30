@@ -44,7 +44,7 @@ export const deepFlatten = (items) => {
   }
 
   const flattened = flatten(items)
-  const isFlattened = flattened.every(isString)
+  const isFlattened = flattened.every((ftn) => !Array.isArray(ftn))
 
   if (!isFlattened) {
     return deepFlatten(flattened)
@@ -104,6 +104,39 @@ export const diff = (a, b) => a.filter((n, idx) => n !== b[idx])
  * @return {boolean}
  */
 export const isDiff = (a, b) => (JSON.stringify(a) !== JSON.stringify(b))
+
+/**
+ * Apply argument(s) from object
+ * Extract property name(s) from object and transform as arguments
+ * - to use composition
+ * @param  {string}   name
+ * @return {Function}
+ * TODO optimize it (easy to understand)
+ */
+export const applyAsArgs = (name) => {
+  const propNames = name.split(' ')
+
+  return (fn) => (o) => {
+    const args = propNames.map((pn) => o[pn])
+
+    return fn(...args)
+  }
+}
+
+/**
+ * Merge result and into the object
+ * @param  {...Function} fns
+ * @return {Function}
+ */
+export const mergeResult = (...fns) => (x) => fns.reduce((o, f) => [...o, f(x)], [])
+
+/**
+ * Search
+ * @param  {string}   [fnName='filter']
+ * @param  {Array}    items
+ * @return {Function}
+ */
+export const search = (fnName = 'filter', items) => (q) => items[fnName]((v) => (v.search(q) > -1))
 
 /**
  * Is it empty?

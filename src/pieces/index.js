@@ -6,7 +6,7 @@ import Queen from './Queen'
 import King from './King'
 
 /**
- * @param  {String}          alias
+ * Get piece
  * @return {React.Component}
  */
 export function getPiece (alias) {
@@ -20,6 +20,18 @@ export function getPiece (alias) {
   }
 
   return list[alias]
+}
+
+/**
+ * Get defaults movement
+ * @return {Array}
+ * @see @utils/Chess/index.js#isCheck
+ */
+export function getDefaults (alias) {
+  const { movement } = getPiece(alias)
+  const { defaults } = movement
+
+  return defaults
 }
 
 export { Pawn, Rook, Bishop, Knight, Queen, King }

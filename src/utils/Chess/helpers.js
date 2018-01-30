@@ -1,4 +1,4 @@
-import { isEmpty, isExist } from '@utils'
+import { isEmpty, isExist, search } from '@utils'
 import {
   INITIAL,
   SIDE,
@@ -14,8 +14,8 @@ import {
 
 /**
  * Get full name of Chess piece
- * @param  {string}  alias
- * @param  {Object?} [initial=INITIAL]
+ * @param  {string} alias
+ * @param  {Object} [initial=INITIAL]
  * @return {string}
  */
 export function getPieceName (alias, initial = INITIAL) {
@@ -25,7 +25,7 @@ export function getPieceName (alias, initial = INITIAL) {
 /**
  * Get file char from index number (-1)
  * @param  {number} idx
- * @param  {Array?} files
+ * @param  {Array}  [files=FILES]
  * @return {string}
  */
 export function getFile (idx, files = FILES) {
@@ -37,7 +37,7 @@ export function getFile (idx, files = FILES) {
 /**
  * Get index number from file char (+1)
  * @param  {string} char
- * @param  {Array?} files
+ * @param  {Array}  [files=FILES]
  * @return {number}
  */
 export function getFileIdx (char, files = FILES) {
@@ -48,28 +48,28 @@ export function getFileIdx (char, files = FILES) {
 
 /**
  * Get side
- * @param  {string}  alias
- * @param  {Object?} [side=SIDE]
+ * @param  {string} alias
+ * @param  {Object} [side=SIDE]
  * @return {string}
  */
 export function getSide (alias, side = SIDE) {
-  return side[alias]
+  return side[alias] || alias
 }
 
 /**
  * Get enemy
- * @param  {string}  side
- * @param  {Object?} [enemy=ENEMY]
+ * @param  {string} side
+ * @param  {Object} [enemy=ENEMY]
  * @return {string}
  */
 export function getEnemy (side, enemy = ENEMY) {
-  return enemy[side]
+  return enemy[side] || side
 }
 
 /**
  * Get alias
- * @param  {string}  side
- * @param  {Object?} [alias=ALIAS]
+ * @param  {string} side
+ * @param  {Object} [alias=ALIAS]
  * @return {string}
  */
 export function getAlias (side, alias = ALIAS) {
@@ -84,13 +84,13 @@ export function getAlias (side, alias = ALIAS) {
 export function isThere (notations) {
   const find = findNotation(notations)
 
-  return (position) => !!find(position)
+  return (position) => isExist(find(position))
 }
 
 /**
  * Validate a notation
  * @param  {string}  notation
- * @param  {RegExp?} [reg=REG_NOTATION]
+ * @param  {RegExp}  [reg=REG_NOTATION]
  * @return {boolean}
  */
 export function isNotation (notation, reg = REG_NOTATION) {
@@ -122,7 +122,9 @@ export function parseNotation (notation) {
  * @return {Function}
  */
 export function findNotation (notations) {
-  return (v) => notations.find((notation) => (notation.search(v) > -1)) || ''
+  const find = search('find', notations)
+
+  return (v) => find(v)
 }
 
 /**
@@ -131,19 +133,17 @@ export function findNotation (notations) {
  * @return {Function}
  */
 export function findNotations (notations) {
-  return (v) => notations.filter((notation) => (notation.search(v) > -1))
+  const filter = search('filter', notations)
+
+  return (v) => filter(v)
 }
 
 /**
  * Parse a position
- * @param  {Object|string} position
+ * @param  {string} position
  * @return {Object}
  */
 export function parsePosition (position) {
-  if (typeof position === 'object') {
-    position = position.position // for using 'compose'
-  }
-
   const [file, rank] = position.split('')
 
   return { file, rank }
@@ -166,7 +166,7 @@ export function parseLog (log) {
  * @return {Array}
  */
 export function parseMove (move) {
-  const [before, after] = move.split(' ')
+  const [before, after] = move.split(/-|x|\+/) // ignore (+)
 
   return { before, after }
 }
@@ -185,24 +185,21 @@ export function updateNotations (from, to) {
 
 /**
  * Revert notaions (1 turn)
- * @param  {string}   before
- * @param  {string}   after
+ * @param  {Array}    notations
  * @return {Function}
  */
-export function revertNotations (before, after) {
-  const update = updateNotations(after, before)
-
-  return (notations) => update(notations)
+export function revertNotations (notations) {
+  return (before, after) => updateNotations(after, before)(notations)
 }
 
 /**
  * Get move from a record
- * @param  {Object?}  [rec={}]
+ * @param  {Object}   [rec={}]
  * @return {Function}
  */
 export function getMove (rec = {}) {
   return (side = 'white') => {
-    const { move } = rec[side]
+    const { move } = parseLog(rec[side])
 
     return move || ''
   }
@@ -210,6 +207,7 @@ export function getMove (rec = {}) {
 
 /**
  * Return different moves between previous and currunt notations
+ * @param  {Array}    notations
  * @return {Function}
  */
 export function transformMove (notations) {
@@ -217,13 +215,13 @@ export function transformMove (notations) {
     const nextNotation = nextNotations[idx]
     const isDiff = notation !== nextNotation
 
-    return isDiff ? `${notation} ${nextNotation}` : move
+    return isDiff ? `${notation}-${nextNotation}` : move
   }, '')
 }
 
 /**
  * Detect turn by a record (last item)
- * @param  {Object?} [rec={}]
+ * @param  {Object} [rec={}]
  * @return {string}
  */
 export function detectTurn (rec = {}) {
@@ -235,7 +233,7 @@ export function detectTurn (rec = {}) {
 
 /**
  * Detect last turn by a record (last item)
- * @param  {Object?} [rec={}]
+ * @param  {Object} [rec={}]
  * @return {string}
  */
 export function detectLastTurn (rec = {}) {
@@ -246,7 +244,7 @@ export function detectLastTurn (rec = {}) {
 
 /**
  * Is a records has both(white, black) logs?
- * @param  {Object?} [rec={}]
+ * @param  {Object}  [rec={}]
  * @return {boolean}
  */
 export function isCompletedRecord (rec = {}) {
@@ -279,7 +277,7 @@ export function increaseRank (turn, counts = 1) {
  */
 export function getHowManyStepHorizontal (move) {
   const steps = move
-    .split(' ')
+    .split(/-|x/)
     .reduce((prevNotation, currNotation) => {
       const prevFileIdx = getFileIdx(prevNotation.substr(-2, 1))
       const currFileIdx = getFileIdx(currNotation.substr(-2, 1))
@@ -297,10 +295,10 @@ export function getHowManyStepHorizontal (move) {
  */
 export function getHowManyStepVertical (move) {
   const steps = move
-    .split(' ')
+    .split(/-|x/)
     .reduce((prevNotation, currNotation) => {
-      const prevRank = parseInt(prevNotation.substr(-1), 10)
-      const currRank = parseInt(currNotation.substr(-1), 10)
+      const prevRank = parseInt(prevNotation.substr(3, 1), 10)
+      const currRank = parseInt(currNotation.substr(3, 1), 10)
 
       return currRank - prevRank
     })
