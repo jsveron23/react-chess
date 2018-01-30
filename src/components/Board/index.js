@@ -11,6 +11,7 @@ import css from './board.css'
  * @return {JSX}
  */
 const Board = ({
+  isMoving,
   notations,
   movable,
   selected,
@@ -24,9 +25,11 @@ const Board = ({
 }) => {
   const findNotation = Chess.findNotation(notations)
   const defProps = {
+    isMoving,
     movable,
     selected,
     turn,
+    check,
     onSelect,
     onMove
   }

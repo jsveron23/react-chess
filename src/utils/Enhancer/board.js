@@ -86,7 +86,11 @@ const enhancer = (WrappedComponent) => class extends PureComponent {
   }
 
   render () {
-    const { check, currPosition } = this.state
+    const {
+      isMoving,
+      check,
+      currPosition
+    } = this.state
     const {
       isPlaying,
       notations,
@@ -101,6 +105,7 @@ const enhancer = (WrappedComponent) => class extends PureComponent {
 
     return (
       <WrappedComponent
+        isMoving={isMoving}
         notations={notations}
         movable={movable}
         check={check}
@@ -282,7 +287,7 @@ const enhancer = (WrappedComponent) => class extends PureComponent {
           }
         }
 
-        // console.log(piece)
+        console.log(piece)
 
         this.setState({
           check: isChecked ? kingNotation : ''

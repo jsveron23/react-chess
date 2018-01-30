@@ -1,14 +1,15 @@
-import React, { PureComponent } from 'react'
+import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import cx from 'classnames'
 import { getPiece } from '@pieces'
+import { isEmpty } from '@utils'
 import css from './file.css'
 
 /**
  * File component
  * @extends {React.Component}
  */
-class File extends PureComponent {
+class File extends Component {
   static propTypes = {
     turn: PropTypes.string.isRequired,
     position: PropTypes.string.isRequired,
@@ -17,17 +18,41 @@ class File extends PureComponent {
     movable: PropTypes.array,
     selected: PropTypes.string,
     children: PropTypes.node,
+    check: PropTypes.string,
     onSelect: PropTypes.func,
     onMove: PropTypes.func
   }
 
   static defaultProps = {
     side: '',
+    check: '',
     piece: '',
     selected: '',
     movable: [],
     onSelect: function () {},
     onMove: function () {}
+  }
+
+  shouldComponentUpdate (nextProps) {
+    const {
+      isMoving,
+      selected,
+      movable,
+      position,
+      check
+    } = nextProps
+    const shouldNotUpdate = (
+      isEmpty(check) &&
+      !isMoving &&
+      selected !== position &&
+      movable.indexOf(position) === -1
+    )
+
+    if (shouldNotUpdate) {
+      return false
+    }
+
+    return true
   }
 
   render () {
@@ -40,9 +65,11 @@ class File extends PureComponent {
     return (
       <span data-position={position} className={css.file}>
         <div className={cls} onClick={this.handleClickSquare}>
-          {turn === side
-            ? <a href="" onClick={this.handleSelect}>{children}</a>
-            : children}
+          {
+            turn === side
+              ? <a href="" onClick={this.handleSelect}>{children}</a>
+              : children
+          }
         </div>
       </span>
     )

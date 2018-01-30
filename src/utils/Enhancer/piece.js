@@ -55,9 +55,7 @@ const enhancer = (WrappedComponent, piece) => class extends PureComponent {
    * Get ref
    * @param {Object} el
    */
-  getRef = (el) => {
-    this.refElement = el
-  }
+  getRef = (el) => (this.refElement = el)
 
   /**
    * Handle animation end
@@ -65,6 +63,7 @@ const enhancer = (WrappedComponent, piece) => class extends PureComponent {
   handleTransitionEnd = (evt) => {
     const { translated, onAnimateEnd } = this.props
 
+    // NOTE prevent block transition end callback firing from shaking animation
     if (isExist(translated)) {
       onAnimateEnd(piece)
     }
