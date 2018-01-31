@@ -1,6 +1,7 @@
 import * as Utils from '@utils'
 import * as Helpers from './helpers'
-import { RANKS, FILES } from './constants'
+import scenarios from './simulate'
+import { SIMULATION_CONFIG, RANKS, FILES } from './constants'
 
 /**
  * Chess engine
@@ -30,82 +31,53 @@ class Chess {
   }
 
   /**
-   * Simulate
+   * Simulation
    * @return {Function}
    */
   static simulate (fns) {
-    const { getMovable, findNotation, getDefaults } = fns
-    const initialConf = {
-      /**
-       * Check test is default option
-       * @type {String}
-       */
-      targetPiece: 'K',
-      action: 'CHECK',
-      initial: {
-        isChecked: false
-      },
+    const {
+      getMovable,
+      getMovement,
+      findNotation
+    } = fns
 
-      /**
-       * Pretend Queen's movement then Target can see every direction
-       * @type {String}
-       */
-      pretendPiece: 'Q'
+    /**
+     * Get target data
+     * @return {Function}
+     */
+    const getTarget = (turn) => (targetPiece, pretendPiece) => {
+      const sideAlias = Helpers.getAlias(turn)
+      const [targetDefaults, targetSpecials] = getMovement(pretendPiece || targetPiece)
+      const targetNotation = findNotation(`${sideAlias}${targetPiece}`)
+      const { position: targetPosition } = Helpers.parseNotation(targetNotation)
+      const getTargetSight = getMovable(pretendPiece || targetPiece, targetPosition, turn)
+
+      return {
+        targetSight: getTargetSight(targetDefaults, targetSpecials),
+        targetNotation,
+        targetPosition
+      }
     }
 
-    return (turn) => (basePiece) => (config = initialConf) => {
+    return (turn, piece) => (config = SIMULATION_CONFIG) => {
       const {
         targetPiece,
         pretendPiece,
-        initial,
+        initialValue,
         action
       } = config
+      const {
+        targetSight,
+        targetNotation,
+        targetPosition
+      } = getTarget(turn)(targetPiece, pretendPiece)
 
-      const sideAlias = Helpers.getAlias(turn)
-      const targetNotation = findNotation(`${sideAlias}${targetPiece}`)
-      const { position: targetPosition } = Helpers.parseNotation(targetNotation)
-      const targetSight = Utils.compose(
-        getMovable(pretendPiece || targetPiece, targetPosition, turn),
-        getDefaults
-      )(pretendPiece || targetPiece)
+      // create scenarios
+      const target = { targetNotation, targetPosition }
+      const fns4test = { getMovable, findNotation, getMovement }
+      const testScenario = scenarios(fns4test)(turn)(piece)(target)(action)
 
-      /**
-       * Test scenarios
-       * @param  {Object} res
-       * @param  {string} tile
-       * @return {Object}
-       */
-      const scenarios = (res, tile) => {
-        const found = findNotation(tile)
-
-        switch (action) {
-          case 'CHECK': {
-            if (!res.isChecked && Utils.isExist(found)) {
-              const { piece: foundPiece, position: foundPosition } = Helpers.parseNotation(found)
-              const enemyTurn = Helpers.getEnemy(turn) // opposite
-              const movable = Utils.compose(
-                getMovable(foundPiece, foundPosition, enemyTurn),
-                getDefaults
-              )(foundPiece)
-              const gotcha = movable.indexOf(targetPosition) > -1
-
-              return {
-                ...res,
-                isChecked: basePiece === foundPiece && Utils.isExist(gotcha),
-                kingNotation: targetNotation
-              }
-            }
-
-            return {}
-          }
-
-          default: {
-            return res
-          }
-        }
-      }
-
-      return targetSight.reduce(scenarios, initial)
+      return targetSight.reduce(testScenario, initialValue)
     }
   }
 
@@ -114,7 +86,7 @@ class Chess {
    * @return {Function}
    */
   static saveRecords (notations, records) {
-    const [lastItem, push] = Utils.passingThrough(
+    const [lastItem, push] = Utils.share(
       Utils.getLastItem,
       Utils.push
     )(records)
@@ -138,7 +110,7 @@ class Chess {
    * @return {Function}
    * TODO
    * - fix cannot move piece once after undo
-   * - clue 1 : it happens when click 'undo' again after done
+   * - clue 1 : it happens when click 'undo' even though records data had nothing
    */
   static undo (records) {
     if (Utils.isEmpty(records)) {
@@ -155,7 +127,7 @@ class Chess {
 
     return () => {
       const revertedNotations = Utils.compose(
-        Utils.apply(revertNotations),
+        Utils.applyExtraArgs(revertNotations),
         Helpers.parseMove
       )(move)
       const revertedRecords = isWhite
@@ -172,7 +144,7 @@ class Chess {
    */
   static getNextNotations (currPosition, nextPosition) {
     const procParse = Utils.compose(
-      Utils.apply(Helpers.parsePosition),
+      Utils.applyExtraArgs(Helpers.parsePosition),
       Helpers.parseNotation
     )
 
@@ -318,7 +290,7 @@ function includeSpecial (records, turn) {
  * @return {Function}
  */
 function excludeBlocked (notations, turn) {
-  const [checkPlace, findNotation] = Utils.passingThrough(
+  const [checkPlace, findNotation] = Utils.share(
     Helpers.isThere,
     Helpers.findNotation
   )(notations)

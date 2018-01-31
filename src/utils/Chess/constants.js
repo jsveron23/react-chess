@@ -61,3 +61,21 @@ export const FILES = Object.freeze(['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h'])
  * @type {RegExp}
  */
 export const REG_NOTATION = /^[w|b][B|K|P|Q|R][a-h][1-8]$/
+
+/**
+ * Default simulation config
+ * @type {Object}
+ */
+export const SIMULATION_CONFIG = Object.freeze({
+  targetPiece: 'K',
+  action: 'CHECK',
+  initialValue: {
+    isChecked: false
+  },
+
+  /**
+   * Pretend Queen's movement then target can see every direction
+   * @type {String}
+   */
+  pretendPiece: 'Q'
+})

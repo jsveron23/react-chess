@@ -65,7 +65,7 @@ export const replaceLast = (items) => (data) => [...items.slice(0, -1), data]
 
 /**
  * Remove unnecessary items
- * @param  {Array|Function} v
+ * @param  {Array} v
  * @return {Array}
  */
 export const diet = (v) => v.filter((item) => isExist(item))
@@ -85,21 +85,39 @@ export const diff = (a) => (b) => a.filter((n, idx) => n !== b[idx])
 export const isDiff = (a) => (b) => (JSON.stringify(a) !== JSON.stringify(b))
 
 /**
- * Apply argument(s) from object
+ * Apply extra arguments
  * - to use composition
  * - argument order is important
  * @param  {Function} fn
+ * @param  {*}        args
  * @return {Function}
  */
-export const apply = (fn) => (o) => fn(...Object.values(o))
+export const applyExtraArgs = (fn, ...args) => (v) => {
+  if (v.constructor === Object) {
+    return fn(...Object.values(v), ...args)
+  }
+
+  return fn(v, ...args)
+}
 
 /**
- * Get results
- * (like Promise.all)
+ * Share same argument then get results into array
  * @param  {...Function} fns
  * @return {Function}
  */
-export const passingThrough = (...fns) => (x) => fns.reduce((res, f) => [...res, f(x)], [])
+export const share = (...fns) => (x) =>
+  fns.reduce((r, f = function () {}) => [...r, f(x)], [])
+
+/**
+ * Trace
+ * @param  {string} label
+ * @return {*}
+ */
+export const trace = (label) => (v) => {
+  console.log(`${label}: `, v)
+
+  return v
+}
 
 /**
  * Is it empty?

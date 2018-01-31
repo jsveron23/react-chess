@@ -1,7 +1,7 @@
 import React, { PureComponent } from 'react'
 import PropTypes from 'prop-types'
-import { getDefaults } from '@pieces'
-import { isEmpty, isExist, push, getLastItem } from '@utils'
+import { getDefaults, getSpecials } from '@pieces'
+import { isEmpty, isExist, push, getLastItem, share } from '@utils'
 import Chess from '@utils/Chess'
 
 /**
@@ -131,6 +131,15 @@ const enhancer = (WrappedComponent) => class extends PureComponent {
   }
 
   /**
+   * Get movements
+   * @see @components/index.js#getDefaults
+   * @see @components/index.js#getSpecials
+   */
+  getMovement (piece) {
+    return share(getDefaults, getSpecials)(piece)
+  }
+
+  /**
    * Handle drawing movable squares
    * @see @components#<File />
    * @see @utils/Chess/index.js#getMovable
@@ -147,18 +156,44 @@ const enhancer = (WrappedComponent) => class extends PureComponent {
     this.setState({
       currPosition: position
     }, () => {
-      // const { check } = this.state
+      const { check } = this.state
       const {
         notations,
         records,
+        turn,
         setMovable
       } = this.props
 
-      // TODO if 'check' own king, do restrict of movable
-      // console.log(check)
+      const getMovable = Chess.getMovable(notations, records)
 
-      const getMovable = Chess.getMovable(notations, records)(piece, position, side)
-      const movable = getMovable(defaults, specials)
+      // is my King checked?
+      // NOTE test
+      if (isExist(records)) {
+        // previous
+        const prevTurn = Chess.getEnemy(turn)
+        const prevItem = getLastItem(records)
+        const prevMove = Chess.getMove(prevItem)(prevTurn)
+        const prevPiece = prevMove.substr(6, 1)
+
+        const simulate = Chess.simulate({
+          findNotation: Chess.findNotation(notations),
+          getMovement: this.getMovement,
+          getMovable
+        })(turn, prevPiece)
+        const {
+          isChecked,
+          kingNotation
+        } = simulate(/* options */)
+
+        console.log('Simulate method works as expected: ', check, isChecked, kingNotation)
+      }
+
+      // TODO
+      // - find blocking tile first and find tile in movable from each piece
+      // - if checked, simulate own pieces movement to block attacked or lose
+      // - if block, reset check state
+
+      const movable = getMovable(piece, position, side)(defaults, specials)
 
       setMovable(movable)
     })
@@ -231,9 +266,9 @@ const enhancer = (WrappedComponent) => class extends PureComponent {
       isMoving: false
     }, () => {
       const {
+        turn: nextTurn,
         notations,
         records,
-        turn,
         setNotations,
         setRecords
       } = this.props
@@ -261,11 +296,16 @@ const enhancer = (WrappedComponent) => class extends PureComponent {
 
         nextNotations = nextNotations || [...notations]
 
+        // is your King checked?
+        const [getMovable, findNotation] = share(
+          Chess.getMovable,
+          Chess.findNotation
+        )(nextNotations)
         const simulate = Chess.simulate({
-          getMovable: Chess.getMovable(nextNotations),
-          findNotation: Chess.findNotation(nextNotations),
-          getDefaults
-        })(turn)(piece)
+          getMovement: this.getMovement,
+          getMovable,
+          findNotation
+        })(nextTurn, piece)
         const {
           isChecked,
           kingNotation
@@ -273,7 +313,7 @@ const enhancer = (WrappedComponent) => class extends PureComponent {
 
         if (isChecked) {
           const lastItem = getLastItem(records)
-          const enemyTurn = Chess.getEnemy(turn)
+          const enemyTurn = Chess.getEnemy(nextTurn)
           const move = Chess.getMove(lastItem)(enemyTurn)
 
           // TODO

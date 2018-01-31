@@ -25,13 +25,23 @@ export function getPiece (alias) {
 /**
  * Get defaults movement
  * @return {Array}
- * @see @utils/Chess/index.js#isCheck
  */
 export function getDefaults (alias) {
   const { movement } = getPiece(alias)
   const { defaults } = movement
 
   return defaults
+}
+
+/**
+ * Get specials
+ * @return {Array}
+ */
+export function getSpecials (alias) {
+  const { movement } = getPiece(alias)
+  const { specials } = movement
+
+  return specials
 }
 
 export { Pawn, Rook, Bishop, Knight, Queen, King }
