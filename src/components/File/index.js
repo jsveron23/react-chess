@@ -37,11 +37,15 @@ class File extends Component {
   shouldComponentUpdate (nextProps) {
     const prevProps = this.props
     const {
+      turn,
       check,
       selected,
       position,
       movable
     } = nextProps
+    const isTurnChanged = (
+      prevProps.turn !== turn
+    ) // undo
     const isEqualSelection = (
       prevProps.selected === selected &&
       !isDiff(prevProps.movable, movable)
@@ -59,15 +63,15 @@ class File extends Component {
       prevProps.movable.indexOf(prevProps.position) === -1
     )
 
-    if (isExist(selected) && isExcluded && isPrevExculded) {
+    if (isExist(selected) && isExcluded && isPrevExculded && !isTurnChanged) {
       return false
     }
 
-    if (isChangeSelection && isExcluded && isPrevExculded && isEmpty(check)) {
+    if (isChangeSelection && isExcluded && isPrevExculded && !isTurnChanged && isEmpty(check)) {
       return false
     }
 
-    if (isEqualSelection && isEmpty(check)) {
+    if (isEqualSelection && isEmpty(check) && !isTurnChanged) {
       return false
     }
 
@@ -80,8 +84,6 @@ class File extends Component {
       'is-selected': selected === position,
       'is-nextmove': movable.indexOf(position) > -1
     })
-
-    console.log('<File /> render')
 
     return (
       <span data-position={position} className={css.file}>
