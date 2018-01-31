@@ -13,7 +13,6 @@ class Chess {
   static parseNotation = Helpers.parseNotation
   static findNotation = Helpers.findNotation
   static findNotations = Helpers.findNotations
-  static updateNotations = Helpers.updateNotations
   static getMove = Helpers.getMove
 
   /**
@@ -21,12 +20,12 @@ class Chess {
    * @return {Function}
    */
   static getMovable (notations, records = []) {
-    return (piece, position, turn) => (defaults, specials = []) => Utils.compose(
+    return (piece, position, side) => (defaults, specials = []) => Utils.compose(
       Utils.diet,
       Utils.deepFlatten,
-      excludeBlocked(notations, turn)(specials),
-      includeSpecial(records, turn)(piece, position)(specials),
-      getMovableData(position, turn)
+      excludeBlocked(notations, side)(specials),
+      includeSpecial(records, side)(piece, position)(specials),
+      getMovableData(position, side)
     )(defaults)
   }
 
@@ -34,14 +33,12 @@ class Chess {
    * Simulate check King
    * @return {Function}
    */
-  static simulateCheckKing (notations, turn) {
-    const [findNotation, getMovable] = Utils.mergeResult(
-      Helpers.findNotation,
-      Chess.getMovable
-    )(notations)
+  static simulateCheck (fns) {
+    const { getMovable, findNotation, getDefaults } = fns
 
-    return (piece) => (getDefaults) => {
-      // get King information
+    return (turn) => (piece) => {
+      // information about King
+      // pretend King move every direction => to see who are coming
       const sideAlias = Helpers.getAlias(turn)
       const kingNotation = findNotation(`${sideAlias}K`)
       const { position: kingPosition } = Helpers.parseNotation(kingNotation)
@@ -51,10 +48,10 @@ class Chess {
       )('Q') // Queen's movement (every direction)
 
       // test check
-      const isChecked = kingSight.reduce((isAble2Check, tile) => {
+      const isChecked = kingSight.reduce((isGoing2Check, tile) => {
         const found = findNotation(tile)
 
-        if (!isAble2Check && Utils.isExist(found)) {
+        if (!isGoing2Check && Utils.isExist(found)) {
           const { piece: foundPiece, position: foundPosition } = Helpers.parseNotation(found)
           const enemy = Helpers.getEnemy(turn)
           const sight = Utils.compose(
@@ -66,7 +63,7 @@ class Chess {
           return piece === foundPiece && Utils.isExist(gotcha)
         }
 
-        return isAble2Check
+        return isGoing2Check
       }, false)
 
       return {
@@ -80,7 +77,7 @@ class Chess {
    * Save records data
    * @return {Function}
    */
-  static saveRecords (records, notations) {
+  static saveRecords (notations, records) {
     const transform = Helpers.transformMove(notations)
     const [lastItem] = Utils.getLastItem(records)
     const isCompletedRec = Helpers.isCompletedRecord(lastItem)
@@ -117,7 +114,7 @@ class Chess {
 
     return () => {
       const revertedNotations = Utils.compose(
-        Utils.applyAsArgs('before after')(revertNotations),
+        Utils.apply(revertNotations),
         Helpers.parseMove
       )(move)
       const revertedRecords = isWhite
@@ -134,7 +131,7 @@ class Chess {
    */
   static getNextNotations (currPosition, nextPosition) {
     const procParse = Utils.compose(
-      Utils.applyAsArgs('position')(Helpers.parsePosition),
+      Utils.apply(Helpers.parsePosition),
       Helpers.parseNotation
     )
 
@@ -285,10 +282,10 @@ function excludeBlocked (notations, turn) {
     Helpers.findNotation
   )(notations)
 
-  return (specials) => (movable) => {
+  return (specials) => {
     const cannotJump = specials.indexOf('jumpover') === -1
 
-    return movable.map((m) => {
+    return (movable) => movable.map((m) => {
       return m.map((tiles) => {
         let isBlocked = false
         let enemyTile = ''
@@ -363,9 +360,8 @@ function promotion (notations, records) {
   if (isEdge) {
     const from = `${side}P${x}${y}`
     const to = `${side}Q${x}${y}`
-    const nextNotations = Helpers.updateNotations(from, to)(notations)
 
-    return nextNotations
+    return Helpers.updateNotations(notations)(from, to)
   }
 }
 

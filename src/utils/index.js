@@ -13,25 +13,11 @@ export const compose = (...fns) => (x) => fns.reduceRight((v, f) => f(v), x)
 export const pipe = (...fns) => (x) => fns.reduce((v, f) => f(v), x)
 
 /**
- * Is string?
- * @param  {*}       value
- * @return {boolean}
- */
-export const isString = (value) => (typeof value === 'string')
-
-/**
- * Is number
- * @param  {*}       value
- * @return {boolean}
- */
-export const isNumber = (value) => (typeof value === 'number')
-
-/**
  * Flatten
  * @param  {Array} items
  * @return {Array}
  */
-export const flatten = (items = []) => items.reduce((a, b) => a.concat(b))
+export const flatten = (items = []) => [].concat.apply([], items)
 
 /**
  * Deep flatten
@@ -44,9 +30,9 @@ export const deepFlatten = (items) => {
   }
 
   const flattened = flatten(items)
-  const isFlattened = flattened.every((ftn) => !Array.isArray(ftn))
+  const shouldFlatten = flattened.some((item) => Array.isArray(item))
 
-  if (!isFlattened) {
+  if (shouldFlatten) {
     return deepFlatten(flattened)
   }
 
@@ -85,9 +71,7 @@ export const replaceLast = (items, data) => [...items.slice(0, -1), data]
  * @param  {Array|Function} v
  * @return {Array}
  */
-export const diet = (v) => Array.isArray(v)
-  ? v.filter((item) => isExist(item))
-  : isExist(v)
+export const diet = (v) => v.filter((item) => isExist(item))
 
 /**
  * Difference
@@ -107,36 +91,20 @@ export const isDiff = (a, b) => (JSON.stringify(a) !== JSON.stringify(b))
 
 /**
  * Apply argument(s) from object
- * Extract property name(s) from object and transform as arguments
  * - to use composition
+ * - argument order is important
+ * @param  {Function} fn
  * @param  {string}   name
  * @return {Function}
- * TODO optimize it (easy to understand)
  */
-export const applyAsArgs = (name) => {
-  const propNames = name.split(' ')
-
-  return (fn) => (o) => {
-    const args = propNames.map((pn) => o[pn])
-
-    return fn(...args)
-  }
-}
+export const apply = (fn) => (o) => fn(...Object.values(o))
 
 /**
  * Merge result and into the object
  * @param  {...Function} fns
  * @return {Function}
  */
-export const mergeResult = (...fns) => (x) => fns.reduce((o, f) => [...o, f(x)], [])
-
-/**
- * Search
- * @param  {string}   [fnName='filter']
- * @param  {Array}    items
- * @return {Function}
- */
-export const search = (fnName = 'filter', items) => (q) => items[fnName]((v) => (v.search(q) > -1))
+export const mergeResult = (...fns) => (x) => fns.reduce((res, f) => [...res, f(x)], [])
 
 /**
  * Is it empty?

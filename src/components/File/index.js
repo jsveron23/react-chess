@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import cx from 'classnames'
 import { getPiece } from '@pieces'
-import { isEmpty } from '@utils'
+import { isDiff, isExist, isEmpty } from '@utils'
 import css from './file.css'
 
 /**
@@ -11,6 +11,7 @@ import css from './file.css'
  */
 class File extends Component {
   static propTypes = {
+    isMoving: PropTypes.bool.isRequired,
     turn: PropTypes.string.isRequired,
     position: PropTypes.string.isRequired,
     piece: PropTypes.string,
@@ -34,21 +35,39 @@ class File extends Component {
   }
 
   shouldComponentUpdate (nextProps) {
+    const prevProps = this.props
     const {
-      isMoving,
+      check,
       selected,
-      movable,
       position,
-      check
+      movable
     } = nextProps
-    const shouldNotUpdate = (
-      isEmpty(check) &&
-      !isMoving &&
+    const isEqualSelection = (
+      prevProps.selected === selected &&
+      !isDiff(prevProps.movable, movable)
+    )
+    const isChangeSelection = (
+      prevProps.selected !== selected &&
+      isDiff(prevProps.movable, movable)
+    )
+    const isExcluded = (
       selected !== position &&
       movable.indexOf(position) === -1
     )
+    const isPrevExculded = (
+      prevProps.selected !== prevProps.position &&
+      prevProps.movable.indexOf(prevProps.position) === -1
+    )
 
-    if (shouldNotUpdate) {
+    if (isExist(selected) && isExcluded && isPrevExculded) {
+      return false
+    }
+
+    if (isChangeSelection && isExcluded && isPrevExculded && isEmpty(check)) {
+      return false
+    }
+
+    if (isEqualSelection && isEmpty(check)) {
       return false
     }
 
@@ -61,6 +80,8 @@ class File extends Component {
       'is-selected': selected === position,
       'is-nextmove': movable.indexOf(position) > -1
     })
+
+    console.log('<File /> render')
 
     return (
       <span data-position={position} className={css.file}>

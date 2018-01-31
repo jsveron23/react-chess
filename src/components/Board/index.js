@@ -72,6 +72,7 @@ const Board = ({
 }
 
 Board.propTypes = {
+  isMoving: PropTypes.bool.isRequired,
   notations: PropTypes.array.isRequired,
   turn: PropTypes.string.isRequired,
   selected: PropTypes.string.isRequired,

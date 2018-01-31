@@ -77,6 +77,7 @@ const enhancer = (WrappedComponent) => class extends PureComponent {
       const getPrevTurn = Chess.getEnemy
 
       this.setState({
+        isMoving: true,
         check: ''
       }, () => revert({
         applyUndo,
@@ -185,7 +186,7 @@ const enhancer = (WrappedComponent) => class extends PureComponent {
       currPosition: ''
     }, () => {
       const getNextNotations = Chess.getNextNotations(currPosition, nextPosition)(setAxis)
-      const getNextRecords = Chess.saveRecords(records, notations)(/* timestamp */)
+      const getNextRecords = Chess.saveRecords(notations, records)(/* timestamp */)
 
       setNext({
         getNextTurn: Chess.getEnemy,
@@ -261,11 +262,15 @@ const enhancer = (WrappedComponent) => class extends PureComponent {
         nextNotations = nextNotations || [...notations]
 
         // is checked?
-        const simulateCheck = Chess.simulateCheckKing(nextNotations, turn)(piece)
+        const simulateCheck = Chess.simulateCheck({
+          getMovable: Chess.getMovable(nextNotations),
+          findNotation: Chess.findNotation(nextNotations),
+          getDefaults
+        })(turn)
         const {
           isChecked,
           kingNotation
-        } = simulateCheck(getDefaults)
+        } = simulateCheck(piece)
 
         if (isChecked) {
           const [lastItem] = getLastItem(records)

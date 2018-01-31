@@ -1,4 +1,4 @@
-import { isEmpty, isExist, search } from '@utils'
+import { isEmpty, isExist } from '@utils'
 import {
   INITIAL,
   SIDE,
@@ -82,9 +82,9 @@ export function getAlias (side, alias = ALIAS) {
  * @return {Function}
  */
 export function isThere (notations) {
-  const find = findNotation(notations)
+  const fn = findNotation(notations)
 
-  return (position) => isExist(find(position))
+  return (position) => isExist(fn(position))
 }
 
 /**
@@ -122,9 +122,7 @@ export function parseNotation (notation) {
  * @return {Function}
  */
 export function findNotation (notations) {
-  const find = search('find', notations)
-
-  return (v) => find(v)
+  return (v) => notations.find((notation) => (notation.search(v) > -1))
 }
 
 /**
@@ -133,9 +131,7 @@ export function findNotation (notations) {
  * @return {Function}
  */
 export function findNotations (notations) {
-  const filter = search('filter', notations)
-
-  return (v) => filter(v)
+  return (v) => notations.filter((notation) => (notation.search(v) > -1))
 }
 
 /**
@@ -177,10 +173,8 @@ export function parseMove (move) {
  * @param  {string}   to
  * @return {Function}
  */
-export function updateNotations (from, to) {
-  const update = (notation) => (notation === from ? to : notation)
-
-  return (notations) => notations.map(update)
+export function updateNotations (notations) {
+  return (from, to) => notations.map((notation) => (notation === from ? to : notation))
 }
 
 /**
@@ -189,7 +183,9 @@ export function updateNotations (from, to) {
  * @return {Function}
  */
 export function revertNotations (notations) {
-  return (before, after) => updateNotations(after, before)(notations)
+  const fn = updateNotations(notations)
+
+  return (before, after) => fn(after, before)
 }
 
 /**
