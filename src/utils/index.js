@@ -44,27 +44,24 @@ export const deepFlatten = (items) => {
  * @param  {Array} items
  * @return {Array}
  */
-export const getLastItem = (items) => items.slice(-1)
+export const getLastItem = (items) => items.slice(0).pop()
 
 /**
  * Push item but no update original items
  * @param  {Array}    items
- * @param  {*}        data
- * @param  {Boolean?} isNew
- * @return {Array}
+ * @return {Function}
  */
-export const push = (items, data, isNew = true) =>
+export const push = (items) => (data, isNew = true) =>
   isNew
-    ? items.concat(data)
-    : replaceLast(items, data)
+    ? [...items, data]
+    : replaceLast(items)(data)
 
 /**
  * Like push but replace last item
- * @param  {Array} items
- * @param  {*}     data
- * @return {Array}
+ * @param  {Array}    items
+ * @return {Function}
  */
-export const replaceLast = (items, data) => [...items.slice(0, -1), data]
+export const replaceLast = (items) => (data) => [...items.slice(0, -1), data]
 
 /**
  * Remove unnecessary items
@@ -75,36 +72,34 @@ export const diet = (v) => v.filter((item) => isExist(item))
 
 /**
  * Difference
- * @param  {Array} a
- * @param  {Array} b
- * @return {Array}
+ * @param  {Array}    a
+ * @return {Function}
  */
-export const diff = (a, b) => a.filter((n, idx) => n !== b[idx])
+export const diff = (a) => (b) => a.filter((n, idx) => n !== b[idx])
 
 /**
  * Difference check
- * @param  {*}       a
- * @param  {*}       b
- * @return {boolean}
+ * @param  {*}        a
+ * @return {Function}
  */
-export const isDiff = (a, b) => (JSON.stringify(a) !== JSON.stringify(b))
+export const isDiff = (a) => (b) => (JSON.stringify(a) !== JSON.stringify(b))
 
 /**
  * Apply argument(s) from object
  * - to use composition
  * - argument order is important
  * @param  {Function} fn
- * @param  {string}   name
  * @return {Function}
  */
 export const apply = (fn) => (o) => fn(...Object.values(o))
 
 /**
- * Merge result and into the object
+ * Get results
+ * (like Promise.all)
  * @param  {...Function} fns
  * @return {Function}
  */
-export const mergeResult = (...fns) => (x) => fns.reduce((res, f) => [...res, f(x)], [])
+export const passingThrough = (...fns) => (x) => fns.reduce((res, f) => [...res, f(x)], [])
 
 /**
  * Is it empty?

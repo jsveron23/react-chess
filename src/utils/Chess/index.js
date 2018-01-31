@@ -30,46 +30,82 @@ class Chess {
   }
 
   /**
-   * Simulate check King
+   * Simulate
    * @return {Function}
    */
-  static simulateCheck (fns) {
+  static simulate (fns) {
     const { getMovable, findNotation, getDefaults } = fns
+    const initialConf = {
+      /**
+       * Check test is default option
+       * @type {String}
+       */
+      targetPiece: 'K',
+      action: 'CHECK',
+      initial: {
+        isChecked: false
+      },
 
-    return (turn) => (piece) => {
-      // information about King
-      // pretend King move every direction => to see who are coming
+      /**
+       * Pretend Queen's movement then Target can see every direction
+       * @type {String}
+       */
+      pretendPiece: 'Q'
+    }
+
+    return (turn) => (basePiece) => (config = initialConf) => {
+      const {
+        targetPiece,
+        pretendPiece,
+        initial,
+        action
+      } = config
+
       const sideAlias = Helpers.getAlias(turn)
-      const kingNotation = findNotation(`${sideAlias}K`)
-      const { position: kingPosition } = Helpers.parseNotation(kingNotation)
-      const kingSight = Utils.compose(
-        getMovable('Q', kingPosition, turn),
+      const targetNotation = findNotation(`${sideAlias}${targetPiece}`)
+      const { position: targetPosition } = Helpers.parseNotation(targetNotation)
+      const targetSight = Utils.compose(
+        getMovable(pretendPiece || targetPiece, targetPosition, turn),
         getDefaults
-      )('Q') // Queen's movement (every direction)
+      )(pretendPiece || targetPiece)
 
-      // test check
-      const isChecked = kingSight.reduce((isGoing2Check, tile) => {
+      /**
+       * Test scenarios
+       * @param  {Object} res
+       * @param  {string} tile
+       * @return {Object}
+       */
+      const scenarios = (res, tile) => {
         const found = findNotation(tile)
 
-        if (!isGoing2Check && Utils.isExist(found)) {
-          const { piece: foundPiece, position: foundPosition } = Helpers.parseNotation(found)
-          const enemy = Helpers.getEnemy(turn)
-          const sight = Utils.compose(
-            getMovable(foundPiece, foundPosition, enemy),
-            getDefaults
-          )(foundPiece)
-          const gotcha = sight.indexOf(kingPosition) > -1
+        switch (action) {
+          case 'CHECK': {
+            if (!res.isChecked && Utils.isExist(found)) {
+              const { piece: foundPiece, position: foundPosition } = Helpers.parseNotation(found)
+              const enemyTurn = Helpers.getEnemy(turn) // opposite
+              const movable = Utils.compose(
+                getMovable(foundPiece, foundPosition, enemyTurn),
+                getDefaults
+              )(foundPiece)
+              const gotcha = movable.indexOf(targetPosition) > -1
 
-          return piece === foundPiece && Utils.isExist(gotcha)
+              return {
+                ...res,
+                isChecked: basePiece === foundPiece && Utils.isExist(gotcha),
+                kingNotation: targetNotation
+              }
+            }
+
+            return {}
+          }
+
+          default: {
+            return res
+          }
         }
-
-        return isGoing2Check
-      }, false)
-
-      return {
-        isChecked,
-        kingNotation
       }
+
+      return targetSight.reduce(scenarios, initial)
     }
   }
 
@@ -78,8 +114,11 @@ class Chess {
    * @return {Function}
    */
   static saveRecords (notations, records) {
+    const [lastItem, push] = Utils.passingThrough(
+      Utils.getLastItem,
+      Utils.push
+    )(records)
     const transform = Helpers.transformMove(notations)
-    const [lastItem] = Utils.getLastItem(records)
     const isCompletedRec = Helpers.isCompletedRecord(lastItem)
     const isNew = Utils.isEmpty(lastItem) || isCompletedRec // new or next record
 
@@ -90,14 +129,16 @@ class Chess {
         ? { white: log }
         : { ...lastItem, black: log }
 
-      return Utils.push(records, data, isNew)
+      return push(data, isNew)
     }
   }
 
   /**
    * Undo
    * @return {Function}
-   * TODO fix cannot move piece once after undo
+   * TODO
+   * - fix cannot move piece once after undo
+   * - clue 1 : it happens when click 'undo' again after done
    */
   static undo (records) {
     if (Utils.isEmpty(records)) {
@@ -105,7 +146,7 @@ class Chess {
     }
 
     const excludedLastItem = records.slice(0, -1)
-    const [lastItem] = Utils.getLastItem(records)
+    const lastItem = Utils.getLastItem(records)
     const isWhite = Helpers.detectLastTurn(lastItem) === 'white'
     const { white, black } = lastItem
     const log = isWhite ? white : black
@@ -119,7 +160,7 @@ class Chess {
       )(move)
       const revertedRecords = isWhite
         ? excludedLastItem
-        : Utils.replaceLast(records, { white })
+        : Utils.replaceLast(records)({ white })
 
       return { revertedRecords, revertedNotations }
     }
@@ -227,7 +268,7 @@ function getMovableData (position, turn) {
  * @return {Function}
  */
 function includeSpecial (records, turn) {
-  const [lastItem] = Utils.getLastItem(records)
+  const lastItem = Utils.getLastItem(records)
 
   return (piece, position) => (specials) => {
     /**
@@ -277,7 +318,7 @@ function includeSpecial (records, turn) {
  * @return {Function}
  */
 function excludeBlocked (notations, turn) {
-  const [checkPlace, findNotation] = Utils.mergeResult(
+  const [checkPlace, findNotation] = Utils.passingThrough(
     Helpers.isThere,
     Helpers.findNotation
   )(notations)
@@ -349,7 +390,7 @@ function excludeBlocked (notations, turn) {
  * @return {Array?}
  */
 function promotion (notations, records) {
-  const [lastItem] = Utils.getLastItem(records)
+  const lastItem = Utils.getLastItem(records)
   const lastTurn = Helpers.detectLastTurn(lastItem)
   const move = Helpers.getMove(lastItem)(lastTurn)
   const { after } = Helpers.parseMove(move)
@@ -376,7 +417,7 @@ function doubleStep (turn) {
     const [tiles] = m
     const [tile] = tiles
     const oneMoreStep = applyOneMoreStep(tile)
-    const mergedStep = Utils.push(tiles, oneMoreStep)
+    const mergedStep = Utils.push(tiles)(oneMoreStep)
 
     return [mergedStep]
   }
@@ -419,7 +460,6 @@ function enPassant (position, lastItem) {
   const isAdjustedLine = parseInt(myRank, 10) === parseInt(enemyRank, 10)
 
   return (m) => {
-    // console.log(isDoubleStep, isAdjustedLine, isSibling)
     // valid
     if (isDoubleStep && isAdjustedLine && isSibling) {
       const diagonal = Helpers.increaseRank(turn)(enemyPosition)

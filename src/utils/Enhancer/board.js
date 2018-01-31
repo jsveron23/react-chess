@@ -261,23 +261,24 @@ const enhancer = (WrappedComponent) => class extends PureComponent {
 
         nextNotations = nextNotations || [...notations]
 
-        // is checked?
-        const simulateCheck = Chess.simulateCheck({
+        const simulate = Chess.simulate({
           getMovable: Chess.getMovable(nextNotations),
           findNotation: Chess.findNotation(nextNotations),
           getDefaults
-        })(turn)
+        })(turn)(piece)
         const {
           isChecked,
           kingNotation
-        } = simulateCheck(piece)
+        } = simulate(/* options */)
 
         if (isChecked) {
-          const [lastItem] = getLastItem(records)
+          const lastItem = getLastItem(records)
           const enemyTurn = Chess.getEnemy(turn)
           const move = Chess.getMove(lastItem)(enemyTurn)
 
-          // TODO why 2 times, find why later!! (1 clue - diagonal)
+          // TODO
+          // - why 2 times, find why later!!
+          // - 1 clue : diagonal
           if (!/\+/.test(move)) {
             const { black } = lastItem
             const side = isExist(black) ? 'black' : 'white'
@@ -286,13 +287,13 @@ const enhancer = (WrappedComponent) => class extends PureComponent {
 
             log.move = addCheckMark
 
-            const changedRecords = push(records, lastItem, false)
+            const changedRecords = push(records)(lastItem, false)
 
             setRecords(changedRecords)
           }
         }
 
-        console.log(piece)
+        // console.log(piece)
 
         this.setState({
           check: isChecked ? kingNotation : ''

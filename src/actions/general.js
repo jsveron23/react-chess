@@ -38,7 +38,7 @@ export function revert (fns) {
     const { notations, general } = getState()
     const { revertedRecords, revertedNotations } = applyUndo()
 
-    if (isDiff(notations, revertedNotations)) {
+    if (isDiff(notations)(revertedNotations)) {
       const { turn } = general
       const prevTurn = getPrevTurn(turn)
 

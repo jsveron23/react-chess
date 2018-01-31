@@ -46,13 +46,14 @@ class File extends Component {
     const isTurnChanged = (
       prevProps.turn !== turn
     ) // undo
+    const applyDiff = isDiff(movable)
     const isEqualSelection = (
       prevProps.selected === selected &&
-      !isDiff(prevProps.movable, movable)
+      !applyDiff(prevProps.movable)
     )
     const isChangeSelection = (
       prevProps.selected !== selected &&
-      isDiff(prevProps.movable, movable)
+      applyDiff(prevProps.movable)
     )
     const isExcluded = (
       selected !== position &&
