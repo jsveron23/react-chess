@@ -101,7 +101,7 @@ export const applyExtraArgs = (fn, ...args) => (v) => {
 }
 
 /**
- * Functions uses same argument then get results into array
+ * Functions uses same argument then get results into array (streamable)
  * @param  {...Function} fns
  * @return {Function}
  */

@@ -1,4 +1,4 @@
-import { isEmpty, isExist } from '@utils'
+import { isEmpty, isExist, commonArg } from '@utils'
 import {
   INITIAL,
   SIDE,
@@ -221,8 +221,12 @@ export function transformMove (notations) {
  * @return {string}
  */
 export function detectTurn (rec = {}) {
-  const isCompletedRec = isCompletedRecord(rec)
-  const isWhite = isEmpty(rec) || (isExist(rec) && isCompletedRec)
+  const [isCompletedRec, isRecEmpty, isRecExist] = commonArg(
+    isCompletedRecord,
+    isEmpty,
+    isExist
+  )(rec)
+  const isWhite = isRecEmpty || (isRecExist && isCompletedRec)
 
   return isWhite ? 'white' : 'black'
 }

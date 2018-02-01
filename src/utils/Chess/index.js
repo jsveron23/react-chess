@@ -1,7 +1,7 @@
 import * as Utils from '@utils'
 import * as Helpers from './helpers'
-import scenarios from './simulate'
-import { SIMULATION_CONFIG, RANKS, FILES } from './constants'
+import scenario, { getTargetInfo } from './simulate'
+import { RANKS, FILES } from './constants'
 
 /**
  * Chess engine
@@ -31,62 +31,32 @@ class Chess {
   }
 
   /**
-   * Simulation
+   * Test a scenario
    * @return {Function}
    */
   static simulate (fns) {
-    const {
-      getMovable,
-      getMovement,
-      findNotation
-    } = fns
+    const { getMovement } = fns
+    const getTarget = getTargetInfo(fns)
+    const applyScenarioOptions = scenario(fns)
 
-    /**
-     * Get target data for running simulation
-     * @return {Function}
-     *
-     * NOTE
-     * # Why 'pretendPiece' need to get target information?
-     * 'targetPiece' need to see the sight who are coming toward to me.
-     * this is why King needs Queen sight to test CHECK scenario
-     * but need check when Knight attacking. TODO
-     * or testing to check predict movement
-     */
-    const getTarget = (targetTurn) => (targetPiece, pretendPiece = '') => {
-      pretendPiece = pretendPiece || targetPiece
-
-      const alias = Helpers.getAlias(targetTurn)
-      const [targetDefaults, targetSpecials] = getMovement(pretendPiece)
-      const targetNotation = findNotation(`${alias}${targetPiece}`)
-      const { position: targetPosition } = Helpers.parseNotation(targetNotation)
-      const getTargetSight = getMovable(pretendPiece, targetPosition, targetTurn)
-
-      return {
-        targetSight: getTargetSight(targetDefaults, targetSpecials),
-        targetNotation,
-        targetPosition
-      }
-    }
-
-    return (turn, piece) => (config = SIMULATION_CONFIG) => {
+    return (turn, piece = '') => (config) => {
       const {
         targetPiece,
         pretendPiece,
         initialValue,
         action
       } = config
-      const {
-        targetSight,
-        targetNotation,
-        targetPosition
-      } = getTarget(turn)(targetPiece, pretendPiece)
+
+      const target = Utils.compose(
+        getTarget(turn, targetPiece, pretendPiece),
+        getMovement
+      )(pretendPiece || targetPiece)
 
       // create scenarios callback
-      const target = { targetNotation, targetPosition }
-      const fns4test = { getMovable, findNotation, getMovement }
-      const testScenario = scenarios(fns4test)(turn)(piece)(target)(action)
+      const testOptions = { turn, piece, target, action }
+      const testScenario = applyScenarioOptions(testOptions)
 
-      return targetSight.reduce(testScenario, initialValue)
+      return target.targetSight.reduce(testScenario, initialValue)
     }
   }
 
