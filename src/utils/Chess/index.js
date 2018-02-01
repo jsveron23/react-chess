@@ -1,6 +1,6 @@
 import * as Utils from '@utils'
 import * as Helpers from './helpers'
-import scenario, { getTargetInfo } from './simulate'
+import testScenario, { getTargetInfo } from './simulate'
 import { RANKS, FILES } from './constants'
 
 /**
@@ -30,6 +30,10 @@ class Chess {
     )(defaults)
   }
 
+  static getAvoidanceTiles () {
+
+  }
+
   /**
    * Test a scenario
    * @return {Function}
@@ -37,7 +41,7 @@ class Chess {
   static simulate (fns) {
     const { getMovement } = fns
     const getTarget = getTargetInfo(fns)
-    const applyScenarioOptions = scenario(fns)
+    const applyScenarioOptions = testScenario(fns)
 
     return (turn, piece = '') => (config) => {
       const {
@@ -54,9 +58,9 @@ class Chess {
 
       // create scenarios callback
       const testOptions = { turn, piece, target, action }
-      const testScenario = applyScenarioOptions(testOptions)
+      const reducer = applyScenarioOptions(testOptions)
 
-      return target.targetSight.reduce(testScenario, initialValue)
+      return target.targetSight.reduce(reducer, initialValue)
     }
   }
 

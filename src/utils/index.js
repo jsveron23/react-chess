@@ -109,6 +109,34 @@ export const commonArg = (...fns) => (x) =>
   fns.reduce((r, f = function () {}) => [...r, f(x)], [])
 
 /**
+ * Turn anything to array => stream
+ * @param  {*}     v
+ * @return {Array}
+ */
+export const stream = (v) => Array.of(v)
+
+/**
+ * To array
+ * @see stream
+ */
+export const toArray = stream
+
+/**
+ * Intersection
+ * @param  {*}    a
+ * @param  {*}    a
+ * @return {Array}
+ * @see {@link http://2ality.com/2015/01/es6-set-operations.html}
+ */
+export const intersection = (a) => (b) => {
+  const aSet = new Set(a)
+  const bSet = new Set(b)
+  const filteredSet = new Set([...aSet].filter(x => bSet.has(x)))
+
+  return Array.from(filteredSet)
+}
+
+/**
  * Trace
  * @param  {string} label
  * @return {*}
