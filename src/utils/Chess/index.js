@@ -42,15 +42,24 @@ class Chess {
     } = fns
 
     /**
-     * Get target data
+     * Get target data for running simulation
      * @return {Function}
+     *
+     * NOTE
+     * # Why 'pretendPiece' need to get target information?
+     * 'targetPiece' need to see the sight who are coming toward to me.
+     * this is why King needs Queen sight to test CHECK scenario
+     * but need check when Knight attacking. TODO
+     * or testing to check predict movement
      */
-    const getTarget = (turn) => (targetPiece, pretendPiece) => {
-      const sideAlias = Helpers.getAlias(turn)
-      const [targetDefaults, targetSpecials] = getMovement(pretendPiece || targetPiece)
-      const targetNotation = findNotation(`${sideAlias}${targetPiece}`)
+    const getTarget = (targetTurn) => (targetPiece, pretendPiece = '') => {
+      pretendPiece = pretendPiece || targetPiece
+
+      const alias = Helpers.getAlias(targetTurn)
+      const [targetDefaults, targetSpecials] = getMovement(pretendPiece)
+      const targetNotation = findNotation(`${alias}${targetPiece}`)
       const { position: targetPosition } = Helpers.parseNotation(targetNotation)
-      const getTargetSight = getMovable(pretendPiece || targetPiece, targetPosition, turn)
+      const getTargetSight = getMovable(pretendPiece, targetPosition, targetTurn)
 
       return {
         targetSight: getTargetSight(targetDefaults, targetSpecials),
@@ -72,7 +81,7 @@ class Chess {
         targetPosition
       } = getTarget(turn)(targetPiece, pretendPiece)
 
-      // create scenarios
+      // create scenarios callback
       const target = { targetNotation, targetPosition }
       const fns4test = { getMovable, findNotation, getMovement }
       const testScenario = scenarios(fns4test)(turn)(piece)(target)(action)
@@ -86,7 +95,7 @@ class Chess {
    * @return {Function}
    */
   static saveRecords (notations, records) {
-    const [lastItem, push] = Utils.share(
+    const [lastItem, push] = Utils.commonArg(
       Utils.getLastItem,
       Utils.push
     )(records)
@@ -108,9 +117,6 @@ class Chess {
   /**
    * Undo
    * @return {Function}
-   * TODO
-   * - fix cannot move piece once after undo
-   * - clue 1 : it happens when click 'undo' even though records data had nothing
    */
   static undo (records) {
     if (Utils.isEmpty(records)) {
@@ -290,7 +296,7 @@ function includeSpecial (records, turn) {
  * @return {Function}
  */
 function excludeBlocked (notations, turn) {
-  const [checkPlace, findNotation] = Utils.share(
+  const [checkPlace, findNotation] = Utils.commonArg(
     Helpers.isThere,
     Helpers.findNotation
   )(notations)

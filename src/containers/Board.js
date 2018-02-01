@@ -1,6 +1,6 @@
 import { connect } from 'react-redux'
 import { Board } from '@components'
-import { setNext, setAxis, resetMatch, revert } from '@actions/general'
+import { setNext, setAxis, resetMatch, resetCommand, revert } from '@actions/general'
 import { setNotations } from '@actions/notations'
 import { setMovable, resetMovable } from '@actions/movable'
 import { setRecords } from '@actions/records'
@@ -35,6 +35,7 @@ const applyConnect = compose(
     setAxis,
     resetMovable,
     resetMatch,
+    resetCommand,
     revert
   }),
   enhancer

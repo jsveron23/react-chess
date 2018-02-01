@@ -101,11 +101,11 @@ export const applyExtraArgs = (fn, ...args) => (v) => {
 }
 
 /**
- * Share same argument then get results into array
+ * Functions uses same argument then get results into array
  * @param  {...Function} fns
  * @return {Function}
  */
-export const share = (...fns) => (x) =>
+export const commonArg = (...fns) => (x) =>
   fns.reduce((r, f = function () {}) => [...r, f(x)], [])
 
 /**

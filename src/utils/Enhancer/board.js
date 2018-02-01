@@ -1,7 +1,7 @@
 import React, { PureComponent } from 'react'
 import PropTypes from 'prop-types'
 import { getDefaults, getSpecials } from '@pieces'
-import { isEmpty, isExist, push, getLastItem, share } from '@utils'
+import { isEmpty, isExist, push, getLastItem, commonArg } from '@utils'
 import Chess from '@utils/Chess'
 
 /**
@@ -26,6 +26,7 @@ const enhancer = (WrappedComponent) => class extends PureComponent {
     promotion: PropTypes.func,
     resetMovable: PropTypes.func,
     resetMatch: PropTypes.func,
+    resetCommand: PropTypes.func,
     revert: PropTypes.func
   }
 
@@ -39,6 +40,7 @@ const enhancer = (WrappedComponent) => class extends PureComponent {
     promotion: function () {},
     resetMovable: function () {},
     resetMatch: function () {},
+    resetCommand: function () {},
     revert: function () {}
   }
 
@@ -64,7 +66,8 @@ const enhancer = (WrappedComponent) => class extends PureComponent {
       command,
       records,
       resetMatch,
-      revert
+      revert,
+      resetCommand
     } = nextProps
 
     if (!isPlaying && isExist(records)) {
@@ -83,6 +86,8 @@ const enhancer = (WrappedComponent) => class extends PureComponent {
         applyUndo,
         getPrevTurn
       }))
+    } else if (command === 'undo' && isEmpty(records)) {
+      resetCommand()
     }
   }
 
@@ -136,7 +141,7 @@ const enhancer = (WrappedComponent) => class extends PureComponent {
    * @see @components/index.js#getSpecials
    */
   getMovement (piece) {
-    return share(getDefaults, getSpecials)(piece)
+    return commonArg(getDefaults, getSpecials)(piece)
   }
 
   /**
@@ -297,7 +302,7 @@ const enhancer = (WrappedComponent) => class extends PureComponent {
         nextNotations = nextNotations || [...notations]
 
         // is your King checked?
-        const [getMovable, findNotation] = share(
+        const [getMovable, findNotation] = commonArg(
           Chess.getMovable,
           Chess.findNotation
         )(nextNotations)
