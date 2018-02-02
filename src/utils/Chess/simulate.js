@@ -1,6 +1,6 @@
 import {
   isExist,
-  commonArg
+  pass
 } from '@utils'
 import {
   parseNotation,
@@ -15,7 +15,7 @@ import {
  */
 export function getTargetInfo (fns) {
   const { getMovable, findNotation } = fns
-  const applyArg = commonArg(getAlias)
+  const applyArg = pass(getAlias)
   let targetNotation, targetPosition
 
   return (targetTurn, targetPiece, pretendPiece = '') => (movement) => {

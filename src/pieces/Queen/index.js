@@ -8,7 +8,7 @@ import css from './queen.css'
  * @param  {Object} props
  * @return {JSX}
  */
-const Queen = ({ side, getRef, onTransitionEnd }) => (
+const Queen = ({ alias, getRef, onTransitionEnd }) => (
   <svg
     ref={getRef}
     onTransitionEnd={onTransitionEnd}
@@ -19,10 +19,10 @@ const Queen = ({ side, getRef, onTransitionEnd }) => (
     viewBox="0 0 45 45"
     aria-labelledby="title"
   >
-    <title id={`queen-${side}`}>Queen({side})</title>
-    <g className={css.queen} style={{ fill: side === 'w' ? '#ffffff' : '#000000' }}>
+    <title id={`queen-${alias}`}>Queen({alias})</title>
+    <g className={css.queen} style={{ fill: alias === 'w' ? '#ffffff' : '#000000' }}>
       {
-        side === 'w'
+        alias === 'w'
           ? [
             <path key="wpq1" d="M 9 13 A 2 2 0 1 1  5,13 A 2 2 0 1 1  9 13 z" transform="translate(-1,-1)" />,
             <path key="wpq2" d="M 9 13 A 2 2 0 1 1  5,13 A 2 2 0 1 1  9 13 z" transform="translate(15.5,-5.5)" />,
@@ -84,7 +84,7 @@ const Queen = ({ side, getRef, onTransitionEnd }) => (
 
 Queen.propTypes = {
   getRef: PropTypes.func.isRequired,
-  side: PropTypes.string.isRequired,
+  alias: PropTypes.string.isRequired,
   onTransitionEnd: PropTypes.func
 }
 

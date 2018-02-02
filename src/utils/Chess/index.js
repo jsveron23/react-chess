@@ -5,6 +5,7 @@ import { RANKS, FILES } from './constants'
 
 /**
  * Chess engine
+ * TODO side alias => alias
  */
 class Chess {
   static getSide = Helpers.getSide
@@ -17,8 +18,7 @@ class Chess {
   static getMove = Helpers.getMove
 
   /**
-   * Get complete movable data (composition)
-   * @return {Function}
+   * Get movable tiles
    */
   static getMovable (notations, records = []) {
     return (piece, position, side) => (defaults, specials = []) => Utils.compose(
@@ -30,49 +30,146 @@ class Chess {
     )(defaults)
   }
 
-  static getAvoidanceTiles () {
+  static isCheckMate () {
 
   }
 
   /**
-   * Test a scenario
-   * @return {Function}
+   * Get avoidance tiles (after 'check' from enemy)
+   * TODO
+   * - loop every pieces tiles for chemate later, reduce it! (isCheckMate)
+   * - check checkmate function (loop once when select), no noop here
+   */
+  static getBlocks (fns) {
+    const {
+      getMovement,
+      getMovable
+    } = fns
+    const simulate = Chess.simulate(fns)
+    let availBlocks4Selected
+
+    /**
+     * Get movable by notation
+     * @param  {string} parsedNotation
+     * @return {Object}
+     */
+    const _getMovableByNotation = (parsedNotation) => {
+      const {
+        position,
+        piece,
+        side
+      } = parsedNotation
+      const {
+        defaults,
+        specials
+      } = getMovement(piece, false)
+
+      return {
+        movable: getMovable(piece, position, side)(defaults, specials),
+        piece,
+        position,
+        side
+      }
+    }
+
+    return (notations, turn) => (piece, position, side) => (checker) => {
+      const alias = Helpers.getAlias(turn)
+      const simStream = Utils.stream(simulate(turn))
+      const kingSight = simStream.reduce((acc, kingSimulate) => kingSimulate({
+        targetPiece: 'K',
+        pretendPiece: 'Q',
+        action: 'GET_SIGHT',
+        initialValue: []
+      }), [])
+
+      /**
+       * Get only available tile to block King
+       * @param  {Object} parsed
+       * @return {Array}
+       */
+      const _getBlocks = (parsed) => {
+        const {
+          movable: parsedMovable,
+          piece: parsedPiece,
+          position: parsedPosition,
+          side: parsedSide
+        } = parsed
+        const isSelectedPiece = (
+          parsedPiece === piece &&
+          parsedPosition === position &&
+          parsedSide === side
+        )
+        let filteredMovable
+
+        if (parsedPiece === 'K') {
+          const {
+            movable: checkerSight
+          } = _getMovableByNotation(Helpers.parseNotation(checker))
+
+          filteredMovable = parsedMovable.filter((checkTile) => checkerSight.indexOf(checkTile) === -1)
+        } else {
+          filteredMovable = Utils.intersection(kingSight)(parsedMovable)
+        }
+
+        if (isSelectedPiece) {
+          availBlocks4Selected = filteredMovable
+        }
+      }
+
+      const _getBrothers = (notation) => notation.substr(0, 1) === alias
+
+      notations
+        .filter(_getBrothers)
+        .map(Helpers.parseNotation)
+        .map(_getMovableByNotation)
+        .forEach(_getBlocks)
+
+      return availBlocks4Selected
+    }
+  }
+
+  /**
+   * Simulate
    */
   static simulate (fns) {
     const { getMovement } = fns
-    const getTarget = getTargetInfo(fns)
-    const applyScenarioOptions = testScenario(fns)
+    const [getTarget, applyScenarioOptions] = Utils.pass(
+      getTargetInfo,
+      testScenario
+    )(fns)
+
+    /**
+     * Get target infomation
+     */
+    const _getTarget = (turn) => (targetPiece) => (pretendPiece) => Utils.compose(
+      getTarget(turn, targetPiece, pretendPiece),
+      getMovement
+    )(pretendPiece || targetPiece)
 
     return (turn, piece = '') => (config) => {
       const {
         targetPiece,
-        pretendPiece,
+        pretendPiece, // optional
         initialValue,
         action
       } = config
-
-      const target = Utils.compose(
-        getTarget(turn, targetPiece, pretendPiece),
-        getMovement
-      )(pretendPiece || targetPiece)
+      const target = _getTarget(turn)(targetPiece)(pretendPiece)
+      const { targetSight } = target
 
       // create scenarios callback
       const testOptions = { turn, piece, target, action }
-      const reducer = applyScenarioOptions(testOptions)
+      const applyScenario = applyScenarioOptions(testOptions)
 
-      return target.targetSight.reduce(reducer, initialValue)
+      return targetSight.reduce(applyScenario, initialValue)
     }
   }
 
   /**
    * Save records data
-   * @return {Function}
    */
   static saveRecords (notations, records) {
-    const [lastItem, push] = Utils.commonArg(
-      Utils.getLastItem,
-      Utils.push
-    )(records)
+    const passArg = Utils.pass(Utils.getLastItem, Utils.push)
+    const [lastItem, push] = passArg(records)
     const transform = Helpers.transformMove(notations)
     const isCompletedRec = Helpers.isCompletedRecord(lastItem)
     const isNew = Utils.isEmpty(lastItem) || isCompletedRec // new or next record
@@ -89,10 +186,9 @@ class Chess {
   }
 
   /**
-   * Undo
-   * @return {Function}
+   * Undo records data (by turn)
    */
-  static undo (records) {
+  static undoRecord (records) {
     if (Utils.isEmpty(records)) {
       return () => ({})
     }
@@ -104,23 +200,19 @@ class Chess {
     const log = isWhite ? white : black
     const { notations, move } = Helpers.parseLog(log)
     const revertNotations = Helpers.revertNotations(notations)
+    const revertedNotations = Utils.compose(
+      Utils.applyExtraArgs(revertNotations),
+      Helpers.parseMove
+    )(move)
+    const revertedRecords = isWhite
+      ? excludedLastItem
+      : Utils.replaceLast(records)({ white })
 
-    return () => {
-      const revertedNotations = Utils.compose(
-        Utils.applyExtraArgs(revertNotations),
-        Helpers.parseMove
-      )(move)
-      const revertedRecords = isWhite
-        ? excludedLastItem
-        : Utils.replaceLast(records)({ white })
-
-      return { revertedRecords, revertedNotations }
-    }
+    return () => ({ revertedRecords, revertedNotations })
   }
 
   /**
    * Return next notations
-   * @return {Function}
    */
   static getNextNotations (currPosition, nextPosition) {
     const procParse = Utils.compose(
@@ -130,7 +222,6 @@ class Chess {
 
     /**
      * Converts notations to axis number for animations
-     * @return {Function}
      * @description
      * # b1 to h3
      * => [h(8) - b(2) = 6, 3 - 1 = 2]
@@ -139,7 +230,7 @@ class Chess {
      * => transform: translate(300px, 100px)
      * TODO calculate pixelSize automatically
      */
-    const convertAxis = (pixelSize = 50) => (currNotation) => (nextNotation) => {
+    const convertAxis = (currNotation) => (nextNotation) => (pixelSize = 50) => {
       const {
         file: prevFile,
         rank: prevRank
@@ -154,28 +245,27 @@ class Chess {
       return { x, y }
     }
 
-    return (setAxis) => (notations) => notations.map((n) => {
-      if (n.search(currPosition) > -1) {
-        const getAxis = convertAxis(/* pixelSize */)(n)
-        const { side, piece } = Helpers.parseNotation(n)
-        const nextNotation = `${side}${piece}${nextPosition}`
+    return (setAxis) => (notations) => notations.reduce((nextNotations, notation) => {
+      if (notation.search(currPosition) > -1) {
+        const { side, piece } = Helpers.parseNotation(notation)
+        const nextNotation = `${Helpers.getAlias(side)}${piece}${nextPosition}`
+        const getAxis = convertAxis(notation)(nextNotation)
 
         /** @see @actions/general.js */
         setAxis({
-          axis: getAxis(nextNotation),
+          axis: getAxis(/* pixelSize */),
           notation: nextNotation // for comparing
         })
 
-        return nextNotation
+        return [...nextNotations, nextNotation]
       }
 
-      return n
-    })
+      return [...nextNotations, notation]
+    }, [])
   }
 
   /**
    * Promotion
-   * @return {Function}
    */
   static promotion (notations) {
     return (records) => promotion(notations, records)
@@ -184,7 +274,6 @@ class Chess {
 
 /**
  * Get movable data from movement
- * @return {Function}
  */
 function getMovableData (position, turn) {
   const { file, rank } = Helpers.parsePosition(position)
@@ -192,9 +281,8 @@ function getMovableData (position, turn) {
 
   /**
    * Transform axisList to tiles
-   * @return {Array}
    */
-  const transformTiles = (axisList) => axisList.reduce((list, axis) => {
+  const _transformTiles = (axisList) => axisList.reduce((list, axis) => {
     const [x, y] = axis
 
     // X: 1(a) + 1 = 2(b)
@@ -212,22 +300,20 @@ function getMovableData (position, turn) {
   }, [])
 
   return (defaults) =>
-    Object.keys(defaults).map((mvName) => defaults[mvName].map(transformTiles))
+    Object.keys(defaults).map((mvName) => defaults[mvName].map(_transformTiles))
 }
 
 /**
  * Add special move to movable data
- * @return {Function}
  */
 function includeSpecial (records, turn) {
   const lastItem = Utils.getLastItem(records)
 
   return (piece, position) => (specials) => {
     /**
-     * Control special move of Pawn
-     * @return {Array}
+     * Control special moves of Pawn
      */
-    const controlPawn = (m, mvName) => {
+    const _controlPawnSpecials = (m, mvName) => {
       switch (mvName) {
         case 'doubleStep': {
           const isFirstStep = /^.(2|7)$/.test(position)
@@ -255,7 +341,7 @@ function includeSpecial (records, turn) {
 
     return (movable) => {
       if (piece === 'P') {
-        return movable.map((m) => specials.reduce(controlPawn, m))
+        return movable.map((m) => specials.reduce(_controlPawnSpecials, m))
       } else if (piece === 'K') {
         // TODO castling
       }
@@ -267,10 +353,9 @@ function includeSpecial (records, turn) {
 
 /**
  * Filter blocked path to movable data (include enemy)
- * @return {Function}
  */
 function excludeBlocked (notations, turn) {
-  const [checkPlace, findNotation] = Utils.commonArg(
+  const [checkPlace, findNotation] = Utils.pass(
     Helpers.isThere,
     Helpers.findNotation
   )(notations)
@@ -285,9 +370,8 @@ function excludeBlocked (notations, turn) {
 
         /**
          * Include only availiable tiles
-         * @return {Array}
          */
-        const includeAvailable = (nonBlocked, tile) => {
+        const _includeAvailable = (nonBlocked, tile) => {
           if (Utils.isEmpty(enemyTile)) {
             const { side, position } = Utils.compose(
               Helpers.parseNotation,
@@ -295,7 +379,7 @@ function excludeBlocked (notations, turn) {
             )(tile)
 
             // 1 enemy per direction
-            const isEnemy = Helpers.getEnemy(turn) === Helpers.getSide(side)
+            const isEnemy = Helpers.getEnemy(turn) === side
             const isEnemyExist = (
               !isBlocked && isEnemy &&
               Utils.isEmpty(enemyTile) && Utils.isExist(side)
@@ -330,7 +414,7 @@ function excludeBlocked (notations, turn) {
         }
 
         return tiles
-          .reduce(includeAvailable, [])
+          .reduce(_includeAvailable, [])
           .concat(enemyTile) // include enemy tile
       })
     })
@@ -339,7 +423,6 @@ function excludeBlocked (notations, turn) {
 
 /**
  * Promotion
- * @return {Array?}
  */
 function promotion (notations, records) {
   const lastItem = Utils.getLastItem(records)
@@ -347,20 +430,19 @@ function promotion (notations, records) {
   const move = Helpers.getMove(lastItem)(lastTurn)
   const { after } = Helpers.parseMove(move)
   const [x, y] = after.substr(-2, 2)
-  const side = Helpers.getAlias(lastTurn)
+  const alias = Helpers.getAlias(lastTurn)
   const isEdge = /1|8/.test(y)
 
   if (isEdge) {
-    const from = `${side}P${x}${y}`
-    const to = `${side}Q${x}${y}`
+    const from = `${alias}P${x}${y}`
+    const to = `${alias}Q${x}${y}`
 
     return Helpers.updateNotations(notations)(from, to)
   }
 }
 
 /**
- * Pawn moves 2 steps forward
- * @return {Function}
+ * Pawn moves 2 step forward
  */
 function doubleStep (turn) {
   const applyOneMoreStep = Helpers.increaseRank(turn)
@@ -377,10 +459,9 @@ function doubleStep (turn) {
 
 /**
  * Pawn moves diagonal and attack
- * @return {Function}
  * TODO
  * - remove after
- * - somehow it won't work
+ * - it won't work sometimes
  */
 function enPassant (position, lastItem) {
   const enemyMove = Utils.compose(

@@ -9,7 +9,7 @@ import css from './king.css'
  * @param  {Object} props
  * @return {JSX}
  */
-const King = ({ side, check, getRef, onTransitionEnd }) => (
+const King = ({ alias, check, getRef, onTransitionEnd }) => (
   <svg
     ref={getRef}
     onTransitionEnd={onTransitionEnd}
@@ -23,12 +23,12 @@ const King = ({ side, check, getRef, onTransitionEnd }) => (
       backgroundColor: check ? 'rgba(255, 0, 0, .8)' : 'transparent'
     }}
   >
-    <title id={`king-${side}`}>King({side})</title>
+    <title id={`king-${alias}`}>King({alias})</title>
     <g className={cx(css.king, { 'is-shaking': check })}>
       <path d="M 22.5,11.63 L 22.5,6" style={{ fill: 'none', stroke: '#000000', strokeLinejoin: 'miter' }} />
       <path d="M 20,8 L 25,8" style={{ fill: 'none', stroke: '#000000', strokeLinejoin: 'miter' }} />
       {
-        side === 'w'
+        alias === 'w'
           ? [
             <path
               key="wpk3"
@@ -67,7 +67,7 @@ const King = ({ side, check, getRef, onTransitionEnd }) => (
 
 King.propTypes = {
   getRef: PropTypes.func.isRequired,
-  side: PropTypes.string.isRequired,
+  alias: PropTypes.string.isRequired,
   check: PropTypes.string,
   onTransitionEnd: PropTypes.func
 }

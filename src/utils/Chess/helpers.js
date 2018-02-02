@@ -1,4 +1,4 @@
-import { isEmpty, isExist, commonArg } from '@utils'
+import { isEmpty, isExist, pass } from '@utils'
 import {
   INITIAL,
   SIDE,
@@ -107,11 +107,11 @@ export function parseNotation (notation) {
     return {}
   }
 
-  const [side, piece, ...position] = notation.split('')
+  const [alias, piece, ...position] = notation.split('')
 
   return {
     position: position.join(''),
-    side,
+    side: getSide(alias),
     piece
   }
 }
@@ -221,7 +221,7 @@ export function transformMove (notations) {
  * @return {string}
  */
 export function detectTurn (rec = {}) {
-  const [isCompletedRec, isRecEmpty, isRecExist] = commonArg(
+  const [isCompletedRec, isRecEmpty, isRecExist] = pass(
     isCompletedRecord,
     isEmpty,
     isExist

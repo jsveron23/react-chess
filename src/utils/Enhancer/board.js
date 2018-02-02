@@ -9,9 +9,7 @@ import {
   isExist,
   push,
   getLastItem,
-  stream,
-  intersection,
-  commonArg
+  pass
 } from '@utils'
 import Chess from '@utils/Chess'
 
@@ -87,7 +85,7 @@ const enhancer = (WrappedComponent) => class extends PureComponent {
     }
 
     if (command === 'undo' && isExist(records)) {
-      const applyUndo = Chess.undo(records)
+      const applyUndo = Chess.undoRecord(records)
       const getPrevTurn = Chess.getEnemy
 
       this.setState({
@@ -152,7 +150,7 @@ const enhancer = (WrappedComponent) => class extends PureComponent {
    * @see @components/index.js#getSpecials
    */
   getMovement (piece, isStream = true) {
-    const [defaults, specials] = commonArg(getDefaults, getSpecials)(piece)
+    const [defaults, specials] = pass(getDefaults, getSpecials)(piece)
 
     return isStream
       ? [defaults, specials]
@@ -187,93 +185,20 @@ const enhancer = (WrappedComponent) => class extends PureComponent {
         setMovable
       } = this.props
       const getMovable = Chess.getMovable(notations, records)
-      let selectedMovable
-
-      if (isExist(check)) {
-        const fns = {
-          getMovement: this.getMovement,
-          findNotation: Chess.findNotation(notations),
-          getMovable
-        }
-        const alias = Chess.getAlias(turn)
-        const simulate = Chess.simulate(fns)
-        const simStream = stream(simulate(turn))
-        const kingSight = simStream.reduce((acc, kingSimulate) => kingSimulate({
-          targetPiece: 'K',
-          pretendPiece: 'Q',
-          action: 'GET_SIGHT',
-          initialValue: []
-        }), [])
-
-        console.log('- Simulate method works as expected -')
-        console.log('- King sight: ', kingSight)
-
-        notations
-          .filter((notation) => notation.substr(0, 1) === alias)
-          .map((notation) => Chess.parseNotation(notation))
-          .forEach((parsedNotation) => {
-            const {
-              position: parsedPosition,
-              piece: parsedPiece,
-              side: parsedSide
-            } = parsedNotation
-            const {
-              defaults: parsedDefaults,
-              specials: parsedSpecials
-            } = this.getMovement(parsedPiece, false)
-            let parsedMovable = getMovable(
-              parsedPiece,
-              parsedPosition,
-              parsedSide
-            )(parsedDefaults, parsedSpecials)
-
-            const isSelectedPiece = (
-              parsedPiece === piece &&
-              parsedPosition === position &&
-              Chess.getSide(parsedSide) === side
-            )
-
-            if (isExist(parsedMovable)) {
-              if (parsedPiece === 'K') {
-                const {
-                  position: checkerPosition,
-                  piece: checkerPiece,
-                  side: checkerSide
-                } = Chess.parseNotation(checker)
-                const {
-                  defaults: checkerDefaults,
-                  specials: checkerSpecials
-                } = this.getMovement(checkerPiece, false)
-                const checkerSight = getMovable(
-                  checkerPiece,
-                  checkerPosition,
-                  checkerSide
-                )(checkerDefaults, checkerSpecials)
-
-                parsedMovable = parsedMovable.filter((checkTile) => {
-                  return checkerSight.indexOf(checkTile) === -1
-                })
-              } else {
-                parsedMovable = intersection(kingSight)(parsedMovable)
-              }
-            }
-
-            if (isSelectedPiece) {
-              selectedMovable = parsedMovable
-
-              console.log(`${parsedPiece}-${parsedPosition}`, selectedMovable)
-            }
-          })
-      } else {
-        selectedMovable = getMovable(piece, position, side)(defaults, specials)
+      const fns = {
+        getMovement: this.getMovement,
+        findNotation: Chess.findNotation(notations),
+        getMovable
       }
+      const getBlocks = Chess.getBlocks(fns)(notations, turn)
+      const movable = isExist(check)
+        ? getBlocks(piece, position, side)(checker)
+        : getMovable(piece, position, side)(defaults, specials)
+
+      setMovable(movable)
 
       // TODO
-      // - find blocking tile first and find tile in movable from each piece
       // - if checked, simulate own pieces movement to block attacked or lose
-      // - if block, reset check state
-
-      setMovable(selectedMovable)
     })
   }
 
@@ -296,7 +221,9 @@ const enhancer = (WrappedComponent) => class extends PureComponent {
 
     this.setState({
       isMoving: true,
-      currPosition: ''
+      currPosition: '',
+      check: '',
+      checker: ''
     }, () => {
       const getNextNotations = Chess.getNextNotations(currPosition, nextPosition)(setAxis)
       const getNextRecords = Chess.saveRecords(notations, records)(/* timestamp */)
@@ -375,7 +302,7 @@ const enhancer = (WrappedComponent) => class extends PureComponent {
         nextNotations = nextNotations || [...notations]
 
         // is your King checked?
-        const applyArg = commonArg(Chess.getMovable, Chess.findNotation)
+        const applyArg = pass(Chess.getMovable, Chess.findNotation)
         const fns = applyArg(nextNotations).reduce((getMovable, findNotation) => ({
           getMovement: this.getMovement,
           getMovable,
@@ -394,11 +321,6 @@ const enhancer = (WrappedComponent) => class extends PureComponent {
             kingNotation: '',
             checkerNotation: ''
           },
-
-          /**
-           * Pretend Queen's movement then King can see every direction
-           * @type {String}
-           */
           pretendPiece: 'Q'
         })
 
@@ -423,8 +345,6 @@ const enhancer = (WrappedComponent) => class extends PureComponent {
             setRecords(changedRecords)
           }
         }
-
-        // console.log(piece)
 
         this.setState({
           check: isChecked ? kingNotation : '',

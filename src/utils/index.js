@@ -75,7 +75,7 @@ export const diet = (v) => v.filter((item) => isExist(item))
  * @param  {Array}    a
  * @return {Function}
  */
-export const diff = (a) => (b) => a.filter((n, idx) => n !== b[idx])
+// export const diff = (a) => (b) => a.filter((n, idx) => n !== b[idx])
 
 /**
  * Difference check
@@ -105,7 +105,7 @@ export const applyExtraArgs = (fn, ...args) => (v) => {
  * @param  {...Function} fns
  * @return {Function}
  */
-export const commonArg = (...fns) => (x) =>
+export const pass = (...fns) => (x) =>
   fns.reduce((r, f = function () {}) => [...r, f(x)], [])
 
 /**
@@ -134,6 +134,36 @@ export const intersection = (a) => (b) => {
   const filteredSet = new Set([...aSet].filter(x => bSet.has(x)))
 
   return Array.from(filteredSet)
+}
+
+/**
+ * Difference
+ * @param  {*}    a
+ * @param  {*}    a
+ * @return {Array}
+ * @see {@link http://2ality.com/2015/01/es6-set-operations.html}
+ */
+export const diff = (a) => (b) => {
+  const aSet = new Set(a)
+  const bSet = new Set(b)
+  const filteredSet = new Set([...aSet].filter(x => !bSet.has(x)))
+
+  return Array.from(filteredSet)
+}
+
+/**
+ * Union
+ * @param  {*}    a
+ * @param  {*}    a
+ * @return {Array}
+ * @see {@link http://2ality.com/2015/01/es6-set-operations.html}
+ */
+export const union = (a) => (b) => {
+  const aSet = new Set(a)
+  const bSet = new Set(b)
+  const set = new Set([...aSet, ...bSet])
+
+  return Array.from(set)
 }
 
 /**

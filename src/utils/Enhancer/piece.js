@@ -10,7 +10,7 @@ import { isExist } from '@utils'
  */
 const enhancer = (WrappedComponent, piece) => class extends PureComponent {
   static propTypes = {
-    side: PropTypes.string.isRequired,
+    alias: PropTypes.string.isRequired,
     translated: PropTypes.object,
     check: PropTypes.string,
     onAnimate: PropTypes.oneOfType([
@@ -39,13 +39,13 @@ const enhancer = (WrappedComponent, piece) => class extends PureComponent {
   }
 
   render () {
-    const { check, side } = this.props
+    const { check, alias } = this.props
 
     return (
       <WrappedComponent
         getRef={this.getRef}
         onTransitionEnd={this.handleTransitionEnd}
-        side={side}
+        alias={alias}
         check={check}
       />
     )

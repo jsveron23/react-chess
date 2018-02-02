@@ -8,7 +8,7 @@ import css from './bishop.css'
  * @param  {Object} props
  * @return {JSX}
  */
-const Bishop = ({ side, getRef, onTransitionEnd }) => (
+const Bishop = ({ alias, getRef, onTransitionEnd }) => (
   <svg
     ref={getRef}
     onTransitionEnd={onTransitionEnd}
@@ -19,10 +19,10 @@ const Bishop = ({ side, getRef, onTransitionEnd }) => (
     viewBox="0 0 45 45"
     aria-labelledby="title"
   >
-    <title id={`bishop-${side}`}>Bishop({side})</title>
+    <title id={`bishop-${alias}`}>Bishop({alias})</title>
     <g className={css.bishop}>
       <g style={{
-        fill: side === 'w' ? '#ffffff' : '#000000',
+        fill: alias === 'w' ? '#ffffff' : '#000000',
         stroke: '#000000',
         strokeLinecap: 'butt'
       }}>
@@ -34,7 +34,7 @@ const Bishop = ({ side, getRef, onTransitionEnd }) => (
         d="M 17.5,26 L 27.5,26 M 15,30 L 30,30 M 22.5,15.5 L 22.5,20.5 M 20,18 L 25,18"
         style={{
           fill: 'none',
-          stroke: side === 'w' ? '#000000' : '#ffffff',
+          stroke: alias === 'w' ? '#000000' : '#ffffff',
           strokeLinejoin: 'miter'
         }} />
     </g>
@@ -43,7 +43,7 @@ const Bishop = ({ side, getRef, onTransitionEnd }) => (
 
 Bishop.ropTypes = {
   getRef: PropTypes.func.isRequired,
-  side: PropTypes.string.isRequired,
+  alias: PropTypes.string.isRequired,
   onTransitionEnd: PropTypes.func
 }
 

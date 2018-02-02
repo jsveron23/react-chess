@@ -7,7 +7,7 @@ import css from './rook.css'
  * Rook component
  * @extends {React.PureComponent}
  */
-const Rook = ({ side, getRef, onTransitionEnd }) => (
+const Rook = ({ alias, getRef, onTransitionEnd }) => (
   <svg
     ref={getRef}
     onTransitionEnd={onTransitionEnd}
@@ -18,8 +18,8 @@ const Rook = ({ side, getRef, onTransitionEnd }) => (
     viewBox="0 0 45 45"
     aria-labelledby="title"
   >
-    <title id={`rook-${side}`}>Rook({side})</title>
-    <g className={css.rook} style={{ fill: side === 'w' ? '#ffffff' : '#000000' }}>
+    <title id={`rook-${alias}`}>Rook({alias})</title>
+    <g className={css.rook} style={{ fill: alias === 'w' ? '#ffffff' : '#000000' }}>
       <path
         d="M 9,39 L 36,39 L 36,36 L 9,36 L 9,39 z "
         style={{ strokeLinecap: 'butt' }} />
@@ -30,12 +30,12 @@ const Rook = ({ side, getRef, onTransitionEnd }) => (
         d="M 11,14 L 34,14"
         style={{
           fill: 'none',
-          stroke: side === 'w' ? '#000000' : '#ffffff',
+          stroke: alias === 'w' ? '#000000' : '#ffffff',
           strokeWidth: 1,
           strokeLinejoin: 'miter'
         }} />
       {
-        side === 'w'
+        alias === 'w'
           ? [
             <path
               key="wpr1"
@@ -93,7 +93,7 @@ const Rook = ({ side, getRef, onTransitionEnd }) => (
 
 Rook.propTypes = {
   getRef: PropTypes.func.isRequired,
-  side: PropTypes.string.isRequired,
+  alias: PropTypes.string.isRequired,
   onTransitionEnd: PropTypes.func
 }
 

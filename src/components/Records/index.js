@@ -43,10 +43,10 @@ class Records extends PureComponent {
               <li key={wMove || bMove} className="l-flex-row">
                 <span>{idx + 1}</span>
                 <span className="l-flex-middle">
-                  <WPiece side="w" /> {wPath}
+                  <WPiece alias="w" /> {wPath}
                 </span>
                 <span className="l-flex-middle">
-                  {BPiece && <BPiece side="b" />} {bPath}
+                  {BPiece && <BPiece alias="b" />} {bPath}
                 </span>
               </li>
             )

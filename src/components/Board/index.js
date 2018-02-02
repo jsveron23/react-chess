@@ -46,7 +46,7 @@ const Board = ({
             const shouldAnimate = (translated && translated.notation === currentNotation)
             const fileProps = {
               ...defProps,
-              side: Chess.getSide(side),
+              side,
               position,
               piece
             }
@@ -55,7 +55,7 @@ const Board = ({
               <File key={position} {...fileProps}>
                 {EnhancedPiece && (
                   <EnhancedPiece
-                    side={side}
+                    alias={Chess.getAlias(side)}
                     check={check === currentNotation ? check : ''}
                     translated={shouldAnimate ? translated : {}}
                     onAnimate={shouldAnimate && onAnimate}
