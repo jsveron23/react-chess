@@ -5,16 +5,12 @@ import { RANKS, FILES } from './constants'
 
 /**
  * Chess engine
- * TODO side alias => alias
  */
 class Chess {
-  static getSide = Helpers.getSide
   static getEnemy = Helpers.getEnemy
   static getAlias = Helpers.getAlias
-  static detectLastTurn = Helpers.detectLastTurn
   static parseNotation = Helpers.parseNotation
   static findNotation = Helpers.findNotation
-  static findNotations = Helpers.findNotations
   static getMove = Helpers.getMove
 
   /**
@@ -30,101 +26,39 @@ class Chess {
     )(defaults)
   }
 
-  static isCheckMate () {
-
-  }
-
   /**
-   * Get avoidance tiles (after 'check' from enemy)
-   * TODO
-   * - loop every pieces tiles for chemate later, reduce it! (isCheckMate)
-   * - check checkmate function (loop once when select), no noop here
+   * Get block tiles to protect King
+   * (if King, get tiles to avoid attack)
    */
-  static getBlocks (fns) {
-    const {
-      getMovement,
-      getMovable
-    } = fns
-    const simulate = Chess.simulate(fns)
-    let availBlocks4Selected
+  static getBlocks (notations, records = []) {
+    const getMovable = Chess.getMovable(notations, records)
 
     /**
      * Get movable by notation
-     * @param  {string} parsedNotation
-     * @return {Object}
      */
-    const _getMovableByNotation = (parsedNotation) => {
+    const _getMovableByNotation = (notation) => (defaults, specials = []) => {
       const {
         position,
         piece,
         side
-      } = parsedNotation
-      const {
-        defaults,
-        specials
-      } = getMovement(piece, false)
+      } = Helpers.parseNotation(notation)
 
-      return {
-        movable: getMovable(piece, position, side)(defaults, specials),
-        piece,
-        position,
-        side
-      }
+      return getMovable(piece, position, side)(defaults, specials)
     }
 
-    return (notations, turn) => (piece, position, side) => (checker) => {
-      const alias = Helpers.getAlias(turn)
-      const simStream = Utils.stream(simulate(turn))
-      const kingSight = simStream.reduce((acc, kingSimulate) => kingSimulate({
-        targetPiece: 'K',
-        pretendPiece: 'Q',
-        action: 'GET_SIGHT',
-        initialValue: []
-      }), [])
+    return (basemNotation, basemMovement) => {
+      const baseMovable = _getMovableByNotation(basemNotation)(...basemMovement)
 
-      /**
-       * Get only available tile to block King
-       * @param  {Object} parsed
-       * @return {Array}
-       */
-      const _getBlocks = (parsed) => {
-        const {
-          movable: parsedMovable,
-          piece: parsedPiece,
-          position: parsedPosition,
-          side: parsedSide
-        } = parsed
-        const isSelectedPiece = (
-          parsedPiece === piece &&
-          parsedPosition === position &&
-          parsedSide === side
-        )
-        let filteredMovable
+      return (withNotation, withMovement) => {
+        const withMovable = _getMovableByNotation(withNotation)(...withMovement)
 
-        if (parsedPiece === 'K') {
-          const {
-            movable: checkerSight
-          } = _getMovableByNotation(Helpers.parseNotation(checker))
+        console.log('base: ', baseMovable)
+        console.log('to: ', withMovable)
 
-          filteredMovable = parsedMovable.filter((checkTile) => checkerSight.indexOf(checkTile) === -1)
-        } else {
-          filteredMovable = Utils.intersection(kingSight)(parsedMovable)
-        }
-
-        if (isSelectedPiece) {
-          availBlocks4Selected = filteredMovable
-        }
+        return (isKing = false) => isKing
+          ? withMovable.filter((tile) => !baseMovable.includes(tile))
+          : Utils.intersection(baseMovable)(withMovable)
       }
-
-      const _getBrothers = (notation) => notation.substr(0, 1) === alias
-
-      notations
-        .filter(_getBrothers)
-        .map(Helpers.parseNotation)
-        .map(_getMovableByNotation)
-        .forEach(_getBlocks)
-
-      return availBlocks4Selected
     }
   }
 
@@ -150,7 +84,7 @@ class Chess {
       const {
         targetPiece,
         pretendPiece, // optional
-        initialValue,
+        initialValue = [],
         action
       } = config
       const target = _getTarget(turn)(targetPiece)(pretendPiece)

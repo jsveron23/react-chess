@@ -9,7 +9,8 @@ import {
   isExist,
   push,
   getLastItem,
-  pass
+  pass,
+  intersection
 } from '@utils'
 import Chess from '@utils/Chess'
 
@@ -181,24 +182,53 @@ const enhancer = (WrappedComponent) => class extends PureComponent {
       const {
         notations,
         records,
-        turn,
         setMovable
       } = this.props
       const getMovable = Chess.getMovable(notations, records)
-      const fns = {
-        getMovement: this.getMovement,
-        findNotation: Chess.findNotation(notations),
-        getMovable
-      }
-      const getBlocks = Chess.getBlocks(fns)(notations, turn)
-      const movable = isExist(check)
-        ? getBlocks(piece, position, side)(checker)
-        : getMovable(piece, position, side)(defaults, specials)
-
-      setMovable(movable)
+      let movable
 
       // TODO
-      // - if checked, simulate own pieces movement to block attacked or lose
+      // - should not checked King moves on next check tile (need to predict)
+      // - knight cannot check King currently
+      // - King should not avoid tile checker can move next (like behind, see screenshot)
+      // - FINAL: if checked, simulate own pieces movement to block attacked or lose
+      if (isExist(check)) {
+        // NOTE
+        // - compare with check and checker
+        // - then compare target is clear to next compare
+
+        // compare with between check and checker
+        const {
+          position: kingPosition,
+          piece: kingPiece,
+          side: kingSide
+        } = Chess.parseNotation(check)
+        const kingSight = getMovable(kingPiece, kingPosition, kingSide)(...this.getMovement('Q'))
+        const {
+          position: checkerPosition,
+          piece: checkerPiece,
+          side: checkerSide
+        } = Chess.parseNotation(checker)
+        const checkerSight = getMovable(checkerPiece, checkerPosition, checkerSide)(...this.getMovement(checkerPiece))
+        const checkedMovable = intersection(kingSight)(checkerSight)
+
+        // compare with between piece and piece
+        const isKing = piece === 'K'
+        const compare = Chess.getBlocks(notations, records)
+        const baseNotation = checker
+        const baseMovement = this.getMovement(checker.substr(1, 1))
+        const withNotation = `${Chess.getAlias(side)}${piece}${position}`
+        const withMovement = this.getMovement(piece)
+        const getBlocks = compare(baseNotation, baseMovement)(withNotation, withMovement)
+
+        movable = isKing
+          ? getBlocks(isKing)
+          : intersection(checkedMovable)(getBlocks(isKing))
+      } else {
+        movable = getMovable(piece, position, side)(defaults, specials)
+      }
+
+      setMovable(movable)
     })
   }
 
@@ -315,13 +345,13 @@ const enhancer = (WrappedComponent) => class extends PureComponent {
           checkerNotation
         } = simulate(nextTurn, piece)({
           targetPiece: 'K',
+          pretendPiece: 'Q',
           action: 'CHECK',
           initialValue: {
             isChecked: false,
             kingNotation: '',
             checkerNotation: ''
-          },
-          pretendPiece: 'Q'
+          }
         })
 
         if (isChecked) {

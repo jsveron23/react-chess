@@ -20,10 +20,11 @@ https://jsveron23-react-chess.herokuapp.com/
 - [x] Implement promotion action of Pawn
 - [ ] Implement castling movement of King with Rook
 - [ ] Implement attack
-- [ ] Implement check, checkmate
+- [x] Implement check
+- [ ] Implement checkmate
 - [x] Implement 'undo' button
 - [ ] Implement export, import
-- [ ] Implement save to localstorage
+- [ ] Implement save to browser storage
 - [ ] Implement replay
 - [ ] Implement multiplay
 - [ ] Implement vs. CPU

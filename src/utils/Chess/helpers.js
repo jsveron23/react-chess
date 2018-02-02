@@ -8,10 +8,6 @@ import {
   REG_NOTATION
 } from './constants'
 
-// TODO
-// - isBlocked({ notations, direction, position })
-// - removeNotation({ ?? })
-
 /**
  * Get full name of Chess piece
  * @param  {string} alias
