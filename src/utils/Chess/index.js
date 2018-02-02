@@ -27,37 +27,46 @@ class Chess {
   }
 
   /**
+   * Get sight to predictable move of selected piece
+   * @alias Chess.getMovable
+   */
+  static getSight = Chess.getMovable
+
+  /**
    * Get block tiles to protect King
    * (if King, get tiles to avoid attack)
    */
   static getBlocks (notations, records = []) {
-    const getMovable = Chess.getMovable(notations, records)
+    const getSight = Chess.getSight(notations, records)
 
     /**
-     * Get movable by notation
+     * Get sight by notation
      */
-    const _getMovableByNotation = (notation) => (defaults, specials = []) => {
+    const _getSightByNotation = (notation) => (defaults, specials = []) => {
       const {
         position,
         piece,
         side
       } = Helpers.parseNotation(notation)
+      const getPredictableMove = getSight(piece, position, side)
 
-      return getMovable(piece, position, side)(defaults, specials)
+      return getPredictableMove(defaults, specials)
     }
 
-    return (basemNotation, basemMovement) => {
-      const baseMovable = _getMovableByNotation(basemNotation)(...basemMovement)
+    return (baseNotation, baseMovement) => {
+      const baseSight = _getSightByNotation(baseNotation)(...baseMovement)
 
-      return (withNotation, withMovement) => {
-        const withMovable = _getMovableByNotation(withNotation)(...withMovement)
+      /**
+       * King's sight shouldn't match with base (checker)
+       */
+      const _shouldNotMatch = (tile) => !baseSight.includes(tile)
 
-        console.log('base: ', baseMovable)
-        console.log('to: ', withMovable)
+      return (targetNotation, targetMovement) => {
+        const targetSight = _getSightByNotation(targetNotation)(...targetMovement)
 
         return (isKing = false) => isKing
-          ? withMovable.filter((tile) => !baseMovable.includes(tile))
-          : Utils.intersection(baseMovable)(withMovable)
+          ? targetSight.filter(_shouldNotMatch)
+          : Utils.intersection(baseSight)(targetSight)
       }
     }
   }
@@ -75,7 +84,7 @@ class Chess {
     /**
      * Get target infomation
      */
-    const _getTarget = (turn) => (targetPiece) => (pretendPiece) => Utils.compose(
+    const _getTarget = (turn) => (targetPiece, pretendPiece) => Utils.compose(
       getTarget(turn, targetPiece, pretendPiece),
       getMovement
     )(pretendPiece || targetPiece)
@@ -84,10 +93,10 @@ class Chess {
       const {
         targetPiece,
         pretendPiece, // optional
-        initialValue = [],
+        initialValue = [], // default
         action
       } = config
-      const target = _getTarget(turn)(targetPiece)(pretendPiece)
+      const target = _getTarget(turn)(targetPiece, pretendPiece)
       const { targetSight } = target
 
       // create scenarios callback
@@ -108,7 +117,7 @@ class Chess {
     const isCompletedRec = Helpers.isCompletedRecord(lastItem)
     const isNew = Utils.isEmpty(lastItem) || isCompletedRec // new or next record
 
-    return (ts = +new Date()) => (nextNotations) => {
+    return (nextNotations, ts = +new Date()) => {
       const move = transform(nextNotations)
       const log = { move, notations, ts }
       const data = isNew
@@ -142,7 +151,7 @@ class Chess {
       ? excludedLastItem
       : Utils.replaceLast(records)({ white })
 
-    return () => ({ revertedRecords, revertedNotations })
+    return (/* TODO use it later */) => ({ revertedRecords, revertedNotations })
   }
 
   /**
