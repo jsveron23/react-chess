@@ -77,6 +77,7 @@ const enhancer = (WrappedComponent) => class extends PureComponent {
       records,
       resetMatch,
       revert,
+      resetMovable,
       resetCommand
     } = nextProps
 
@@ -90,12 +91,13 @@ const enhancer = (WrappedComponent) => class extends PureComponent {
       const getPrevTurn = Chess.getEnemy
 
       this.setState({
+        currPosition: '',
         isMoving: true,
         check: ''
       }, () => revert({
         applyUndo,
         getPrevTurn
-      }))
+      }).then(() => resetMovable()))
     } else if (command === 'undo' && isEmpty(records)) {
       resetCommand()
     }
