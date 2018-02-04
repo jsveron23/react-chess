@@ -95,21 +95,25 @@ export function isNotation (notation, reg = REG_NOTATION) {
 
 /**
  * Parse a notation
- * @param  {string?} notation
+ * @param  {string?}  notation
+ * @param  {boolean?} isStream
  * @return {Object}
  */
-export function parseNotation (notation) {
+export function parseNotation (notation, isStream = false) {
   if (isEmpty(notation)) {
     return {}
   }
 
   const [alias, piece, ...position] = notation.split('')
+  const side = getSide(alias)
 
-  return {
-    position: position.join(''),
-    side: getSide(alias),
-    piece
-  }
+  return isStream
+    ? [piece, position.join(''), side] // for composition
+    : {
+      position: position.join(''),
+      side,
+      piece
+    }
 }
 
 /**
@@ -179,9 +183,9 @@ export function updateNotations (notations) {
  * @return {Function}
  */
 export function revertNotations (notations) {
-  const fn = updateNotations(notations)
+  const update = updateNotations(notations)
 
-  return (before, after) => fn(after, before)
+  return (before, after) => update(after, before)
 }
 
 /**

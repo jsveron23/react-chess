@@ -71,13 +71,6 @@ export const replaceLast = (items) => (data) => [...items.slice(0, -1), data]
 export const diet = (v) => v.filter((item) => isExist(item))
 
 /**
- * Difference
- * @param  {Array}    a
- * @return {Function}
- */
-// export const diff = (a) => (b) => a.filter((n, idx) => n !== b[idx])
-
-/**
  * Difference check
  * @param  {*}        a
  * @return {Function}
@@ -85,20 +78,11 @@ export const diet = (v) => v.filter((item) => isExist(item))
 export const isDiff = (a) => (b) => (JSON.stringify(a) !== JSON.stringify(b))
 
 /**
- * Apply extra arguments
- * - to use composition
- * - argument order is important
- * @param  {Function} fn
- * @param  {*}        args
+ * Pass argument to next function (only 1)
+ * @param  {string}   key - object of key
  * @return {Function}
  */
-export const applyExtraArgs = (fn, ...args) => (v) => {
-  if (v.constructor === Object) {
-    return fn(...Object.values(v), ...args)
-  }
-
-  return fn(v, ...args)
-}
+export const toss = (key) => (o) => o[key]
 
 /**
  * Functions uses same argument then get results into array (streamable)
@@ -106,6 +90,14 @@ export const applyExtraArgs = (fn, ...args) => (v) => {
  * @return {Function}
  */
 export const pass = (...fns) => (x) =>
+  fns.reduce((r, f = function () {}) => [...r, f(x)], [])
+
+/**
+ * Apply same argument to functions (streamable)
+ * @param  {*}        x
+ * @return {Function}
+ */
+export const apply = (x) => (...fns) =>
   fns.reduce((r, f = function () {}) => [...r, f(x)], [])
 
 /**

@@ -7,10 +7,10 @@ import King from './King'
 
 /**
  * Get piece
- * @return {React.Component}
  */
 export function getPiece (alias) {
   const list = {
+    '*': Queen, // get every direction
     P: Pawn,
     R: Rook,
     B: Bishop,
@@ -24,7 +24,6 @@ export function getPiece (alias) {
 
 /**
  * Get defaults movement
- * @return {Array}
  */
 export function getDefaults (alias) {
   const { movement } = getPiece(alias)
@@ -35,13 +34,24 @@ export function getDefaults (alias) {
 
 /**
  * Get specials
- * @return {Array}
  */
 export function getSpecials (alias) {
   const { movement } = getPiece(alias)
   const { specials } = movement
 
   return specials
+}
+
+/**
+ * Get movement
+ */
+export function getMovement (piece, isStream = true) {
+  const defaults = getDefaults(piece)
+  const specials = getSpecials(piece)
+
+  return isStream
+    ? [defaults, specials]
+    : { defaults, specials }
 }
 
 export { Pawn, Rook, Bishop, Knight, Queen, King }

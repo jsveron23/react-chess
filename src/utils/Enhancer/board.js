@@ -1,16 +1,14 @@
 import React, { PureComponent } from 'react'
 import PropTypes from 'prop-types'
 import {
-  getDefaults,
-  getSpecials
+  getMovement
 } from '@pieces'
 import {
   isEmpty,
   isExist,
   push,
   getLastItem,
-  pass,
-  intersection
+  apply
 } from '@utils'
 import Chess from '@utils/Chess'
 
@@ -148,19 +146,6 @@ const enhancer = (WrappedComponent) => class extends PureComponent {
   }
 
   /**
-   * Get movements
-   * @see @components/index.js#getDefaults
-   * @see @components/index.js#getSpecials
-   */
-  getMovement (piece, isStream = true) {
-    const [defaults, specials] = pass(getDefaults, getSpecials)(piece)
-
-    return isStream
-      ? [defaults, specials]
-      : { defaults, specials }
-  }
-
-  /**
    * Handle drawing movable squares
    * @see @components#<File />
    * @see @utils/Chess/index.js#getMovable
@@ -186,46 +171,38 @@ const enhancer = (WrappedComponent) => class extends PureComponent {
         records,
         setMovable
       } = this.props
-      const getSight = Chess.getSight(notations, records)
+      const getMovable = Chess.getMovable(notations, records)
       let movable
 
       // TODO
-      // - should not checked King moves on next check tile (need to predict next move)
+      // - King should not aviod to next check tile (need to predict next move)
       // - knight cannot check King currently
-      // - King should not avoid tile checker can move next (like behind, see screenshot)
+      // - like behind, see screenshot
       // - FINAL: if checked, simulate own pieces movement to block attacked or lose
       if (isExist(check)) {
         const isKing = piece === 'K'
-
-        // compare with between check and checker
-        const {
-          position: kingPosition,
-          piece: kingPiece,
-          side: kingSide
-        } = Chess.parseNotation(check)
-        const kingSight = getSight(kingPiece, kingPosition, kingSide)(...this.getMovement('Q'))
-        const {
-          position: checkerPosition,
-          piece: checkerPiece,
-          side: checkerSide
-        } = Chess.parseNotation(checker)
-        const checkerSight = getSight(checkerPiece, checkerPosition, checkerSide)(...this.getMovement(checkerPiece))
-        const checkedSight = intersection(kingSight)(checkerSight)
+        const checkerPiece = checker.substr(1, 1)
+        const fns = {
+          /**
+           * Compare with between check and checker
+           * to get direction that attacking path (common)
+           */
+          getAttackingRoute: (getCommonSights) =>
+            getCommonSights(check, getMovement('*'))(checker, getMovement(checkerPiece))
+        }
+        const options = {
+          isKing
+        }
 
         // compare with between piece and piece
-        const compare = Chess.getBlocks(notations, records)
-        const baseNotation = checker
-        const baseMovement = this.getMovement(checkerPiece)
+        const getBlocks = Chess.getBlocks(fns, options)(notations, records)
+        const baseMovement = getMovement(checkerPiece)
         const targetNotation = `${Chess.getAlias(side)}${piece}${position}`
-        const targetMovement = this.getMovement(piece)
-        const getBlocks = compare(baseNotation, baseMovement)(targetNotation, targetMovement)
-        const blockableSight = getBlocks(isKing)
+        const targetMovement = getMovement(piece)
 
-        movable = isKing
-          ? getBlocks(isKing)
-          : intersection(checkedSight)(blockableSight)
+        movable = getBlocks(checker, baseMovement)(targetNotation, targetMovement)
       } else {
-        movable = getSight(piece, position, side)(defaults, specials)
+        movable = getMovable(piece, position, side)(defaults, specials)
       }
 
       setMovable(movable)
@@ -332,9 +309,9 @@ const enhancer = (WrappedComponent) => class extends PureComponent {
         nextNotations = nextNotations || [...notations]
 
         // is your King checked?
-        const applyArg = pass(Chess.getMovable, Chess.findNotation)
-        const fns = applyArg(nextNotations).reduce((getMovable, findNotation) => ({
-          getMovement: this.getMovement,
+        const stream = apply(nextNotations)(Chess.getMovable, Chess.findNotation)
+        const fns = stream.reduce((getMovable, findNotation) => ({
+          getMovement,
           getMovable,
           findNotation
         }))

@@ -1,6 +1,6 @@
 import {
   isExist,
-  pass
+  apply
 } from '@utils'
 import {
   parseNotation,
@@ -15,7 +15,6 @@ import {
  */
 export function getTargetInfo (fns) {
   const { getMovable, findNotation } = fns
-  const applyArg = pass(getAlias)
   let targetNotation, targetPosition
 
   return (targetTurn, targetPiece, pretendPiece = '') => (movement) => {
@@ -72,7 +71,7 @@ export function getTargetInfo (fns) {
       targetSight: targetMovable
     })
 
-    return applyArg(targetTurn)
+    return apply(targetTurn)(getAlias)
       .map(_getTargetNotation)
       .map(_getTargetPosition)
       .map(_getMovable)
@@ -89,7 +88,6 @@ export function getTargetInfo (fns) {
  * Test scenario
  * @param  {...Function} fns
  * @return {Function}
- * @callback
  */
 export default function testScenario (fns) {
   const {
@@ -121,6 +119,7 @@ export default function testScenario (fns) {
      * @param  {*}      acc  - config.initialValue or SIMULATION_CONFIG.initialValue
      * @param  {string} tile
      * @return {*}
+     * @callback
      */
     return (acc, tile) => {
       const found = findNotation(tile)

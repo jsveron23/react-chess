@@ -1,5 +1,6 @@
 import * as Utils from '@utils'
 import * as Helpers from './helpers'
+import * as Core from './core'
 import testScenario, { getTargetInfo } from './simulate'
 import { RANKS, FILES } from './constants'
 
@@ -13,60 +14,47 @@ class Chess {
   static findNotation = Helpers.findNotation
   static getMove = Helpers.getMove
 
-  /**
-   * Get movable tiles
-   */
-  static getMovable (notations, records = []) {
-    return (piece, position, side) => (defaults, specials = []) => Utils.compose(
-      Utils.diet,
-      Utils.deepFlatten,
-      excludeBlocked(notations, side)(specials),
-      includeSpecial(records, side)(piece, position)(specials),
-      getMovableData(position, side)
-    )(defaults)
-  }
+  static getMovable = Core.getMovable
+  static getSight = Core.getSight
 
   /**
-   * Get sight to predictable move of selected piece
-   * @alias Chess.getMovable
+   * Get blockable tiles to protect King
+   * TODO
+   * - remove King piece of blocked
    */
-  static getSight = Chess.getMovable
+  static getBlocks (fns, options) {
+    const {
+      getAttackingRoute
+    } = fns
+    const {
+      isKing = false
+    } = options
+    let _getCommonSight
 
-  /**
-   * Get block tiles to protect King
-   * (if King, get tiles to avoid attack)
-   */
-  static getBlocks (notations, records = []) {
-    const getSight = Chess.getSight(notations, records)
+    return (notations, records) => {
+      const _getSightBy = Core.getSightBy(notations, records)
+      const exceptKing = !isKing
 
-    /**
-     * Get sight by notation
-     */
-    const _getSightByNotation = (notation) => (defaults, specials = []) => {
-      const {
-        position,
-        piece,
-        side
-      } = Helpers.parseNotation(notation)
-      const getPredictableMove = getSight(piece, position, side)
+      if (exceptKing) {
+        const getCommonSights = Core.getCommonSights(notations, records)
+        const checkedSight = getAttackingRoute(getCommonSights)
 
-      return getPredictableMove(defaults, specials)
-    }
+        _getCommonSight = Utils.intersection(checkedSight)
+      }
 
-    return (baseNotation, baseMovement) => {
-      const baseSight = _getSightByNotation(baseNotation)(...baseMovement)
+      return (baseNotation, baseMovement) => (targetNotation, targetMovement) => {
+        const baseSight = _getSightBy(baseNotation)(baseMovement)
+        const targetSight = _getSightBy(targetNotation)(targetMovement)
 
-      /**
-       * King's sight shouldn't match with base (checker)
-       */
-      const _shouldNotMatch = (tile) => !baseSight.includes(tile)
+        /** @callback */
+        const _getAvoidance = (tile) => !baseSight.includes(tile)
 
-      return (targetNotation, targetMovement) => {
-        const targetSight = _getSightByNotation(targetNotation)(...targetMovement)
-
-        return (isKing = false) => isKing
-          ? targetSight.filter(_shouldNotMatch)
-          : Utils.intersection(baseSight)(targetSight)
+        return isKing
+          ? targetSight.filter(_getAvoidance)
+          : Utils.compose(
+            _getCommonSight,
+            Utils.intersection(baseSight)
+          )(targetSight)
       }
     }
   }
@@ -75,25 +63,22 @@ class Chess {
    * Simulate
    */
   static simulate (fns) {
-    const { getMovement } = fns
-    const [getTarget, applyScenarioOptions] = Utils.pass(
-      getTargetInfo,
-      testScenario
-    )(fns)
+    const apply = Utils.apply(fns)
+    const [getTarget, applyScenarioOptions] = apply(getTargetInfo, testScenario)
 
     /**
      * Get target infomation
      */
     const _getTarget = (turn) => (targetPiece, pretendPiece) => Utils.compose(
       getTarget(turn, targetPiece, pretendPiece),
-      getMovement
+      fns.getMovement
     )(pretendPiece || targetPiece)
 
     return (turn, piece = '') => (config) => {
       const {
         targetPiece,
-        pretendPiece, // optional
-        initialValue = [], // default
+        pretendPiece,
+        initialValue = [],
         action
       } = config
       const target = _getTarget(turn)(targetPiece, pretendPiece)
@@ -143,10 +128,8 @@ class Chess {
     const log = isWhite ? white : black
     const { notations, move } = Helpers.parseLog(log)
     const revertNotations = Helpers.revertNotations(notations)
-    const revertedNotations = Utils.compose(
-      Utils.applyExtraArgs(revertNotations),
-      Helpers.parseMove
-    )(move)
+    const { before, after } = Helpers.parseMove(move)
+    const revertedNotations = revertNotations(before, after)
     const revertedRecords = isWhite
       ? excludedLastItem
       : Utils.replaceLast(records)({ white })
@@ -159,12 +142,14 @@ class Chess {
    */
   static getNextNotations (currPosition, nextPosition) {
     const procParse = Utils.compose(
-      Utils.applyExtraArgs(Helpers.parsePosition),
+      Helpers.parsePosition,
+      Utils.toss('position'),
       Helpers.parseNotation
     )
 
     /**
-     * Converts notations to axis number for animations
+     * Convert notation to get axis
+     * @callback
      * @description
      * # b1 to h3
      * => [h(8) - b(2) = 6, 3 - 1 = 2]
@@ -173,7 +158,7 @@ class Chess {
      * => transform: translate(300px, 100px)
      * TODO calculate pixelSize automatically
      */
-    const convertAxis = (currNotation) => (nextNotation) => (pixelSize = 50) => {
+    const _convertAxis = (currNotation) => (nextNotation) => (pixelSize = 50) => {
       const {
         file: prevFile,
         rank: prevRank
@@ -188,11 +173,11 @@ class Chess {
       return { x, y }
     }
 
-    return (setAxis) => (notations) => notations.reduce((nextNotations, notation) => {
+    return (setAxis) => (notations) => notations.map((notation) => {
       if (notation.search(currPosition) > -1) {
         const { side, piece } = Helpers.parseNotation(notation)
         const nextNotation = `${Helpers.getAlias(side)}${piece}${nextPosition}`
-        const getAxis = convertAxis(notation)(nextNotation)
+        const getAxis = _convertAxis(notation)(nextNotation)
 
         /** @see @actions/general.js */
         setAxis({
@@ -200,250 +185,18 @@ class Chess {
           notation: nextNotation // for comparing
         })
 
-        return [...nextNotations, nextNotation]
+        return nextNotation
       }
 
-      return [...nextNotations, notation]
-    }, [])
+      return notation
+    })
   }
 
   /**
    * Promotion
    */
   static promotion (notations) {
-    return (records) => promotion(notations, records)
-  }
-}
-
-/**
- * Get movable data from movement
- */
-function getMovableData (position, turn) {
-  const { file, rank } = Helpers.parsePosition(position)
-  const fileIdx = Helpers.getFileIdx(file)
-
-  /**
-   * Transform axisList to tiles
-   */
-  const _transformTiles = (axisList) => axisList.reduce((list, axis) => {
-    const [x, y] = axis
-
-    // X: 1(a) + 1 = 2(b)
-    const nextX = x + fileIdx
-
-    // Y: upside down
-    const nextY = turn === 'white'
-      ? y + parseInt(rank, 10)
-      : parseInt(rank, 10) - y
-
-    const fileChar = Helpers.getFile(nextX) // it removes outside of board
-    const isInside = (nextX > 0 && nextY > 0 && nextY < 9 && !!fileChar)
-
-    return isInside ? [...list, `${fileChar}${nextY}`] : list
-  }, [])
-
-  return (defaults) =>
-    Object.keys(defaults).map((mvName) => defaults[mvName].map(_transformTiles))
-}
-
-/**
- * Add special move to movable data
- */
-function includeSpecial (records, turn) {
-  const lastItem = Utils.getLastItem(records)
-
-  return (piece, position) => (specials) => {
-    /**
-     * Control special moves of Pawn
-     */
-    const _controlPawnSpecials = (m, mvName) => {
-      switch (mvName) {
-        case 'doubleStep': {
-          const isFirstStep = /^.(2|7)$/.test(position)
-
-          if (!isFirstStep) {
-            return m
-          }
-
-          return doubleStep(turn)(m)
-        }
-
-        case 'enPassant': {
-          if (Utils.isEmpty(lastItem)) {
-            return m
-          }
-
-          return enPassant(position, lastItem)(m)
-        }
-
-        default: {
-          return m
-        }
-      }
-    }
-
-    return (movable) => {
-      if (piece === 'P') {
-        return movable.map((m) => specials.reduce(_controlPawnSpecials, m))
-      } else if (piece === 'K') {
-        // TODO castling
-      }
-
-      return movable
-    }
-  }
-}
-
-/**
- * Filter blocked path to movable data (include enemy)
- */
-function excludeBlocked (notations, turn) {
-  const [checkPlace, findNotation] = Utils.pass(
-    Helpers.isThere,
-    Helpers.findNotation
-  )(notations)
-
-  return (specials) => {
-    const cannotJump = specials.indexOf('jumpover') === -1
-
-    return (movable) => movable.map((m) => {
-      return m.map((tiles) => {
-        let isBlocked = false
-        let enemyTile = ''
-
-        /**
-         * Include only availiable tiles
-         */
-        const _includeAvailable = (nonBlocked, tile) => {
-          if (Utils.isEmpty(enemyTile)) {
-            const { side, position } = Utils.compose(
-              Helpers.parseNotation,
-              findNotation
-            )(tile)
-
-            // 1 enemy per direction
-            const isEnemy = Helpers.getEnemy(turn) === side
-            const isEnemyExist = (
-              !isBlocked && isEnemy &&
-              Utils.isEmpty(enemyTile) && Utils.isExist(side)
-            )
-
-            if (isEnemyExist) {
-              enemyTile = position
-            }
-          }
-
-          const isPlaced = checkPlace(tile)
-          const canJump = !cannotJump
-
-          // everything except Knight
-          const exceptKnight = isPlaced && !isBlocked && cannotJump
-
-          // only for Knight
-          const only4Knight = isPlaced && canJump
-
-          // after blocked, remove leftover tiles (ignore)
-          const afterBlocked = isBlocked
-
-          if (exceptKnight || afterBlocked || only4Knight) {
-            if (exceptKnight) {
-              isBlocked = true
-            }
-
-            return nonBlocked
-          }
-
-          return [...nonBlocked, tile]
-        }
-
-        return tiles
-          .reduce(_includeAvailable, [])
-          .concat(enemyTile) // include enemy tile
-      })
-    })
-  }
-}
-
-/**
- * Promotion
- */
-function promotion (notations, records) {
-  const lastItem = Utils.getLastItem(records)
-  const lastTurn = Helpers.detectLastTurn(lastItem)
-  const move = Helpers.getMove(lastItem)(lastTurn)
-  const { after } = Helpers.parseMove(move)
-  const [x, y] = after.substr(-2, 2)
-  const alias = Helpers.getAlias(lastTurn)
-  const isEdge = /1|8/.test(y)
-
-  if (isEdge) {
-    const from = `${alias}P${x}${y}`
-    const to = `${alias}Q${x}${y}`
-
-    return Helpers.updateNotations(notations)(from, to)
-  }
-}
-
-/**
- * Pawn moves 2 step forward
- */
-function doubleStep (turn) {
-  const applyOneMoreStep = Helpers.increaseRank(turn)
-
-  return (m) => {
-    const [tiles] = m
-    const [tile] = tiles
-    const oneMoreStep = applyOneMoreStep(tile)
-    const mergedStep = Utils.push(tiles)(oneMoreStep)
-
-    return [mergedStep]
-  }
-}
-
-/**
- * Pawn moves diagonal and attack
- * TODO
- * - remove after
- * - it won't work sometimes
- */
-function enPassant (position, lastItem) {
-  const enemyMove = Utils.compose(
-    Helpers.getMove(lastItem),
-    Helpers.getEnemy,
-    Helpers.detectTurn
-  )(lastItem)
-  const isPawn = enemyMove.substr(1, 1) === 'P'
-
-  if (Utils.isEmpty(enemyMove) || !isPawn) {
-    return (m) => m
-  }
-
-  const turn = Helpers.detectTurn(lastItem)
-
-  // get myself
-  const { file: myFile, rank: myRank } = Helpers.parsePosition(position)
-  const myFileIdx = Helpers.getFileIdx(myFile)
-
-  // get enemy
-  const enemyPosition = enemyMove.substr(-2)
-  const { file: enemyFile, rank: enemyRank } = Helpers.parsePosition(enemyPosition)
-  const enemyFileIdx = Helpers.getFileIdx(enemyFile)
-
-  // check
-  const howManyLastStep = Helpers.getHowManyStepVertical(enemyMove)
-  const isDoubleStep = howManyLastStep === 2
-  const isSibling = Math.abs(myFileIdx - enemyFileIdx) === 1
-  const isAdjustedLine = parseInt(myRank, 10) === parseInt(enemyRank, 10)
-
-  return (m) => {
-    // valid
-    if (isDoubleStep && isAdjustedLine && isSibling) {
-      const diagonal = Helpers.increaseRank(turn)(enemyPosition)
-
-      return [...m, [diagonal]]
-    }
-
-    return m
+    return (records) => Core.promotion(notations, records)
   }
 }
 
