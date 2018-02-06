@@ -19,7 +19,7 @@ https://jsveron23-react-chess.herokuapp.com/
 - [x] Implement en-passant movement of Pawn
 - [x] Implement promotion action of Pawn
 - [ ] Implement castling movement of King with Rook
-- [ ] Implement attack
+- [x] Implement attack
 - [x] Implement check
 - [ ] Implement checkmate
 - [x] Implement 'undo' button

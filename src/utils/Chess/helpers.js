@@ -1,4 +1,9 @@
-import { isEmpty, isExist, pass } from '@utils'
+import {
+  isEmpty,
+  isExist,
+  pass,
+  diff
+} from '@utils'
 import {
   INITIAL,
   SIDE,
@@ -162,7 +167,7 @@ export function parseLog (log) {
  * @return {Array}
  */
 export function parseMove (move) {
-  const [before, after] = move.split(/-|x|\+/) // ignore (+)
+  const [before, after] = move.split(/\s|-|x|\+/) // ignore (+)
 
   return { before, after }
 }
@@ -204,15 +209,33 @@ export function getMove (rec = {}) {
 /**
  * Return different moves between previous and currunt notations
  * @param  {Array}    notations
+ * @param  {string}   turn
  * @return {Function}
+ * TODO optimize
  */
-export function transformMove (notations) {
-  return (nextNotations) => notations.reduce((move, notation, idx) => {
-    const nextNotation = nextNotations[idx]
-    const isDiff = notation !== nextNotation
+export function transformMove (notations, turn) {
+  const getDiff = diff(notations)
 
-    return isDiff ? `${notation}-${nextNotation}` : move
-  }, '')
+  return (nextNotations) => {
+    const group = getDiff(nextNotations)
+    const isAttack = group.length === 2
+
+    // TODO change target notation name as attacker
+    if (isAttack) {
+      const orderedGroup = turn === 'white' ? group.slice(0).reverse() : group
+      // const str = orderedGroup.join('').substr(0, 2)
+
+      return orderedGroup
+        .join('x')
+    }
+
+    return notations.reduce((move, notation, idx) => {
+      const nextNotation = nextNotations[idx]
+      const isDiff = notation !== nextNotation
+
+      return isDiff ? `${notation} ${nextNotation}` : move
+    }, '')
+  }
 }
 
 /**
@@ -277,7 +300,7 @@ export function increaseRank (turn, counts = 1) {
  */
 export function getHowManyStepHorizontal (move) {
   const steps = move
-    .split(/-|x/)
+    .split(/\s|-|x/)
     .reduce((prevNotation, currNotation) => {
       const prevFileIdx = getFileIdx(prevNotation.substr(-2, 1))
       const currFileIdx = getFileIdx(currNotation.substr(-2, 1))
@@ -295,7 +318,7 @@ export function getHowManyStepHorizontal (move) {
  */
 export function getHowManyStepVertical (move) {
   const steps = move
-    .split(/-|x/)
+    .split(/\s|-|x/)
     .reduce((prevNotation, currNotation) => {
       const prevRank = parseInt(prevNotation.substr(3, 1), 10)
       const currRank = parseInt(currNotation.substr(3, 1), 10)

@@ -21,6 +21,7 @@ class Chess {
    * Get blockable tiles to protect King
    * TODO
    * - remove King piece of blocked
+   * - find every tiles from enemy pieces that King cannot move there
    */
   static getBlocks (fns, options) {
     const {
@@ -98,7 +99,8 @@ class Chess {
   static saveRecords (notations, records) {
     const passArg = Utils.pass(Utils.getLastItem, Utils.push)
     const [lastItem, push] = passArg(records)
-    const transform = Helpers.transformMove(notations)
+    const turn = Helpers.detectTurn(lastItem)
+    const transform = Helpers.transformMove(notations, turn)
     const isCompletedRec = Helpers.isCompletedRecord(lastItem)
     const isNew = Utils.isEmpty(lastItem) || isCompletedRec // new or next record
 
@@ -173,23 +175,36 @@ class Chess {
       return { x, y }
     }
 
-    return (setAxis) => (notations) => notations.map((notation) => {
-      if (notation.search(currPosition) > -1) {
-        const { side, piece } = Helpers.parseNotation(notation)
-        const nextNotation = `${Helpers.getAlias(side)}${piece}${nextPosition}`
-        const getAxis = _convertAxis(notation)(nextNotation)
+    return (setAxis) => (notations) => notations
+      .reduce((nextNotations, notation) => {
+        if (notation.search(currPosition) > -1) {
+          // TODO
+          // - check current position and next position
+          // - if next position is enemy means attack!
 
-        /** @see @actions/general.js */
-        setAxis({
-          axis: getAxis(/* pixelSize */),
-          notation: nextNotation // for comparing
-        })
+          const { side, piece } = Helpers.parseNotation(notation)
+          const nextNotation = `${Helpers.getAlias(side)}${piece}${nextPosition}`
+          const getAxis = _convertAxis(notation)(nextNotation)
 
-        return nextNotation
-      }
+          /** @see @actions/general.js */
+          setAxis({
+            axis: getAxis(/* pixelSize */),
+            notation: nextNotation // for comparing
+          })
 
-      return notation
-    })
+          return [...nextNotations, nextNotation]
+        }
+
+        // TODO
+        // - sometimes, animation doesn't work
+        // - recording a record not properly (-defined)
+        // - write to the record about kill enemy there
+        if (notation.search(nextPosition) > -1) {
+          return nextNotations
+        }
+
+        return [...nextNotations, notation]
+      }, [])
   }
 
   /**

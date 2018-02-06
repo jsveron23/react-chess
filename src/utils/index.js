@@ -114,6 +114,13 @@ export const stream = (v) => Array.of(v)
 export const toArray = stream
 
 /**
+ * Unique
+ * @param  {*}     v
+ * @return {Array}
+ */
+export const unique = (v) => Array.from(new Set(v))
+
+/**
  * Intersection
  * @param  {*}    a
  * @param  {*}    a
