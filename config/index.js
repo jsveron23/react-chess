@@ -11,7 +11,8 @@ const config = {
   },
 
   noParse: new RegExp([
-    'rimraf', 'express'
+    'rimraf',
+    'express' // for Heroku
   ].join('|'))
 }
 

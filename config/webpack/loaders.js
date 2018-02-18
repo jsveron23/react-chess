@@ -2,7 +2,8 @@ const { repoPath, confPath, srcPath } = require('../../lib/path')
 
 /** @namespace Loaders */
 const Loaders = {
-  loaderList: {
+  list: {
+    // eslint
     eslint: {
       test: /\.js$/,
       include: [srcPath],
@@ -11,12 +12,18 @@ const Loaders = {
         configFile: `${repoPath}/.eslintrc.json`
       }
     },
+
+    // javascript
     javascript: {
       test: /\.js$/,
       include: [srcPath],
       loader: 'babel-loader'
     },
+
+    // inline
     style: 'style-loader',
+
+    // css
     css: {
       loader: 'css-loader',
       options: {
@@ -27,6 +34,8 @@ const Loaders = {
         camelCase: 'only'
       }
     },
+
+    // postcss
     postcss: {
       loader: 'postcss-loader',
       options: {
@@ -40,12 +49,21 @@ const Loaders = {
   get (type = '') {
     const loaders = type
       .split(' ')
-      .map(t => this.loaderList[t])
-      .filter(t => !!t)
+      .reduce((lds, t) => {
+        const l = this.list[t]
+
+        if (!l) {
+          console.log(`${t}-loader not found!`)
+
+          return lds
+        }
+
+        return lds.concat(l)
+      }, [])
     let loader
 
     if (loaders.length === 0) {
-      console.log(`'${type}' loader not found!`)
+      throw new Error(`Loader not found!`)
     } else if (loaders.length === 1) {
       [loader] = loaders
     }

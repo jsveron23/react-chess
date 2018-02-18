@@ -1,11 +1,19 @@
 const Loaders = require('./webpack/loaders')
 const Plugins = require('./webpack/plugins')
-const { distPath, srcPath, assetsPath, getAbsPath } = require('../lib/path')
-const { noParse, port, devServer } = require('./')
+const {
+  distPath,
+  srcPath,
+  assetsPath,
+  getAbsPath
+} = require('../lib/path')
+const {
+  noParse,
+  port,
+  devServer: devServerConf
+} = require('./')
 
 function configure ({ production } = {}) {
   const env = production ? 'production' : 'development'
-  const isDev = env === 'development'
   const entry = {
     app: ['./index'],
     vendor: [
@@ -18,9 +26,12 @@ function configure ({ production } = {}) {
       'classnames'
     ]
   }
-  const module = {
-    noParse
+  const output = {
+    path: distPath,
+    filename: '[name].js',
+    publicPath: '/'
   }
+  const module = { noParse }
   const resolve = {
     alias: {
       '@components': getAbsPath('src/components'),
@@ -35,7 +46,6 @@ function configure ({ production } = {}) {
     }
   }
 
-  // loaders
   const eslintLoader = Object.assign({}, Loaders.get('eslint'), {
     enforce: 'pre'
   })
@@ -45,6 +55,11 @@ function configure ({ production } = {}) {
     include: [srcPath],
     use: Loaders.get('style css postcss')
   }
+
+  let devtool = 'cheap-module-source-map'
+  let devServer = Object.assign({}, devServerConf, {
+    contentBase: assetsPath
+  })
 
   if (env === 'development') {
     entry.app.unshift(
@@ -63,21 +78,18 @@ function configure ({ production } = {}) {
         })
       })
     ]
+
+    devtool = 'nosources-source-map'
+    devServer = undefined
   }
 
   return {
     target: 'web',
-    output: {
-      path: distPath,
-      filename: '[name].js',
-      publicPath: '/'
-    },
     plugins: Plugins.get(env),
     context: srcPath,
-    devtool: isDev ? 'cheap-module-source-map' : 'nosources-source-map',
-    devServer: isDev ? Object.assign({}, devServer, {
-      contentBase: assetsPath
-    }) : undefined,
+    output,
+    devtool,
+    devServer,
     resolve,
     entry,
     module

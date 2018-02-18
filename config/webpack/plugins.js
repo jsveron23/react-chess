@@ -4,9 +4,13 @@ const HtmlWebpackPlugin = require('html-webpack-plugin')
 const { assetsPath } = require('../../lib/path')
 const flatten = require('../../lib/flatten')
 
+function extractText (use) {
+  return ExtractTextPlugin.extract(use)
+}
+
 /** @namespace Plugins */
 const Plugins = {
-  pluginList: [
+  list: [
     new webpack.optimize.CommonsChunkPlugin({
       name: 'vendor',
       filename: 'vendor.js',
@@ -35,17 +39,17 @@ const Plugins = {
     })
   ],
 
+  extractCSS: extractText,
+
   get (env = '') {
-    return this.pluginList.concat(
-      flatten(this[env]),
+    const plugins = this[env]
+
+    return this.list.concat(
+      flatten(plugins),
       new webpack.DefinePlugin({
         'process.env.NODE_ENV': JSON.stringify(env)
       })
     )
-  },
-
-  extractCSS (use) {
-    return ExtractTextPlugin.extract(use)
   }
 }
 
