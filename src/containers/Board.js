@@ -7,10 +7,6 @@ import { setRecords } from '@actions/records'
 import enhancer from '@utils/Enhancer/board'
 import { compose } from '@utils'
 
-/**
- * @param  {Object} state
- * @return {Object}
- */
 function mapStateToProps ({ general, notations, records, movable }) {
   const { screen, command, turn, axis } = general
   const isPlaying = screen !== 'main'

@@ -5,11 +5,6 @@ import { getPiece } from '@pieces'
 import Chess, { RANKS, FILES } from '@utils/Chess'
 import css from './board.css'
 
-/**
- * Chess Board component
- * @param  {Object} props
- * @return {JSX}
- */
 const Board = ({
   isMoving,
   notations,

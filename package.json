@@ -13,6 +13,7 @@
   },
   "keywords": [
     "react",
+    "redux",
     "chess",
     "webpack",
     "heroku"

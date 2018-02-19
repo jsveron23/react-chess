@@ -5,10 +5,6 @@ import { getPiece } from '@pieces'
 import { isDiff, isExist, isEmpty } from '@utils'
 import css from './file.css'
 
-/**
- * File component
- * @extends {React.Component}
- */
 class File extends Component {
   static propTypes = {
     isMoving: PropTypes.bool.isRequired,

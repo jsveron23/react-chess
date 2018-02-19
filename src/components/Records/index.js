@@ -3,10 +3,6 @@ import PropTypes from 'prop-types'
 import { getPiece } from '@pieces'
 import css from './records.css'
 
-/**
- * Records component
- * @extends {React.PureComponent}
- */
 class Records extends PureComponent {
   static propTypes = {
     records: PropTypes.array.isRequired
@@ -57,6 +53,12 @@ class Records extends PureComponent {
   }
 
   /**
+   * Get ref
+   * @param {HTMLElement} el
+   */
+  getRef = (el) => (this.recordsRef = el)
+
+  /**
    * Get piece component
    * @param  {String}          move
    * @return {React.Component}
@@ -78,12 +80,6 @@ class Records extends PureComponent {
 
     return path
   }
-
-  /**
-   * Get ref
-   * @param {HTMLElement} el
-   */
-  getRef = (el) => (this.recordsRef = el)
 }
 
 export default Records
