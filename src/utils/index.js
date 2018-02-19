@@ -1,130 +1,96 @@
 /**
+ * Noop
+ */
+const noop = function () {}
+
+/**
  * Compose
- * @param  {...Function} fns
- * @return {*}
  */
 export const compose = (...fns) => (x) => fns.reduceRight((v, f) => f(v), x)
 
 /**
  * Pipe
- * @param  {...Function} fns
- * @return {*}
  */
 export const pipe = (...fns) => (x) => fns.reduce((v, f) => f(v), x)
 
 /**
  * Flatten
- * @param  {Array} items
- * @return {Array}
  */
-export const flatten = (items = []) => [].concat.apply([], items)
+export const flatten = (items = []) =>
+  items.reduce((v, item) => v.concat(Array.isArray(item) ? flatten(item) : item), [])
 
 /**
- * Deep flatten
- * @param  {Array} items
- * @return {Array}
+ * Get first item
  */
-export const deepFlatten = (items) => {
-  if (items.length === 0) {
-    return items
-  }
-
-  const flattened = flatten(items)
-  const shouldFlatten = flattened.some((item) => Array.isArray(item))
-
-  if (shouldFlatten) {
-    return deepFlatten(flattened)
-  }
-
-  return flattened
-}
+export const getFirstItem = (items = []) => [...items].shift()
 
 /**
- * Get last item of array
- * @param  {Array} items
- * @return {Array}
+ * Get last item
  */
-export const getLastItem = (items) => items.slice(0).pop()
+export const getLastItem = (items = []) => [...items].pop()
 
 /**
- * Push item but no update original items
- * @param  {Array}    items
- * @return {Function}
+ * Replace first item
  */
-export const push = (items) => (data, isNew = true) =>
+export const replaceFirst = (items = []) => (data) => [data, ...items.slice(1, 0)]
+
+/**
+ * Replace last item
+ */
+export const replaceLast = (items = []) => (data) => [...items.slice(0, -1), data]
+
+/**
+ * Add item
+ */
+export const push = (items = []) => (data, isNew = true) =>
   isNew
     ? [...items, data]
     : replaceLast(items)(data)
 
 /**
- * Like push but replace last item
- * @param  {Array}    items
- * @return {Function}
- */
-export const replaceLast = (items) => (data) => [...items.slice(0, -1), data]
-
-/**
  * Remove unnecessary items
- * @param  {Array} v
- * @return {Array}
  */
-export const diet = (v) => v.filter((item) => isExist(item))
+export const diet = (v) => v.filter(isExist)
 
 /**
  * Difference check
- * @param  {*}        a
- * @return {Function}
  */
 export const isDiff = (a) => (b) => (JSON.stringify(a) !== JSON.stringify(b))
 
 /**
- * Pass argument to next function (only 1)
- * @param  {string}   key - object of key
- * @return {Function}
+ * Pass argument to next function
  */
 export const toss = (key) => (o) => o[key]
 
 /**
- * Functions uses same argument then get results into array (streamable)
- * @param  {...Function} fns
- * @return {Function}
+ * Functions uses same argument,
+ * get results into a array
  */
 export const pass = (...fns) => (x) =>
-  fns.reduce((r, f = function () {}) => [...r, f(x)], [])
+  fns.reduce((v, f = noop) => [...v, f(x)], [])
 
 /**
- * Apply same argument to functions (streamable)
- * @param  {*}        x
- * @return {Function}
+ * Apply same argument to functions
  */
-export const apply = (x) => (...fns) =>
-  fns.reduce((r, f = function () {}) => [...r, f(x)], [])
-
-/**
- * Turn anything to array => stream
- * @param  {*}     v
- * @return {Array}
- */
-export const stream = (v) => Array.of(v)
+export const apply = (x) => (...fns) => pass(...fns)(x)
 
 /**
  * To array
- * @see stream
  */
-export const toArray = stream
+export const toArray = (v) => Array.of(v)
+
+/**
+ * Turn anything to array => stream
+ */
+export const stream = toArray
 
 /**
  * Unique
- * @param  {*}     v
- * @return {Array}
  */
 export const unique = (v) => Array.from(new Set(v))
 
 /**
  * Intersection
- * @param  {*}    a
- * @param  {*}    a
- * @return {Array}
  * @see {@link http://2ality.com/2015/01/es6-set-operations.html}
  */
 export const intersection = (a) => (b) => {
@@ -137,9 +103,6 @@ export const intersection = (a) => (b) => {
 
 /**
  * Difference
- * @param  {*}    a
- * @param  {*}    a
- * @return {Array}
  * @see {@link http://2ality.com/2015/01/es6-set-operations.html}
  */
 export const diff = (a) => (b) => {
@@ -152,9 +115,6 @@ export const diff = (a) => (b) => {
 
 /**
  * Union
- * @param  {*}    a
- * @param  {*}    a
- * @return {Array}
  * @see {@link http://2ality.com/2015/01/es6-set-operations.html}
  */
 export const union = (a) => (b) => {
@@ -167,8 +127,6 @@ export const union = (a) => (b) => {
 
 /**
  * Trace
- * @param  {string} label
- * @return {*}
  */
 export const trace = (label) => (v) => {
   console.log(`${label}: `, v)
@@ -178,8 +136,6 @@ export const trace = (label) => (v) => {
 
 /**
  * Is it empty?
- * @param  {*}       v
- * @return {boolean}
  */
 export const isEmpty = (v) => (
   v === null ||
@@ -190,7 +146,5 @@ export const isEmpty = (v) => (
 
 /**
  * Is it exist?
- * @param  {*}       value
- * @return {boolean}
  */
-export const isExist = (value) => !isEmpty(value)
+export const isExist = (v) => !isEmpty(v)

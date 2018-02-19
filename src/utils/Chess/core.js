@@ -7,7 +7,7 @@ import * as Helpers from './helpers'
 export function getMovable (notations, records = []) {
   return (piece, position, side) => (defaults, specials = []) => Utils.compose(
     Utils.diet,
-    Utils.deepFlatten,
+    Utils.flatten,
     excludeBlocked(notations, side)(piece)(specials),
     includeSpecial(records, side)(piece, position)(specials),
     getPureMovableData(position, side)
