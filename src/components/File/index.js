@@ -2,7 +2,12 @@ import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import cx from 'classnames'
 import { getPiece } from '@pieces'
-import { isDiff, isExist, isEmpty } from '@utils'
+import {
+  isEmpty,
+  isExist,
+  // isDiff,
+  intersection
+} from '@utils'
 import css from './file.css'
 
 class File extends Component {
@@ -33,42 +38,36 @@ class File extends Component {
   shouldComponentUpdate (nextProps) {
     const prevProps = this.props
     const {
-      turn,
+      isMoving,
       check,
+      piece,
       selected,
       position,
       movable
     } = nextProps
-    const isTurnChanged = (
-      prevProps.turn !== turn
-    ) // undo
-    const applyDiff = isDiff(movable)
-    const isEqualSelection = (
-      prevProps.selected === selected &&
-      !applyDiff(prevProps.movable)
+    const isNotChecked = isEmpty(check)
+    const isNotPromoted = !(prevProps.piece === 'P' && piece === 'Q')
+    const prevWorkTiles = intersection(prevProps.movable)([selected, position])
+    const nextWorkTiles = intersection(movable)([selected, position])
+    const shouldNotUpdateInMove = ( // TODO reduce more rendering
+      isMoving &&
+      isExist(movable) &&
+      isEmpty(nextWorkTiles) &&
+      isNotChecked
     )
-    const isChangeSelection = (
-      prevProps.selected !== selected &&
-      applyDiff(prevProps.movable)
-    )
-    const isExcluded = (
-      selected !== position &&
-      movable.indexOf(position) === -1
-    )
-    const isPrevExculded = (
-      prevProps.selected !== prevProps.position &&
-      prevProps.movable.indexOf(prevProps.position) === -1
+    const shouldNotUpdateInStop = (
+      !isMoving &&
+      isNotChecked &&
+      isNotPromoted &&
+      prevProps.selected !== position &&
+      isEmpty(prevWorkTiles) === isEmpty(nextWorkTiles)
     )
 
-    if (isExist(selected) && isExcluded && isPrevExculded && !isTurnChanged) {
+    if (shouldNotUpdateInMove) {
       return false
     }
 
-    if (isChangeSelection && isExcluded && isPrevExculded && !isTurnChanged && isEmpty(check)) {
-      return false
-    }
-
-    if (isEqualSelection && isEmpty(check) && !isTurnChanged) {
+    if (shouldNotUpdateInStop) {
       return false
     }
 
@@ -76,10 +75,17 @@ class File extends Component {
   }
 
   render () {
-    const { turn, side, position, movable, selected, children } = this.props
+    const {
+      turn,
+      side,
+      position,
+      movable,
+      selected,
+      children
+    } = this.props
     const cls = cx(css.fileFloat, 'l-flex-center', 'l-flex-middle', {
       'is-selected': selected === position,
-      'is-nextmove': movable.indexOf(position) > -1
+      'is-nextmove': movable.includes(position)
     })
 
     return (
@@ -95,11 +101,7 @@ class File extends Component {
     )
   }
 
-  /**
-   * Tell current notation
-   * @param {Proxy} evt
-   */
-  handleSelect = evt => {
+  handleSelect = (evt) => {
     evt.preventDefault()
 
     const { side, piece, position, onSelect } = this.props
@@ -108,11 +110,7 @@ class File extends Component {
     onSelect({ side, piece, position, ...movement })
   }
 
-  /**
-   * Handle click to move piece
-   * @param {Proxy} evt
-   */
-  handleClickSquare = evt => {
+  handleClickSquare = (evt) => {
     evt.preventDefault()
 
     const { position, movable, onMove } = this.props
