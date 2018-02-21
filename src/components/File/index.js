@@ -13,6 +13,7 @@ import css from './file.css'
 class File extends Component {
   static propTypes = {
     isMoving: PropTypes.bool.isRequired,
+    name: PropTypes.string.isRequired,
     turn: PropTypes.string.isRequired,
     position: PropTypes.string.isRequired,
     piece: PropTypes.string,
@@ -77,6 +78,7 @@ class File extends Component {
   render () {
     const {
       turn,
+      name,
       side,
       position,
       movable,
@@ -89,7 +91,7 @@ class File extends Component {
     })
 
     return (
-      <span data-position={position} className={css.file}>
+      <span data-position={position} className={css.file} data-file={name}>
         <div className={cls} onClick={this.handleClickSquare}>
           {
             turn === side

@@ -81,9 +81,9 @@ class Board extends Component {
 
     return (
       <div className={css.board}>
-        {RANKS.map(rank => (
-          <Rank key={rank}>
-            {FILES.map(file => {
+        {RANKS.map((rank, idx) => (
+          <Rank key={rank} name={8 - idx}>
+            {FILES.map((file) => {
               const position = `${file}${rank}`
               const currentNotation = findNotation(position)
               const { side, piece } = Chess.parseNotation(currentNotation)
@@ -91,6 +91,7 @@ class Board extends Component {
               const shouldAnimate = (translated && translated.notation === currentNotation)
               const fileProps = {
                 ...defProps,
+                name: file,
                 side,
                 position,
                 piece

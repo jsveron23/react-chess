@@ -20,7 +20,7 @@ const Loaders = {
       loader: 'babel-loader'
     },
 
-    // inline
+    // inline css
     style: 'style-loader',
 
     // css
