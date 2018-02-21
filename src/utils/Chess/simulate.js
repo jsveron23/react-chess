@@ -10,8 +10,6 @@ import {
 
 /**
  * Get target information for running simulation
- * @param  {...Function} fns
- * @return {Function}
  */
 export function getTargetInfo (fns) {
   const { getMovable, findNotation } = fns
@@ -20,16 +18,13 @@ export function getTargetInfo (fns) {
   return (targetTurn, targetPiece, pretendPiece = '') => (movement) => {
     /**
      * Get target notation
-     * @param  {string} alias
-     * @return {string}
      * @callback
      */
-    const _getTargetNotation = (alias) => findNotation(`${alias}${targetPiece}`)
+    const _getTargetNotation = (alias) =>
+      findNotation(`${alias}${targetPiece}`)
 
     /**
      * Get target position
-     * @param  {string} notation
-     * @return {string}
      * @callback
      */
     const _getTargetPosition = (notation) => {
@@ -43,8 +38,6 @@ export function getTargetInfo (fns) {
 
     /**
      * Get movable function
-     * @param  {string}   position
-     * @return {Function}
      * @callback
      */
     const _getMovable = (position) =>
@@ -52,8 +45,6 @@ export function getTargetInfo (fns) {
 
     /**
      * Get target movable data
-     * @param  {Function} getTargetMovable
-     * @return {Array}
      * @callback
      */
     const _getTargetMovable = (getTargetMovable) =>
@@ -61,9 +52,6 @@ export function getTargetInfo (fns) {
 
     /**
      * Generate results to return
-     * @param  {Object} acc
-     * @param  {Array}  targetMovable
-     * @return {Object}
      * @callback
      */
     const _generateResults = (acc, targetMovable) => ({
@@ -86,8 +74,6 @@ export function getTargetInfo (fns) {
 
 /**
  * Test scenario
- * @param  {...Function} fns
- * @return {Function}
  */
 export default function testScenario (fns) {
   const {
@@ -110,15 +96,11 @@ export default function testScenario (fns) {
 
     /**
      * Is checker in mobable data?
-     * @param  {Array}   movable
-     * @return {boolean}
      */
-    const _isCheckerExist = (movable) => movable.includes(targetPosition)
+    const _isCheckerExist = (movable) =>
+      movable.includes(targetPosition)
 
     /**
-     * @param  {*}      acc  - config.initialValue or SIMULATION_CONFIG.initialValue
-     * @param  {string} tile
-     * @return {*}
      * @callback
      */
     return (acc, tile) => {

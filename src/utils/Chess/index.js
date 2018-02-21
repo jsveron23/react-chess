@@ -1,19 +1,16 @@
 import * as Utils from '@utils'
+import { RANKS, FILES } from '@constants'
 import * as Helpers from './helpers'
 import * as Core from './core'
 import testScenario, { getTargetInfo } from './simulate'
-import { RANKS, FILES } from './constants'
 
-/**
- * Chess engine
- */
 class Chess {
   static getEnemy = Helpers.getEnemy
   static getAlias = Helpers.getAlias
   static parseNotation = Helpers.parseNotation
   static findNotation = Helpers.findNotation
   static getMove = Helpers.getMove
-
+  static parseMove = Helpers.parseMove
   static getMovable = Core.getMovable
   static getSight = Core.getSight
 
@@ -60,16 +57,12 @@ class Chess {
     }
   }
 
-  /**
-   * Simulate
-   */
+  /** Simulate */
   static simulate (fns) {
     const apply = Utils.apply(fns)
     const [getTarget, applyScenarioOptions] = apply(getTargetInfo, testScenario)
 
-    /**
-     * Get target infomation
-     */
+    // get target infomation
     const _getTarget = (turn) => (targetPiece, pretendPiece) => Utils.compose(
       getTarget(turn, targetPiece, pretendPiece),
       fns.getMovement
@@ -93,15 +86,13 @@ class Chess {
     }
   }
 
-  /**
-   * Save records data
-   */
+  /** Save records data */
   static saveRecords (notations, records) {
     const passArg = Utils.pass(Utils.getLastItem, Utils.push)
     const [lastItem, push] = passArg(records)
     const turn = Helpers.detectTurn(lastItem)
-    const transform = Helpers.transformMove(notations, turn)
-    const isCompletedRec = Helpers.isCompletedRecord(lastItem)
+    const transform = Helpers.transformMove(notations)(turn)
+    const isCompletedRec = Helpers.isCompleteRec(lastItem)
     const isNew = Utils.isEmpty(lastItem) || isCompletedRec // new or next record
 
     return (nextNotations, ts = +new Date()) => {
@@ -115,9 +106,7 @@ class Chess {
     }
   }
 
-  /**
-   * Undo records data (by turn)
-   */
+  /** Undo records data (by turn) */
   static undoRecord (records) {
     if (Utils.isEmpty(records)) {
       return () => ({})
@@ -139,9 +128,7 @@ class Chess {
     return (/* TODO use it later */) => ({ revertedRecords, revertedNotations })
   }
 
-  /**
-   * Return next notations
-   */
+  /** Return next notations */
   static getNextNotations (currPosition, nextPosition) {
     const procParse = Utils.compose(
       Helpers.parsePosition,
@@ -177,12 +164,13 @@ class Chess {
 
     return (setAxis) => (notations) => notations
       .reduce((nextNotations, notation) => {
+        const { side, piece } = Helpers.parseNotation(notation)
+
         if (notation.search(currPosition) > -1) {
           // TODO
           // - check current position and next position
           // - if next position is enemy means attack!
 
-          const { side, piece } = Helpers.parseNotation(notation)
           const nextNotation = `${Helpers.getAlias(side)}${piece}${nextPosition}`
           const getAxis = _convertAxis(notation)(nextNotation)
 
@@ -207,9 +195,7 @@ class Chess {
       }, [])
   }
 
-  /**
-   * Promotion
-   */
+  /** Promotion */
   static promotion (notations) {
     return (records) => Core.promotion(notations, records)
   }

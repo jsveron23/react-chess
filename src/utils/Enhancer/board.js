@@ -1,22 +1,9 @@
 import React, { PureComponent } from 'react'
 import PropTypes from 'prop-types'
-import {
-  getMovement
-} from '@pieces'
-import {
-  isEmpty,
-  isExist,
-  push,
-  getLastItem,
-  apply
-} from '@utils'
+import { getMovement } from '@pieces'
+import * as Utils from '@utils'
 import Chess from '@utils/Chess'
 
-/**
- * Control Tower of Chess
- * @param  {React.Component} WrappedComponent
- * @return {React.Component}
- */
 const enhancer = (WrappedComponent) => class extends PureComponent {
   static propTypes = {
     isPlaying: PropTypes.bool.isRequired,
@@ -79,12 +66,12 @@ const enhancer = (WrappedComponent) => class extends PureComponent {
       resetCommand
     } = nextProps
 
-    if (!isPlaying && isExist(records)) {
+    if (!isPlaying && Utils.isExist(records)) {
       // TODO reset until implement resume menu
       resetMatch()
     }
 
-    if (command === 'undo' && isExist(records)) {
+    if (command === 'undo' && Utils.isExist(records)) {
       const applyUndo = Chess.undoRecord(records)
       const getPrevTurn = Chess.getEnemy
 
@@ -96,7 +83,9 @@ const enhancer = (WrappedComponent) => class extends PureComponent {
         applyUndo,
         getPrevTurn
       }).then(() => resetMovable()))
-    } else if (command === 'undo' && isEmpty(records)) {
+    }
+
+    if (command === 'undo' && Utils.isEmpty(records)) {
       resetCommand()
     }
   }
@@ -175,11 +164,11 @@ const enhancer = (WrappedComponent) => class extends PureComponent {
       let movable
 
       // TODO
-      // - King should not aviod to next check tile (need to predict next move)
-      // - knight cannot check King currently
+      // - King should not be moving to next checkable tile (need to predict next move)
+      // - Knight cannot check King currently
       // - like behind, see screenshot
       // - FINAL: if checked, simulate own pieces movement to block attacked or lose
-      if (isExist(check)) {
+      if (Utils.isExist(check)) {
         const isKing = piece === 'K'
         const checkerPiece = checker.substr(1, 1)
         const fns = {
@@ -218,13 +207,6 @@ const enhancer = (WrappedComponent) => class extends PureComponent {
    */
   handleMove = (nextPosition) => {
     const { currPosition } = this.state
-    const {
-      notations,
-      records,
-      setNext,
-      resetMovable,
-      setAxis
-    } = this.props
 
     this.setState({
       isMoving: true,
@@ -232,14 +214,21 @@ const enhancer = (WrappedComponent) => class extends PureComponent {
       check: '',
       checker: ''
     }, () => {
-      const getNextNotations = Chess.getNextNotations(currPosition, nextPosition)(setAxis)
+      const {
+        notations,
+        records,
+        setNext,
+        resetMovable,
+        setAxis
+      } = this.props
+      const getNextNotations = Chess.getNextNotations(currPosition, nextPosition)
       const getNextRecords = Chess.saveRecords(notations, records)
 
       setNext({
+        getNextNotations: getNextNotations(setAxis),
         getNextTurn: Chess.getEnemy,
-        getNextRecords,
-        getNextNotations
-      }).then(() => resetMovable())
+        getNextRecords
+      }).then(resetMovable)
     })
   }
 
@@ -285,7 +274,7 @@ const enhancer = (WrappedComponent) => class extends PureComponent {
         setRecords
       } = this.props
       const { currPosition } = this.state
-      const isAfterMoving = isEmpty(currPosition)
+      const isAfterMoving = Utils.isEmpty(currPosition)
 
       if (isAfterMoving) {
         let nextNotations
@@ -294,7 +283,7 @@ const enhancer = (WrappedComponent) => class extends PureComponent {
           case 'P': {
             nextNotations = Chess.promotion(notations)(records)
 
-            if (isExist(nextNotations)) {
+            if (Utils.isExist(nextNotations)) {
               setNotations(nextNotations)
             }
 
@@ -309,7 +298,7 @@ const enhancer = (WrappedComponent) => class extends PureComponent {
         nextNotations = nextNotations || [...notations]
 
         // is your King checked?
-        const stream = apply(nextNotations)(Chess.getMovable, Chess.findNotation)
+        const stream = Utils.apply(nextNotations)(Chess.getMovable, Chess.findNotation)
         const fns = stream.reduce((getMovable, findNotation) => ({
           getMovement,
           getMovable,
@@ -332,7 +321,7 @@ const enhancer = (WrappedComponent) => class extends PureComponent {
         })
 
         if (isChecked) {
-          const lastItem = getLastItem(records)
+          const lastItem = Utils.getLastItem(records)
           const enemyTurn = Chess.getEnemy(nextTurn)
           const move = Chess.getMove(lastItem)(enemyTurn)
 
@@ -341,13 +330,13 @@ const enhancer = (WrappedComponent) => class extends PureComponent {
           // - 1 clue : diagonal
           if (!/\+/.test(move)) {
             const { black } = lastItem
-            const side = isExist(black) ? 'black' : 'white'
+            const side = Utils.isExist(black) ? 'black' : 'white'
             const log = lastItem[side]
             const addCheckMark = `${move}+`
 
             log.move = addCheckMark
 
-            const changedRecords = push(records)(lastItem, false)
+            const changedRecords = Utils.push(records)(lastItem, false)
 
             setRecords(changedRecords)
           }

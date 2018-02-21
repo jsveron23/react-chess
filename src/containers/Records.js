@@ -1,12 +1,8 @@
 import { connect } from 'react-redux'
 import { Records } from '@components'
 
-/**
- * @param  {Object} state
- * @return {Object}
- */
-function mapStateToProps ({ records }) {
-  return { records }
+function mapStateToProps ({ notations, records }) {
+  return { notations, records }
 }
 
 export default connect(mapStateToProps)(Records)

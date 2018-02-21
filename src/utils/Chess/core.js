@@ -269,7 +269,7 @@ export function enPassant (turn, position, lastItem) {
   const enemyFileIdx = Helpers.getFileIdx(enemyFile)
 
   // check
-  const howManyLastStep = Helpers.getHowManyStepVertical(enemyMove)
+  const howManyLastStep = Helpers.countsVerticalStep(enemyMove)
   const isDoubleStep = howManyLastStep === 2
   const isSibling = Math.abs(myFileIdx - enemyFileIdx) === 1
   const isAdjustedLine = parseInt(myRank, 10) === parseInt(enemyRank, 10)
