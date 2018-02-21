@@ -6,7 +6,7 @@ const config = {
     hot: true,
     host: '0.0.0.0',
     port: PORT,
-    disableHostCheck: true,
+    disableHostCheck: true, // for Heroku
     historyApiFallback: true
   },
 

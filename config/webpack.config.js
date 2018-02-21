@@ -34,16 +34,16 @@ function configure ({ production } = {}) {
   const module = { noParse }
   const resolve = {
     alias: {
-      '@components': getAbsPath('src/components'),
-      '@containers': getAbsPath('src/containers'),
-      '@pieces': getAbsPath('src/pieces'),
-      '@utils': getAbsPath('src/utils'),
-      '@styles': getAbsPath('src/styles'),
-      '@assets': getAbsPath('src/assets'),
-      '@actions': getAbsPath('src/actions'),
-      '@constants': getAbsPath('src/constants'),
-      '@reducers': getAbsPath('src/reducers'),
-      '@store': getAbsPath('src/store')
+      '@components': getAbsPath('src', 'components'),
+      '@containers': getAbsPath('src', 'containers'),
+      '@pieces': getAbsPath('src', 'pieces'),
+      '@utils': getAbsPath('src', 'utils'),
+      '@styles': getAbsPath('src', 'styles'),
+      '@assets': getAbsPath('src', 'assets'),
+      '@actions': getAbsPath('src', 'actions'),
+      '@constants': getAbsPath('src', 'constants'),
+      '@reducers': getAbsPath('src', 'reducers'),
+      '@store': getAbsPath('src', 'store')
     }
   }
 
