@@ -1,25 +1,41 @@
 .records {
-  margin: 25px 0 10px;
-  background-color: #a0a0a0;
+  margin: 25px 0 0;
+  background-color: #fff;
   color: #000;
   max-height: 150px;
   overflow: auto;
   scroll-behavior: smooth;
+  border: 1px solid #efefef;
 
   & li {
     height: 30px;
     line-height: 30px;
+
+    &:hover {
+      background-color: rgba(0, 0, 0, .1);
+    }
+
+    &:not(:last-child) {
+      border-bottom: 1px solid #efefef;
+    }
   }
 
   & span {
     &:first-child {
       width: 50px;
       text-align: center;
+      color: #aaa;
+      font-style: italic;
     }
 
     &:not(:first-child) {
       padding-left: 20px;
       flex: 1;
+    }
+
+    &:last-child {
+      background-color: rgba(0, 0, 0, .7);
+      color: #fff;
     }
   }
 }

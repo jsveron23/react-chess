@@ -1,7 +1,23 @@
 import React, { PureComponent } from 'react'
 import PropTypes from 'prop-types'
+import {
+  isEmpty,
+  isExist
+} from '@utils'
 import Chess from '@utils/Chess'
 import css from './records.css'
+
+const Record = ({ no, wNotation, bNotation }) => (
+  <li className="l-flex-row">
+    <span>{no}</span>
+    <span className="l-flex-middle">
+      {wNotation}
+    </span>
+    <span className="l-flex-middle">
+      {bNotation}
+    </span>
+  </li>
+)
 
 class Records extends PureComponent {
   static propTypes = {
@@ -9,13 +25,19 @@ class Records extends PureComponent {
   }
 
   componentDidUpdate () {
-    const { scrollHeight } = this.recordsRef
+    if (isExist(this.recordsRef)) {
+      const { scrollHeight } = this.recordsRef
 
-    this.recordsRef.scrollTop = scrollHeight
+      this.recordsRef.scrollTop = scrollHeight
+    }
   }
 
   render () {
     const { records } = this.props
+
+    if (isEmpty(records)) {
+      return null
+    }
 
     // TODO
     // - single record
@@ -27,19 +49,14 @@ class Records extends PureComponent {
             const { white, black } = rec
             const { move: wMove } = white
             const bMove = black && black.move
-            const wNotation = this.getNotation(wMove)
-            const bNotation = bMove && this.getNotation(bMove)
 
             return (
-              <li key={wMove || bMove} className="l-flex-row">
-                <span>{idx + 1}</span>
-                <span className="l-flex-middle">
-                  {wNotation}
-                </span>
-                <span className="l-flex-middle">
-                  {bNotation}
-                </span>
-              </li>
+              <Record
+                key={`${idx}_${wMove}_${bMove}`}
+                no={idx + 1}
+                wNotation={this.getNotation(wMove)}
+                bNotation={bMove && this.getNotation(bMove)}
+              />
             )
           })
         }

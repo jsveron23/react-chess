@@ -1,4 +1,6 @@
 .turn {
+  padding-top: 15px;
+
   & span {
     padding: 5px;
   }
