@@ -16,27 +16,6 @@ const Notations = {
     const update = Utils.update(notations)
 
     return (before, after) => update(after, before)
-  },
-
-  parse (fns) {
-    const { getSide } = fns
-
-    return (notation, isStream = false) => {
-      if (Utils.isEmpty(notation)) {
-        return {}
-      }
-
-      const [alias, piece, ...position] = notation.split('')
-      const side = getSide(alias)
-
-      return isStream
-        ? [piece, position.join(''), side]
-        : {
-          position: position.join(''),
-          side,
-          piece
-        }
-    }
   }
 }
 

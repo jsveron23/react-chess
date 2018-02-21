@@ -3,10 +3,6 @@ import PropTypes from 'prop-types'
 import enhancer from '@utils/Enhancer/piece'
 import css from './rook.css'
 
-/**
- * Rook component
- * @extends {React.PureComponent}
- */
 const Rook = ({ alias, getRef, onTransitionEnd }) => (
   <svg
     ref={getRef}

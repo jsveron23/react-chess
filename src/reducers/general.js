@@ -1,27 +1,8 @@
 const initialState = {
-  /**
-   * [main, 1p, 2p]
-   * @type {string}
-   */
-  screen: 'main',
-
-  /**
-   * [undo, reset, resume]
-   * @type {string}
-   */
-  command: '',
-
-  /**
-   * [white, black]
-   * @type {string}
-   */
-  turn: 'white',
-
-  /**
-   * To perform animation
-   * @type {object}
-   */
-  axis: {}
+  screen: 'main', // [main, 1p, 2p]
+  command: '', // [undo, reset, resume]
+  turn: 'white', // [white, black]
+  axis: {} // to perform animation
 }
 
 const reducer = (state = initialState, action) => {

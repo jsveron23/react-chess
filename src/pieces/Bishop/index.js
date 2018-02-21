@@ -3,11 +3,6 @@ import PropTypes from 'prop-types'
 import enhancer from '@utils/Enhancer/piece'
 import css from './bishop.css'
 
-/**
- * Bishop component
- * @param  {Object} props
- * @return {JSX}
- */
 const Bishop = ({ alias, getRef, onTransitionEnd }) => (
   <svg
     ref={getRef}

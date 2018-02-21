@@ -1,14 +1,27 @@
-import { setNotations, resetNotations } from '@actions/notations'
-import { setRecords, resetRecords } from '@actions/records'
+import {
+  setNotations,
+  resetNotations
+} from '@actions/notations'
+import {
+  setRecords,
+  resetRecords
+} from '@actions/records'
 import * as types from '@constants'
 import { isDiff } from '@utils'
 
 /** Refresh board to perform next turn and starting animation */
 export function setNext (fns) {
-  const { getNextNotations, getNextRecords, getNextTurn } = fns
+  const {
+    getNextNotations,
+    getNextRecords,
+    getNextTurn
+  } = fns
 
   return (dispatch, getState) => {
-    const { general, notations } = getState()
+    const {
+      general,
+      notations
+    } = getState()
     const { turn } = general
     const nextTurn = getNextTurn(turn)
     const nextNotations = getNextNotations(notations)
@@ -25,11 +38,20 @@ export function setNext (fns) {
 
 /** Undo previous turn */
 export function revert (fns) {
-  const { applyUndo, getPrevTurn } = fns
+  const {
+    applyUndo,
+    getPrevTurn
+  } = fns
 
   return (dispatch, getState) => {
-    const { notations, general } = getState()
-    const { revertedRecords, revertedNotations } = applyUndo()
+    const {
+      notations,
+      general
+    } = getState()
+    const {
+      revertedRecords,
+      revertedNotations
+    } = applyUndo()
 
     if (isDiff(notations)(revertedNotations)) {
       const { turn } = general
@@ -56,9 +78,9 @@ export function setAxis (payload) {
 }
 
 /** Reset match */
-export function resetMatch () {
+export function resetMatch (turn = 'white') {
   return (dispatch) => {
-    dispatch(setTurn('white'))
+    dispatch(setTurn(turn))
     dispatch(resetNotations())
     dispatch(resetRecords())
 

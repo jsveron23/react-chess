@@ -1,21 +1,25 @@
-import { createStore, applyMiddleware } from 'redux'
+import {
+  createStore,
+  applyMiddleware
+} from 'redux'
 import thunk from 'redux-thunk'
+import { composeWithDevTools } from 'redux-devtools-extension'
 import reducers from '@reducers'
 
-/**
- * Configure store
- * @return {Object}
- */
-function configureStore () {
-  let middleware = applyMiddleware(thunk)
+const composeMiddleware = (...middleware) => {
+  middleware = applyMiddleware(...middleware)
 
   if (process.env.NODE_ENV !== 'production') {
-    const { composeWithDevTools } = require('redux-devtools-extension')
-
-    middleware = composeWithDevTools(middleware)
+    return composeWithDevTools(middleware)
   }
 
-  return createStore(reducers, middleware)
+  return middleware
 }
+
+const configureStore = (initialState = { /* TODO localstorage */ }) => createStore(
+  reducers,
+  initialState,
+  composeMiddleware(thunk)
+)
 
 export default configureStore()

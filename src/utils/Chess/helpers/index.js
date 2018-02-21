@@ -7,28 +7,28 @@ import {
   FILES
 } from '@constants'
 import Notations from './Notations'
-import Positions from './Positions'
 import Records from './Records'
+import Parser from './Parser'
 
-export const getPieceName = (alias, initial = INITIAL) =>
-  initial[alias] || alias
+const _getPieceName = (initial = INITIAL) => (alias) => initial[alias] || alias
+export const getPieceName = _getPieceName(/* replaceable */)
 
-export const getFile = (idx, files = FILES) =>
-  files.join('').charAt(idx - 1)
+const _getFile = (files = FILES) => (idx) => files.join('').charAt(idx - 1)
+export const getFile = _getFile(/* replaceable */)
 
-export const getFileIdx = (char, files = FILES) =>
-  files.join('').indexOf(char) + 1
+const _getFileIdx = (files = FILES) => (char) => files.join('').indexOf(char) + 1
+export const getFileIdx = _getFileIdx(/* replaceable */)
 
-export const getSide = (alias, side = SIDE) =>
-  side[alias] || alias
+const _getSide = (side = SIDE) => (alias) => side[alias] || alias
+export const getSide = _getSide(/* replaceable */)
 
-export const getEnemy = (side, enemy = ENEMY) =>
-  enemy[side] || side
+const _getEnemy = (enemy = ENEMY) => (side) => enemy[side] || side
+export const getEnemy = _getEnemy(/* replaceable */)
 
-export const getAlias = (side, alias = ALIAS) =>
-  alias[side] || side
+const _getAlias = (alias = ALIAS) => (side) => alias[side] || side
+export const getAlias = _getAlias(/* replaceable */)
 
-export const increaseRank = (turn, counts = 1) => {
+export const updateRank = (counts = 1) => (turn) => {
   const isWhiteTurn = turn === 'white'
 
   return (tile) => {
@@ -41,48 +41,38 @@ export const increaseRank = (turn, counts = 1) => {
   }
 }
 
-export const parseLog = ({ notations, move, ts }) => ({ notations, move, ts })
-
-export const parseMove = (move) => {
-  const [before, after] = move.split(/\s|-|x/) // ignore (+)
-
-  return {
-    before,
-    after
-  }
-}
-
-export const transformMove = (notations) => {
+export const transformMove = (turn) => (notations) => {
   const getDiff = Utils.diff(notations)
+  const len = notations.length
+  let tempNotations = notations
 
-  return (turn) => (nextNotations) => {
-    const isCaptured = notations.length !== nextNotations.length
+  return (nextNotations) => {
+    const isCaptured = len !== nextNotations.length
 
-    // same index
-    // TODO optimize
     if (isCaptured) {
-      const founds = getDiff(nextNotations)
       const isWhiteTurn = turn === 'white'
-      const ordered = isWhiteTurn
+      const founds = getDiff(nextNotations)
+
+      // NOTE
+      // - if captured, comparing only between different notations (2 items)
+      tempNotations = isWhiteTurn
         ? founds.slice(0).reverse()
         : founds
-
-      return ordered.reduce((prevNotation, notation) => {
-        // NOTE
-        // - length === 2 means capture
-        if (Utils.isExist(prevNotation)) {
-          return `${prevNotation}x${notation}`
-        }
-
-        return notation
-      }, '')
     }
 
-    return notations.reduce((move, notation, idx) => {
+    return tempNotations.reduce((move, notation, idx) => {
+      if (isCaptured) {
+        return Utils.isExist(move)
+          ? `${move}x${notation}`
+          : notation
+      }
+
       const nextNotation = nextNotations[idx]
       const isDiff = notation !== nextNotation
 
-      return isDiff ? `${notation} ${nextNotation}` : move
+      return isDiff
+        ? `${notation} ${nextNotation}`
+        : move
     }, '')
   }
 }
@@ -115,14 +105,35 @@ export const countsVerticalStep = (move) => {
   return Math.abs(steps)
 }
 
-export const isNotation = Notations.isValid
+/**
+ * Parser
+ * ======
+ */
+export const parseNotation = Parser.notation({ getSide })
+export const parsePosition = Parser.position
+export const parseMove = Parser.move
+export const parseLog = Parser.log
+
+/**
+ * @alias @utils
+ * =============
+ */
 export const findNotation = Utils.findOne
 export const findNotations = Utils.find
-export const isThere = Notations.has
-export const parseNotation = Notations.parse({ getSide })
 export const updateNotations = Utils.update
+
+/**
+ * Notations
+ * =========
+ */
+export const isNotation = Notations.isValid()
+export const isThere = Notations.has
 export const revertNotations = Notations.revert
-export const parsePosition = Positions.parse
+
+/**
+ * Records
+ * =======
+ */
 export const detectTurn = Records.detectTurn
 export const detectLastTurn = Records.detectLastTurn
 export const isCompleteRec = Records.isCompleteRec

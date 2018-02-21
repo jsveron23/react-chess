@@ -3,11 +3,6 @@ import PropTypes from 'prop-types'
 import enhancer from '@utils/Enhancer/piece'
 import css from './pawn.css'
 
-/**
- * Pawn component
- * @param  {Object} props
- * @return {JSX}
- */
 const Pawn = ({ alias, getRef, onTransitionEnd }) => (
   <svg
     ref={getRef}

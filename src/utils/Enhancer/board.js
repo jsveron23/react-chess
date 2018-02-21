@@ -125,21 +125,14 @@ const enhancer = (WrappedComponent) => class extends PureComponent {
     )
   }
 
-  /**
-   * Cancel requestAnimationFrame
-   */
+  /** Cancel requestAnimationFrame */
   cancelRAF () {
     window.cancelAnimationFrame(this.rAFId)
 
     return Promise.resolve(this.rAFId)
   }
 
-  /**
-   * Handle drawing movable squares
-   * @see @components#<File />
-   * @see @utils/Chess/index.js#getMovable
-   */
-  handleSelect = (args) => {
+  setSquares = (args) => {
     const {
       side,
       piece,
@@ -147,56 +140,64 @@ const enhancer = (WrappedComponent) => class extends PureComponent {
       defaults,
       specials
     } = args
+    const {
+      check,
+      checker
+    } = this.state
+    const {
+      notations,
+      records,
+      setMovable
+    } = this.props
+    const getMovable = Chess.getMovable(notations, records)
+    let movable
 
-    this.setState({
-      currPosition: position
-    }, () => {
-      const {
-        check,
-        checker
-      } = this.state
-      const {
-        notations,
-        records,
-        setMovable
-      } = this.props
-      const getMovable = Chess.getMovable(notations, records)
-      let movable
-
-      // TODO
-      // - King should not be moving to next checkable tile (need to predict next move)
-      // - Knight cannot check King currently
-      // - like behind, see screenshot
-      // - FINAL: if checked, simulate own pieces movement to block attacked or lose
-      if (Utils.isExist(check)) {
-        const isKing = piece === 'K'
-        const checkerPiece = checker.substr(1, 1)
-        const fns = {
-          /**
-           * Compare with between check and checker
-           * to get direction that attacking path (common)
-           */
-          getAttackingRoute: (getCommonSights) =>
-            getCommonSights(check, getMovement('*'))(checker, getMovement(checkerPiece))
-        }
-        const options = {
-          isKing
-        }
-
-        // compare with between piece and piece
-        const getBlocks = Chess.getBlocks(fns, options)(notations, records)
-        const baseMovement = getMovement(checkerPiece)
-        const targetNotation = `${Chess.getAlias(side)}${piece}${position}`
-        const targetMovement = getMovement(piece)
-
-        movable = getBlocks(checker, baseMovement)(targetNotation, targetMovement)
-      } else {
-        movable = getMovable(piece, position, side)(defaults, specials)
+    // TODO
+    // - King should not be moving to next checkable tile (need to predict next move)
+    // - Knight cannot check King currently
+    // - like behind, see screenshot
+    // - FINAL: if checked, simulate own pieces movement to block attacked or lose
+    if (Utils.isExist(check)) {
+      const isKing = piece === 'K'
+      const checkerPiece = checker.substr(1, 1)
+      const fns = {
+        /**
+         * Compare with between check and checker
+         * to get direction that attacking path (common)
+         */
+        getAttackingRoute: (getCommonSights) =>
+          getCommonSights(check, getMovement('*'))(checker, getMovement(checkerPiece))
+      }
+      const options = {
+        isKing
       }
 
-      setMovable(movable)
-    })
+      // compare with between piece and piece
+      const getBlocks = Chess.getBlocks(fns, options)(notations, records)
+      const baseMovement = getMovement(checkerPiece)
+      const targetNotation = `${Chess.getAlias(side)}${piece}${position}`
+      const targetMovement = getMovement(piece)
+
+      movable = getBlocks(checker, baseMovement)(targetNotation, targetMovement)
+    } else {
+      movable = getMovable(piece, position, side)(defaults, specials)
+    }
+
+    setMovable(movable)
   }
+
+  /**
+   * Handle drawing movable squares
+   * @see @components#<File />
+   * @see @utils/Chess/index.js#getMovable
+   */
+  handleSelect = (args) => this.setState(prevState => {
+    const { position } = args
+
+    return {
+      currPosition: position
+    }
+  }, () => this.setSquares(args))
 
   /**
    * Handle move when click a square

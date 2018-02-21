@@ -5,9 +5,6 @@ import Knight from './Knight'
 import Queen from './Queen'
 import King from './King'
 
-/**
- * Get piece
- */
 export function getPiece (alias) {
   const list = {
     '*': Queen, // get every direction
@@ -22,9 +19,6 @@ export function getPiece (alias) {
   return list[alias]
 }
 
-/**
- * Get defaults movement
- */
 export function getDefaults (alias) {
   const { movement } = getPiece(alias)
   const { defaults } = movement
@@ -32,9 +26,6 @@ export function getDefaults (alias) {
   return defaults
 }
 
-/**
- * Get specials
- */
 export function getSpecials (alias) {
   const { movement } = getPiece(alias)
   const { specials } = movement
@@ -42,9 +33,6 @@ export function getSpecials (alias) {
   return specials
 }
 
-/**
- * Get movement
- */
 export function getMovement (piece, isStream = true) {
   const defaults = getDefaults(piece)
   const specials = getSpecials(piece)
@@ -54,4 +42,11 @@ export function getMovement (piece, isStream = true) {
     : { defaults, specials }
 }
 
-export { Pawn, Rook, Bishop, Knight, Queen, King }
+export {
+  Pawn,
+  Rook,
+  Bishop,
+  Knight,
+  Queen,
+  King
+}

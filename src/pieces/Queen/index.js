@@ -3,11 +3,6 @@ import PropTypes from 'prop-types'
 import enhancer from '@utils/Enhancer/piece'
 import css from './queen.css'
 
-/**
- * Queen component
- * @param  {Object} props
- * @return {JSX}
- */
 const Queen = ({ alias, getRef, onTransitionEnd }) => (
   <svg
     ref={getRef}

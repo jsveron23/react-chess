@@ -91,7 +91,7 @@ class Chess {
     const passArg = Utils.pass(Utils.getLastItem, Utils.push)
     const [lastItem, push] = passArg(records)
     const turn = Helpers.detectTurn(lastItem)
-    const transform = Helpers.transformMove(notations)(turn)
+    const transform = Helpers.transformMove(turn)(notations)
     const isCompletedRec = Helpers.isCompleteRec(lastItem)
     const isNew = Utils.isEmpty(lastItem) || isCompletedRec // new or next record
 

@@ -3,11 +3,6 @@ import PropTypes from 'prop-types'
 import enhancer from '@utils/Enhancer/piece'
 import css from './knight.css'
 
-/**
- * Knight component
- * @param  {Object} props
- * @return {JSX}
- */
 const Knight = ({ alias, getRef, onTransitionEnd }) => (
   <svg
     ref={getRef}

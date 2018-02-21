@@ -4,11 +4,6 @@ import cx from 'classnames'
 import enhancer from '@utils/Enhancer/piece'
 import css from './king.css'
 
-/**
- * King component
- * @param  {Object} props
- * @return {JSX}
- */
 const King = ({ alias, check, getRef, onTransitionEnd }) => (
   <svg
     ref={getRef}

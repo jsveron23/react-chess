@@ -1,9 +1,7 @@
 import * as Utils from '@utils'
 import * as Helpers from './helpers'
 
-/**
- * Get movable tiles
- */
+/** Get movable tiles */
 export function getMovable (notations, records = []) {
   return (piece, position, side) => (defaults, specials = []) => Utils.compose(
     Utils.diet,
@@ -20,9 +18,7 @@ export function getMovable (notations, records = []) {
  */
 export const getSight = getMovable
 
-/**
- * Get sight by notation, movement
- */
+/** Get sight by notation, movement */
 export function getSightBy (notations, records = []) {
   const _getSight = getSight(notations, records)
 
@@ -33,9 +29,7 @@ export function getSightBy (notations, records = []) {
   }
 }
 
-/**
- * Get common sights
- */
+/** Get common sights */
 export function getCommonSights (notations, records) {
   /** @callback */
   const _getSightBy = getSightBy(notations, records)
@@ -48,16 +42,12 @@ export function getCommonSights (notations, records) {
   }
 }
 
-/**
- * Get movable data from movement (before filtering)
- */
+/** Get movable data from movement (before filtering) */
 export function getPureMovableData (position, turn) {
   const { file, rank } = Helpers.parsePosition(position)
   const fileIdx = Helpers.getFileIdx(file)
 
-  /**
-   * @callback
-   */
+  /** @callback */
   const _transform = (axisList) => axisList.reduce((tiles, axis) => {
     const [x, y] = axis
 
@@ -83,17 +73,12 @@ export function getPureMovableData (position, turn) {
     .map(_iterateDirection)
 }
 
-/**
- * Add special move to movable data
- */
+/** Add special move to movable data */
 export function includeSpecial (records, turn) {
   const lastItem = Utils.getLastItem(records)
 
   return (piece, position) => (specials) => {
-    /**
-     * Control special moves of Pawn
-     * @callback
-     */
+    /** @callback */
     const _controlPawnSpecials = (m, mvName) => {
       switch (mvName) {
         case 'doubleStep': {
@@ -134,9 +119,7 @@ export function includeSpecial (records, turn) {
   }
 }
 
-/**
- * Filter blocked path to movable data (include enemy)
- */
+/** Filter blocked path to movable data (include enemy) */
 export function excludeBlocked (notations, turn) {
   const apply = Utils.apply(notations)
   const [checkPlace, findNotation] = apply(Helpers.isThere, Helpers.findNotation)
@@ -149,10 +132,7 @@ export function excludeBlocked (notations, turn) {
         let isBlocked = false
         let enemyTile = ''
 
-        /**
-         * Include only availiable tiles
-         * @callback
-         */
+        /** @callback */
         const _includeAvailable = (nonBlocked, tile) => {
           if (Utils.isEmpty(enemyTile)) {
             const { side, position } = Utils.compose(
@@ -204,9 +184,7 @@ export function excludeBlocked (notations, turn) {
   }
 }
 
-/**
- * Promotion
- */
+/** Promotion */
 export function promotion (notations, records) {
   const lastItem = Utils.getLastItem(records)
   const lastTurn = Helpers.detectLastTurn(lastItem)
@@ -224,17 +202,15 @@ export function promotion (notations, records) {
   }
 }
 
-/**
- * Pawn moves 2 step forward
- */
+/** Pawn moves 2 step forward */
 export function doubleStep (turn) {
   /** @callback */
-  const _applyOneMoreStep = Helpers.increaseRank(turn)
+  const _updateRank = Helpers.updateRank()(turn)
 
   return (m) => {
     const [tiles] = m
     const [tile] = tiles
-    const oneMoreStep = _applyOneMoreStep(tile)
+    const oneMoreStep = _updateRank(tile)
     const mergedStep = Utils.push(tiles)(oneMoreStep)
 
     return [mergedStep]
@@ -277,7 +253,7 @@ export function enPassant (turn, position, lastItem) {
   return (m) => {
     // valid
     if (isDoubleStep && isAdjustedLine && isSibling) {
-      const diagonal = Helpers.increaseRank(turn)(enemyPosition)
+      const diagonal = Helpers.updateRank()(turn)(enemyPosition)
 
       return [...m, [diagonal]]
     }
