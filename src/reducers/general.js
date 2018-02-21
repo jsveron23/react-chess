@@ -24,12 +24,6 @@ const initialState = {
   axis: {}
 }
 
-/**
- * Reducer
- * @param  {Object} [state=initialState]
- * @param  {Object} action
- * @return {Object}
- */
 const reducer = (state = initialState, action) => {
   const { type, payload } = action
 

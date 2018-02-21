@@ -1,21 +1,16 @@
-/**
- * Set notations
- * @param  {Array}  notations
- * @return {Object}
- */
+import * as types from '@constants'
+
+/** Set notations */
 export function setNotations (notations) {
   return {
-    type: 'SET_NOTATIONS',
+    type: types.SET_NOTATIONS,
     payload: notations
   }
 }
 
-/**
- * Reset notations
- * @return {Object}
- */
+/** Reset notations */
 export function resetNotations () {
   return {
-    type: 'RESET_NOTATIONS'
+    type: types.RESET_NOTATIONS
   }
 }

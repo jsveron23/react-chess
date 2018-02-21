@@ -1,12 +1,4 @@
-const initialState = []
-
-/**
- * Reducer
- * @param  {Object} [state=initialState]
- * @param  {Object} action
- * @return {Object}
- */
-const reducer = (state = initialState, action) => {
+const reducer = (state = [], action) => {
   const { type, payload } = action
 
   switch (type) {

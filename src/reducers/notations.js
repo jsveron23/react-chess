@@ -5,12 +5,6 @@ const initialState = [
   'wRa1', 'wNb1', 'wBc1', 'wQd1', 'wKe1', 'wBf1', 'wNg1', 'wRh1'
 ]
 
-/**
- * Reducer
- * @param  {Object} [state=initialState]
- * @param  {Object} action
- * @return {Object}
- */
 const reducer = (state = initialState, action) => {
   const { type, payload } = action
 

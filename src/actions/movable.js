@@ -1,21 +1,16 @@
-/**
- * Set Movable
- * @param  {Array}  movable
- * @return {Object}
- */
+import * as types from '@constants'
+
+/** Set Movable */
 export function setMovable (movable) {
   return {
-    type: 'SET_MOVABLE',
+    type: types.SET_MOVABLE,
     payload: movable
   }
 }
 
-/**
- * Reset movable after moving
- * @return {Object}
- */
+/** Reset movable after moving */
 export function resetMovable () {
   return {
-    type: 'RESET_MOVABLE'
+    type: types.RESET_MOVABLE
   }
 }

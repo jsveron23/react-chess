@@ -41,6 +41,7 @@ function configure ({ production } = {}) {
       '@styles': getAbsPath('src/styles'),
       '@assets': getAbsPath('src/assets'),
       '@actions': getAbsPath('src/actions'),
+      '@constants': getAbsPath('src/constants'),
       '@reducers': getAbsPath('src/reducers'),
       '@store': getAbsPath('src/store')
     }

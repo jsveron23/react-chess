@@ -1,12 +1,9 @@
 import { setNotations, resetNotations } from '@actions/notations'
 import { setRecords, resetRecords } from '@actions/records'
+import * as types from '@constants'
 import { isDiff } from '@utils'
 
-/**
- * Refresh board to perform next turn and starting animation
- * @param  {...Function} fns
- * @return {Function}
- */
+/** Refresh board to perform next turn and starting animation */
 export function setNext (fns) {
   const { getNextNotations, getNextRecords, getNextTurn } = fns
 
@@ -21,16 +18,12 @@ export function setNext (fns) {
     dispatch(setNotations(nextNotations))
     dispatch(setRecords(nextRecords))
 
-    return Promise.resolve({ type: 'SET_NEXT' })
+    return Promise.resolve({ type: types.SET_NEXT })
       .then(dispatch)
   }
 }
 
-/**
- * Undo previous turn
- * @param  {...Function} fns
- * @return {Function}
- */
+/** Undo previous turn */
 export function revert (fns) {
   const { applyUndo, getPrevTurn } = fns
 
@@ -49,81 +42,58 @@ export function revert (fns) {
 
     dispatch(resetCommand())
 
-    return Promise.resolve({ type: 'REVERT' })
+    return Promise.resolve({ type: types.REVERT })
       .then(dispatch)
   }
 }
 
-/**
- * Set axis for performing animation
- * @param  {Object} payload
- * @return {Object}
- */
+/** Set axis for performing animation */
 export function setAxis (payload) {
   return {
-    type: 'SET_AXIS',
+    type: types.SET_AXIS,
     payload
   }
 }
 
-/**
- * Reset match
- * @return {Function}
- */
+/** Reset match */
 export function resetMatch () {
   return (dispatch) => {
     dispatch(setTurn('white'))
     dispatch(resetNotations())
     dispatch(resetRecords())
 
-    return Promise.resolve({ type: 'RESET_MATCH' })
+    return Promise.resolve({ type: types.RESET_MATCH })
       .then(dispatch)
   }
 }
 
-/**
- * Set current screen
- * @param  {string} screen
- * @return {Object}
- */
+/** Set current screen */
 export function setScreen (screen) {
   return {
-    type: 'SET_SCREEN',
+    type: types.SET_SCREEN,
     payload: screen
   }
 }
 
-/**
- * Set command to do
- * @param  {string} command
- * @return {Object}
- */
+/** Set command to do */
 export function setCommand (command) {
   return {
-    type: 'SET_COMMAND',
+    type: types.SET_COMMAND,
     payload: command
   }
 }
 
-/**
- * Reset command after doing dommand
- * @param  {string} command
- * @return {Object}
- */
+/** Reset command after doing dommand */
 export function resetCommand () {
   return {
-    type: 'RESET_COMMAND'
+    type: types.RESET_COMMAND
   }
 }
 
-/**
- * Set turn
- * @param  {string} turn
- * @return {Object}
- */
+/** Set turn */
 export function setTurn (turn) {
   return {
-    type: 'SET_TURN',
+    type: types.SET_TURN,
     payload: turn
   }
 }

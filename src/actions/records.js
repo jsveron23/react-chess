@@ -1,21 +1,16 @@
-/**
- * Set records
- * @param  {Array}  records
- * @return {Object}
- */
+import * as types from '@constants'
+
+/** Set records */
 export function setRecords (records) {
   return {
-    type: 'SET_RECORDS',
+    type: types.SET_RECORDS,
     payload: records
   }
 }
 
-/**
- * Reset records
- * @return {Object}
- */
+/** Reset records */
 export function resetRecords () {
   return {
-    type: 'RESET_RECORDS'
+    type: types.RESET_RECORDS
   }
 }
