@@ -1,12 +1,14 @@
+import * as types from '@actions'
+
 const reducer = (state = [], action) => {
   const { type, payload } = action
 
   switch (type) {
-    case 'SET_MOVABLE': {
+    case types.SET_MOVABLE: {
       return [...payload]
     }
 
-    case 'RESET_MOVABLE': {
+    case types.RESET_MOVABLE: {
       return []
     }
 

@@ -1,9 +1,14 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
-import { Rank, File } from '@components'
+import {
+  Rank,
+  File
+} from '@components'
 import { getPiece } from '@pieces'
-import { isEmpty, isDiff } from '@utils'
-import Chess, { RANKS, FILES } from '@utils/Chess'
+import Chess, {
+  RANKS,
+  FILES
+} from '@utils/Chess'
 import css from './board.css'
 
 class Board extends Component {
@@ -12,39 +17,35 @@ class Board extends Component {
     notations: PropTypes.array.isRequired,
     turn: PropTypes.string.isRequired,
     selected: PropTypes.string.isRequired,
-    onSelect: PropTypes.func.isRequired,
-    onMove: PropTypes.func.isRequired,
-    onAnimateEnd: PropTypes.func.isRequired,
-    onAnimate: PropTypes.func.isRequired,
     movable: PropTypes.array,
     translated: PropTypes.object,
-    check: PropTypes.string
+    check: PropTypes.string,
+    onSelect: PropTypes.func,
+    onMove: PropTypes.func,
+    onAnimateEnd: PropTypes.func,
+    onAnimate: PropTypes.func
   }
 
   static defaultProps = {
     movable: [],
-    check: ''
+    check: '',
+    onSelect: function () {},
+    onMove: function () {},
+    onAnimateEnd: function () {},
+    onAnimate: function () {}
   }
 
   shouldComponentUpdate (nextProps) {
     const prevProps = this.props
     const {
-      turn,
-      check,
-      selected,
-      movable,
-      notations
+      notations,
+      selected
     } = nextProps
-    const diffNotations = isDiff(notations)
-    const diffMovable = isDiff(movable)
-    const isNotationsEqual = !diffNotations(prevProps.notations)
-    const isMovableEqual = !diffMovable(prevProps.movable)
+    const findNotation = Chess.findNotation(notations)
+    const prevNotation = findNotation(prevProps.selected)
+    const nextNotation = findNotation(selected)
     const shouldNotUpdate = (
-      isEmpty(check) &&
-      isNotationsEqual &&
-      isMovableEqual &&
-      prevProps.turn === turn &&
-      prevProps.selected === selected
+      prevNotation !== nextNotation
     )
 
     if (shouldNotUpdate) {
@@ -78,11 +79,12 @@ class Board extends Component {
       onMove
     }
     const findNotation = Chess.findNotation(notations)
+    const len = RANKS.length
 
     return (
       <div className={css.board}>
         {RANKS.map((rank, idx) => (
-          <Rank key={rank} name={8 - idx}>
+          <Rank key={rank} name={len - idx}>
             {FILES.map((file) => {
               const position = `${file}${rank}`
               const currentNotation = findNotation(position)
@@ -92,6 +94,7 @@ class Board extends Component {
               const fileProps = {
                 ...defProps,
                 name: file,
+                shouldAnimate,
                 side,
                 position,
                 piece

@@ -8,25 +8,18 @@ import {
   getAlias
 } from './helpers'
 
-/**
- * Get target information for running simulation
- */
 export function getTargetInfo (fns) {
-  const { getMovable, findNotation } = fns
+  const {
+    getMovable,
+    findNotation
+  } = fns
   let targetNotation, targetPosition
 
   return (targetTurn, targetPiece, pretendPiece = '') => (movement) => {
-    /**
-     * Get target notation
-     * @callback
-     */
-    const _getTargetNotation = (alias) =>
-      findNotation(`${alias}${targetPiece}`)
+    /** @callback */
+    const _getTargetNotation = (alias) => findNotation(`${alias}${targetPiece}`)
 
-    /**
-     * Get target position
-     * @callback
-     */
+    /** @callback */
     const _getTargetPosition = (notation) => {
       const { position } = parseNotation(notation)
 
@@ -36,24 +29,13 @@ export function getTargetInfo (fns) {
       return position
     }
 
-    /**
-     * Get movable function
-     * @callback
-     */
-    const _getMovable = (position) =>
-      getMovable(pretendPiece || targetPiece, position, targetTurn)
+    /** @callback */
+    const _getMovable = (position) => getMovable(pretendPiece || targetPiece, position, targetTurn)
 
-    /**
-     * Get target movable data
-     * @callback
-     */
-    const _getTargetMovable = (getTargetMovable) =>
-      getTargetMovable(...movement)
+    /** @callback */
+    const _getTargetMovable = (getTargetMovable) => getTargetMovable(...movement)
 
-    /**
-     * Generate results to return
-     * @callback
-     */
+    /** @callback */
     const _generateResults = (acc, targetMovable) => ({
       ...acc,
       targetSight: targetMovable
@@ -72,77 +54,66 @@ export function getTargetInfo (fns) {
   }
 }
 
-/**
- * Test scenario
- */
-export default function testScenario (fns) {
+export default function testScenario (options) {
+  const {
+    turn,
+    piece,
+    target,
+    action,
+    fns
+  } = options
   const {
     getMovable,
     findNotation,
     getMovement
   } = fns
+  const {
+    targetNotation,
+    targetPosition
+  } = target
 
-  return (options) => {
-    const {
-      turn,
-      piece,
-      target,
-      action
-    } = options
-    const {
-      targetNotation,
-      targetPosition
-    } = target
+  const _isCheckerExist = (movable) => movable.includes(targetPosition)
 
-    /**
-     * Is checker in mobable data?
-     */
-    const _isCheckerExist = (movable) =>
-      movable.includes(targetPosition)
+  /** @callback */
+  return (acc, tile) => {
+    const found = findNotation(tile)
 
-    /**
-     * @callback
-     */
-    return (acc, tile) => {
-      const found = findNotation(tile)
+    switch (action) {
+      case 'CHECK': {
+        let { isChecked } = acc
 
-      switch (action) {
-        case 'CHECK': {
-          let { isChecked } = acc
+        if (!isChecked && isExist(found)) {
+          const targetSide = getEnemy(turn) // another side of target
+          const {
+            piece: foundPiece,
+            position: foundPosition
+          } = parseNotation(found)
+          const {
+            defaults: foundDefaults,
+            specials: foundSpecials
+          } = getMovement(foundPiece, false)
+          const getFoundMovable = getMovable(foundPiece, foundPosition, targetSide)
+          const movable = getFoundMovable(foundDefaults, foundSpecials)
+          const isCheckerExist = _isCheckerExist(movable)
 
-          if (!isChecked && isExist(found)) {
-            const targetSide = getEnemy(turn) // another side of target
-            const {
-              piece: foundPiece,
-              position: foundPosition
-            } = parseNotation(found)
-            const {
-              defaults: foundDefaults,
-              specials: foundSpecials
-            } = getMovement(foundPiece, false)
-            const getFoundMovable = getMovable(foundPiece, foundPosition, targetSide)
-            const movable = getFoundMovable(foundDefaults, foundSpecials)
-            const isCheckerExist = _isCheckerExist(movable)
+          isChecked = piece === foundPiece && isCheckerExist
 
-            isChecked = piece === foundPiece && isCheckerExist
-
-            return {
-              checkerNotation: isChecked ? found : '',
-              kingNotation: targetNotation,
-              isChecked
-            }
+          return {
+            checkerNotation: isChecked ? found : '',
+            kingNotation: targetNotation,
+            isChecked
           }
-
-          return acc
         }
 
-        case 'GET_SIGHT': {
-          return [...acc, tile]
-        }
+        return acc
+      }
 
-        default: {
-          return acc
-        }
+      case 'GET_SIGHT': {
+        return [...acc, tile]
+      }
+
+      default: {
+        return acc
       }
     }
   }

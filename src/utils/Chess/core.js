@@ -96,9 +96,7 @@ export function includeSpecial (records, turn) {
             return m
           }
 
-          const turn = Helpers.detectTurn(lastItem)
-
-          return enPassant(turn, position, lastItem)(m)
+          return enPassant(lastItem)(position)(m)
         }
 
         default: {
@@ -185,7 +183,7 @@ export function excludeBlocked (notations, turn) {
 }
 
 /** Promotion */
-export function promotion (notations, records) {
+export function promotion (records) {
   const lastItem = Utils.getLastItem(records)
   const lastTurn = Helpers.detectLastTurn(lastItem)
   const move = Helpers.getMove(lastItem)(lastTurn)
@@ -194,18 +192,21 @@ export function promotion (notations, records) {
   const alias = Helpers.getAlias(lastTurn)
   const isEdge = /1|8/.test(y)
 
-  if (isEdge) {
-    const from = `${alias}P${x}${y}`
-    const to = `${alias}Q${x}${y}`
+  return (notations) => {
+    if (isEdge) {
+      const updateNotations = Helpers.updateNotations(notations)
+      const from = `${alias}P${x}${y}`
+      const to = `${alias}Q${x}${y}`
 
-    return Helpers.updateNotations(notations)(from, to)
+      return updateNotations(from)(to)
+    }
   }
 }
 
 /** Pawn moves 2 step forward */
 export function doubleStep (turn) {
   /** @callback */
-  const _updateRank = Helpers.updateRank()(turn)
+  const _updateRank = Helpers.updateRank(turn)
 
   return (m) => {
     const [tiles] = m
@@ -220,10 +221,11 @@ export function doubleStep (turn) {
 /**
  * Pawn moves diagonal and attack
  * TODO
- * - remove after
+ * - remove after move
  * - it won't work sometimes
  */
-export function enPassant (turn, position, lastItem) {
+export function enPassant (lastItem) {
+  const turn = Helpers.detectTurn(lastItem)
   const enemyMove = Utils.compose(
     Helpers.getMove(lastItem),
     Helpers.getEnemy,
@@ -231,33 +233,35 @@ export function enPassant (turn, position, lastItem) {
   )(lastItem)
   const isPawn = enemyMove.substr(1, 1) === 'P'
 
-  if (Utils.isEmpty(enemyMove) || !isPawn) {
-    return (m) => m
-  }
-
-  // get myself
-  const { file: myFile, rank: myRank } = Helpers.parsePosition(position)
-  const myFileIdx = Helpers.getFileIdx(myFile)
-
-  // get enemy
-  const enemyPosition = enemyMove.substr(-2)
-  const { file: enemyFile, rank: enemyRank } = Helpers.parsePosition(enemyPosition)
-  const enemyFileIdx = Helpers.getFileIdx(enemyFile)
-
-  // check
-  const howManyLastStep = Helpers.countsVerticalStep(enemyMove)
-  const isDoubleStep = howManyLastStep === 2
-  const isSibling = Math.abs(myFileIdx - enemyFileIdx) === 1
-  const isAdjustedLine = parseInt(myRank, 10) === parseInt(enemyRank, 10)
-
-  return (m) => {
-    // valid
-    if (isDoubleStep && isAdjustedLine && isSibling) {
-      const diagonal = Helpers.updateRank()(turn)(enemyPosition)
-
-      return [...m, [diagonal]]
+  return (position) => {
+    if (Utils.isEmpty(enemyMove) || !isPawn) {
+      return (m) => m
     }
 
-    return m
+    // get myself
+    const { file: myFile, rank: myRank } = Helpers.parsePosition(position)
+    const myFileIdx = Helpers.getFileIdx(myFile)
+
+    // get enemy
+    const enemyPosition = enemyMove.substr(-2)
+    const { file: enemyFile, rank: enemyRank } = Helpers.parsePosition(enemyPosition)
+    const enemyFileIdx = Helpers.getFileIdx(enemyFile)
+
+    // check
+    const howManyLastStep = Helpers.countsVerticalStep(enemyMove)
+    const isDoubleStep = howManyLastStep === 2
+    const isSibling = Math.abs(myFileIdx - enemyFileIdx) === 1
+    const isAdjustedLine = parseInt(myRank, 10) === parseInt(enemyRank, 10)
+
+    return (m) => {
+      // valid
+      if (isDoubleStep && isAdjustedLine && isSibling) {
+        const diagonal = Helpers.updateRank(turn)(enemyPosition)
+
+        return [...m, [diagonal]]
+      }
+
+      return m
+    }
   }
 }

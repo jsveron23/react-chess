@@ -1,6 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import enhancer from '@utils/Enhancer/piece'
+import enhancer from '@pieces/enhancer'
 import css from './knight.css'
 
 const Knight = ({ alias, getRef, onTransitionEnd }) => (

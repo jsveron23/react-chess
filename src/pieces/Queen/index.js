@@ -1,6 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import enhancer from '@utils/Enhancer/piece'
+import enhancer from '@pieces/enhancer'
 import css from './queen.css'
 
 const Queen = ({ alias, getRef, onTransitionEnd }) => (

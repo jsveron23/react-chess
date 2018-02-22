@@ -7,8 +7,7 @@ import {
 import {
   Menu,
   Board,
-  Records,
-  Turn
+  Records
 } from '@containers'
 import '@styles/app.css'
 
@@ -18,7 +17,6 @@ const Chess = () => (
     <Menu />
     <Board />
     <Records />
-    <Turn />
   </Main>
 )
 

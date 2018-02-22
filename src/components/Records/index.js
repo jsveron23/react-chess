@@ -40,7 +40,6 @@ class Records extends PureComponent {
     }
 
     // TODO
-    // - single record
     // - SCU
     return (
       <ul ref={this.getRef} className={css.records}>

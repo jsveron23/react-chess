@@ -1,6 +1,5 @@
-import * as types from '@constants'
+import * as types from '@actions'
 
-/** Set Movable */
 export function setMovable (movable) {
   return {
     type: types.SET_MOVABLE,
@@ -8,7 +7,6 @@ export function setMovable (movable) {
   }
 }
 
-/** Reset movable after moving */
 export function resetMovable () {
   return {
     type: types.RESET_MOVABLE

@@ -1,48 +1,33 @@
 import * as Utils from '@utils'
-import { RANKS, FILES } from '@constants'
+import { RANKS, FILES } from './constants'
 import * as Helpers from './helpers'
 import * as Core from './core'
 import testScenario, { getTargetInfo } from './simulate'
 
-class Chess {
-  static getEnemy = Helpers.getEnemy
-  static getAlias = Helpers.getAlias
-  static parseNotation = Helpers.parseNotation
-  static findNotation = Helpers.findNotation
-  static getMove = Helpers.getMove
-  static parseMove = Helpers.parseMove
-  static getMovable = Core.getMovable
-  static getSight = Core.getSight
-
-  /**
-   * Get blockable tiles to protect King
-   * TODO
-   * - remove King piece of blocked
-   * - find every tiles from enemy pieces that King cannot move there
-   */
-  static getBlocks (fns, options) {
+const Chess = {
+  // get blockable tiles to protect King
+  // TODO
+  // - capturable checker
+  getBlocks (options = {}) {
     const {
-      getAttackingRoute
-    } = fns
-    const {
-      isKing = false
+      isKing = false,
+      fns
     } = options
-    let _getCommonSight
+    let _getCommonSight_
 
-    return (notations, records) => {
-      const _getSightBy = Core.getSightBy(notations, records)
-      const exceptKing = !isKing
+    return (notations) => (records) => {
+      const _getSightBy_ = Core.getSightBy(notations, records)
 
-      if (exceptKing) {
+      if (!isKing) {
         const getCommonSights = Core.getCommonSights(notations, records)
-        const checkedSight = getAttackingRoute(getCommonSights)
+        const checkedSight = fns.getAttackingRoute(getCommonSights)
 
-        _getCommonSight = Utils.intersection(checkedSight)
+        _getCommonSight_ = Utils.intersection(checkedSight)
       }
 
       return (baseNotation, baseMovement) => (targetNotation, targetMovement) => {
-        const baseSight = _getSightBy(baseNotation)(baseMovement)
-        const targetSight = _getSightBy(targetNotation)(targetMovement)
+        const baseSight = _getSightBy_(baseNotation)(baseMovement)
+        const targetSight = _getSightBy_(targetNotation)(targetMovement)
 
         /** @callback */
         const _getAvoidance = (tile) => !baseSight.includes(tile)
@@ -50,104 +35,104 @@ class Chess {
         return isKing
           ? targetSight.filter(_getAvoidance)
           : Utils.compose(
-            _getCommonSight,
+            _getCommonSight_,
             Utils.intersection(baseSight)
           )(targetSight)
       }
     }
-  }
+  },
 
-  /** Simulate */
-  static simulate (fns) {
-    const apply = Utils.apply(fns)
-    const [getTarget, applyScenarioOptions] = apply(getTargetInfo, testScenario)
+  // get predictable movement by simulating
+  simulate (options = {}) {
+    const {
+      targetPiece,
+      pretendPiece,
+      initialValue = [],
+      action,
+      fns
+    } = options
+    const getTarget = getTargetInfo(fns)
 
     // get target infomation
-    const _getTarget = (turn) => (targetPiece, pretendPiece) => Utils.compose(
+    const _getTarget = (turn) => (targetPiece) => (pretendPiece) => Utils.compose(
       getTarget(turn, targetPiece, pretendPiece),
       fns.getMovement
     )(pretendPiece || targetPiece)
 
-    return (turn, piece = '') => (config) => {
-      const {
-        targetPiece,
-        pretendPiece,
-        initialValue = [],
-        action
-      } = config
-      const target = _getTarget(turn)(targetPiece, pretendPiece)
+    return (turn) => (piece = '') => {
+      const target = _getTarget(turn)(targetPiece)(pretendPiece)
       const { targetSight } = target
 
       // create scenarios callback
-      const testOptions = { turn, piece, target, action }
-      const applyScenario = applyScenarioOptions(testOptions)
+      const testOptions = { turn, piece, target, action, fns }
+      const applyScenario = testScenario(testOptions)
 
       return targetSight.reduce(applyScenario, initialValue)
     }
-  }
+  },
 
   /** Save records data */
-  static saveRecords (notations, records) {
+  saveRecords (options = {}) {
+    const { ts = +new Date() } = options
     const passArg = Utils.pass(Utils.getLastItem, Utils.push)
-    const [lastItem, push] = passArg(records)
-    const turn = Helpers.detectTurn(lastItem)
-    const transform = Helpers.transformMove(turn)(notations)
-    const isCompletedRec = Helpers.isCompleteRec(lastItem)
-    const isNew = Utils.isEmpty(lastItem) || isCompletedRec // new or next record
 
-    return (nextNotations, ts = +new Date()) => {
-      const move = transform(nextNotations)
-      const log = { move, notations, ts }
-      const data = isNew
-        ? { white: log }
-        : { ...lastItem, black: log }
+    return (notations) => (records) => {
+      const [lastRec, push] = passArg(records)
+      const turn = Helpers.detectTurn(lastRec)
+      const transform = Helpers.transformMove({ turn, notations })
+      const isCompletedRec = Helpers.isCompleteRec(lastRec)
+      const isNew = Utils.isEmpty(lastRec) || isCompletedRec
 
-      return push(data, isNew)
+      return (nextNotations) => {
+        const move = transform(nextNotations)
+        const log = { move, notations, ts }
+        const data = isNew
+          ? { white: log }
+          : { ...lastRec, black: log }
+
+        return push(data, isNew)
+      }
     }
-  }
+  },
 
   /** Undo records data (by turn) */
-  static undoRecord (records) {
-    if (Utils.isEmpty(records)) {
-      return () => ({})
+  undoRecord (options = {}) {
+    return (records) => {
+      if (Utils.isEmpty(records)) {
+        return () => ({})
+      }
+
+      const excludedLastItem = records.slice(0, -1)
+      const lastItem = Utils.getLastItem(records)
+      const isWhite = Helpers.detectLastTurn(lastItem) === 'white'
+      const { white, black } = lastItem
+      const log = isWhite ? white : black
+      const { notations, move } = log
+      const revertNotations = Helpers.revertNotations(notations)
+      const { before, after } = Helpers.parseMove(move)
+      const revertedNotations = revertNotations(before)(after)
+      const revertedRecords = isWhite
+        ? excludedLastItem
+        : Utils.replaceLast(records)({ white })
+
+      return { revertedRecords, revertedNotations }
     }
-
-    const excludedLastItem = records.slice(0, -1)
-    const lastItem = Utils.getLastItem(records)
-    const isWhite = Helpers.detectLastTurn(lastItem) === 'white'
-    const { white, black } = lastItem
-    const log = isWhite ? white : black
-    const { notations, move } = Helpers.parseLog(log)
-    const revertNotations = Helpers.revertNotations(notations)
-    const { before, after } = Helpers.parseMove(move)
-    const revertedNotations = revertNotations(before, after)
-    const revertedRecords = isWhite
-      ? excludedLastItem
-      : Utils.replaceLast(records)({ white })
-
-    return (/* TODO use it later */) => ({ revertedRecords, revertedNotations })
-  }
+  },
 
   /** Return next notations */
-  static getNextNotations (currPosition, nextPosition) {
+  getNextNotations (fns) {
+    const pixelSize = 50 // TODO calculate pixelSize automatically
+    const {
+      setAxis
+    } = fns
     const procParse = Utils.compose(
       Helpers.parsePosition,
       Utils.toss('position'),
       Helpers.parseNotation
     )
 
-    /**
-     * Convert notation to get axis
-     * @callback
-     * @description
-     * # b1 to h3
-     * => [h(8) - b(2) = 6, 3 - 1 = 2]
-     * => ([6, 2]) x pixel
-     * => [300, 100]
-     * => transform: translate(300px, 100px)
-     * TODO calculate pixelSize automatically
-     */
-    const _convertAxis = (currNotation) => (nextNotation) => (pixelSize = 50) => {
+    /** @callback */
+    const _convertAxis = (currNotation) => (nextNotation) => {
       const {
         file: prevFile,
         rank: prevRank
@@ -162,21 +147,16 @@ class Chess {
       return { x, y }
     }
 
-    return (setAxis) => (notations) => notations
+    return (currPosition, nextPosition) => (notations) => notations
       .reduce((nextNotations, notation) => {
-        const { side, piece } = Helpers.parseNotation(notation)
-
         if (notation.search(currPosition) > -1) {
-          // TODO
-          // - check current position and next position
-          // - if next position is enemy means attack!
-
+          const { side, piece } = Helpers.parseNotation(notation)
           const nextNotation = `${Helpers.getAlias(side)}${piece}${nextPosition}`
-          const getAxis = _convertAxis(notation)(nextNotation)
+          const getAxis = _convertAxis(notation)
 
           /** @see @actions/general.js */
           setAxis({
-            axis: getAxis(/* pixelSize */),
+            axis: getAxis(nextNotation),
             notation: nextNotation // for comparing
           })
 
@@ -185,21 +165,32 @@ class Chess {
 
         // TODO
         // - sometimes, animation doesn't work
-        // - recording a record not properly (-defined)
-        // - write to the record about kill enemy there
+        // 1 clue - capture / same kind of piece
         if (notation.search(nextPosition) > -1) {
           return nextNotations
         }
 
         return [...nextNotations, notation]
       }, [])
-  }
+  },
 
   /** Promotion */
-  static promotion (notations) {
-    return (records) => Core.promotion(notations, records)
+  promotion (records) {
+    const _promotion = Core.promotion(records)
+
+    return (notations) => _promotion(notations)
   }
 }
 
-export default Chess
+export default {
+  getEnemy: Helpers.getEnemy,
+  getAlias: Helpers.getAlias,
+  parseNotation: Helpers.parseNotation,
+  findNotation: Helpers.findNotation,
+  getMove: Helpers.getMove,
+  parseMove: Helpers.parseMove,
+  getMovable: Core.getMovable,
+  getSight: Core.getSight,
+  ...Chess
+}
 export { RANKS, FILES }

@@ -2,12 +2,6 @@ import React, { PureComponent } from 'react'
 import PropTypes from 'prop-types'
 import { isExist } from '@utils'
 
-/**
- * Common API for Chess piece component
- * @param  {React.Component} WrappedComponent
- * @param  {string}          piece
- * @return {React.Component}
- */
 const enhancer = (WrappedComponent, piece) => class extends PureComponent {
   static propTypes = {
     alias: PropTypes.string.isRequired,
@@ -46,25 +40,17 @@ const enhancer = (WrappedComponent, piece) => class extends PureComponent {
         getRef={this.getRef}
         onTransitionEnd={this.handleTransitionEnd}
         alias={alias}
-        check={check}
+        isCheck={isExist(check)}
       />
     )
   }
 
-  /**
-   * Get ref
-   * @param {Object} el
-   */
   getRef = (el) => (this.refElement = el)
 
-  /**
-   * Handle animation end
-   */
   handleTransitionEnd = (evt) => {
     const { translated, onAnimateEnd } = this.props
 
-    // NOTE prevent block transition end callback firing from shaking animation
-    if (isExist(translated)) {
+    if (evt.propertyName === 'top' && isExist(translated)) {
       onAnimateEnd(piece)
     }
   }

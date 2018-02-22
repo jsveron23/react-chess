@@ -1,10 +1,10 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import cx from 'classnames'
-import enhancer from '@utils/Enhancer/piece'
+import enhancer from '@pieces/enhancer'
 import css from './king.css'
 
-const King = ({ alias, check, getRef, onTransitionEnd }) => (
+const King = ({ alias, isCheck, getRef, onTransitionEnd }) => (
   <svg
     ref={getRef}
     onTransitionEnd={onTransitionEnd}
@@ -15,11 +15,11 @@ const King = ({ alias, check, getRef, onTransitionEnd }) => (
     viewBox="0 0 45 45"
     aria-labelledby="title"
     style={{
-      backgroundColor: check ? 'rgba(255, 0, 0, .8)' : 'transparent'
+      backgroundColor: isCheck ? 'rgba(255, 0, 0, .8)' : 'transparent'
     }}
   >
     <title id={`king-${alias}`}>King({alias})</title>
-    <g className={cx(css.king, { 'is-shaking': check })}>
+    <g className={cx(css.king, { 'is-shaking': isCheck })}>
       <path d="M 22.5,11.63 L 22.5,6" style={{ fill: 'none', stroke: '#000000', strokeLinejoin: 'miter' }} />
       <path d="M 20,8 L 25,8" style={{ fill: 'none', stroke: '#000000', strokeLinejoin: 'miter' }} />
       {
@@ -63,12 +63,12 @@ const King = ({ alias, check, getRef, onTransitionEnd }) => (
 King.propTypes = {
   getRef: PropTypes.func.isRequired,
   alias: PropTypes.string.isRequired,
-  check: PropTypes.string,
+  isCheck: PropTypes.bool,
   onTransitionEnd: PropTypes.func
 }
 
 King.defaultProps = {
-  check: '',
+  isCheck: false,
   onTransitionEnd: function () {}
 }
 

@@ -1,6 +1,8 @@
 # React Chess
 
-Implementing Chess game with using ReactJS. Pull requests welcome.
+- Implementing Chess game with using ReactJS
+- Pull requests welcome
+- No use any other Chess library
 
 ## Installation & Start
 

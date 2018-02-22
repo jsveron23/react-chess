@@ -1,12 +1,6 @@
 import * as Utils from '@utils'
 
 const Parser = {
-  log (log) {
-    const { notations, move, ts } = log
-
-    return { notations, move, ts }
-  },
-
   move (move) {
     const [before, after] = move.split(/\s|x/)
 

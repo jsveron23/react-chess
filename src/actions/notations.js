@@ -1,6 +1,5 @@
-import * as types from '@constants'
+import * as types from '@actions'
 
-/** Set notations */
 export function setNotations (notations) {
   return {
     type: types.SET_NOTATIONS,
@@ -8,7 +7,6 @@ export function setNotations (notations) {
   }
 }
 
-/** Reset notations */
 export function resetNotations () {
   return {
     type: types.RESET_NOTATIONS

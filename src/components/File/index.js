@@ -5,7 +5,7 @@ import { getPiece } from '@pieces'
 import {
   isEmpty,
   isExist,
-  // isDiff,
+  pass,
   intersection
 } from '@utils'
 import css from './file.css'
@@ -16,6 +16,7 @@ class File extends Component {
     name: PropTypes.string.isRequired,
     turn: PropTypes.string.isRequired,
     position: PropTypes.string.isRequired,
+    shouldAnimate: PropTypes.bool,
     piece: PropTypes.string,
     side: PropTypes.string,
     movable: PropTypes.array,
@@ -27,6 +28,7 @@ class File extends Component {
   }
 
   static defaultProps = {
+    shouldAnimate: false,
     side: '',
     check: '',
     piece: '',
@@ -40,35 +42,54 @@ class File extends Component {
     const prevProps = this.props
     const {
       isMoving,
+      shouldAnimate,
       check,
       piece,
       selected,
       position,
       movable
     } = nextProps
-    const isNotChecked = isEmpty(check)
-    const isNotPromoted = !(prevProps.piece === 'P' && piece === 'Q')
-    const prevWorkTiles = intersection(prevProps.movable)([selected, position])
-    const nextWorkTiles = intersection(movable)([selected, position])
-    const shouldNotUpdateInMove = ( // TODO reduce more rendering
-      isMoving &&
-      isExist(movable) &&
-      isEmpty(nextWorkTiles) &&
-      isNotChecked
-    )
-    const shouldNotUpdateInStop = (
-      !isMoving &&
-      isNotChecked &&
-      isNotPromoted &&
-      prevProps.selected !== position &&
-      isEmpty(prevWorkTiles) === isEmpty(nextWorkTiles)
-    )
+    const [prevWorkTiles, nextWorkTiles] = pass(
+      intersection(prevProps.movable),
+      intersection(movable)
+    )([selected, position])
 
-    if (shouldNotUpdateInMove) {
+    // common
+    const isNotChecked = isEmpty(check)
+    const isNotSelected = selected !== position && prevProps.selected !== position
+    const isNotPromoted = !(prevProps.piece === 'P' && piece === 'Q')
+
+    // only for moving
+    const isMovableExist = isExist(movable)
+    const isNotRoutes = !prevProps.movable.concat(prevProps.selected).includes(position)
+
+    // condition of SCU
+    const shouldNotUpdate = {
+      move: (
+        isMoving &&
+        !shouldAnimate &&
+        isNotRoutes &&
+        (
+          isMovableExist ||
+          isEmpty(prevProps.side)
+        )
+      ),
+
+      pendingMove: (
+        !isMoving &&
+        isNotChecked &&
+        isNotPromoted &&
+        isNotSelected &&
+        isEmpty(prevWorkTiles, nextWorkTiles)
+      )
+    }
+
+    // TODO check
+    if (shouldNotUpdate.move) {
       return false
     }
 
-    if (shouldNotUpdateInStop) {
+    if (shouldNotUpdate.pendingMove) {
       return false
     }
 

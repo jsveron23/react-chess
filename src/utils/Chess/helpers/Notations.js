@@ -1,9 +1,8 @@
 import * as Utils from '@utils'
-import { REG_NOTATION } from '@constants'
 
 const Notations = {
-  isValid (notation, reg = REG_NOTATION) {
-    return reg.test(notation)
+  isValid (reg) {
+    return (notation) => reg.test(notation)
   },
 
   has (notations) {
@@ -15,7 +14,7 @@ const Notations = {
   revert (notations) {
     const update = Utils.update(notations)
 
-    return (before, after) => update(after, before)
+    return (before) => (after) => update(after)(before)
   }
 }
 

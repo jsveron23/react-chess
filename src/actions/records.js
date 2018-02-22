@@ -1,6 +1,5 @@
-import * as types from '@constants'
+import * as types from '@actions'
 
-/** Set records */
 export function setRecords (records) {
   return {
     type: types.SET_RECORDS,
@@ -8,7 +7,6 @@ export function setRecords (records) {
   }
 }
 
-/** Reset records */
 export function resetRecords () {
   return {
     type: types.RESET_RECORDS

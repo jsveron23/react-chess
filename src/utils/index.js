@@ -1,117 +1,153 @@
-const _noop = function () {}
+import {
+  isExist,
+  isArray,
+  isDiff,
+  includes
+} from '@utils/is'
 
-// pending (exportable)
-const _isObject = (v) => v.constructor === Object
-const _isArray = (v) => Array.isArray(v)
-const _change = (from, to) => (item) => (item === from ? to : item)
+export * from '@utils/fp'
+export * from '@utils/is'
 
-/** Compose */
-export const compose = (...fns) => (x) =>
-  fns.reduceRight((v, f) => f(v), x)
+/**
+ * Find all
+ * @param  {Array}  [items=[]]
+ * @param  {string} v
+ * @return {Array}
+ */
+export const find = (items = []) => (v) => items.filter(includes(v))
 
-/** Pipe */
-export const pipe = (...fns) => (x) =>
-  fns.reduce((v, f) => f(v), x)
+/**
+ * Find one
+ * @param  {Array}  [items=[]]
+ * @param  {string} v
+ * @return {*}
+ */
+export const findOne = (items = []) => (v) => items.find(includes(v))
 
-/** Includes */
-export const includes = (v) => (text) =>
-  text.search(new RegExp(v, 'i')) > -1
+/**
+ * Update
+ * @param  {Array} [items=[]]
+ * @param  {*}     from
+ * @param  {*}     to
+ * @return {Array}
+ */
+export const update = (items = []) => (from) => (to) =>
+  items.map((item) => !isDiff(item, from) ? to : item)
 
-/** Find all */
-export const find = (items = []) => (v) =>
-  items.filter(includes(v))
-
-/** Find one */
-export const findOne = (items = []) => (v) =>
-  items.find(includes(v))
-
-/** Update */
-export const update = (items = []) => (from, to) =>
-  items.map(_change(from, to))
-
-/** Flatten */
+/**
+ * Flatten
+ * @param  {Array} [items=[]]
+ * @return {Array}
+ */
 export const flatten = (items = []) =>
-  items.reduce((v, item) => v.concat(_isArray(item) ? flatten(item) : item), [])
+  items.reduce((v, item) => v.concat(isArray(item) ? flatten(item) : item), [])
 
-/** Get first item */
-export const getFirstItem = (items = []) =>
-  [...items].shift()
+/**
+ * Get first item
+ * @param  {Array} [items=[]]
+ * @return {*}
+ */
+export const getFirstItem = (items = []) => [...items].shift()
 
-/** Get last item */
-export const getLastItem = (items = []) =>
-  [...items].pop()
+/**
+ * Get last item
+ * @param  {Array} [items=[]]
+ * @return {*}
+ */
+export const getLastItem = (items = []) => [...items].pop()
 
-/** Replace first item */
-export const replaceFirst = (items = []) => (data) =>
-  [data, ...items.slice(1, 0)]
+/**
+ * Replace first item
+ * @param  {Array} [items=[]]
+ * @param  {*}     x
+ * @return {Array}
+ */
+export const replaceFirst = (items = []) => (x) =>
+  [x, ...items.slice(1, 0)]
 
-/** Replace last item */
-export const replaceLast = (items = []) => (data) =>
-  [...items.slice(0, -1), data]
+/**
+ * Replace last item
+ * @param  {Array} [items=[]]
+ * @param  {*}     x
+ * @return {Array}
+ */
+export const replaceLast = (items = []) => (x) =>
+  [...items.slice(0, -1), x]
 
-/** Add item */
-export const push = (items = []) => (data, isNew = true) =>
-  isNew
-    ? [...items, data]
-    : replaceLast(items)(data)
+/**
+ * Add item
+ * @param  {Array} [items=[]]
+ * @param  {*}     x
+ * @param  {Array} [isNew=true]
+ * @return {Array}
+ */
+export const push = (items = []) => (x, isNew = true) => isNew
+  ? [...items, x]
+  : replaceLast(items)(x)
 
-/** Remove unnecessary items */
-export const diet = (v) =>
-  v.filter(isExist)
+/**
+ * Remove unnecessary items
+ * @param  {Array} v
+ * @return {Array}
+ * @NOTE
+ * - isExist function should be took single arg
+ */
+export const diet = (v) => v.filter((item) => isExist(item))
 
-/** Check difference */
-export const isDiff = (a) => (b) =>
-  JSON.stringify(a) !== JSON.stringify(b)
+/**
+ * To array
+ * @param  {*}     x
+ * @return {Array}
+ */
+export const toArray = (x) => Array.of(x)
 
-/** Pass argument to next function */
-export const toss = (key) => (o) =>
-  o[key]
-
-/** Functions uses same argument, get results into a array */
-export const pass = (...fns) => (x) =>
-  fns.reduce((v, f = _noop) => [...v, f(x)], [])
-
-/** Apply same argument to functions */
-export const apply = (x) => (...fns) =>
-  pass(...fns)(x)
-
-/** To array */
-export const toArray = (v) =>
-  Array.of(v)
-
-/** Stream */
+/**
+ * @alias toArray
+ */
 export const stream = toArray
 
-/** Unique */
-export const unique = (v) =>
-  Array.from(new Set(v))
+/**
+ * Unique
+ * @param  {*}     x
+ * @return {Array}
+ */
+export const unique = (x) => Array.from(new Set(x))
 
 /**
  * Intersection
+ * @param  {*}     a
+ * @param  {*}     b
+ * @return {Array}
  * @see {@link http://2ality.com/2015/01/es6-set-operations.html}
  */
 export const intersection = (a) => (b) => {
   const aSet = new Set(a)
   const bSet = new Set(b)
-  const filteredSet = new Set([...aSet].filter(x => bSet.has(x)))
+  const filtered = new Set([...aSet].filter(x => bSet.has(x)))
 
-  return Array.from(filteredSet)
+  return Array.from(filtered)
 }
 
 /**
  * Difference
+ * @param  {*}     a
+ * @param  {*}     b
+ * @return {Array}
  * @see {@link http://2ality.com/2015/01/es6-set-operations.html}
  */
 export const diff = (a) => (b) => {
   const aSet = new Set(a)
   const bSet = new Set(b)
-  const filteredSet = new Set([...aSet].filter(x => !bSet.has(x)))
+  const filtered = new Set([...aSet].filter(x => !bSet.has(x)))
 
-  return Array.from(filteredSet)
+  return Array.from(filtered)
 }
 
 /**
  * Union
+ * @param  {*}     a
+ * @param  {*}     b
+ * @return {Array}
  * @see {@link http://2ality.com/2015/01/es6-set-operations.html}
  */
 export const union = (a) => (b) => {
@@ -121,22 +157,3 @@ export const union = (a) => (b) => {
 
   return Array.from(set)
 }
-
-/** Trace */
-export const trace = (label) => (v) => {
-  console.log(`${label}: `, v)
-
-  return v
-}
-
-/** Is it empty? */
-export const isEmpty = (v) => (
-  v === null ||
-  v === undefined ||
-  (v.hasOwnProperty('length') && v.length === 0) ||
-  (_isObject(v) && Object.keys(v).length === 0)
-)
-
-/** Is it exist? */
-export const isExist = (v) =>
-  !isEmpty(v)

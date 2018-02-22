@@ -1,3 +1,5 @@
+import * as types from '@actions'
+
 const initialState = [
   'bRa8', 'bNb8', 'bBc8', 'bQd8', 'bKe8', 'bBf8', 'bNg8', 'bRh8',
   'bPa7', 'bPb7', 'bPc7', 'bPd7', 'bPe7', 'bPf7', 'bPg7', 'bPh7',
@@ -9,11 +11,11 @@ const reducer = (state = initialState, action) => {
   const { type, payload } = action
 
   switch (type) {
-    case 'SET_NOTATIONS': {
+    case types.SET_NOTATIONS: {
       return [...payload]
     }
 
-    case 'RESET_NOTATIONS': {
+    case types.RESET_NOTATIONS: {
       return [...initialState]
     }
 

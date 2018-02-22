@@ -1,12 +1,14 @@
+import * as types from '@actions'
+
 const reducer = (state = [], action) => {
   const { type, payload } = action
 
   switch (type) {
-    case 'SET_RECORDS': {
+    case types.SET_RECORDS: {
       return [...payload]
     }
 
-    case 'RESET_RECORDS': {
+    case types.RESET_RECORDS: {
       return []
     }
 
