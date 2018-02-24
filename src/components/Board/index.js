@@ -1,17 +1,18 @@
-import React, { Component } from 'react'
+import React, { PureComponent } from 'react'
 import PropTypes from 'prop-types'
 import {
   Rank,
   File
 } from '@components'
 import { getPiece } from '@pieces'
+import { isExist } from '@utils'
 import Chess, {
   RANKS,
   FILES
 } from '@utils/Chess'
 import css from './board.css'
 
-class Board extends Component {
+class Board extends PureComponent {
   static propTypes = {
     isMoving: PropTypes.bool.isRequired,
     notations: PropTypes.array.isRequired,
@@ -33,26 +34,6 @@ class Board extends Component {
     onMove: function () {},
     onAnimateEnd: function () {},
     onAnimate: function () {}
-  }
-
-  shouldComponentUpdate (nextProps) {
-    const prevProps = this.props
-    const {
-      notations,
-      selected
-    } = nextProps
-    const findNotation = Chess.findNotation(notations)
-    const prevNotation = findNotation(prevProps.selected)
-    const nextNotation = findNotation(selected)
-    const shouldNotUpdate = (
-      prevNotation !== nextNotation
-    )
-
-    if (shouldNotUpdate) {
-      return false
-    }
-
-    return true
   }
 
   render () {
@@ -90,10 +71,12 @@ class Board extends Component {
               const currentNotation = findNotation(position)
               const { side, piece } = Chess.parseNotation(currentNotation)
               const EnhancedPiece = getPiece(piece)
-              const shouldAnimate = (translated && translated.notation === currentNotation)
+              const shouldAnimate = (isExist(translated) && translated.notation === currentNotation)
               const fileProps = {
                 ...defProps,
                 name: file,
+                arrived: Chess.parseNotation(isExist(translated) ? translated.notation : {}),
+                isActivated: movable.concat(selected).includes(position),
                 shouldAnimate,
                 side,
                 position,

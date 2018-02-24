@@ -2,12 +2,8 @@ import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import cx from 'classnames'
 import { getPiece } from '@pieces'
-import {
-  isEmpty,
-  isExist,
-  pass,
-  intersection
-} from '@utils'
+import { isEmpty } from '@utils'
+import detect from '@utils/React/detect'
 import css from './file.css'
 
 class File extends Component {
@@ -43,53 +39,52 @@ class File extends Component {
     const {
       isMoving,
       shouldAnimate,
-      check,
+      turn,
+      side,
       piece,
-      selected,
+      check,
       position,
-      movable
+      arrived,
+      isActivated
     } = nextProps
-    const [prevWorkTiles, nextWorkTiles] = pass(
-      intersection(prevProps.movable),
-      intersection(movable)
-    )([selected, position])
 
-    // common
-    const isNotChecked = isEmpty(check)
-    const isNotSelected = selected !== position && prevProps.selected !== position
+    // when seleced
     const isNotPromoted = !(prevProps.piece === 'P' && piece === 'Q')
+    const isNotChecked = isEmpty(check)
 
-    // only for moving
-    const isMovableExist = isExist(movable)
-    const isNotRoutes = !prevProps.movable.concat(prevProps.selected).includes(position)
+    // when moving
+    const isSameTurn = (
+      side === arrived.side &&
+      prevProps.turn === turn
+    )
 
-    // condition of SCU
+    // TODO
+    // - detect moving tiles
+    // - then can be filtering tiles that inactive
     const shouldNotUpdate = {
-      move: (
+      moving: (
         isMoving &&
         !shouldAnimate &&
-        isNotRoutes &&
-        (
-          isMovableExist ||
-          isEmpty(prevProps.side)
-        )
+        isSameTurn
       ),
 
-      pendingMove: (
+      selected: (
         !isMoving &&
         isNotChecked &&
         isNotPromoted &&
-        isNotSelected &&
-        isEmpty(prevWorkTiles, nextWorkTiles)
+        prevProps.isActivated === isActivated &&
+        !isActivated
       )
     }
 
-    // TODO check
-    if (shouldNotUpdate.move) {
-      return false
-    }
+    detect({
+      displayName: `File-${position}`,
+      mode: 'changed',
+      exclude: ['children', 'onSelect', 'onMove'],
+      conditions: () => !shouldNotUpdate.selected
+    })(this.props)(nextProps)
 
-    if (shouldNotUpdate.pendingMove) {
+    if (shouldNotUpdate.selected || shouldNotUpdate.moving) {
       return false
     }
 
