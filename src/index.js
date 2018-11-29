@@ -1,3 +1,5 @@
-import Bishop from '~assets/svg/black_bishop.svg'
+import React from 'react'
+import ReactDOM from 'react-dom'
+import App from '~components/App'
 
-console.log('Hello World', Bishop)
+ReactDOM.render(<App />, document.getElementById('root'))
