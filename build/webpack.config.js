@@ -1,17 +1,20 @@
-const Loaders = require('./webpack/loaders')
-const Plugins = require('./webpack/plugins')
-const { pubPath, srcPath } = require('./libs/path')
-const config = require('./config')
+const {
+  assetsPath,
+  distPath,
+  srcPath,
+  resolve
+} = require('./path')
+const Loaders = require('./webpack.loaders')
+const Plugins = require('./webpack.plugins')
 
-/**
- * Create Webpack config with argument which passed from NPM script
- * @param  {Object} args
- * @param  {string} args.production
- * @return {Object}
- */
-function configure ({ production } = {}) {
-  const nodeEnv = production ? 'production' : 'development'
-  const isDev = nodeEnv === 'development'
+const PORT = process.env.PORT || 3000
+const noParse = new RegExp([
+  'rimraf',
+  'express' // for Heroku
+].join('|'))
+
+function configure (env = {}, args) {
+  const mode = env.production ? 'production' : 'development'
   const entry = {
     app: ['./index'],
     vendor: [
@@ -21,62 +24,81 @@ function configure ({ production } = {}) {
       'classnames'
     ]
   }
-  const module = {
-    noParse: config.noParse
+  const output = {
+    path: distPath,
+    filename: '[name].js',
+    publicPath: '/'
   }
-  const resolve = {
-    alias: {
-      '@component': `${srcPath}/components`,
-      '@utils': `${srcPath}/utils`,
-      '@styles': `${srcPath}/styles`,
-      '@assets': `${srcPath}/assets`
+  const optimization = {
+    splitChunks: {
+      cacheGroups: {
+        commons: {
+          test: /[\\/]node_modules[\\/]/,
+          name: 'vendor',
+          chunks: 'all',
+          minSize: 1,
+          reuseExistingChunk: true
+        }
+      }
     }
   }
-
-  if (nodeEnv === 'development') {
-    entry.app.unshift(
-      'react-hot-loader/patch',
-      `webpack-dev-server/client?http://localhost:${config.port}`,
-      'webpack/hot/only-dev-server'
-    )
-    module.rules = [
-      Object.assign(Loaders.get('eslint'), { enforce: 'pre' }),
-      Object.assign(Loaders.get('javascript'), { use: ['react-hot-loader/webpack', 'babel-loader'] }),
+  const module = {
+    noParse,
+    rules: [
+      ...Loaders.get('javascript svg'),
       {
         test: /\.css$/,
         include: [srcPath],
-        use: Loaders.get('style css postcss')
+        use: mode === 'development'
+          ? Loaders.get('style css postcss')
+          : Plugins.extractCSS({
+            fallback: Loaders.get('style'),
+            use: Loaders.get('css postcss')
+          })
       }
     ]
-  } else {
-    module.rules = [
-      Loaders.get('javascript'),
-      {
-        test: /\.css$/,
-        include: srcPath,
-        use: Plugins.extractCSS({
-          fallback: Loaders.get('style'),
-          use: Loaders.get('css postcss')
-        })
+  }
+  const devtool = mode === 'development' ? 'cheap-module-eval-source-map' : 'source-map'
+  const plugins = Plugins.get(mode)
+  const config = {
+    target: 'web',
+    context: srcPath,
+    resolve: {
+      symlinks: false,
+      alias: {
+        '~components': resolve('src', 'components'),
+        '~utils': resolve('src', 'utils'),
+        '~styles': resolve('src', 'styles'),
+        '~assets': assetsPath
       }
-    ]
+    },
+    mode,
+    entry,
+    output,
+    optimization,
+    module,
+    devtool,
+    plugins
   }
 
-  return {
-    target: 'web',
-    output: {
-      path: pubPath,
-      filename: '[name].js',
-      publicPath: '/'
-    },
-    plugins: Plugins.get(nodeEnv),
-    context: srcPath,
-    devtool: isDev ? 'cheap-module-source-map' : 'nosources-source-map',
-    devServer: isDev ? config.devServer : undefined,
-    resolve,
-    entry,
-    module
+  if (mode === 'development') {
+    config.devServer = {
+      hot: true,
+      host: '0.0.0.0',
+      port: PORT,
+      compress: true,
+      contentBase: assetsPath,
+      disableHostCheck: true, // for Heroku
+      historyApiFallback: true
+    }
+
+    config.entry.app.unshift(
+      `webpack-dev-server/client?http://localhost:${PORT}`,
+      'webpack/hot/only-dev-server'
+    )
   }
+
+  return config
 }
 
 module.exports = configure
