@@ -1,45 +1,40 @@
 const webpack = require('webpack')
 const ExtractTextPlugin = require('extract-text-webpack-plugin')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
-const { assetsPath } = require('./path')
+const Path = require('../libs/path')
 
 /**
- * Plugins
- * @namespace Plugins
+ * Default plugin(s)
  */
 const PLUGINS = [
   new HtmlWebpackPlugin({
     inject: 'body',
     chunks: ['vendor', 'app'],
     filename: 'index.html',
-    template: `${assetsPath}/index.html`
+    template: `${Path.resolve('src', 'assets')}/index.html`
   })
 ]
 
 /**
   * Get plugins
-  * @param  {String} nodeEnv
+  * @param  {string} nodeEnv
   * @return {Array}
   */
 function get (nodeEnv) {
   const devPlugins = [
-    new webpack.HotModuleReplacementPlugin(),
-    new webpack.NamedModulesPlugin()
+    new webpack.HotModuleReplacementPlugin()
   ]
+
   const prodPugins = [
     new ExtractTextPlugin('[name].css')
   ]
+
   const plugins = [
     ...PLUGINS,
     ...(nodeEnv === 'development' ? devPlugins : prodPugins)
   ]
 
-  return [
-    ...plugins,
-    new webpack.DefinePlugin({
-      'process.env.NODE_ENV': JSON.stringify(nodeEnv)
-    })
-  ]
+  return plugins
 }
 
 /**
