@@ -56,36 +56,25 @@ const LOADERS = {
 
 /**
   * Get loaders
-  * @param  {boolean?} isFallback
+  * @param  {...string} [...types]
   * @return {Function}
   */
-function _get (isFallback) {
-  return (...types) => {
-    const loaders = types.reduce((acc, loaderName) => {
-      const loader = LOADERS[loaderName]
+function _get (...types) {
+  const loaders = types.reduce((acc, loaderName) => {
+    const loader = LOADERS[loaderName]
 
-      if (!loader) {
-        console.log(`${loaderName}-loader not found!`.underline.red)
+    if (!loader) {
+      console.log(`${loaderName}-loader not found!`.underline.red)
 
-        return acc
-      }
-
-      return [...acc, loader]
-    }, [])
-
-    if (isFallback) {
-      const [loader] = loaders
-
-      return loader
+      return acc
     }
 
-    return loaders
-  }
+    return [...acc, loader]
+  }, [])
+
+  return loaders
 }
 
-const get = _get()
-get.fallback = _get(false)('style')
-
 module.exports = {
-  get
+  get: _get
 }
