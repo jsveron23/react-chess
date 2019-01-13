@@ -11,7 +11,10 @@ const VENDOR = [
   'react',
   'react-dom',
   'prop-types',
-  'classnames'
+  'classnames',
+  'redux',
+  'redux-thunk',
+  'react-redux'
 ]
 
 const DEV_SERVER = {
