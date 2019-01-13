@@ -25,6 +25,9 @@ function configure (env = {}) {
     devServer: isDev ? DEV_SERVER : undefined,
     target: TARGET,
     context: Path.resolve('src'),
+    performance: {
+      hints: isDev ? false : 'warning'
+    },
     resolve: {
       symlinks: false,
       alias: ALIAS
@@ -42,8 +45,8 @@ function configure (env = {}) {
       vendor: VENDOR
     },
     output: {
-      path: Path.resolve('dist'),
-      filename: '[name].js',
+      path: Path.resolve('public'),
+      filename: isDev ? '[name].js' : '[name].[contenthash].js',
       publicPath: '/'
     },
     optimization: {
@@ -64,17 +67,15 @@ function configure (env = {}) {
     module: {
       noParse: NO_PARSE,
       rules: [
+        ...Loaders.get('javascript', 'svg'),
         {
           test: /\.css$/,
           include: [Path.resolve('src')],
           use: isDev
             ? Loaders.get('style', 'css', 'postcss')
-            : Plugins.extractCSS({
-              fallback: Loaders.get.fallback,
-              use: Loaders.get('css', 'postcss')
-            })
+            : [Plugins.get.extractCSSLoader, ...Loaders.get('css', 'postcss')]
         }
-      ].concat(Loaders.get('javascript', 'svg'))
+      ]
     }
   }
 
