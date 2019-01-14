@@ -17,7 +17,7 @@ const composeMiddleware = (...middleware) => {
 
 const configureStore = (initialState = {}) => {
   return createStore(
-    {},
+    function () {},
     initialState,
     composeMiddleware(thunk)
   )
