@@ -42,18 +42,51 @@ describe('utils/is.js', () => {
     })
   })
 
-  describe('#isExist', () => {
-    it('Should return false', () => {
+  describe('#isExist: Type test', () => {
+    it('String', () => {
+      expect(isExist('false')).toBeTruthy()
       expect(isExist('')).toBeFalsy()
-      expect(isExist({})).toBeFalsy()
-      expect(isExist([])).toBeFalsy()
-      expect(isExist({ hello: 'world' }, '')).toBeFalsy()
     })
 
-    it('Should return true', () => {
-      expect(isExist(true)).toBeTruthy()
+    it('Number', () => {
       expect(isExist(0)).toBeTruthy()
-      expect(isExist(true, 'hello world', 0)).toBeTruthy()
+      expect(isExist(1)).toBeTruthy()
+      expect(isExist(NaN)).toBeFalsy()
+    })
+
+    it('Array', () => {
+      expect(isExist([false])).toBeTruthy()
+      expect(isExist([])).toBeFalsy()
+    })
+
+    it('Object', () => {
+      expect(isExist('hello world')).toBeTruthy()
+      expect(isExist('')).toBeFalsy()
+    })
+
+    it('Function', () => {
+      expect(isExist(function () {})).toBeTruthy()
+      expect(isExist(() => {})).toBeTruthy()
+    })
+
+    it('Symbol', () => {
+      expect(isExist(Symbol(''))).toBeTruthy()
+      expect(isExist(Symbol(false))).toBeTruthy()
+    })
+
+    it('undefined, null', () => {
+      expect(isExist(undefined)).toBeFalsy()
+      expect(isExist(null)).toBeFalsy()
+    })
+  })
+
+  describe('Multiple arguments test', () => {
+    it('#isEmpty', () => {
+      expect(isEmpty('false', { 0: false }, [0], function () {})).toBeFalsy()
+    })
+
+    it('#isExist', () => {
+      expect(isExist(0, false, {}, [])).toBeFalsy()
     })
   })
 })
