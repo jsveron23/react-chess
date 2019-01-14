@@ -1,26 +1,12 @@
-import {
-  createStore,
-  applyMiddleware
-} from 'redux'
+import { createStore } from 'redux'
 import thunk from 'redux-thunk'
-import { composeWithDevTools } from 'redux-devtools-extension'
-
-const composeMiddleware = (...middleware) => {
-  middleware = applyMiddleware(...middleware)
-
-  if (process.env.NODE_ENV !== 'production') {
-    return composeWithDevTools(middleware)
-  }
-
-  return middleware
-}
+import composeMiddleware from './composeMiddleware'
 
 const configureStore = (initialState = {}) => {
-  return createStore(
-    function () {},
-    initialState,
-    composeMiddleware(thunk)
-  )
+  const middleware = composeMiddleware(thunk)
+  const reducer = function () {}
+
+  return createStore(reducer, initialState, middleware)
 }
 
 const store = configureStore()

@@ -5,10 +5,12 @@ const Path = require('./libs/path')
 
 const PORT = process.env.PORT || 3000
 
-const NO_PARSE = new RegExp([
-  'rimraf',
-  'express' // for Heroku
-].join('|'))
+const NO_PARSE = new RegExp(
+  [
+    'rimraf',
+    'express' // for Heroku
+  ].join('|')
+)
 
 const VENDOR = [
   'react',
@@ -39,6 +41,18 @@ const DEVTOOL = 'cheap-module-eval-source-map'
 const DEVTOOL_PROD = 'source-map'
 
 const TARGET = 'web'
+
+const SPLIT_CHUNKS = {
+  cacheGroups: {
+    commons: {
+      test: /[\\/]node_modules[\\/]/,
+      name: 'vendor',
+      chunks: 'all',
+      minSize: 1,
+      reuseExistingChunk: true
+    }
+  }
+}
 
 /**
  * Webpack loaders
@@ -84,12 +98,15 @@ const LOADERS = {
 
   svg: {
     test: /\.svg$/,
-    use: ['babel-loader', {
-      loader: 'react-svg-loader',
-      options: {
-        jsx: true
+    use: [
+      'babel-loader',
+      {
+        loader: 'react-svg-loader',
+        options: {
+          jsx: true
+        }
       }
-    }]
+    ]
   }
 }
 
@@ -102,9 +119,7 @@ const DEFAULT_PLUGINS = [
   })
 ]
 
-const DEV_PLUGINS = [
-  new webpack.HotModuleReplacementPlugin()
-]
+const DEV_PLUGINS = [new webpack.HotModuleReplacementPlugin()]
 
 const PROD_PLUGINS = [
   new MiniCssExtractPlugin({
@@ -121,6 +136,7 @@ module.exports = {
   DEVTOOL,
   DEVTOOL_PROD,
   TARGET,
+  SPLIT_CHUNKS,
   LOADERS,
   DEFAULT_PLUGINS,
   DEV_PLUGINS,

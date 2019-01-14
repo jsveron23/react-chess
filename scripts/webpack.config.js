@@ -9,7 +9,8 @@ const {
   DEVTOOL,
   DEVTOOL_PROD,
   DEV_SERVER,
-  TARGET
+  TARGET,
+  SPLIT_CHUNKS
 } = require('./config')
 
 /**
@@ -36,10 +37,13 @@ function configure (env = {}) {
     plugins: Plugins.get(mode),
     entry: {
       app: [
-        ...(isDev ? [
-          `webpack-dev-server/client?http://localhost:${PORT}`,
-          'webpack/hot/only-dev-server'
-        ] : []),
+        ...(isDev
+          ? [
+            `webpack-dev-server/client?http://localhost:${PORT}`,
+            'webpack/hot/only-dev-server'
+          ]
+          : []),
+        '@babel/polyfill',
         './index'
       ],
       vendor: VENDOR
@@ -52,17 +56,7 @@ function configure (env = {}) {
     optimization: {
       namedModules: isDev,
       nodeEnv: mode,
-      splitChunks: {
-        cacheGroups: {
-          commons: {
-            test: /[\\/]node_modules[\\/]/,
-            name: 'vendor',
-            chunks: 'all',
-            minSize: 1,
-            reuseExistingChunk: true
-          }
-        }
-      }
+      splitChunks: SPLIT_CHUNKS
     },
     module: {
       noParse: NO_PARSE,
@@ -73,10 +67,7 @@ function configure (env = {}) {
           include: [Path.resolve('src')],
           use: isDev
             ? Loaders.get('style', 'css', 'postcss')
-            : [
-              Plugins.get.extractCSSLoader,
-              ...Loaders.get('css', 'postcss')
-            ]
+            : [Plugins.get.extractCSSLoader, ...Loaders.get('css', 'postcss')]
         }
       ]
     }

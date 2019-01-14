@@ -1,8 +1,8 @@
 /**
  * Get absolute path
- * @param  {boolean} isWin
- * @param  {string}  cwd
- * @return {string}
+ * @param  {boolean}  isWin
+ * @param  {string}   cwd
+ * @return {Function}
  */
 function _resolve (isWin, cwd) {
   const separator = isWin ? '\\' : '/'

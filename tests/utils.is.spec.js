@@ -1,7 +1,4 @@
-import {
-  isEmpty,
-  isExist
-} from './'
+import { isEmpty, isExist } from '../src/utils/is'
 
 describe('utils/is.js', () => {
   describe('#isEmpty: Type test', () => {
