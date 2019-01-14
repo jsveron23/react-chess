@@ -1,36 +1,19 @@
-const webpack = require('webpack')
 const MiniCssExtractPlugin = require('mini-css-extract-plugin')
-const HtmlWebpackPlugin = require('html-webpack-plugin')
-const Path = require('../libs/path')
+const {
+  DEFAULT_PLUGINS,
+  DEV_PLUGINS,
+  PROD_PLUGINS
+} = require('../config')
 
 /**
   * Get plugins
   * @return {Function}
   */
 function _get () {
-  const defaultPlugins = [
-    new HtmlWebpackPlugin({
-      inject: 'body',
-      chunks: ['vendor', 'app'],
-      filename: 'index.html',
-      template: `${Path.resolve('src', 'assets')}/index.html`
-    })
-  ]
-
   return (nodeEnv) => {
-    const devPlugins = [
-      new webpack.HotModuleReplacementPlugin()
-    ]
-
-    const prodPugins = [
-      new MiniCssExtractPlugin({
-        filename: nodeEnv === 'development' ? '[name].css' : '[name].[hash].css'
-      })
-    ]
-
     const plugins = [
-      ...defaultPlugins,
-      ...(nodeEnv === 'development' ? devPlugins : prodPugins)
+      ...DEFAULT_PLUGINS,
+      ...(nodeEnv === 'development' ? DEV_PLUGINS : PROD_PLUGINS)
     ]
 
     return plugins
