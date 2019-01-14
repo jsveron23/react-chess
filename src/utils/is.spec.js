@@ -4,20 +4,41 @@ import {
 } from './'
 
 describe('utils/is.js', () => {
-  describe('#isEmpty', () => {
-    it('Should return false', () => {
-      expect(isEmpty('hello world')).toBeFalsy()
-      expect(isEmpty(true)).toBeFalsy()
-      expect(isEmpty(0)).toBeFalsy()
-      expect(isEmpty(function () {})).toBeFalsy()
-      expect(isEmpty(null, 'hello world')).toBeFalsy()
+  describe('#isEmpty: Type test', () => {
+    it('String', () => {
+      expect(isEmpty('false')).toBeFalsy()
+      expect(isEmpty('')).toBeTruthy()
     })
 
-    it('Should return true', () => {
+    it('Number', () => {
+      expect(isEmpty(0)).toBeFalsy()
+      expect(isEmpty(1)).toBeFalsy()
+      expect(isEmpty(NaN)).toBeTruthy()
+    })
+
+    it('Array', () => {
+      expect(isEmpty([false])).toBeFalsy()
+      expect(isEmpty([])).toBeTruthy()
+    })
+
+    it('Object', () => {
+      expect(isEmpty('hello world')).toBeFalsy()
+      expect(isEmpty('')).toBeTruthy()
+    })
+
+    it('Function', () => {
+      expect(isEmpty(function () {})).toBeFalsy()
+      expect(isEmpty(() => {})).toBeFalsy()
+    })
+
+    it('Symbol', () => {
+      expect(isEmpty(Symbol(''))).toBeFalsy()
+      expect(isEmpty(Symbol(false))).toBeFalsy()
+    })
+
+    it('undefined, null', () => {
       expect(isEmpty(undefined)).toBeTruthy()
       expect(isEmpty(null)).toBeTruthy()
-      expect(isEmpty('')).toBeTruthy()
-      expect(isEmpty(undefined, null, '', {}, [])).toBeTruthy()
     })
   })
 

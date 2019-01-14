@@ -1,6 +1,10 @@
 const _isEmpty = (v) => {
-  if (typeof v === 'function') {
+  if (typeof v === 'function' || typeof v === 'symbol') {
     return false
+  }
+
+  if (typeof v === 'number' && Number.isNaN(v)) {
+    return true
   }
 
   return (
