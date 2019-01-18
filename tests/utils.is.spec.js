@@ -79,11 +79,13 @@ describe('utils/is.js', () => {
 
   describe('Multiple arguments test', () => {
     it('#isEmpty', () => {
-      expect(isEmpty('false', { 0: false }, [0], function () {})).toBeFalsy()
+      expect(isEmpty('', { 0: false }, [0], function () {})).toBeFalsy()
+      expect(isEmpty.or('', { 0: false }, [0], function () {})).toBeTruthy()
     })
 
     it('#isExist', () => {
-      expect(isExist(0, false, {}, [])).toBeFalsy()
+      expect(isExist(null, undefined, '', {}, [])).toBeFalsy()
+      expect(isExist.or(null, undefined, 'sdfds', {}, [])).toBeTruthy()
     })
   })
 })
