@@ -33,10 +33,22 @@ function _isExist (isSome = false) {
  * ================
  */
 
-const isEmpty = _isEmpty()
+export const isEmpty = _isEmpty()
 isEmpty.or = _isEmpty(true)
 
-const isExist = _isExist()
+export const isExist = _isExist()
 isExist.or = _isExist(true)
 
-export { isEmpty, isExist }
+export const isArray = (...x) => {
+  const _isArray = (v) => Array.isArray(v)
+
+  return x.every(_isArray)
+}
+
+export const isObject = (...x) => {
+  const _isObject = (v) => {
+    return !!v && v.constructor === Object
+  }
+
+  return x.every(_isObject)
+}

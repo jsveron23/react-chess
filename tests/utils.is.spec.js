@@ -1,4 +1,4 @@
-import { isEmpty, isExist } from '../src/utils/is'
+import { isEmpty, isExist, isArray, isObject } from '../src/utils/is'
 
 describe('utils/is.js', () => {
   describe('#isEmpty: Type test', () => {
@@ -86,6 +86,32 @@ describe('utils/is.js', () => {
     it('#isExist', () => {
       expect(isExist(null, undefined, '', {}, [])).toBeFalsy()
       expect(isExist.or(null, undefined, 'sdfds', {}, [])).toBeTruthy()
+    })
+  })
+
+  describe('#isArray', () => {
+    it('Mulitple arguments also alowed', () => {
+      expect(isArray([])).toBeTruthy()
+      expect(isArray({})).toBeFalsy()
+      expect(isArray(function () {})).toBeFalsy()
+      expect(isArray(0)).toBeFalsy()
+      expect(isArray(null)).toBeFalsy()
+      expect(isArray(undefined)).toBeFalsy()
+      expect(isArray(NaN)).toBeFalsy()
+      expect(isArray([], [-1], [''], [{}])).toBeTruthy()
+    })
+  })
+
+  describe('#isObject', () => {
+    it('Mulitple arguments also alowed', () => {
+      expect(isObject([])).toBeFalsy()
+      expect(isObject({})).toBeTruthy()
+      expect(isObject(function () {})).toBeFalsy()
+      expect(isObject(0)).toBeFalsy()
+      expect(isObject(null)).toBeFalsy()
+      expect(isObject(undefined)).toBeFalsy()
+      expect(isObject(NaN)).toBeFalsy()
+      expect(isObject({}, { a: [-1] }, Object())).toBeTruthy()
     })
   })
 })

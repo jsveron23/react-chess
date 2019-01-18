@@ -3,6 +3,7 @@
 - Implement Chess game without Chess library
 - To study React hooks
 - Reduce HOC pattern
+- Reduce ternary operator
 - Test driven development
 - The goal is implements, not for completing
 
