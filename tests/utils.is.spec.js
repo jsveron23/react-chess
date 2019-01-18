@@ -1,4 +1,12 @@
-import { isEmpty, isExist, isArray, isObject } from '../src/utils/is'
+import {
+  isEmpty,
+  isExist,
+  isString,
+  isNumber,
+  isArray,
+  isObject,
+  isFunction
+} from '../src/utils/is'
 
 describe('utils/is.js', () => {
   describe('#isEmpty: Type test', () => {
@@ -89,29 +97,83 @@ describe('utils/is.js', () => {
     })
   })
 
+  describe('#isString', () => {
+    it('Mulitple arguments also alowed', () => {
+      expect(isString('')).toBeTruthy()
+      expect(isString(``)).toBeTruthy()
+      expect(isString([])).toBeFalsy()
+      expect(isString({})).toBeFalsy()
+      expect(isString(function () {})).toBeFalsy()
+      expect(isString(0)).toBeFalsy()
+      expect(isString(NaN)).toBeFalsy()
+      expect(isString(Infinity)).toBeFalsy()
+      expect(isString(null)).toBeFalsy()
+      expect(isString(undefined)).toBeFalsy()
+      expect(isString('', ``)).toBeTruthy()
+    })
+  })
+
+  describe('#isNumber', () => {
+    it('Mulitple arguments also alowed', () => {
+      expect(isNumber('')).toBeFalsy()
+      expect(isNumber(``)).toBeFalsy()
+      expect(isNumber([])).toBeFalsy()
+      expect(isNumber({})).toBeFalsy()
+      expect(isNumber(function () {})).toBeFalsy()
+      expect(isNumber(0)).toBeTruthy()
+      expect(isNumber(NaN)).toBeTruthy()
+      expect(isNumber(Infinity)).toBeTruthy()
+      expect(isNumber(null)).toBeFalsy()
+      expect(isNumber(undefined)).toBeFalsy()
+      expect(isNumber(-1, 0, 1)).toBeTruthy()
+    })
+  })
+
   describe('#isArray', () => {
     it('Mulitple arguments also alowed', () => {
+      expect(isArray('')).toBeFalsy()
+      expect(isArray(``)).toBeFalsy()
       expect(isArray([])).toBeTruthy()
       expect(isArray({})).toBeFalsy()
       expect(isArray(function () {})).toBeFalsy()
       expect(isArray(0)).toBeFalsy()
+      expect(isArray(NaN)).toBeFalsy()
+      expect(isArray(Infinity)).toBeFalsy()
       expect(isArray(null)).toBeFalsy()
       expect(isArray(undefined)).toBeFalsy()
-      expect(isArray(NaN)).toBeFalsy()
       expect(isArray([], [-1], [''], [{}])).toBeTruthy()
     })
   })
 
   describe('#isObject', () => {
     it('Mulitple arguments also alowed', () => {
+      expect(isObject('')).toBeFalsy()
+      expect(isObject(``)).toBeFalsy()
       expect(isObject([])).toBeFalsy()
       expect(isObject({})).toBeTruthy()
       expect(isObject(function () {})).toBeFalsy()
       expect(isObject(0)).toBeFalsy()
+      expect(isObject(NaN)).toBeFalsy()
+      expect(isObject(Infinity)).toBeFalsy()
       expect(isObject(null)).toBeFalsy()
       expect(isObject(undefined)).toBeFalsy()
-      expect(isObject(NaN)).toBeFalsy()
       expect(isObject({}, { a: [-1] }, Object())).toBeTruthy()
+    })
+  })
+
+  describe('#isFunction', () => {
+    it('Mulitple arguments also alowed', () => {
+      expect(isFunction('')).toBeFalsy()
+      expect(isFunction(``)).toBeFalsy()
+      expect(isFunction([])).toBeFalsy()
+      expect(isFunction({})).toBeFalsy()
+      expect(isFunction(function () {})).toBeTruthy()
+      expect(isFunction(0)).toBeFalsy()
+      expect(isFunction(null)).toBeFalsy()
+      expect(isFunction(undefined)).toBeFalsy()
+      expect(isFunction(NaN)).toBeFalsy()
+      expect(isFunction(Infinity)).toBeFalsy()
+      expect(isFunction(function () {}, () => {})).toBeTruthy()
     })
   })
 })
