@@ -1,4 +1,4 @@
-import { compose, pipe } from '../src/utils/fp'
+import { compose, pipe } from '../../src/utils/fp'
 
 describe('utils/fp.js', () => {
   const _plus = (a) => (b) => a + b

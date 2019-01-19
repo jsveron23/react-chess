@@ -1,7 +1,7 @@
 import { applyMiddleware } from 'redux'
 import { composeWithDevTools } from 'redux-devtools-extension'
 
-function composeMiddleware (env) {
+function createComposeMiddleware (env) {
   return (...middlewares) => {
     const composedMiddleware = applyMiddleware(...middlewares)
 
@@ -11,7 +11,7 @@ function composeMiddleware (env) {
   }
 }
 
-const applyComposeMiddleware = composeMiddleware(process.env.NODE_ENV)
-applyComposeMiddleware.withEnv = composeMiddleware
+const composeMiddleware = createComposeMiddleware(process.env.NODE_ENV)
+composeMiddleware.withEnv = createComposeMiddleware
 
-export default applyComposeMiddleware
+export default composeMiddleware

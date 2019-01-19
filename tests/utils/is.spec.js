@@ -6,7 +6,7 @@ import {
   isArray,
   isObject,
   isFunction
-} from '../src/utils/is'
+} from '../../src/utils/is'
 
 describe('utils/is.js', () => {
   describe('#isEmpty: Type test', () => {

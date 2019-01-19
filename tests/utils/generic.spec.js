@@ -10,7 +10,7 @@ import {
   diffArr,
   diffObj,
   union
-} from '../src/utils/generic'
+} from '../../src/utils/generic'
 
 describe('utils/generic.js', () => {
   describe('#flatten', () => {
