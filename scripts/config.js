@@ -19,7 +19,8 @@ const VENDOR = [
   'classnames',
   'redux',
   'redux-thunk',
-  'react-redux'
+  'react-redux',
+  'autobind-decorator'
 ]
 
 const DEV_SERVER = {
@@ -115,7 +116,10 @@ const DEFAULT_PLUGINS = [
     inject: 'body',
     chunks: ['vendor', 'app'],
     filename: 'index.html',
-    template: `${Path.resolve('src', 'assets')}/index.html`
+    template: `${Path.resolve('src', 'assets')}/index.html`,
+    minify: {
+      removeComments: true
+    }
   })
 ]
 

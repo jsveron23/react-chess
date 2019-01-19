@@ -5,25 +5,46 @@ import { isExist } from './is'
  * =====================
  */
 
+/**
+ * Make array item flat
+ * @param  {Array} [items=[]]
+ * @return {Array}
+ */
 export const flatten = (items = []) => {
   return items.reduce((v, item) => {
     return v.concat(Array.isArray(item) ? flatten(item) : item)
   }, [])
 }
 
+/**
+ * Get first item from array
+ * @param  {Array} [items=[]]
+ * @return {Array}
+ */
 export const getFirst = (items = []) => {
   return [...items].shift()
 }
 
+/**
+ * Get last item from array
+ * @param  {Array} [items=[]]
+ * @return {Array}
+ */
 export const getLast = (items = []) => {
   return [...items].pop()
 }
 
+/**
+ * Remove empty item for array
+ * @param  {Array} [items=[]]
+ * @return {Array}
+ */
 export const diet = (items = []) => {
   return items.filter((item) => isExist(item))
 }
 
 /**
+ * Create array(s)
  * @param  {...Array} [...x]
  * @return {Array}
  */
@@ -53,7 +74,7 @@ export const replaceLast = (items = []) => (x) => {
  * Get intersect props between 2 arrays
  * @see {@link http://2ality.com/2015/01/es6-set-operations.html}
  */
-export const intersection = (a) => (b) => {
+export const intersection = (a = []) => (b = []) => {
   if (typeof a !== typeof b) {
     return []
   }

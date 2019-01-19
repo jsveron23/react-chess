@@ -3,14 +3,20 @@
  * ================
  */
 
+/**
+ * Compose functions
+ * @param  {...Function} [...fns]
+ * @return {*}
+ */
 export const compose = (...fns) => (x) => {
-  return fns.reduceRight((v, next) => {
-    return next(v)
-  }, x)
+  return fns.reduceRight((v, next) => next(v), x)
 }
 
+/**
+ * Compose functions by pipe
+ * @param  {...Function} [...fns]
+ * @return {*}
+ */
 export const pipe = (...fns) => (x) => {
-  return fns.reduce((v, f) => {
-    return f(v)
-  }, x)
+  return fns.reduce((v, f) => f(v), x)
 }

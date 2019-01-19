@@ -18,7 +18,7 @@ open browser, http://localhost:3000
 
 - Reduce HOC pattern
 - Reduce ternary operator (Use it only for simple condition)
-- Uses `autobind decorator` instead of arrow function (React)
+- Reduce arrow function
 
 ## Example
 
