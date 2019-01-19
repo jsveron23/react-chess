@@ -50,7 +50,7 @@ export const replaceLast = (items = []) => (x) => {
 }
 
 /**
- * Get intersect props between 2 arguments
+ * Get intersect props between 2 arrays
  * @see {@link http://2ality.com/2015/01/es6-set-operations.html}
  */
 export const intersection = (a) => (b) => {
@@ -60,27 +60,38 @@ export const intersection = (a) => (b) => {
 
   const aSet = new Set(Array.isArray(a) ? a : toArray(a))
   const bSet = new Set(Array.isArray(b) ? b : toArray(b))
-  const filtered = new Set(
-    [...aSet].filter((x) => {
-      return bSet.has(x)
-    })
-  )
+  const filtered = new Set([...aSet].filter((x) => bSet.has(x)))
 
   return Array.from(filtered)
 }
 
 /**
- * Get different props between 2 arguments
+ * Get difference props between 2 objects
+ * @see {@link https://stackoverflow.com/a/37396358/3216812}
+ */
+export const diffObj = (a = {}) => (b = {}) => {
+  return Object.keys(b).reduce((acc, key) => {
+    const bVal = b[key]
+
+    if (a[key] === bVal) {
+      return acc
+    }
+
+    return {
+      ...acc,
+      [key]: bVal
+    }
+  }, {})
+}
+
+/**
+ * Get difference props between 2 arrays
  * @see {@link http://2ality.com/2015/01/es6-set-operations.html}
  */
-export const diff = (a) => (b) => {
+export const diffArr = (a = []) => (b = []) => {
   const aSet = new Set(a)
   const bSet = new Set(b)
-  const filtered = new Set(
-    [...aSet].filter((x) => {
-      return !bSet.has(x)
-    })
-  )
+  const filtered = new Set([...aSet].filter((x) => !bSet.has(x)))
 
   return Array.from(filtered)
 }

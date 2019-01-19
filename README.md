@@ -2,8 +2,6 @@
 
 - Implement Chess game without Chess library
 - To study React hooks
-- Reduce HOC pattern
-- Reduce ternary operator
 - Test driven development
 - The goal is implements, not for completing
 
@@ -15,6 +13,11 @@ npm start
 ```
 
 open browser, http://localhost:3000
+
+## Code
+
+- Reduce HOC pattern
+- Reduce ternary operator (Use it only for simple condition)
 
 ## Example
 

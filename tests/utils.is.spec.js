@@ -18,7 +18,8 @@ describe('utils/is.js', () => {
     it('Number', () => {
       expect(isEmpty(0)).toBeFalsy()
       expect(isEmpty(1)).toBeFalsy()
-      expect(isEmpty(NaN)).toBeTruthy()
+      expect(isEmpty(NaN)).toBeFalsy()
+      expect(isEmpty(Infinity)).toBeFalsy()
     })
 
     it('Array', () => {
@@ -56,7 +57,8 @@ describe('utils/is.js', () => {
     it('Number', () => {
       expect(isExist(0)).toBeTruthy()
       expect(isExist(1)).toBeTruthy()
-      expect(isExist(NaN)).toBeFalsy()
+      expect(isExist(NaN)).toBeTruthy()
+      expect(isExist(Infinity)).toBeTruthy()
     })
 
     it('Array', () => {

@@ -8,10 +8,6 @@ function emptyFn (v) {
     return false
   }
 
-  if (typeof v === 'number' && Number.isNaN(v)) {
-    return true
-  }
-
   return (
     v === null ||
     v === undefined ||
@@ -66,7 +62,7 @@ export const isString = (...x) => {
 }
 
 /**
- * Is number? (NaN check as not a number)
+ * Is number?
  * @param  {*}       x
  * @return {boolean}
  */

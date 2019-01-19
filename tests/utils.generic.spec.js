@@ -7,7 +7,8 @@ import {
   replaceFirst,
   replaceLast,
   intersection,
-  diff,
+  diffArr,
+  diffObj,
   union
 } from '../src/utils/generic'
 
@@ -78,16 +79,29 @@ describe('utils/generic.js', () => {
     })
   })
 
-  describe('#diff', () => {
-    it('Get different data between iterable objects', () => {
+  describe('#diffArr', () => {
+    it('Get different data between arrays', () => {
       const a = [1, 2, 3, 4, 5]
       const b = [1, 3, 7, 2, 9]
-      const ab = diff(a)(b)
+      const ab = diffArr(a)(b)
 
       expect(ab).toContain(4)
       expect(ab).toContain(5)
       expect(ab).not.toContain(7)
       expect(ab).not.toContain(9)
+    })
+  })
+
+  describe('#diffObj', () => {
+    it('Get different data between objects', () => {
+      const a = { a: 'a', b: 'b', c: [], d: {} }
+      const b = { a: 'b', b: 'b', f: [], e: {} }
+
+      expect(diffObj(a)(b)).toEqual({
+        a: 'b',
+        f: [],
+        e: {}
+      })
     })
   })
 
