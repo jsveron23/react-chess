@@ -14,3 +14,7 @@ button {
   color: #c0c0c0;
   background-color: #fff;
 }
+
+:global(.is-dark) {
+  background-color: rgb(12, 11, 9);
+}

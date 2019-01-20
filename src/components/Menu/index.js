@@ -28,7 +28,7 @@ MenuItems.propTypes = {
 
 const Menu = ({ isMatching, items, onClick }) => {
   const cls = cx(css.menu, {
-    'l-flex-row': isMatching
+    [css.menuIngame]: isMatching
   })
 
   return (
