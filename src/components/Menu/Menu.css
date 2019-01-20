@@ -1,0 +1,7 @@
+.menu {
+  & .menu-item {
+    & button {
+      width: 150px;
+    }
+  }
+}

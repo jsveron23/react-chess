@@ -1,0 +1,10 @@
+.logo {
+  text-align: center;
+  font-weight: bold;
+  font-size: 200%;
+  margin: 20px 0 10px;
+
+  & .logo-img {
+    width: 30%;
+  }
+}

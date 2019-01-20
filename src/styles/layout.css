@@ -1,3 +1,7 @@
+:global(#root) {
+  height: 100%;
+}
+
 :global(.l-flex-row) {
   display: flex;
   flex-direction: row;
@@ -6,4 +10,9 @@
 :global(.l-flex-col) {
   display: flex;
   flex-direction: column;
+}
+
+:global(.l-flex-middle) {
+  display: flex;
+  align-items: center;
 }
