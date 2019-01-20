@@ -4,6 +4,7 @@
 - To study React hooks
 - Test driven development
 - The goal is implements, not for completing
+- After implements finish, wrapping with `Electron.js`
 
 ## Installation & Start
 

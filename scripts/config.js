@@ -8,6 +8,19 @@ const PORT = process.env.PORT || 3000
 const NO_PARSE = new RegExp(
   [
     'rimraf',
+    'prettier',
+    'prettier-eslint',
+    'enzyme',
+    'enzyme-adapter-react-16',
+    'enzyme-to-json',
+    'eslint',
+    'eslint-config-standard',
+    'eslint-plugin-import',
+    'eslint-plugin-node',
+    'eslint-plugin-promise',
+    'eslint-plugin-react',
+    'eslint-plugin-standard',
+    'jest',
     'express' // for Heroku
   ].join('|')
 )
@@ -81,7 +94,7 @@ const LOADERS = {
     loader: 'css-loader',
     options: {
       sourceMap: true,
-      module: true,
+      modules: true,
       importLoaders: 1,
       localIdentName: '[local]--[hash:base64:5]',
       camelCase: 'only'
