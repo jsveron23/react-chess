@@ -4,7 +4,10 @@ module.exports = {
   plugins: {
     'postcss-import': { addDependencyTo: webpack },
     'postcss-preset-env': {
-      browsers: ['last 2 versions', '> 5%']
+      features: {
+        'nesting-rules': true,
+        browsers: ['last 2 versions', '> 5%']
+      }
     }
   }
 }
