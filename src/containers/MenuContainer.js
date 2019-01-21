@@ -16,7 +16,7 @@ const mapDispatchToProps = (dispatch) => {
     onClick: (name) => (evt) => {
       evt.preventDefault()
 
-      if (name !== 'Undo') {
+      if (!['Undo', 'Human vs. CPU'].includes(name)) {
         dispatch(toggleMatchStatus())
       }
     }
