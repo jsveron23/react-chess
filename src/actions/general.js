@@ -1,7 +1,7 @@
 import * as types from '~/actions'
 
-export function setMatchStatus () {
+export function toggleMatchStatus () {
   return {
-    type: types.SET_MATCH_STATUS
+    type: types.TOGGLE_MATCH_STATUS
   }
 }

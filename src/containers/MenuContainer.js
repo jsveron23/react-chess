@@ -1,5 +1,5 @@
 import { connect } from 'react-redux'
-import { setMatchStatus } from '~/actions/general'
+import { toggleMatchStatus } from '~/actions/general'
 import { Menu } from '~/components'
 
 const mapStateToProps = ({ general }) => {
@@ -17,7 +17,7 @@ const mapDispatchToProps = (dispatch) => {
       evt.preventDefault()
 
       if (name !== 'Undo') {
-        dispatch(setMatchStatus())
+        dispatch(toggleMatchStatus())
       }
     }
   }

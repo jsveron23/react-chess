@@ -10,7 +10,7 @@ const reducer = (state = initialState, action) => {
   const { type } = action
 
   switch (type) {
-    case types.SET_MATCH_STATUS: {
+    case types.TOGGLE_MATCH_STATUS: {
       return { ...state, isMatching: !state.isMatching }
     }
 

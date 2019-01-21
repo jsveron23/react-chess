@@ -2,7 +2,6 @@ import React, { Fragment } from 'react'
 import PropTypes from 'prop-types'
 import cx from 'classnames'
 import getPiece from '~/components/getPiece'
-import { isExist } from '~/utils'
 import css from './File.css'
 
 const File = ({ tileName, color, piece }) => {
