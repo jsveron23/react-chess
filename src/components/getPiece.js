@@ -1,3 +1,4 @@
+import React, { Component } from 'react'
 import BlackBishop from '~/assets/pieces/black_bishop.svg'
 import BlackKing from '~/assets/pieces/black_king.svg'
 import BlackKnight from '~/assets/pieces/black_knight.svg'
@@ -10,6 +11,18 @@ import WhiteKnight from '~/assets/pieces/white_knight.svg'
 import WhitePawn from '~/assets/pieces/white_pawn.svg'
 import WhiteQueen from '~/assets/pieces/white_queen.svg'
 import WhiteRook from '~/assets/pieces/white_rook.svg'
+
+function enhancePiece (WrappedComponent, key) {
+  class Piece extends Component {
+    render () {
+      return <WrappedComponent />
+    }
+  }
+
+  Piece.displayName = `enhancePiece(${key})`
+
+  return Piece
+}
 
 const getPiece = ({ color, piece }) => {
   const pieceList = {
@@ -27,7 +40,16 @@ const getPiece = ({ color, piece }) => {
     wR: WhiteRook
   }
 
-  return pieceList[`${color}${piece}`]
+  const enhancedPieceList = Object.keys(pieceList).reduce((acc, key) => {
+    const Component = pieceList[key]
+
+    return {
+      ...acc,
+      [key]: enhancePiece(Component, key)
+    }
+  }, {})
+
+  return enhancedPieceList[`${color}${piece}`]
 }
 
 export default getPiece

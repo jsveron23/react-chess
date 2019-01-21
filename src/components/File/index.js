@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { Fragment } from 'react'
 import PropTypes from 'prop-types'
 import cx from 'classnames'
 import getPiece from '~/components/getPiece'
@@ -20,11 +20,11 @@ const File = ({ tileName, color, piece }) => {
     'is-dark': isDark
   })
 
-  const Piece = getPiece({ color, piece })
+  const Piece = getPiece({ color, piece }) || Fragment
 
   return (
     <div className={cls} data-tile-name={tileName}>
-      {isExist(Piece) && <Piece />}
+      <Piece />
     </div>
   )
 }
