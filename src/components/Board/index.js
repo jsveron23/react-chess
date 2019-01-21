@@ -12,13 +12,21 @@ const Board = ({ isMatching, notations, ranks, files }) => {
     <div className={css.board}>
       {ranks.map((rankName) => {
         return (
-          <Rank key={rankName}>
+          <Rank key={rankName} rankName={rankName}>
             {files.map((fileName) => {
               const tile = `${fileName}${rankName}`
               const notation = notations.find((n) => n.indexOf(tile) > -1) || ''
               const [c, p] = notation.split('')
 
-              return <File key={tile} color={c} piece={p} tileName={tile} />
+              return (
+                <File
+                  key={tile}
+                  color={c}
+                  piece={p}
+                  fileName={fileName}
+                  tileName={tile}
+                />
+              )
             })}
           </Rank>
         )

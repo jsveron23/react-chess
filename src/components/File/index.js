@@ -4,7 +4,7 @@ import cx from 'classnames'
 import getPiece from '~/components/getPiece'
 import css from './File.css'
 
-const File = ({ tileName, color, piece }) => {
+const File = ({ fileName, tileName, color, piece }) => {
   const isDark = tileName.split('').reduce((fileName, rankName) => {
     const rn = parseInt(rankName, 10)
 
@@ -22,13 +22,14 @@ const File = ({ tileName, color, piece }) => {
   const Piece = getPiece({ color, piece }) || Fragment
 
   return (
-    <div className={cls} data-tile-name={tileName}>
+    <div className={cls} data-file={fileName} data-tile-name={tileName}>
       <Piece />
     </div>
   )
 }
 
 File.propTypes = {
+  fileName: PropTypes.string.isRequired,
   tileName: PropTypes.string.isRequired,
   color: PropTypes.string,
   piece: PropTypes.string
