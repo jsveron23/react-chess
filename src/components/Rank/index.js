@@ -10,7 +10,7 @@ const Rank = ({ children }) => {
 }
 
 Rank.propTypes = {
-  name: PropTypes.string.isRequired
+  children: PropTypes.node.isRequired
 }
 
 export default Rank

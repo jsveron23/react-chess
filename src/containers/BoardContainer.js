@@ -2,10 +2,10 @@ import { connect } from 'react-redux'
 import { Board } from '~/components'
 import { RANKS, FILES } from '~/constants'
 
-const mapStateToProps = ({ general }) => {
+const mapStateToProps = ({ general, notations }) => {
   const { isMatching } = general
 
-  return { isMatching, ranks: RANKS, files: FILES }
+  return { isMatching, notations, ranks: RANKS, files: FILES }
 }
 
 const BoardContainer = connect(mapStateToProps)(Board)

@@ -1,10 +1,12 @@
 import React from 'react'
-import cx from 'classnames'
 import PropTypes from 'prop-types'
+import cx from 'classnames'
+import getPiece from '~/components/getPiece'
+import { isExist } from '~/utils'
 import css from './File.css'
 
-const File = ({ tileName, children }) => {
-  const isDark = tileName.split('').reduce((rankName, fileName) => {
+const File = ({ tileName, color, piece }) => {
+  const isDark = tileName.split('').reduce((fileName, rankName) => {
     const rn = parseInt(rankName, 10)
 
     if (rn % 2 === 0) {
@@ -14,21 +16,23 @@ const File = ({ tileName, children }) => {
     }
   })
 
-  const cls = cx(css.file, {
+  const cls = cx(css.file, 'l-flex-middle', 'l-flex-center', {
     'is-dark': isDark
   })
 
+  const Piece = getPiece({ color, piece })
+
   return (
     <div className={cls} data-tile-name={tileName}>
-      {children}
+      {isExist(Piece) && <Piece />}
     </div>
   )
 }
 
 File.propTypes = {
-  rank: PropTypes.string.isRequired,
-  name: PropTypes.string.isRequired,
-  children: PropTypes.node.isRequired
+  tileName: PropTypes.string.isRequired,
+  color: PropTypes.string,
+  piece: PropTypes.string
 }
 
 export default File

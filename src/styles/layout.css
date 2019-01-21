@@ -12,6 +12,11 @@
   flex-direction: column;
 }
 
+:global(.l-flex-center) {
+  display: flex;
+  justify-content: center;
+}
+
 :global(.l-flex-middle) {
   display: flex;
   align-items: center;

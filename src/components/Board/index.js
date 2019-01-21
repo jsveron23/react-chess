@@ -1,10 +1,9 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-// import cx from 'classnames'
 import { Rank, File } from '~/components'
 import css from './Board.css'
 
-const Board = ({ isMatching, ranks, files }) => {
+const Board = ({ isMatching, notations, ranks, files }) => {
   if (!isMatching) {
     return null
   }
@@ -15,9 +14,11 @@ const Board = ({ isMatching, ranks, files }) => {
         return (
           <Rank key={rankName}>
             {files.map((fileName) => {
-              const tile = `${rankName}${fileName}`
+              const tile = `${fileName}${rankName}`
+              const notation = notations.find((n) => n.indexOf(tile) > -1) || ''
+              const [c, p] = notation.split('')
 
-              return <File key={tile} tileName={tile} />
+              return <File key={tile} color={c} piece={p} tileName={tile} />
             })}
           </Rank>
         )
@@ -28,8 +29,8 @@ const Board = ({ isMatching, ranks, files }) => {
 
 Board.propTypes = {
   isMatching: PropTypes.bool.isRequired,
-  ranks: PropTypes.string.isRequired,
-  files: PropTypes.string.isRequired
+  ranks: PropTypes.array.isRequired,
+  files: PropTypes.array.isRequired
 }
 
 export default Board

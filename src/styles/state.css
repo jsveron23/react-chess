@@ -16,5 +16,5 @@ button {
 }
 
 :global(.is-dark) {
-  background-color: rgb(12, 11, 9);
+  background-color: #ccc;
 }
