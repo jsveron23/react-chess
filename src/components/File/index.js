@@ -2,9 +2,10 @@ import React, { Fragment } from 'react'
 import PropTypes from 'prop-types'
 import cx from 'classnames'
 import getPiece from '~/components/getPiece'
+import { isExist } from '~/utils'
 import css from './File.css'
 
-const File = ({ fileName, tileName, color, piece }) => {
+const File = ({ turn, fileName, tileName, color, piece }) => {
   const isDark = tileName.split('').reduce((fileName, rankName) => {
     const rn = parseInt(rankName, 10)
 
@@ -19,16 +20,22 @@ const File = ({ fileName, tileName, color, piece }) => {
     'is-dark': isDark
   })
 
-  const Piece = getPiece({ color, piece }) || Fragment
+  const Piece = getPiece({ color, piece })
 
   return (
     <div className={cls} data-file={fileName} data-tile-name={tileName}>
-      <Piece />
+      {React.createElement(
+        Piece || Fragment,
+        isExist(Piece) && {
+          turn
+        }
+      )}
     </div>
   )
 }
 
 File.propTypes = {
+  turn: PropTypes.string.isRequired,
   fileName: PropTypes.string.isRequired,
   tileName: PropTypes.string.isRequired,
   color: PropTypes.string,

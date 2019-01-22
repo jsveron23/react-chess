@@ -18,3 +18,7 @@ button {
 :global(.is-dark) {
   background-color: #ccc;
 }
+
+:global(.is-turn) {
+  cursor: pointer;
+}

@@ -5,3 +5,9 @@ export function toggleMatchStatus () {
     type: types.TOGGLE_MATCH_STATUS
   }
 }
+
+export function toggleTurn () {
+  return {
+    type: types.TOGGLE_TURN
+  }
+}

@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 import { Rank } from '~/components'
 import css from './Board.css'
 
-const Board = ({ isMatching, notations, ranks, files }) => {
+const Board = ({ isMatching, turn, notations, ranks, files }) => {
   if (!isMatching) {
     return null
   }
@@ -14,6 +14,7 @@ const Board = ({ isMatching, notations, ranks, files }) => {
         return (
           <Rank
             key={rankName}
+            turn={turn}
             notations={notations}
             files={files}
             rankName={rankName}
@@ -26,6 +27,7 @@ const Board = ({ isMatching, notations, ranks, files }) => {
 
 Board.propTypes = {
   isMatching: PropTypes.bool.isRequired,
+  turn: PropTypes.string.isRequired,
   ranks: PropTypes.array.isRequired,
   files: PropTypes.array.isRequired
 }
