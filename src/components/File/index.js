@@ -5,7 +5,15 @@ import getPiece from '~/components/getPiece'
 import { isExist } from '~/utils'
 import css from './File.css'
 
-const File = ({ turn, fileName, tileName, color, piece }) => {
+const File = ({
+  turn,
+  fileName,
+  tileName,
+  color,
+  piece,
+  selected,
+  selectPiece
+}) => {
   const isDark = tileName.split('').reduce((fileName, rankName) => {
     const rn = parseInt(rankName, 10)
 
@@ -27,7 +35,10 @@ const File = ({ turn, fileName, tileName, color, piece }) => {
       {React.createElement(
         Piece || Fragment,
         isExist(Piece) && {
-          turn
+          turn,
+          selected,
+          tileName,
+          selectPiece
         }
       )}
     </div>
@@ -38,6 +49,8 @@ File.propTypes = {
   turn: PropTypes.string.isRequired,
   fileName: PropTypes.string.isRequired,
   tileName: PropTypes.string.isRequired,
+  selectPiece: PropTypes.func.isRequired,
+  selected: PropTypes.string,
   color: PropTypes.string,
   piece: PropTypes.string
 }

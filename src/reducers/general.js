@@ -3,12 +3,13 @@ import { ENEMY } from '~/constants'
 
 const initialState = {
   title: 'React Chess',
+  turn: 'white',
   isMatching: false,
-  turn: 'white'
+  selected: null
 }
 
 const reducer = (state = initialState, action) => {
-  const { type } = action
+  const { type, payload } = action
 
   switch (type) {
     case types.TOGGLE_MATCH_STATUS: {
@@ -17,6 +18,10 @@ const reducer = (state = initialState, action) => {
 
     case types.TOGGLE_TURN: {
       return { ...state, turn: ENEMY[state.turn] }
+    }
+
+    case types.SELECT_PIECE: {
+      return { ...state, selected: payload }
     }
 
     default: {

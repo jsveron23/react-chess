@@ -11,27 +11,33 @@ function enhancePiece (WrappedComponent, key) {
     static displayName = `enhancePiece(${key})`
 
     static propTypes = {
-      turn: PropTypes.string.isRequired
+      turn: PropTypes.string.isRequired,
+      tileName: PropTypes.string.isRequired,
+      selectPiece: PropTypes.func.isRequired,
+      selected: PropTypes.string
     }
 
     @boundMethod
     handleClick (evt) {
       evt.preventDefault()
 
-      const { turn } = this.props
+      const { turn, tileName, selectPiece } = this.props
       const isTurn = side === turn
 
       if (isTurn) {
-        // do action
+        selectPiece(`${tileName}-${key}`)
       }
     }
 
     render () {
-      const { turn } = this.props
-      const isTurn = side === turn
+      const { turn, tileName, selected } = this.props
+      const cls = cx({
+        'is-turn': side === turn,
+        'is-selected': selected === `${tileName}-${key}`
+      })
 
       return (
-        <div className={cx({ 'is-turn': isTurn })} onClick={this.handleClick}>
+        <div className={cls} onClick={this.handleClick}>
           <WrappedComponent />
         </div>
       )

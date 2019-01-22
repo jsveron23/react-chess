@@ -22,3 +22,7 @@ button {
 :global(.is-turn) {
   cursor: pointer;
 }
+
+:global(.is-selected) {
+  border: 3px dotted #000;
+}

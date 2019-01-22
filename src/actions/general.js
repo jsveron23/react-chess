@@ -11,3 +11,10 @@ export function toggleTurn () {
     type: types.TOGGLE_TURN
   }
 }
+
+export function selectPiece (piece) {
+  return {
+    type: types.SELECT_PIECE,
+    payload: piece
+  }
+}

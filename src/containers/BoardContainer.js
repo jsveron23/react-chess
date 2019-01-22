@@ -1,13 +1,19 @@
 import { connect } from 'react-redux'
 import { Board } from '~/components'
+import { selectPiece } from '~/actions/general'
 import { RANKS, FILES } from '~/constants'
 
 const mapStateToProps = (ranks, files) => ({ general, notations }) => {
-  const { isMatching, turn } = general
+  const { isMatching, turn, selected } = general
 
-  return { isMatching, turn, notations, ranks, files }
+  return { isMatching, turn, selected, notations, ranks, files }
 }
 
-const BoardContainer = connect(mapStateToProps(RANKS, FILES))(Board)
+const mapDispatchToProps = { selectPiece }
+
+const BoardContainer = connect(
+  mapStateToProps(RANKS, FILES),
+  mapDispatchToProps
+)(Board)
 
 export default BoardContainer
