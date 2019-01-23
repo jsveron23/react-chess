@@ -5,6 +5,9 @@ import getPiece from '~/components/getPiece'
 import { isExist } from '~/utils'
 import css from './File.css'
 
+const EVEN_TILES = ['b', 'd', 'f', 'h']
+const ODD_TILES = ['a', 'c', 'e', 'g']
+
 const File = ({
   turn,
   fileName,
@@ -15,13 +18,10 @@ const File = ({
   selectPiece
 }) => {
   const isDark = tileName.split('').reduce((fileName, rankName) => {
-    const rn = parseInt(rankName, 10)
+    const parsedRankName = parseInt(rankName, 10)
+    const darkTiles = parsedRankName % 2 === 0 ? EVEN_TILES : ODD_TILES
 
-    if (rn % 2 === 0) {
-      return ['b', 'd', 'f', 'h'].includes(fileName)
-    } else {
-      return ['a', 'c', 'e', 'g'].includes(fileName)
-    }
+    return darkTiles.includes(fileName)
   })
 
   const cls = cx(css.file, 'l-flex-middle', 'l-flex-center', {
@@ -30,17 +30,18 @@ const File = ({
 
   const Piece = getPiece({ color, piece })
 
+  const pieceProps = isExist(Piece)
+    ? {
+      turn,
+      selected,
+      tileName,
+      selectPiece
+    }
+    : {}
+
   return (
     <div className={cls} data-file={fileName} data-tile-name={tileName}>
-      {React.createElement(
-        Piece || Fragment,
-        isExist(Piece) && {
-          turn,
-          selected,
-          tileName,
-          selectPiece
-        }
-      )}
+      {React.createElement(Piece || Fragment, pieceProps)}
     </div>
   )
 }
