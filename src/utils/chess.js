@@ -1,5 +1,17 @@
+/**
+ * Get file and rank name
+ * @param  {string} tileName
+ * @return {Object}
+ */
 export function getFileRankName (tileName) {
-  const [fileName, rankName] = tileName.split('')
+  const tileArr = tileName.split('')
 
-  return { fileName, rankName }
+  return tileArr.reduce((acc, name) => {
+    const keyName = /[A-Z]/.test(name) ? 'rankName' : 'fileName'
+
+    return {
+      ...acc,
+      [keyName]: name
+    }
+  }, {})
 }
