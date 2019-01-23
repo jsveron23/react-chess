@@ -11,11 +11,7 @@ function getPiece (map) {
     }
   }, {})
 
-  return ({ color, piece }) => {
-    const combinedKey = `${color}${piece}`
-
-    return enhancedMap[combinedKey]
-  }
+  return ({ color, piece }) => enhancedMap[`${color}${piece}`]
 }
 
 export default getPiece(PIECE_MAP)

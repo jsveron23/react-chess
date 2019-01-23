@@ -1,4 +1,4 @@
-import { compose, pipe } from '../../src/utils/fp'
+import { compose, pipe, extractFromObj } from '../../src/utils/fp'
 
 describe('utils/fp.js', () => {
   const _plus = (a) => (b) => a + b
@@ -29,6 +29,12 @@ describe('utils/fp.js', () => {
       )(100)
 
       expect(result).toEqual(96)
+    })
+  })
+
+  describe('#extractFromObj', () => {
+    it('Extract value from onject', () => {
+      expect(extractFromObj('a')({ a: 1, b: 2, c: 3 })).toEqual(1)
     })
   })
 })

@@ -5,7 +5,8 @@ import {
   isNumber,
   isArray,
   isObject,
-  isFunction
+  isFunction,
+  isEven
 } from '../../src/utils/is'
 
 describe('utils/is.js', () => {
@@ -176,6 +177,13 @@ describe('utils/is.js', () => {
       expect(isFunction(NaN)).toBeFalsy()
       expect(isFunction(Infinity)).toBeFalsy()
       expect(isFunction(function () {}, () => {})).toBeTruthy()
+    })
+  })
+
+  describe('#isEven', () => {
+    it('Is even?', () => {
+      expect(isEven(10)).toBeTruthy()
+      expect(isEven(13)).toBeFalsy()
     })
   })
 })

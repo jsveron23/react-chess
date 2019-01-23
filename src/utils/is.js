@@ -110,3 +110,5 @@ export const isFunction = (...x) => {
 
   return x.every(_isFunction)
 }
+
+export const isEven = (v) => v % 2 === 0

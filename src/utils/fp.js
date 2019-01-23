@@ -20,3 +20,10 @@ export const compose = (...fns) => (x) => {
 export const pipe = (...fns) => (x) => {
   return fns.reduce((v, f) => f(v), x)
 }
+
+/**
+ * Extract value from object
+ * @param  {string} keyName
+ * @return {Object}
+ */
+export const extractFromObj = (keyName) => (obj) => obj[keyName]

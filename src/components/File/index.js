@@ -2,11 +2,23 @@ import React, { Fragment } from 'react'
 import PropTypes from 'prop-types'
 import cx from 'classnames'
 import getPiece from '~/components/getPiece'
-import { isExist } from '~/utils'
+import { isExist, isEven, compose, extractFromObj, parseInt10 } from '~/utils'
+import { getFileRankName } from '~/utils/chess'
 import css from './File.css'
 
 const EVEN_TILES = ['b', 'd', 'f', 'h']
 const ODD_TILES = ['a', 'c', 'e', 'g']
+
+/**
+ * Get rank name
+ * @param  {string} tileName
+ * @return {number}
+ */
+const getRankName = (tileName) => compose(
+  parseInt10,
+  extractFromObj('rankName'),
+  getFileRankName
+)(tileName)
 
 const File = ({
   turn,
@@ -17,19 +29,12 @@ const File = ({
   selected,
   selectPiece
 }) => {
-  const isDark = tileName.split('').reduce((fileName, rankName) => {
-    const parsedRankName = parseInt(rankName, 10)
-    const darkTiles = parsedRankName % 2 === 0 ? EVEN_TILES : ODD_TILES
-
-    return darkTiles.includes(fileName)
-  })
-
+  const rankName = getRankName(tileName)
+  const darkTiles = isEven(rankName) ? EVEN_TILES : ODD_TILES
   const cls = cx(css.file, 'l-flex-middle', 'l-flex-center', {
-    'is-dark': isDark
+    'is-dark': darkTiles.includes(fileName)
   })
-
   const Piece = getPiece({ color, piece })
-
   const pieceProps = isExist(Piece)
     ? {
       turn,

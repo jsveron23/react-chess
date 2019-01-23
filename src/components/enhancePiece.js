@@ -8,17 +8,17 @@ function enhancePiece (WrappedComponent, key) {
 
   const Piece = ({ turn, tileName, selected, selectPiece }) => {
     const isTurn = side === turn
-    const uid = `${tileName}-${key}`
+    const id = `${tileName}-${key}`
     const cls = cx({
       'is-turn': isTurn,
-      'is-selected': selected === uid
+      'is-selected': selected === id
     })
 
     const handleClick = (evt) => {
       evt.preventDefault()
 
       if (isTurn) {
-        selectPiece(uid)
+        selectPiece(id)
       }
     }
 

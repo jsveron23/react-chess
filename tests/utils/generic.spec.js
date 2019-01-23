@@ -9,7 +9,8 @@ import {
   intersection,
   diffArr,
   diffObj,
-  union
+  union,
+  parseInt10
 } from '../../src/utils/generic'
 
 describe('utils/generic.js', () => {
@@ -120,6 +121,12 @@ describe('utils/generic.js', () => {
       expect(ab).toContain(7)
       expect(ab).not.toContain(8)
       expect(ab).toContain(9)
+    })
+  })
+
+  describe('#parseInt10', () => {
+    it('Get number by number string', () => {
+      expect(parseInt10('10')).toEqual(10)
     })
   })
 })

@@ -128,3 +128,5 @@ export const union = (a) => (b) => {
 
   return Array.from(set)
 }
+
+export const parseInt10 = (v) => parseInt(v, 10)
