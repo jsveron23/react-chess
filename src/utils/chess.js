@@ -6,8 +6,12 @@
 export function getFileRankName (tileName) {
   const tileArr = tileName.split('')
 
+  if (tileArr.length > 2) {
+    return {}
+  }
+
   return tileArr.reduce((acc, name) => {
-    const keyName = /[A-Z]/.test(name) ? 'rankName' : 'fileName'
+    const keyName = /[1-9]/.test(name) ? 'rankName' : 'fileName'
 
     return {
       ...acc,

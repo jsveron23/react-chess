@@ -27,3 +27,14 @@ export const pipe = (...fns) => (x) => {
  * @return {Object}
  */
 export const extractFromObj = (keyName) => (obj) => obj[keyName]
+
+/**
+ * Trace log while composing
+ * @param  {string} logName
+ * @return {*}
+ */
+export const trace = (logName) => (v) => {
+  console.log(`${logName}: `, v)
+
+  return v
+}

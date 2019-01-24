@@ -1,4 +1,4 @@
-import { compose, pipe, extractFromObj } from '../../src/utils/fp'
+import { compose, pipe, extractFromObj, trace } from '../../src/utils/fp'
 
 describe('utils/fp.js', () => {
   const _plus = (a) => (b) => a + b
@@ -35,6 +35,15 @@ describe('utils/fp.js', () => {
   describe('#extractFromObj', () => {
     it('Extract value from onject', () => {
       expect(extractFromObj('a')({ a: 1, b: 2, c: 3 })).toEqual(1)
+      expect(extractFromObj('c')({ a: 1, b: 2, c: 3 })).toEqual(3)
+    })
+  })
+
+  describe('#trace', () => {
+    it('Trace log while composing', () => {
+      const v = {}
+
+      expect(trace('trace')(v)).toEqual(v)
     })
   })
 })
