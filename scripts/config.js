@@ -112,13 +112,10 @@ const LOADERS = {
 
   svg: {
     test: /\.svg$/,
+    exclude: /node_modules/,
     use: [
-      'babel-loader',
       {
-        loader: 'react-svg-loader',
-        options: {
-          jsx: true
-        }
+        loader: 'svg-react-loader'
       }
     ]
   }
