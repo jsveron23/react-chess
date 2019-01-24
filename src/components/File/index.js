@@ -14,11 +14,12 @@ const ODD_TILES = ['a', 'c', 'e', 'g']
  * @param  {string} tileName
  * @return {number}
  */
-const getRankName = (tileName) => compose(
-  parseInt10,
-  extractFromObj('rankName'),
-  getFileRankName
-)(tileName)
+const getRankName = (tileName) =>
+  compose(
+    parseInt10,
+    extractFromObj('rankName'),
+    getFileRankName
+  )(tileName)
 
 const File = ({
   turn,
