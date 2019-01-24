@@ -5,7 +5,7 @@ import { Menu } from '~/components'
 const mapStateToProps = ({ general }) => {
   const { isMatching } = general
   const items = !isMatching
-    ? ['Resume', 'Human vs. Human', 'Human vs. CPU']
+    ? ['Resume Game', 'Human vs. Human', 'Human vs. CPU']
     : ['Main', 'Undo']
 
   return { isMatching, items }

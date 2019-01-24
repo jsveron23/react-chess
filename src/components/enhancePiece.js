@@ -1,9 +1,9 @@
-import React from 'react'
+import React, { memo } from 'react'
 import PropTypes from 'prop-types'
 import cx from 'classnames'
 import { SIDE } from '~/constants'
 
-function enhancePiece ({ side = SIDE } = {}) {
+function enhancePiece (side) {
   return (WrappedComponent, key) => {
     const Piece = ({ turn, tileName, selected, selectPiece }) => {
       const isTurn = side[key] === turn
@@ -37,8 +37,8 @@ function enhancePiece ({ side = SIDE } = {}) {
       selected: PropTypes.string
     }
 
-    return Piece
+    return memo(Piece)
   }
 }
 
-export default enhancePiece()
+export default enhancePiece(SIDE)
