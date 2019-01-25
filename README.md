@@ -1,3 +1,5 @@
+[![npm](https://img.shields.io/npm/l/scu-inspector.svg)](LICENSE.md) [![Build Status](https://travis-ci.org/jsveron23/react-chess.svg?branch=next)](https://travis-ci.org/jsveron23/react-chess)
+
 # React Chess
 
 - Implement Chess game without Chess library
