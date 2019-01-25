@@ -1,12 +1,12 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import cx from 'classnames'
-import { SIDE } from '~/constants'
+import { getSideBy } from '~/utils/chess'
 
-function enhancePiece (side) {
-  return (key) => (WrappedComponent) => {
+function enhancePiece (key) {
+  return (WrappedComponent) => {
     const Piece = ({ turn, tileName, selected, selectPiece }) => {
-      const isTurn = side[key] === turn
+      const isTurn = getSideBy(key) === turn
       const id = `${tileName}-${key}`
       const cls = cx({
         'is-turn': isTurn,
@@ -41,4 +41,4 @@ function enhancePiece (side) {
   }
 }
 
-export default enhancePiece(SIDE)
+export default enhancePiece

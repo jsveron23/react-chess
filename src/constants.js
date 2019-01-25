@@ -26,8 +26,8 @@ export const ENEMY = {
  * @type {Object}
  */
 export const SIDE = {
-  white: 'w',
-  black: 'b',
+  white: 'white',
+  black: 'black',
   w: 'white',
   b: 'black'
 }

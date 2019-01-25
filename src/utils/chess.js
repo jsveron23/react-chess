@@ -1,4 +1,4 @@
-import { FILES } from '~/constants'
+import { FILES, SIDE } from '~/constants'
 import { parseInt10 } from '~/utils'
 
 function _parseFileNum (file) {
@@ -43,3 +43,9 @@ export const parseFileNum = _parseFileNum(FILES)
  * @alias parseInt10
  */
 export const parseRankNum = parseInt10
+
+function _getSideBy (side) {
+  return (key) => side[key]
+}
+
+export const getSideBy = _getSideBy(SIDE)

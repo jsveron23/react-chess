@@ -32,7 +32,9 @@ const PIECE_MAP = {
 }
 
 function getEnhancedMap (map) {
-  return Object.keys(map).reduce((acc, key) => {
+  const streamMap = Object.keys(map)
+
+  return streamMap.reduce((acc, key) => {
     const Component = map[key]
     const sideKey = key.slice(0, 1)
 

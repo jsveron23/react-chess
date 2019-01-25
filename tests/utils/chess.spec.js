@@ -1,4 +1,9 @@
-import { getFileRankName, parseFileNum, parseRankNum } from '~/utils/chess'
+import {
+  getFileRankName,
+  parseFileNum,
+  parseRankNum,
+  getSideBy
+} from '~/utils/chess'
 
 describe('utils/chess.js', () => {
   describe('#getFileRankName', () => {
@@ -22,6 +27,15 @@ describe('utils/chess.js', () => {
     it('Get number of rank squence', () => {
       expect(parseRankNum('1')).toEqual(1)
       expect(parseRankNum('7')).toEqual(7)
+    })
+  })
+
+  describe('#getSideBy', () => {
+    it('Get number of rank squence', () => {
+      expect(getSideBy('w')).toEqual('white')
+      expect(getSideBy('b')).toEqual('black')
+      expect(getSideBy('white')).toEqual('white')
+      expect(getSideBy('black')).toEqual('black')
     })
   })
 })
