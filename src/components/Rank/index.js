@@ -36,8 +36,12 @@ Rank.propTypes = {
   turn: PropTypes.string.isRequired,
   files: PropTypes.array.isRequired,
   rankName: PropTypes.string.isRequired,
-  selectPiece: PropTypes.func.isRequired,
+  selectPiece: PropTypes.func,
   selected: PropTypes.string
+}
+
+Rank.defaultProps = {
+  selectPiece: function () {}
 }
 
 export default Rank

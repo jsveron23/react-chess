@@ -30,7 +30,11 @@ const Menu = ({ isMatching, items, onClick }) => {
 Menu.propTypes = {
   isMatching: PropTypes.bool.isRequired,
   items: PropTypes.array.isRequired,
-  onClick: PropTypes.func.isRequired
+  onClick: PropTypes.func
+}
+
+Menu.defaultProps = {
+  onClick: function () {}
 }
 
 export default Menu

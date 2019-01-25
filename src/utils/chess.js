@@ -1,13 +1,17 @@
 import { FILES } from '~/constants'
 import { parseInt10 } from '~/utils'
 
-/**
- * File name to number
- * @param  {Array}    file
- * @return {Function}
- */
 function _parseFileNum (file) {
-  return (fileName) => file.indexOf(fileName) + 1
+  /**
+   * File name to number
+   * @param  {string} fileName
+   * @return {number}
+   */
+  return (fileName) => {
+    const idx = file.indexOf(fileName)
+
+    return idx > -1 ? idx + 1 : idx
+  }
 }
 
 /**
@@ -36,7 +40,6 @@ export const parseFileNum = _parseFileNum(FILES)
 
 /**
  * Rank name to number
- * @param  {string} rankName
- * @return {number}
+ * @alias parseInt10
  */
-export const parseRankNum = (rankName) => parseInt10(rankName)
+export const parseRankNum = parseInt10

@@ -56,10 +56,14 @@ File.propTypes = {
   turn: PropTypes.string.isRequired,
   fileName: PropTypes.string.isRequired,
   tileName: PropTypes.string.isRequired,
-  selectPiece: PropTypes.func.isRequired,
+  selectPiece: PropTypes.func,
   selected: PropTypes.string,
   color: PropTypes.string,
   piece: PropTypes.string
+}
+
+File.defaultProps = {
+  selectPiece: function () {}
 }
 
 export default File

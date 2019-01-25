@@ -1,3 +1,4 @@
+import { memo } from 'react'
 import {
   BlackBishop,
   BlackKing,
@@ -39,9 +40,14 @@ function getEnhancedMap (map) {
       return acc
     }
 
+    const EnhancedPiece = compose(
+      memo,
+      enhancePiece(sideKey)
+    )(Component)
+
     return {
       ...acc,
-      [key]: enhancePiece(Component, sideKey)
+      [key]: EnhancedPiece
     }
   }, {})
 }
@@ -50,9 +56,9 @@ function getPiece (map) {
   return ({ color, piece }) => map[`${color}${piece}`]
 }
 
-const EnhancedPiece = compose(
+const getEnhancedPiece = compose(
   getPiece,
   getEnhancedMap
 )(PIECE_MAP)
 
-export default EnhancedPiece
+export default getEnhancedPiece

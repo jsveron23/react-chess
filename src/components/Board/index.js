@@ -40,8 +40,12 @@ Board.propTypes = {
   turn: PropTypes.string.isRequired,
   ranks: PropTypes.array.isRequired,
   files: PropTypes.array.isRequired,
-  selectPiece: PropTypes.func.isRequired,
+  selectPiece: PropTypes.func,
   selected: PropTypes.string
+}
+
+Board.defaultProps = {
+  selectPiece: function () {}
 }
 
 export default Board

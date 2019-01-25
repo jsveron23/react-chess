@@ -1,10 +1,10 @@
-import React, { memo } from 'react'
+import React from 'react'
 import PropTypes from 'prop-types'
 import cx from 'classnames'
 import { SIDE } from '~/constants'
 
 function enhancePiece (side) {
-  return (WrappedComponent, key) => {
+  return (key) => (WrappedComponent) => {
     const Piece = ({ turn, tileName, selected, selectPiece }) => {
       const isTurn = side[key] === turn
       const id = `${tileName}-${key}`
@@ -37,7 +37,7 @@ function enhancePiece (side) {
       selected: PropTypes.string
     }
 
-    return memo(Piece)
+    return Piece
   }
 }
 
