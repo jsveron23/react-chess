@@ -2,7 +2,9 @@ import {
   getFileRankName,
   parseFileNum,
   parseRankNum,
-  getSideBy
+  getSideBy,
+  getMovementsTiles,
+  getMovableTiles
 } from '~/utils/chess'
 
 describe('utils/chess.js', () => {
@@ -36,6 +38,20 @@ describe('utils/chess.js', () => {
       expect(getSideBy('b')).toEqual('black')
       expect(getSideBy('white')).toEqual('white')
       expect(getSideBy('black')).toEqual('black')
+    })
+  })
+
+  describe('#getMovementsTiles', () => {
+    it('Get movements tiles', () => {
+      expect(getMovementsTiles('a2')('P')('white')).toEqual([[1, 3]])
+      expect(getMovementsTiles('b7')('P')('black')).toEqual([[2, 6]])
+    })
+  })
+
+  describe('#getMovableTiles', () => {
+    it('Get movable tiles', () => {
+      expect(getMovableTiles([[1, 3]])).toEqual(['a3'])
+      expect(getMovableTiles([[2, 6]])).toEqual(['b6'])
     })
   })
 })

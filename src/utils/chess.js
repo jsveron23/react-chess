@@ -51,6 +51,11 @@ function _getSideBy (side) {
 export const getSideBy = _getSideBy(SIDE)
 
 const _getMovementsTiles = (movements) => {
+  /**
+   * Get movements tiles
+   * @param  {string}   tileName
+   * @return {Function}
+   */
   return (tileName) => (piece) => (turn) => {
     const mvs = movements[piece]
     const { rankName, fileName } = getFileRankName(tileName)
@@ -69,6 +74,11 @@ const _getMovementsTiles = (movements) => {
 export const getMovementsTiles = _getMovementsTiles(MOVEMENTS)
 
 function _getMovableTiles (files) {
+  /**
+   * Get movable tiles
+   * @param  {Array} movements
+   * @return {Array}
+   */
   return (movements) => {
     return movements.map((mvs) => {
       const [file, rank] = mvs
