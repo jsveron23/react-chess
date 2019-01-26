@@ -24,10 +24,10 @@ button {
 }
 
 :global(.is-selected) {
-  background-color: #777;
+  border: 2px solid #000;
 }
 
 :global(.is-movable) {
   cursor: pointer;
-  background-color: #777;
+  border: 2px solid #000;
 }

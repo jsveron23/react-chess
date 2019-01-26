@@ -31,7 +31,6 @@ const Rank = ({
           <File
             key={tile}
             turn={turn}
-            color={c}
             piece={p}
             Piece={Piece}
             notations={notations}

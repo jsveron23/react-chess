@@ -65,11 +65,13 @@
     "@babel/polyfill": "^7.2.5",
     "autobind-decorator": "^2.4.0",
     "classnames": "^2.2.6",
+    "memoize-one": "^5.0.0",
     "prop-types": "^15.6.2",
     "react": "^16.7.0",
     "react-dom": "^16.6.3",
     "react-redux": "^6.0.0",
     "redux": "^4.0.1",
-    "redux-thunk": "^2.3.0"
+    "redux-thunk": "^2.3.0",
+    "scu-inspector": "^0.2.0"
   }
 }

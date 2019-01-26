@@ -17,6 +17,7 @@ import Menu from './Menu'
 import Board from './Board'
 import Rank from './Rank'
 import File from './File'
+import Blank from './Blank'
 
 export {
   Button,
@@ -26,6 +27,7 @@ export {
   Board,
   Rank,
   File,
+  Blank,
   BlackBishop,
   BlackKing,
   BlackKnight,

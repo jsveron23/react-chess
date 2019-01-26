@@ -2,11 +2,47 @@ import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import cx from 'classnames'
 import { boundMethod } from 'autobind-decorator'
+// import scuInspector from 'scu-inspector'
+import { noop } from '~/utils'
 import { getSideBy, getMovementsTiles } from '~/utils/chess'
 
 function enhancePiece (WrappedComponent, key) {
   // TODO: shouldComponentUpdate
   class Piece extends Component {
+    static displayName = `enhancePiece(${key})`
+
+    static propTypes = {
+      turn: PropTypes.string.isRequired,
+      tileName: PropTypes.string.isRequired,
+      piece: PropTypes.string,
+      selected: PropTypes.string,
+      isMovable: PropTypes.bool,
+      selectPiece: PropTypes.func,
+      setCurrentMovable: PropTypes.func
+    }
+
+    static defaultProps = {
+      isMovable: false,
+      selectPiece: noop,
+      setCurrentMovable: noop
+    }
+
+    render () {
+      const { turn, tileName, selected } = this.props
+      const isTurn = getSideBy(key) === turn
+      const id = `${tileName}-${key}`
+      const cls = cx({
+        'is-turn': isTurn,
+        'is-selected': selected === id
+      })
+
+      return (
+        <div className={cls} onClick={this.handleClick}>
+          <WrappedComponent />
+        </div>
+      )
+    }
+
     @boundMethod
     handleClick (evt) {
       evt.preventDefault()
@@ -28,38 +64,6 @@ function enhancePiece (WrappedComponent, key) {
         setCurrentMovable(mvs)
       }
     }
-
-    render () {
-      const { turn, tileName, selected } = this.props
-      const isTurn = getSideBy(key) === turn
-      const id = `${tileName}-${key}`
-      const cls = cx({
-        'is-turn': isTurn,
-        'is-selected': selected === id
-      })
-
-      return (
-        <div className={cls} onClick={this.handleClick}>
-          <WrappedComponent />
-        </div>
-      )
-    }
-  }
-
-  Piece.displayName = `enhancePiece(${key})`
-
-  Piece.propTypes = {
-    turn: PropTypes.string.isRequired,
-    tileName: PropTypes.string.isRequired,
-    piece: PropTypes.string,
-    selected: PropTypes.string,
-    selectPiece: PropTypes.func,
-    setCurrentMovable: PropTypes.func
-  }
-
-  Piece.defaultProps = {
-    selectPiece: function () {},
-    setCurrentMovable: function () {}
   }
 
   return Piece

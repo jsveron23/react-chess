@@ -2,22 +2,23 @@ import React, { Component, createElement } from 'react'
 import PropTypes from 'prop-types'
 import cx from 'classnames'
 import { boundMethod } from 'autobind-decorator'
+import { Blank } from '~/components'
 import {
   isEmpty,
   isExist,
   isEven,
+  noop,
   compose,
-  extractFromObj,
-  parseInt10
+  extractFromObj
 } from '~/utils'
-import { getFileRankName, getNextNotations } from '~/utils/chess'
+import { getFileRankName, parseRankNum, getNextNotations } from '~/utils/chess'
 import css from './File.css'
 
 const EVEN_TILES = ['b', 'd', 'f', 'h']
 const ODD_TILES = ['a', 'c', 'e', 'g']
 
-const getRankName = compose(
-  parseInt10,
+const getRankNameNum = compose(
+  parseRankNum,
   extractFromObj('rankName'),
   getFileRankName
 )
@@ -29,7 +30,6 @@ class File extends Component {
     tileName: PropTypes.string.isRequired,
     notations: PropTypes.array.isRequired,
     selected: PropTypes.string,
-    color: PropTypes.string,
     piece: PropTypes.string,
     movableTiles: PropTypes.array,
     selectPiece: PropTypes.func,
@@ -40,10 +40,10 @@ class File extends Component {
 
   static defaultProps = {
     movableTiles: [],
-    selectPiece: function () {},
-    setCurrentMovable: function () {},
-    setNotations: function () {},
-    toggleTurn: function () {}
+    selectPiece: noop,
+    setCurrentMovable: noop,
+    setNotations: noop,
+    toggleTurn: noop
   }
 
   render () {
@@ -59,31 +59,32 @@ class File extends Component {
       setCurrentMovable
     } = this.props
 
-    const rankName = getRankName(tileName)
+    const rankName = getRankNameNum(tileName)
     const darkTiles = isEven(rankName) ? EVEN_TILES : ODD_TILES
     const isDark = darkTiles.includes(fileName)
     const isMovable = movableTiles.includes(tileName)
     const cls = cx(css.file, {
-      'is-dark': isDark,
-      'is-movable': isMovable
+      'is-dark': isDark
     })
+    const pieceProps = {
+      turn,
+      piece,
+      selected,
+      tileName,
+      isMovable,
+      selectPiece,
+      setCurrentMovable
+    }
+    const blankProps = {
+      tagName: 'div',
+      className: cx({ 'is-movable': isMovable })
+    }
+    const Element = isExist(Piece) ? Piece : Blank
+    const childProps = isExist(Piece) ? pieceProps : blankProps
 
     return (
-      <div
-        className={cls}
-        data-file={fileName}
-        data-tile-name={tileName}
-        onClick={this.handleClick}
-      >
-        {isExist(Piece) &&
-          createElement(Piece, {
-            turn,
-            piece,
-            selected,
-            tileName,
-            selectPiece,
-            setCurrentMovable
-          })}
+      <div className={cls} data-file={fileName} onClick={this.handleClick}>
+        {createElement(Element, childProps)}
       </div>
     )
   }

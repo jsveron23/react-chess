@@ -120,3 +120,5 @@ export const union = (a) => (b) => {
 }
 
 export const parseInt10 = (v) => parseInt(v, 10)
+
+export const noop = function () {}
