@@ -32,7 +32,7 @@ const File = ({
 }) => {
   const rankName = getRankName(tileName)
   const darkTiles = isEven(rankName) ? EVEN_TILES : ODD_TILES
-  const cls = cx(css.file, 'l-flex-middle', 'l-flex-center', {
+  const cls = cx(css.file, {
     'is-dark': darkTiles.includes(fileName)
   })
   const Piece = getPiece({ color, piece })
