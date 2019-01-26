@@ -28,5 +28,6 @@ button {
 }
 
 :global(.is-movable) {
+  cursor: pointer;
   background-color: #777;
 }

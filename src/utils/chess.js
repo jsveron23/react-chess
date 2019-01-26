@@ -89,3 +89,17 @@ function _getMovableTiles (files) {
 }
 
 export const getMovableTiles = _getMovableTiles(FILES)
+
+export const getNextNotations = (selected) => (tileName) => (notations) => {
+  const [selectedTileName] = selected.split('-')
+
+  return notations.reduce((acc, notation) => {
+    if (notation.indexOf(selectedTileName) > -1) {
+      const [side, piece] = notation.split('')
+
+      return [...acc, `${side}${piece}${tileName}`]
+    }
+
+    return [...acc, notation]
+  }, [])
+}

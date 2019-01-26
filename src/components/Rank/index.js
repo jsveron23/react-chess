@@ -2,6 +2,7 @@ import React from 'react'
 import cx from 'classnames'
 import PropTypes from 'prop-types'
 import { File } from '~/components'
+import getPiece from '~/components/getPiece'
 import css from './Rank.css'
 
 const Rank = ({
@@ -12,7 +13,9 @@ const Rank = ({
   selected,
   movableTiles,
   selectPiece,
-  setCurrentMovable
+  setCurrentMovable,
+  setNotations,
+  toggleTurn
 }) => {
   const cls = cx(css.rank, 'l-flex-row')
 
@@ -22,6 +25,7 @@ const Rank = ({
         const tile = `${fileName}${rankName}`
         const notation = notations.find((n) => n.indexOf(tile) > -1) || ''
         const [c, p] = notation.split('')
+        const Piece = getPiece({ color: c, piece: p })
 
         return (
           <File
@@ -29,12 +33,16 @@ const Rank = ({
             turn={turn}
             color={c}
             piece={p}
+            Piece={Piece}
+            notations={notations}
             selected={selected}
             fileName={fileName}
             tileName={tile}
             movableTiles={movableTiles}
             selectPiece={selectPiece}
             setCurrentMovable={setCurrentMovable}
+            setNotations={setNotations}
+            toggleTurn={toggleTurn}
           />
         )
       })}
@@ -50,12 +58,16 @@ Rank.propTypes = {
   selected: PropTypes.string,
   currentMovableTiles: PropTypes.array,
   selectPiece: PropTypes.func,
-  setCurrentMovable: PropTypes.func
+  setCurrentMovable: PropTypes.func,
+  setNotations: PropTypes.func,
+  toggleTurn: PropTypes.func
 }
 
 Rank.defaultProps = {
   selectPiece: function () {},
-  setCurrentMovable: function () {}
+  setCurrentMovable: function () {},
+  setNotations: function () {},
+  toggleTurn: function () {}
 }
 
 export default Rank

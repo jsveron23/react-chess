@@ -1,6 +1,7 @@
 import { connect } from 'react-redux'
 import { Board } from '~/components'
-import { selectPiece, setCurrentMovable } from '~/actions/general'
+import { selectPiece, setCurrentMovable, toggleTurn } from '~/actions/general'
+import { setNotations } from '~/actions/notations'
 import { getMovableTiles } from '~/utils/chess'
 import { RANKS, FILES } from '~/constants'
 
@@ -19,7 +20,12 @@ const mapStateToProps = (ranks, files) => ({ general, notations }) => {
   }
 }
 
-const mapDispatchToProps = { selectPiece, setCurrentMovable }
+const mapDispatchToProps = {
+  selectPiece,
+  setCurrentMovable,
+  setNotations,
+  toggleTurn
+}
 
 const BoardContainer = connect(
   mapStateToProps(RANKS, FILES),

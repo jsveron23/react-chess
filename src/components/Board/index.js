@@ -12,7 +12,9 @@ const Board = ({
   files,
   movableTiles,
   selectPiece,
-  setCurrentMovable
+  setCurrentMovable,
+  setNotations,
+  toggleTurn
 }) => {
   if (!isMatching) {
     return null
@@ -32,6 +34,8 @@ const Board = ({
             movableTiles={movableTiles}
             selectPiece={selectPiece}
             setCurrentMovable={setCurrentMovable}
+            setNotations={setNotations}
+            toggleTurn={toggleTurn}
           />
         )
       })}
@@ -47,12 +51,16 @@ Board.propTypes = {
   selected: PropTypes.string,
   movableTiles: PropTypes.array,
   selectPiece: PropTypes.func,
-  setCurrentMovable: PropTypes.func
+  setCurrentMovable: PropTypes.func,
+  setNotations: PropTypes.func,
+  toggleTurn: PropTypes.func
 }
 
 Board.defaultProps = {
   selectPiece: function () {},
-  setCurrentMovable: function () {}
+  setCurrentMovable: function () {},
+  setNotations: function () {},
+  toggleTurn: function () {}
 }
 
 export default Board

@@ -36,8 +36,8 @@ describe('utils/chess.js', () => {
     it('Get number of rank squence', () => {
       expect(getSideBy('w')).toEqual('white')
       expect(getSideBy('b')).toEqual('black')
-      expect(getSideBy('white')).toEqual('white')
-      expect(getSideBy('black')).toEqual('black')
+      expect(getSideBy('white')).toEqual('w')
+      expect(getSideBy('black')).toEqual('b')
     })
   })
 
