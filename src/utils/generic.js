@@ -21,18 +21,14 @@ export const flatten = (items = []) => {
  * @param  {Array} [items=[]]
  * @return {Array}
  */
-export const getFirst = (items = []) => {
-  return [...items].shift()
-}
+export const getFirst = (items = []) => [...items].shift()
 
 /**
  * Get last item from array
  * @param  {Array} [items=[]]
  * @return {Array}
  */
-export const getLast = (items = []) => {
-  return [...items].pop()
-}
+export const getLast = (items = []) => [...items].pop()
 
 /**
  * Remove empty item for array
@@ -48,9 +44,7 @@ export const diet = (items = []) => {
  * @param  {...Array} [...x]
  * @return {Array}
  */
-export const toArray = (...x) => {
-  return Array.of(...x)
-}
+export const toArray = (...x) => Array.of(...x)
 
 /**
  * @alias toArray
@@ -62,13 +56,9 @@ export const stream = toArray
  * ==================
  */
 
-export const replaceFirst = (items = []) => (x) => {
-  return [x, ...items.slice(1)]
-}
+export const replaceFirst = (items = []) => (x) => [x, ...items.slice(1)]
 
-export const replaceLast = (items = []) => (x) => {
-  return [...items.slice(0, -1), x]
-}
+export const replaceLast = (items = []) => (x) => [...items.slice(0, -1), x]
 
 /**
  * Get intersect props between 2 arrays

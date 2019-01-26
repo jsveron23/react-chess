@@ -105,7 +105,7 @@ class File extends Component {
     const isMovable = movableTiles.includes(tileName)
 
     if (isMovable && isEmpty(Piece)) {
-      const nextNotations = getNextNotations(selected)(tileName)(notations)
+      const nextNotations = getNextNotations(selected)(tileName, notations)
 
       setNotations(nextNotations)
       setCurrentMovable([])

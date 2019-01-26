@@ -19,7 +19,7 @@ function _parseFileNum (file) {
  * @param  {string} tileName
  * @return {Object}
  */
-export function getFileRankName (tileName) {
+function getFileRankName (tileName) {
   const tileArr = tileName.split('')
 
   if (tileArr.length > 2) {
@@ -36,21 +36,11 @@ export function getFileRankName (tileName) {
   }, {})
 }
 
-export const parseFileNum = _parseFileNum(FILES)
-
-/**
- * Rank name to number
- * @alias parseInt10
- */
-export const parseRankNum = parseInt10
-
 function _getSideBy (side) {
   return (key) => side[key]
 }
 
-export const getSideBy = _getSideBy(SIDE)
-
-const _getMovementsTiles = (movements) => {
+function _getMovementsTiles (movements) {
   /**
    * Get movements tiles
    * @param  {string}   tileName
@@ -71,8 +61,6 @@ const _getMovementsTiles = (movements) => {
   }
 }
 
-export const getMovementsTiles = _getMovementsTiles(MOVEMENTS)
-
 function _getMovableTiles (files) {
   /**
    * Get movable tiles
@@ -88,18 +76,32 @@ function _getMovableTiles (files) {
   }
 }
 
-export const getMovableTiles = _getMovableTiles(FILES)
-
-export const getNextNotations = (selected) => (tileName) => (notations) => {
+/**
+ * Get next notations
+ * @param  {string}   selected
+ * @return {Function}
+ */
+function getNextNotations (selected) {
   const [selectedTileName] = selected.split('-')
 
-  return notations.reduce((acc, notation) => {
-    if (notation.indexOf(selectedTileName) > -1) {
-      const [side, piece] = notation.split('')
+  return (nextTileName, prevNotations) => {
+    const nextNotations = prevNotations.reduce((acc, notation) => {
+      if (notation.indexOf(selectedTileName) > -1) {
+        const [side, piece] = notation.split('')
 
-      return [...acc, `${side}${piece}${tileName}`]
-    }
+        return [...acc, `${side}${piece}${nextTileName}`]
+      }
 
-    return [...acc, notation]
-  }, [])
+      return [...acc, notation]
+    }, [])
+
+    return nextNotations
+  }
 }
+
+export const parseFileNum = _parseFileNum(FILES)
+export const parseRankNum = parseInt10
+export const getSideBy = _getSideBy(SIDE)
+export const getMovableTiles = _getMovableTiles(FILES)
+export const getMovementsTiles = _getMovementsTiles(MOVEMENTS)
+export { getFileRankName, getNextNotations }
