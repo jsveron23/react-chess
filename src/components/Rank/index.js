@@ -4,7 +4,16 @@ import PropTypes from 'prop-types'
 import { File } from '~/components'
 import css from './Rank.css'
 
-const Rank = ({ turn, notations, files, rankName, selectPiece, selected }) => {
+const Rank = ({
+  turn,
+  notations,
+  files,
+  rankName,
+  selected,
+  movableTiles,
+  selectPiece,
+  setCurrentMovable
+}) => {
   const cls = cx(css.rank, 'l-flex-row')
 
   return (
@@ -23,7 +32,9 @@ const Rank = ({ turn, notations, files, rankName, selectPiece, selected }) => {
             selected={selected}
             fileName={fileName}
             tileName={tile}
+            movableTiles={movableTiles}
             selectPiece={selectPiece}
+            setCurrentMovable={setCurrentMovable}
           />
         )
       })}
@@ -36,12 +47,15 @@ Rank.propTypes = {
   turn: PropTypes.string.isRequired,
   files: PropTypes.array.isRequired,
   rankName: PropTypes.string.isRequired,
+  selected: PropTypes.string,
+  currentMovableTiles: PropTypes.array,
   selectPiece: PropTypes.func,
-  selected: PropTypes.string
+  setCurrentMovable: PropTypes.func
 }
 
 Rank.defaultProps = {
-  selectPiece: function () {}
+  selectPiece: function () {},
+  setCurrentMovable: function () {}
 }
 
 export default Rank

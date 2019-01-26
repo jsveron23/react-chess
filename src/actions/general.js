@@ -18,3 +18,10 @@ export function selectPiece (piece) {
     payload: piece
   }
 }
+
+export function setCurrentMovable (movable) {
+  return {
+    type: types.CURRENT_MOVABLE_TILES,
+    payload: movable
+  }
+}

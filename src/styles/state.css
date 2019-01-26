@@ -24,5 +24,9 @@ button {
 }
 
 :global(.is-selected) {
-  border: 2px dotted #000;
+  background-color: #777;
+}
+
+:global(.is-movable) {
+  background-color: #777;
 }

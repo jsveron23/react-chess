@@ -1,4 +1,3 @@
-import { memo } from 'react'
 import {
   BlackBishop,
   BlackKing,
@@ -42,14 +41,9 @@ function getEnhancedMap (map) {
       return acc
     }
 
-    const EnhancedPiece = compose(
-      memo,
-      enhancePiece(sideKey)
-    )(Component)
-
     return {
       ...acc,
-      [key]: EnhancedPiece
+      [key]: enhancePiece(Component, sideKey)
     }
   }, {})
 }

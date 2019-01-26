@@ -5,7 +5,8 @@ const initialState = {
   title: 'React Chess',
   turn: 'white',
   isMatching: false,
-  selected: null
+  selected: null,
+  currentMovableTiles: []
 }
 
 const reducer = (state = initialState, action) => {
@@ -22,6 +23,10 @@ const reducer = (state = initialState, action) => {
 
     case types.SELECT_PIECE: {
       return { ...state, selected: payload }
+    }
+
+    case types.CURRENT_MOVABLE_TILES: {
+      return { ...state, currentMovableTiles: payload }
     }
 
     default: {

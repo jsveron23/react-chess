@@ -10,7 +10,9 @@ const Board = ({
   selected,
   ranks,
   files,
-  selectPiece
+  movableTiles,
+  selectPiece,
+  setCurrentMovable
 }) => {
   if (!isMatching) {
     return null
@@ -27,7 +29,9 @@ const Board = ({
             selected={selected}
             files={files}
             rankName={rankName}
+            movableTiles={movableTiles}
             selectPiece={selectPiece}
+            setCurrentMovable={setCurrentMovable}
           />
         )
       })}
@@ -40,12 +44,15 @@ Board.propTypes = {
   turn: PropTypes.string.isRequired,
   ranks: PropTypes.array.isRequired,
   files: PropTypes.array.isRequired,
+  selected: PropTypes.string,
+  movableTiles: PropTypes.array,
   selectPiece: PropTypes.func,
-  selected: PropTypes.string
+  setCurrentMovable: PropTypes.func
 }
 
 Board.defaultProps = {
-  selectPiece: function () {}
+  selectPiece: function () {},
+  setCurrentMovable: function () {}
 }
 
 export default Board

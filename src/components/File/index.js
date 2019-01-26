@@ -1,4 +1,4 @@
-import React, { Fragment } from 'react'
+import React from 'react'
 import PropTypes from 'prop-types'
 import cx from 'classnames'
 import getPiece from '~/components/getPiece'
@@ -9,17 +9,11 @@ import css from './File.css'
 const EVEN_TILES = ['b', 'd', 'f', 'h']
 const ODD_TILES = ['a', 'c', 'e', 'g']
 
-/**
- * Get rank name
- * @param  {string} tileName
- * @return {number}
- */
-const getRankName = (tileName) =>
-  compose(
-    parseInt10,
-    extractFromObj('rankName'),
-    getFileRankName
-  )(tileName)
+const getRankName = compose(
+  parseInt10,
+  extractFromObj('rankName'),
+  getFileRankName
+)
 
 const File = ({
   turn,
@@ -28,26 +22,29 @@ const File = ({
   color,
   piece,
   selected,
-  selectPiece
+  movableTiles,
+  selectPiece,
+  setCurrentMovable
 }) => {
   const rankName = getRankName(tileName)
   const darkTiles = isEven(rankName) ? EVEN_TILES : ODD_TILES
   const cls = cx(css.file, {
-    'is-dark': darkTiles.includes(fileName)
+    'is-dark': darkTiles.includes(fileName),
+    'is-movable': movableTiles.includes(tileName)
   })
   const Piece = getPiece({ color, piece })
-  const pieceProps = isExist(Piece)
-    ? {
-      turn,
-      selected,
-      tileName,
-      selectPiece
-    }
-    : {}
 
   return (
     <div className={cls} data-file={fileName} data-tile-name={tileName}>
-      {React.createElement(Piece || Fragment, pieceProps)}
+      {isExist(Piece) &&
+        React.createElement(Piece, {
+          turn,
+          piece,
+          selected,
+          tileName,
+          selectPiece,
+          setCurrentMovable
+        })}
     </div>
   )
 }
@@ -56,14 +53,18 @@ File.propTypes = {
   turn: PropTypes.string.isRequired,
   fileName: PropTypes.string.isRequired,
   tileName: PropTypes.string.isRequired,
-  selectPiece: PropTypes.func,
   selected: PropTypes.string,
   color: PropTypes.string,
-  piece: PropTypes.string
+  piece: PropTypes.string,
+  movableTiles: PropTypes.array,
+  selectPiece: PropTypes.func,
+  setCurrentMovable: PropTypes.func
 }
 
 File.defaultProps = {
-  selectPiece: function () {}
+  movableTiles: [],
+  selectPiece: function () {},
+  setCurrentMovable: function () {}
 }
 
 export default File
