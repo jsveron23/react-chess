@@ -1,5 +1,5 @@
 import { FILES, SIDE, MOVEMENTS } from '~/constants'
-import { parseInt10 } from '~/utils'
+import { isEmpty, isExist, parseInt10 } from '~/utils'
 
 function _parseFileNum (file) {
   /**
@@ -49,7 +49,8 @@ function _getMovementsTiles (movements) {
   return (tileName) => (piece) => (turn) => {
     const mvs = movements[piece]
     const { rankName, fileName } = getFileRankName(tileName)
-    const [x, y] = [parseFileNum(fileName), parseRankNum(rankName)]
+    const x = parseFileNum(fileName)
+    const y = parseRankNum(rankName)
 
     return mvs.map((mv) => {
       const [mvX, mvY] = mv
@@ -61,18 +62,28 @@ function _getMovementsTiles (movements) {
   }
 }
 
-function _getMovableTiles (files) {
+function _getPureMovable (files) {
   /**
    * Get movable tiles
-   * @param  {Array} movements
+   * @param  {Array} movable
    * @return {Array}
    */
-  return (movements) => {
-    return movements.map((mvs) => {
+  return (movable) => {
+    const filteredMovable = movable.reduce((acc, mvs) => {
       const [file, rank] = mvs
+      const nextFile = files[file - 1]
+      const nextTile = `${nextFile}${rank}`
+      const inUndefined = isEmpty(nextFile)
+      const nonTileName = rank === 0 || nextTile.indexOf('-') > -1
 
-      return `${files[file - 1]}${rank}`
-    })
+      if (inUndefined || nonTileName) {
+        return acc
+      }
+
+      return [...acc, nextTile]
+    }, [])
+
+    return filteredMovable
   }
 }
 
@@ -99,9 +110,87 @@ function getNextNotations (selected) {
   }
 }
 
+function movableWithDirection (movableTiles) {
+  return movableTiles.reduce(
+    (acc, tile, idx) => {
+      const { pending, lastKey } = acc
+      const [currentFile, currentRank] = tile.split('')
+      const currentFileNum = parseFileNum(currentFile)
+      const currentRankNum = parseRankNum(currentRank)
+
+      // TODO:
+      // length 1 is not work (Pawn)
+
+      // first or last
+      if (isEmpty(pending)) {
+        if (isExist(lastKey) && movableTiles.length === idx + 1) {
+          return {
+            ...acc,
+            [lastKey]: [...acc[lastKey], tile],
+            pending: '',
+            lastKey: ''
+          }
+        }
+
+        return {
+          ...acc,
+          pending: tile
+        }
+      }
+
+      const [pendingFile, pendingRank] = pending.split('')
+      const pendingFileNum = parseFileNum(pendingFile)
+      const pendingRankNum = parseRankNum(pendingRank)
+      const x = Math.abs(pendingFileNum - currentFileNum)
+      const y = Math.abs(pendingRankNum - currentRankNum)
+
+      if (x === 1 && y === 1) {
+        return {
+          ...acc,
+          diagonal: [...acc.diagonal, pending, tile],
+          lastKey: 'diagonal',
+          pending: ''
+        }
+      }
+
+      if (x === 0) {
+        return {
+          ...acc,
+          vertical: [...acc.vertical, pending, tile],
+          lastKey: 'vertical',
+          pending: ''
+        }
+      }
+
+      if (y === 0) {
+        return {
+          ...acc,
+          horizontal: [...acc.horizontal, pending, tile],
+          lastKey: 'horizontal',
+          pending: ''
+        }
+      }
+
+      return {
+        ...acc,
+        [lastKey]: [...acc[lastKey], pending],
+        pending: tile,
+        lastKey: ''
+      }
+    },
+    {
+      vertical: [],
+      horizontal: [],
+      diagonal: [],
+      pending: '',
+      lastKey: ''
+    }
+  )
+}
+
 export const parseFileNum = _parseFileNum(FILES)
 export const parseRankNum = parseInt10
 export const getSideBy = _getSideBy(SIDE)
-export const getMovableTiles = _getMovableTiles(FILES)
+export const getPureMovable = _getPureMovable(FILES)
 export const getMovementsTiles = _getMovementsTiles(MOVEMENTS)
-export { getFileRankName, getNextNotations }
+export { getFileRankName, getNextNotations, movableWithDirection }

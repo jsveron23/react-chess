@@ -5,7 +5,7 @@ const initialState = {
   title: 'React Chess',
   turn: 'white',
   isMatching: false,
-  selected: null,
+  selected: '',
   currentMovableTiles: []
 }
 

@@ -26,7 +26,11 @@ export const pipe = (...fns) => (x) => {
  * @param  {string} keyName
  * @return {Object}
  */
-export const extractFromObj = (keyName) => (obj) => obj[keyName]
+export const extractFromObj = (keyName) => (obj) => {
+  const nextObj = { ...obj }
+
+  return nextObj[keyName]
+}
 
 /**
  * Trace log while composing

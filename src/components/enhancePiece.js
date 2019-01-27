@@ -2,7 +2,6 @@ import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import cx from 'classnames'
 import { boundMethod } from 'autobind-decorator'
-// import scuInspector from 'scu-inspector'
 import { noop } from '~/utils'
 import { getSideBy, getMovementsTiles } from '~/utils/chess'
 
