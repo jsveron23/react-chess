@@ -1,8 +1,8 @@
 import React from 'react'
 import cx from 'classnames'
 import PropTypes from 'prop-types'
-import { File } from '~/components'
-import getPiece from '~/components/getPiece'
+import getPiece, { File } from '~/components'
+import { split, noop } from '~/utils'
 import css from './Rank.css'
 
 const Rank = ({
@@ -22,21 +22,21 @@ const Rank = ({
   return (
     <div className={cls} data-rank={rankName}>
       {files.map((fileName) => {
-        const tile = `${fileName}${rankName}`
-        const notation = notations.find((n) => n.indexOf(tile) > -1) || ''
-        const [c, p] = notation.split('')
-        const Piece = getPiece({ color: c, piece: p })
+        const tileName = `${fileName}${rankName}`
+        const notation = notations.find((n) => n.includes(tileName))
+        const [color, piece] = split(notation)
+        const Piece = getPiece({ color, piece })
 
         return (
           <File
-            key={tile}
+            key={tileName}
             turn={turn}
-            piece={p}
+            piece={piece}
             Piece={Piece}
             notations={notations}
             selected={selected}
             fileName={fileName}
-            tileName={tile}
+            tileName={tileName}
             movableTiles={movableTiles}
             selectPiece={selectPiece}
             setCurrentMovable={setCurrentMovable}
@@ -63,10 +63,10 @@ Rank.propTypes = {
 }
 
 Rank.defaultProps = {
-  selectPiece: function () {},
-  setCurrentMovable: function () {},
-  setNotations: function () {},
-  toggleTurn: function () {}
+  selectPiece: noop,
+  setCurrentMovable: noop,
+  setNotations: noop,
+  toggleTurn: noop
 }
 
 export default Rank

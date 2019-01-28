@@ -18,7 +18,9 @@ import Board from './Board'
 import Rank from './Rank'
 import File from './File'
 import Blank from './Blank'
+import getPiece from './getPiece'
 
+export default getPiece
 export {
   Button,
   Logo,

@@ -67,6 +67,7 @@
     "classnames": "^2.2.6",
     "memoize-one": "^5.0.0",
     "prop-types": "^15.6.2",
+    "ramda": "^0.26.1",
     "react": "^16.7.0",
     "react-dom": "^16.6.3",
     "react-redux": "^6.0.0",

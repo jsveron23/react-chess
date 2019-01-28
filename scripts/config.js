@@ -14,6 +14,7 @@ const NO_PARSE = new RegExp(
     'enzyme-adapter-react-16',
     'enzyme-to-json',
     'eslint',
+    'ramda',
     'eslint-config-standard',
     'eslint-plugin-import',
     'eslint-plugin-node',

@@ -3,19 +3,14 @@ import PropTypes from 'prop-types'
 import cx from 'classnames'
 import { boundMethod } from 'autobind-decorator'
 import { Blank } from '~/components'
+import { isEmpty, isExist, noop, compose, extractFromObj } from '~/utils'
 import {
-  isEmpty,
-  isExist,
-  isEven,
-  noop,
-  compose,
-  extractFromObj
-} from '~/utils'
-import { getFileRankName, parseRankNum, getNextNotations } from '~/utils/chess'
+  getFileRankName,
+  parseRankNum,
+  getNextNotations,
+  isDarkBackground
+} from '~/utils/chess'
 import css from './File.css'
-
-const EVEN_TILES = ['b', 'd', 'f', 'h']
-const ODD_TILES = ['a', 'c', 'e', 'g']
 
 const getRankNameNum = compose(
   parseRankNum,
@@ -59,9 +54,10 @@ class File extends Component {
       setCurrentMovable
     } = this.props
 
-    const rankName = getRankNameNum(tileName)
-    const darkTiles = isEven(rankName) ? EVEN_TILES : ODD_TILES
-    const isDark = darkTiles.includes(fileName)
+    const isDark = compose(
+      isDarkBackground(fileName),
+      getRankNameNum
+    )(tileName)
     const isMovable = movableTiles.includes(tileName)
     const cls = cx(css.file, {
       'is-dark': isDark
@@ -106,7 +102,7 @@ class File extends Component {
     const isMovable = movableTiles.includes(tileName)
 
     if (isMovable && isEmpty(Piece)) {
-      const nextNotations = getNextNotations(selected)(tileName, notations)
+      const nextNotations = getNextNotations(selected, tileName, notations)
 
       setNotations(nextNotations)
       setCurrentMovable([])

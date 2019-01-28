@@ -1,6 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { Rank } from '~/components'
+import { noop } from '~/utils'
 import css from './Board.css'
 
 const Board = ({
@@ -57,10 +58,10 @@ Board.propTypes = {
 }
 
 Board.defaultProps = {
-  selectPiece: function () {},
-  setCurrentMovable: function () {},
-  setNotations: function () {},
-  toggleTurn: function () {}
+  selectPiece: noop,
+  setCurrentMovable: noop,
+  setNotations: noop,
+  toggleTurn: noop
 }
 
 export default Board

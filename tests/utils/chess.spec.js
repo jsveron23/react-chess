@@ -4,7 +4,7 @@ import {
   parseRankNum,
   getSideBy,
   getMovementsTiles,
-  getMovableTiles,
+  getPureMovable,
   getNextNotations
 } from '~/utils/chess'
 
@@ -49,10 +49,10 @@ describe('utils/chess.js', () => {
     })
   })
 
-  describe('#getMovableTiles', () => {
+  describe('#getPureMovable', () => {
     it('Get movable tiles', () => {
-      expect(getMovableTiles([[1, 3]])).toEqual(['a3'])
-      expect(getMovableTiles([[2, 6]])).toEqual(['b6'])
+      expect(getPureMovable([[1, 3]])).toEqual(['a3'])
+      expect(getPureMovable([[2, 6]])).toEqual(['b6'])
     })
   })
 
@@ -74,7 +74,7 @@ describe('utils/chess.js', () => {
         'wRa1', 'wNb1', 'wBc1', 'wQd1', 'wKe1', 'wBf1', 'wNg1', 'wRh1'
       ]
 
-      expect(getNextNotations('a2-w')('a3', prevNotations)).toEqual(
+      expect(getNextNotations('a2-w')('a3')(prevNotations)).toEqual(
         nextNotations
       )
     })

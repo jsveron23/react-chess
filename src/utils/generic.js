@@ -1,3 +1,4 @@
+import { curry } from 'ramda'
 import { isExist } from './is'
 
 /**
@@ -122,3 +123,11 @@ export const union = (a) => (b) => {
 export const parseInt10 = (v) => parseInt(v, 10)
 
 export const noop = function () {}
+
+const _split = curry((by, text) => {
+  return isExist(text) ? text.split(by) : ''
+})
+const split = _split('')
+split.by = _split
+
+export { split }
