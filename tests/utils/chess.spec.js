@@ -3,7 +3,7 @@ import {
   parseFileNum,
   parseRankNum,
   getSideBy,
-  getMovementsTiles,
+  getMovements,
   getPureMovable,
   getNextNotations
 } from '~/utils/chess'
@@ -42,10 +42,10 @@ describe('utils/chess.js', () => {
     })
   })
 
-  describe('#getMovementsTiles', () => {
+  describe('#getMovements', () => {
     it('Get movements tiles', () => {
-      expect(getMovementsTiles('a2')('P')('white')).toEqual([[1, 3]])
-      expect(getMovementsTiles('b7')('P')('black')).toEqual([[2, 6]])
+      expect(getMovements('a2')('P')('white')).toEqual([[1, 3]])
+      expect(getMovements('b7')('P')('black')).toEqual([[2, 6]])
     })
   })
 
