@@ -13,7 +13,7 @@ import {
 } from '~/utils/chess'
 import css from './File.css'
 
-const getRankNameNum = compose(
+const getRankAsNum = compose(
   transformRank,
   extract('rankName'),
   parseTileName
@@ -57,7 +57,7 @@ class File extends Component {
 
     const isDark = compose(
       isDarkBg(fileName),
-      getRankNameNum
+      getRankAsNum
     )(tileName)
     const isMovable = movableTiles.includes(tileName)
     const cls = cx(css.file, {

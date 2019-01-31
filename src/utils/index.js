@@ -1,57 +1,70 @@
-function _detectEmpty (v) {
-  if (typeof v === 'function' || typeof v === 'symbol') {
-    return false
-  }
+import { curry } from 'ramda'
+import { isEmptyFn, isExistFn } from './internal/custom'
 
-  return (
-    v === null ||
-    v === undefined ||
-    (v.hasOwnProperty('length') && v.length === 0) ||
-    (v.constructor === Object && Object.keys(v).length === 0)
-  )
-}
+/**
+ * Is empty?
+ * @param  {...*}    [...x]
+ * @return {boolean}
+ */
+export const isEmpty = isEmptyFn('every')
+isEmpty.or = isEmptyFn('some')
 
-function _isEmpty (isSome = false) {
-  const fnName = isSome ? 'some' : 'every'
+/**
+ * Is exist?
+ * @param  {...*}    [...x]
+ * @return {boolean}
+ */
+export const isExist = isExistFn('every')
+isExist.or = isExistFn('some')
 
-  return (...x) => x[fnName](_detectEmpty)
-}
-
-function _isExist (isSome = false) {
-  const fnName = isSome ? 'some' : 'every'
-  const cb = (v) => !_detectEmpty(v)
-
-  return (...x) => x[fnName](cb)
-}
-
-export const isEmpty = _isEmpty()
-isEmpty.or = _isEmpty(true)
-
-export const isExist = _isExist()
-isExist.or = _isExist(true)
-
+/**
+ * Is even?
+ * @param  {number}  v
+ * @return {boolean}
+ */
 export const isEven = (v) => v % 2 === 0
 
 /**
- * Extract value from object
+ * Extract value from object (compose)
  * @param  {string} keyName
  * @return {Object}
  */
-export const extract = (keyName) => (obj) => {
+export const extract = curry((keyName, obj) => {
   const nextObj = { ...obj }
 
   return nextObj[keyName]
-}
+})
 
 /**
- * Trace log while composing
- * @param  {string} logName
+ * Trace log (compose)
+ * @param  {string} label
  * @return {*}
  */
-export const trace = (logName) => (v) => {
-  console.log(`${logName}: `, v)
+export const trace = curry((label, v) => {
+  console.log(`${label}: `, v)
 
   return v
-}
+})
 
+/**
+ * Empty function
+ * @return {undefined}
+ */
 export const noop = function () {}
+
+// export const destructByNames = (...names) => (v) => {
+//   const mappable = split('', v)
+//
+//   return mappable.reduce((acc, splited, idx) => {
+//     const name = names[idx]
+//
+//     if (isEmpty(name)) {
+//       return acc
+//     }
+//
+//     return {
+//       ...acc,
+//       [name]: splited
+//     }
+//   }, {})
+// }

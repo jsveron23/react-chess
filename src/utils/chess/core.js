@@ -17,10 +17,10 @@ import {
  * @return {Array}
  */
 export const getMvAxis = curry((tileName, piece, turn) => {
-  const movements = getMovements(piece)
   const { rankName, fileName } = parseTileName(tileName)
   const x = transformFile(fileName)
   const y = transformRank(rankName)
+  const movements = getMovements(piece)
 
   return movements.map((mv) => {
     const [mvX, mvY] = mv
@@ -41,16 +41,9 @@ export const getPureMovable = (movable) => {
     const [file, rank] = mvs
     const nextFile = getFile(file)
     const nextTile = `${nextFile}${rank}`
-    const inUndefined = isEmpty(nextFile)
+    const isOutside = isEmpty(nextFile) || rank <= 0
 
-    // TODO: find out why it happens
-    const nonTileName = rank === 0 || nextTile.indexOf('-') > -1
-
-    if (inUndefined || nonTileName) {
-      return acc
-    }
-
-    return [...acc, nextTile]
+    return isOutside ? acc : [...acc, nextTile]
   }, [])
 }
 

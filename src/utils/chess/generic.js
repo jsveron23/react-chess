@@ -1,6 +1,6 @@
-import { curry, split } from 'ramda'
-import { isEven } from '~/utils'
-import { FILES, SIDE, MOVEMENTS, EVEN_TILES, ODD_TILES } from '~/constants'
+import { compose, includes, split } from 'ramda'
+import { FILES, SIDE, MOVEMENTS } from '~/constants'
+import { getTilesBy } from '../internal/chess'
 
 /**
  * Get side
@@ -52,11 +52,11 @@ export const parseSelected = (selected) => {
  * @return {Object}
  */
 export const parseTileName = (tileName) => {
-  const splitedTile = split('', tileName)
-
-  if (splitedTile.length > 2) {
+  if (tileName.length > 2) {
     return {}
   }
+
+  const splitedTile = split('', tileName)
 
   return splitedTile.reduce((acc, name) => {
     const keyName = /[1-9]/.test(name) ? 'rankName' : 'fileName'
@@ -68,8 +68,8 @@ export const parseTileName = (tileName) => {
   }, {})
 }
 
-export const isDarkBg = curry((fileName, rankName) => {
-  const darkTiles = isEven(rankName) ? EVEN_TILES : ODD_TILES
-
-  return darkTiles.includes(fileName)
-})
+export const isDarkBg = (fileName) =>
+  compose(
+    includes(fileName),
+    getTilesBy
+  )
