@@ -1,51 +1,51 @@
 import {
-  getFileRankName,
-  parseFileNum,
-  parseRankNum,
-  getSideBy,
-  getMovements,
+  parseTileName,
+  transformFile,
+  transformRank,
+  getSide,
+  getMvAxis,
   getPureMovable,
   getNextNotations
 } from '~/utils/chess'
 
 describe('utils/chess.js', () => {
-  describe('#getFileRankName', () => {
+  describe('#parseTileName', () => {
     it('Get rank and file name', () => {
-      expect(getFileRankName('1b')).toEqual({ fileName: 'b', rankName: '1' })
-      expect(getFileRankName('b9')).toEqual({ fileName: 'b', rankName: '9' })
-      expect(getFileRankName('3')).toEqual({ rankName: '3' })
-      expect(getFileRankName('d')).toEqual({ fileName: 'd' })
-      expect(getFileRankName('d1s')).toEqual({})
+      expect(parseTileName('1b')).toEqual({ fileName: 'b', rankName: '1' })
+      expect(parseTileName('b9')).toEqual({ fileName: 'b', rankName: '9' })
+      expect(parseTileName('3')).toEqual({ rankName: '3' })
+      expect(parseTileName('d')).toEqual({ fileName: 'd' })
+      expect(parseTileName('d1s')).toEqual({})
     })
   })
 
-  describe('#parseFileNum', () => {
+  describe('#transformFile', () => {
     it('Get number of file squence', () => {
-      expect(parseFileNum('a')).toEqual(1)
-      expect(parseFileNum('d')).toEqual(4)
+      expect(transformFile('a')).toEqual(1)
+      expect(transformFile('d')).toEqual(4)
     })
   })
 
-  describe('#parseRankNum', () => {
+  describe('#transformRank', () => {
     it('Get number of rank squence', () => {
-      expect(parseRankNum('1')).toEqual(1)
-      expect(parseRankNum('7')).toEqual(7)
+      expect(transformRank('1')).toEqual(1)
+      expect(transformRank('7')).toEqual(7)
     })
   })
 
-  describe('#getSideBy', () => {
+  describe('#getSide', () => {
     it('Get number of rank squence', () => {
-      expect(getSideBy('w')).toEqual('white')
-      expect(getSideBy('b')).toEqual('black')
-      expect(getSideBy('white')).toEqual('w')
-      expect(getSideBy('black')).toEqual('b')
+      expect(getSide('w')).toEqual('white')
+      expect(getSide('b')).toEqual('black')
+      expect(getSide('white')).toEqual('w')
+      expect(getSide('black')).toEqual('b')
     })
   })
 
-  describe('#getMovements', () => {
+  describe('#getMvAxis', () => {
     it('Get movements tiles', () => {
-      expect(getMovements('a2')('P')('white')).toEqual([[1, 3]])
-      expect(getMovements('b7')('P')('black')).toEqual([[2, 6]])
+      expect(getMvAxis('a2')('P')('white')).toEqual([[1, 3]])
+      expect(getMvAxis('b7', 'P')('black')).toEqual([[2, 6]])
     })
   })
 

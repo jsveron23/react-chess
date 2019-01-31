@@ -1,8 +1,9 @@
 import React from 'react'
-import cx from 'classnames'
 import PropTypes from 'prop-types'
+import cx from 'classnames'
+import { split } from 'ramda'
 import getPiece, { File } from '~/components'
-import { split, noop } from '~/utils'
+import { noop } from '~/utils'
 import css from './Rank.css'
 
 const Rank = ({
@@ -24,7 +25,7 @@ const Rank = ({
       {files.map((fileName) => {
         const tileName = `${fileName}${rankName}`
         const notation = notations.find((n) => n.includes(tileName))
-        const [color, piece] = split(notation)
+        const [color, piece] = split('', notation || '')
         const Piece = getPiece({ color, piece })
 
         return (

@@ -13,8 +13,6 @@ const NO_PARSE = new RegExp(
     'enzyme',
     'enzyme-adapter-react-16',
     'enzyme-to-json',
-    'eslint',
-    'ramda',
     'eslint-config-standard',
     'eslint-plugin-import',
     'eslint-plugin-node',
@@ -34,6 +32,7 @@ const VENDOR = [
   'redux',
   'redux-thunk',
   'react-redux',
+  'ramda',
   'memoize-one',
   'autobind-decorator'
 ]

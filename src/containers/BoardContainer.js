@@ -3,20 +3,20 @@ import { Board } from '~/components'
 import { selectPiece, setCurrentMovable, toggleTurn } from '~/actions/general'
 import { setNotations } from '~/actions/notations'
 import { isEmpty, isExist } from '~/utils'
-import { getPureMovable } from '~/utils/chess' // movableWithDirection
+import { getPureMovable, parseSelected } from '~/utils/chess' // transformMovableAsDirection
 import { RANKS, FILES, SPECIALS } from '~/constants'
 
-const mapStateToProps = ({ ranks, files }) => ({ general, notations }) => {
+const mapStateToProps = ({ general, notations }) => {
   const { isMatching, turn, selected, currentMovableTiles } = general
   const movableTiles = getPureMovable(currentMovableTiles)
-  const [selectedTile] = selected.split('-')
+  const { selectedTile } = parseSelected(selected)
   const [, selectedPiece] = notations.filter((notation) => {
     return notation.indexOf(selectedTile) > -1
   })
   const special = SPECIALS[selectedPiece]
 
   if (isEmpty(special) && isExist(movableTiles)) {
-    // const movable = movableWithDirection(movableTiles)
+    // const movable = transformMovableAsDirection(movableTiles)
     // console.log(movable)
   }
 
@@ -25,9 +25,9 @@ const mapStateToProps = ({ ranks, files }) => ({ general, notations }) => {
     turn,
     selected,
     notations,
-    ranks,
-    files,
-    movableTiles
+    movableTiles,
+    ranks: RANKS,
+    files: FILES
   }
 }
 
@@ -39,7 +39,7 @@ const mapDispatchToProps = {
 }
 
 const BoardContainer = connect(
-  mapStateToProps({ ranks: RANKS, files: FILES }),
+  mapStateToProps,
   mapDispatchToProps
 )(Board)
 

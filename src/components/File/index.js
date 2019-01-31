@@ -2,20 +2,21 @@ import React, { Component, createElement } from 'react'
 import PropTypes from 'prop-types'
 import cx from 'classnames'
 import { boundMethod } from 'autobind-decorator'
+import { compose } from 'ramda'
 import { Blank } from '~/components'
-import { isEmpty, isExist, noop, compose, extractFromObj } from '~/utils'
+import { isEmpty, isExist, noop, extract } from '~/utils'
 import {
-  getFileRankName,
-  parseRankNum,
+  parseTileName,
+  transformRank,
   getNextNotations,
-  isDarkBackground
+  isDarkBg
 } from '~/utils/chess'
 import css from './File.css'
 
 const getRankNameNum = compose(
-  parseRankNum,
-  extractFromObj('rankName'),
-  getFileRankName
+  transformRank,
+  extract('rankName'),
+  parseTileName
 )
 
 class File extends Component {
@@ -55,7 +56,7 @@ class File extends Component {
     } = this.props
 
     const isDark = compose(
-      isDarkBackground(fileName),
+      isDarkBg(fileName),
       getRankNameNum
     )(tileName)
     const isMovable = movableTiles.includes(tileName)
@@ -75,7 +76,7 @@ class File extends Component {
       tagName: 'div',
       className: cx({ 'is-movable': isMovable })
     }
-    const Element = isExist(Piece) ? Piece : Blank
+    const Element = Piece || Blank
     const childProps = isExist(Piece) ? pieceProps : blankProps
 
     return (

@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 import cx from 'classnames'
 import { boundMethod } from 'autobind-decorator'
 import { noop } from '~/utils'
-import { getSideBy, getMovements } from '~/utils/chess'
+import { getSide, getMvAxis } from '~/utils/chess'
 
 function enhancePiece (WrappedComponent, key) {
   // TODO: shouldComponentUpdate
@@ -28,7 +28,7 @@ function enhancePiece (WrappedComponent, key) {
 
     render () {
       const { turn, tileName, selected } = this.props
-      const isTurn = getSideBy(key) === turn
+      const isTurn = getSide(key) === turn
       const id = `${tileName}-${key}`
       const cls = cx({
         'is-turn': isTurn,
@@ -53,11 +53,11 @@ function enhancePiece (WrappedComponent, key) {
         piece,
         setCurrentMovable
       } = this.props
-      const isTurn = getSideBy(key) === turn
+      const isTurn = getSide(key) === turn
       const id = `${tileName}-${key}`
 
       if (isTurn) {
-        const mvs = getMovements(tileName, piece, turn)
+        const mvs = getMvAxis(tileName, piece, turn)
 
         selectPiece(id)
         setCurrentMovable(mvs)
