@@ -1,5 +1,4 @@
 import * as types from '~/actions'
-import { ENEMY } from '~/chess/constants'
 
 const initialState = {
   title: 'React Chess',
@@ -18,7 +17,7 @@ const reducer = (state = initialState, action) => {
     }
 
     case types.TOGGLE_TURN: {
-      return { ...state, turn: ENEMY[state.turn] }
+      return { ...state, turn: payload }
     }
 
     case types.SELECT_PIECE: {

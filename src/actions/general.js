@@ -1,4 +1,5 @@
 import * as types from '~/actions'
+import { ENEMY } from '~/chess/constants'
 
 export function toggleMatchStatus () {
   return {
@@ -7,8 +8,14 @@ export function toggleMatchStatus () {
 }
 
 export function toggleTurn () {
-  return {
-    type: types.TOGGLE_TURN
+  return (dispatch, getState) => {
+    const { general } = getState()
+    const { turn } = general
+
+    dispatch({
+      type: types.TOGGLE_TURN,
+      payload: ENEMY[turn]
+    })
   }
 }
 

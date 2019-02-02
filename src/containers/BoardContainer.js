@@ -3,11 +3,7 @@ import { Board } from '~/components'
 import { selectPiece, setCurrentMovable, toggleTurn } from '~/actions/general'
 import { setNotations } from '~/actions/notations'
 import { isEmpty, isExist } from '~/utils'
-import {
-  getPureMovable,
-  parseSelected,
-  transformMovableAsDirection
-} from '~/chess/libs'
+import { getPureMovable, parseSelected } from '~/chess/libs'
 import { RANKS, FILES, SPECIALS } from '~/chess/constants'
 
 const mapStateToProps = ({ general, notations }) => {
@@ -21,7 +17,6 @@ const mapStateToProps = ({ general, notations }) => {
 
   if (isEmpty(special) && isExist(movableTiles)) {
     // direction
-    console.log(movableTiles, transformMovableAsDirection(movableTiles))
   }
 
   return {
