@@ -16,6 +16,7 @@ class File extends Component {
     notations: PropTypes.array.isRequired,
     selected: PropTypes.string,
     piece: PropTypes.string,
+    Piece: PropTypes.func,
     movableTiles: PropTypes.array,
     selectPiece: PropTypes.func,
     setCurrentMovable: PropTypes.func,

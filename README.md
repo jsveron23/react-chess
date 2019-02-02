@@ -7,10 +7,9 @@ Programs must be written for people to read, and only incidentally for machines 
 # React Chess
 
 - Implement Chess game without Chess library
-- To study React hooks
 - Test driven development
 - The goal is implements, not for completing
-- After implements finish, wrapping with `Electron.js`
+- After implements finish, wrapping with `electron`
 
 ## Installation & Start
 

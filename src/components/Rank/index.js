@@ -1,8 +1,9 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import cx from 'classnames'
-import { split } from 'ramda'
+import { compose, split } from 'ramda'
 import getPiece, { File } from '~/components'
+import { getNotation } from '~/chess/libs'
 import { noop } from '~/utils'
 import css from './Rank.css'
 
@@ -24,8 +25,10 @@ const Rank = ({
     <div className={cls} data-rank={rankName}>
       {files.map((fileName) => {
         const tileName = `${fileName}${rankName}`
-        const notation = notations.find((n) => n.includes(tileName))
-        const [color, piece] = split('', notation || '')
+        const [color, piece] = compose(
+          split(''),
+          getNotation(notations)
+        )(tileName)
         const Piece = getPiece({ color, piece })
 
         return (
