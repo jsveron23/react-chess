@@ -10,9 +10,3 @@ ReactDOM.render(
   </Provider>,
   document.getElementById('root')
 )
-
-if (process.env.NODE_ENV === 'development') {
-  const a11y = require('react-a11y').default
-
-  a11y(React, ReactDOM)
-}

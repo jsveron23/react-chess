@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 import cx from 'classnames'
 import { boundMethod } from 'autobind-decorator'
 import { noop } from '~/utils'
-import { getSide, getMvAxis } from '~/utils/chess'
+import { getSide, getAxis } from '~/chess/libs'
 
 function enhancePiece (WrappedComponent, key) {
   // TODO: shouldComponentUpdate
@@ -57,7 +57,7 @@ function enhancePiece (WrappedComponent, key) {
       const id = `${tileName}-${key}`
 
       if (isTurn) {
-        const mvs = getMvAxis(tileName, piece, turn)
+        const mvs = getAxis(tileName, piece, turn)
 
         selectPiece(id)
         setCurrentMovable(mvs)

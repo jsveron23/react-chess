@@ -2,22 +2,11 @@ import React, { Component, createElement } from 'react'
 import PropTypes from 'prop-types'
 import cx from 'classnames'
 import { boundMethod } from 'autobind-decorator'
-import { compose } from 'ramda'
+import { includes } from 'ramda'
 import { Blank } from '~/components'
-import { isEmpty, isExist, noop, extract } from '~/utils'
-import {
-  parseTileName,
-  transformRank,
-  getNextNotations,
-  isDarkBg
-} from '~/utils/chess'
+import { isEmpty, isExist, noop } from '~/utils'
+import { getNextNotations, isDarkBg } from '~/chess/libs'
 import css from './File.css'
-
-const getRankAsNum = compose(
-  transformRank,
-  extract('rankName'),
-  parseTileName
-)
 
 class File extends Component {
   static propTypes = {
@@ -55,11 +44,8 @@ class File extends Component {
       setCurrentMovable
     } = this.props
 
-    const isDark = compose(
-      isDarkBg(fileName),
-      getRankAsNum
-    )(tileName)
-    const isMovable = movableTiles.includes(tileName)
+    const isDark = isDarkBg(tileName)
+    const isMovable = includes(tileName, movableTiles)
     const cls = cx(css.file, {
       'is-dark': isDark
     })

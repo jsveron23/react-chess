@@ -12,7 +12,7 @@ import {
   WhitePawn,
   WhiteQueen,
   WhiteRook
-} from '~/components'
+} from '~/chess/components'
 import enhancePiece from '~/components/enhancePiece'
 import { isEmpty } from '~/utils'
 

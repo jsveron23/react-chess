@@ -1,5 +1,5 @@
 import * as types from '~/actions'
-import { ENEMY } from '~/constants'
+import { ENEMY } from '~/chess/constants'
 
 const initialState = {
   title: 'React Chess',
