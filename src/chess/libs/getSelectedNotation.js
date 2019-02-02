@@ -3,7 +3,7 @@ import { extract } from '~/utils'
 import { parseSelected, getNotation } from './helpers'
 
 /**
- * Get selection notation
+ * Get selected notation
  * @param  {Array}   notations
  * @param  {string?} selected
  * @return {Object}
