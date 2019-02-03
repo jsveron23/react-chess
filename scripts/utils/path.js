@@ -8,9 +8,7 @@ function _resolve (isWin, cwd) {
   const separator = isWin ? '\\' : '/'
 
   return (...args) => {
-    return args.reduce((acc, arg) => {
-      return `${acc}${separator}${arg}`
-    }, cwd)
+    return args.reduce((acc, arg) => `${acc}${separator}${arg}`, cwd)
   }
 }
 

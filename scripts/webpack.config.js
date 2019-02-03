@@ -1,4 +1,4 @@
-const Path = require('./libs/path')
+const Path = require('./utils/path')
 const Loaders = require('./helpers/loaders')
 const Plugins = require('./helpers/plugins')
 const {
