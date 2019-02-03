@@ -1,6 +1,6 @@
 import { curry, compose, split } from 'ramda'
 import { extract } from '~/utils'
-import { parseSelected, getNotation } from './helpers'
+import { parseSelected, getNotation } from '~/chess/helpers'
 
 /**
  * Get selected notation

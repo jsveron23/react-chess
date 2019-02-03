@@ -1,4 +1,4 @@
-import { SIDE } from '../../constants'
+import { SIDE } from '~/chess/constants'
 
 /**
  * Get side

@@ -1,5 +1,5 @@
 import { isEmpty, isExist } from '~/utils'
-import { transformXY } from './helpers'
+import { transformXY } from '~/chess/helpers'
 
 /**
  * Initial variables
@@ -23,7 +23,7 @@ const initialObj = {
 
 /**
  * Movable reducer
- * @param  {Object} [withDirection=initialObj]
+ * @param  {Object} withDirection
  * @param  {string} type
  * @param  {Object} payload
  * @return {Object}

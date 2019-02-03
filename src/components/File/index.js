@@ -5,7 +5,8 @@ import { boundMethod } from 'autobind-decorator'
 import { includes } from 'ramda'
 import { Blank } from '~/components'
 import { isEmpty, isExist, noop } from '~/utils'
-import { getNextNotations, isDarkBg } from '~/chess/libs'
+import { getNextNotations } from '~/chess/core'
+import { isDarkBg } from '~/chess/helpers'
 import css from './File.css'
 
 class File extends Component {

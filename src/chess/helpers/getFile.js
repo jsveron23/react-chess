@@ -1,4 +1,4 @@
-import { FILES } from '../../constants'
+import { FILES } from '~/chess/constants'
 
 /**
  * Get file

@@ -1,4 +1,4 @@
-import { SPECIALS } from '../../constants'
+import { SPECIALS } from '~/chess/constants'
 
 /**
  * Get special movements

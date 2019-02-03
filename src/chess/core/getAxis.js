@@ -1,5 +1,5 @@
 import { curry, compose } from 'ramda'
-import { parseTileName, getMovements, transformXY } from './helpers'
+import { parseTileName, getMovements, transformXY } from '~/chess/helpers'
 
 /**
  * Get axis([x, y]) from movements of piece

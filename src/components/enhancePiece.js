@@ -3,7 +3,8 @@ import PropTypes from 'prop-types'
 import cx from 'classnames'
 import { boundMethod } from 'autobind-decorator'
 import { noop } from '~/utils'
-import { getSide, getAxis } from '~/chess/libs'
+import { getAxis } from '~/chess/core'
+import { getSide } from '~/chess/helpers'
 
 function enhancePiece (WrappedComponent, key) {
   // TODO: shouldComponentUpdate

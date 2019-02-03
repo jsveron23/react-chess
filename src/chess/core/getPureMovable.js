@@ -1,5 +1,5 @@
 import { isEmpty } from '~/utils'
-import { getFile } from './helpers'
+import { getFile } from '~/chess/helpers'
 
 /**
  * Get pure movable tiles (without any filter)

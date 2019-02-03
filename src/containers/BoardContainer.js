@@ -3,7 +3,8 @@ import { Board } from '~/components'
 import { selectPiece, setCurrentMovable, toggleTurn } from '~/actions/general'
 import { setNotations } from '~/actions/notations'
 import { isEmpty, isExist } from '~/utils'
-import { getPureMovable, getSpecial, getSelectedNotation } from '~/chess/libs'
+import { getPureMovable, getSelectedNotation } from '~/chess/core'
+import { getSpecial } from '~/chess/helpers'
 import { RANKS, FILES } from '~/chess/constants'
 
 const mapStateToProps = ({ general, notations }) => {

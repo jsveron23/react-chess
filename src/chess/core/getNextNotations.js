@@ -1,5 +1,5 @@
 import { curry } from 'ramda'
-import { parseNotation, parseSelected } from './helpers'
+import { parseNotation, parseSelected } from '~/chess/helpers'
 
 /**
  * Get next notations

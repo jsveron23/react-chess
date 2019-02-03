@@ -3,8 +3,8 @@ import PropTypes from 'prop-types'
 import cx from 'classnames'
 import { compose, split } from 'ramda'
 import getPiece, { File } from '~/components'
-import { getNotation } from '~/chess/libs'
 import { noop } from '~/utils'
+import { getNotation } from '~/chess/helpers'
 import css from './Rank.css'
 
 const Rank = ({

@@ -2,7 +2,7 @@ import { includes } from 'ramda'
 import { isEven } from '~/utils'
 import parseTileName from './parseTileName'
 import transformRank from './transformRank'
-import { EVEN_TILES, ODD_TILES } from '../../constants'
+import { EVEN_TILES, ODD_TILES } from '~/chess/constants'
 
 /**
  * Is dark background?

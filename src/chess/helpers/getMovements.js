@@ -1,4 +1,4 @@
-import { MOVEMENTS } from '../../constants'
+import { MOVEMENTS } from '~/chess/constants'
 
 /**
  * Get movements
