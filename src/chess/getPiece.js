@@ -1,4 +1,5 @@
 import { compose } from 'ramda'
+import { isEmpty } from '~/utils'
 import {
   BlackBishop,
   BlackKing,
@@ -12,9 +13,8 @@ import {
   WhitePawn,
   WhiteQueen,
   WhiteRook
-} from '~/chess/components'
-import enhancePiece from '~/components/enhancePiece'
-import { isEmpty } from '~/utils'
+} from './components'
+import enhancePiece from './enhancePiece'
 
 const PIECE_MAP = {
   bB: BlackBishop,
