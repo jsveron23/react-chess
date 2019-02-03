@@ -3,7 +3,6 @@ import { compose } from 'ramda'
 import { Board } from '~/components'
 import { selectPiece, setCurrentMovable, toggleTurn } from '~/actions/general'
 import { setNotations } from '~/actions/notations'
-import { isEmpty, isExist } from '~/utils'
 import {
   getPureMovable,
   getSelectedNotation,
@@ -12,6 +11,7 @@ import {
 } from '~/chess/core'
 import { getSpecial } from '~/chess/helpers'
 import { RANKS, FILES } from '~/chess/constants'
+import { isEmpty, isExist } from '~/utils'
 
 const mapStateToProps = ({ general, notations }) => {
   const { isMatching, turn, selected, currentMovableTiles } = general

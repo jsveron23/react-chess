@@ -11,7 +11,7 @@ function getPureMovable (movable) {
     const [fileNum, rankNum] = mvs
     const nextFile = getFile(fileNum)
     const nextTile = `${nextFile}${rankNum}`
-    const isOutside = isEmpty(nextFile) || rankNum <= 0
+    const isOutside = isEmpty(nextFile) || rankNum <= 0 || rankNum > 8
 
     return isOutside ? acc : [...acc, nextTile]
   }, [])
