@@ -1,45 +1,52 @@
 import { isEmpty, isExist } from '~/utils'
 import { transformXY } from '~/chess/helpers'
 
+const IS_FIRST = 'IS_FIRST'
+const IS_LAST = 'IS_LAST'
+const IS_DIAGONAL = 'IS_DIAGONAL'
+const IS_VERTICAL = 'IS_VERTICAL'
+const IS_HORIZONTAL = 'IS_HORIZONTAL'
+
 /**
  * Initial variables
- * - Purpose of variables
- * {
- *   vertical - direction
- *   horizontal - direction
- *   diagonal - direction
- *   pending - to compare between previous tile and next tile
- *   lastKey - key of previous iterate
- * }
  * @type {Object}
  */
 const initialObj = {
+  // direction
   vertical: [],
+
+  // direction
   horizontal: [],
+
+  // direction
   diagonal: [],
+
+  // to compare between previous tile and next tile
   pending: '',
+
+  // key of previous iterate
   lastKey: ''
 }
 
 /**
- * Movable reducer
+ * Movable helper
  * @param  {Object} withDirection
  * @param  {string} type
  * @param  {Object} payload
  * @return {Object}
  */
-function _reducer (withDirection, type, payload) {
+function _reduceHelper (withDirection, type, payload) {
   const { pending, lastKey, tile } = payload
 
   switch (type) {
-    case 'isFirst': {
+    case IS_FIRST: {
       return {
         ...withDirection,
         pending: tile
       }
     }
 
-    case 'isLast': {
+    case IS_LAST: {
       const prevDirection = withDirection[lastKey]
 
       return {
@@ -50,28 +57,34 @@ function _reducer (withDirection, type, payload) {
       }
     }
 
-    case 'isDiagonal': {
+    case IS_DIAGONAL: {
+      const { diagonal: prevDiagonal } = withDirection
+
       return {
         ...withDirection,
-        diagonal: [...withDirection.diagonal, pending, tile],
+        diagonal: [...prevDiagonal, pending, tile],
         lastKey: 'diagonal',
         pending: ''
       }
     }
 
-    case 'isVertical': {
+    case IS_VERTICAL: {
+      const { vertical: prevVertical } = withDirection
+
       return {
         ...withDirection,
-        vertical: [...withDirection.vertical, pending, tile],
+        vertical: [...prevVertical, pending, tile],
         lastKey: 'vertical',
         pending: ''
       }
     }
 
-    case 'isHorizontal': {
+    case IS_HORIZONTAL: {
+      const { horizontal } = withDirection
+
       return {
         ...withDirection,
-        horizontal: [...withDirection.horizontal, pending, tile],
+        horizontal: [...horizontal, pending, tile],
         lastKey: 'horizontal',
         pending: ''
       }
@@ -108,7 +121,7 @@ function transformMovableAsDirection (movable) {
 
     // NOTE: last should be checked before first
     if (isLast) {
-      return _reducer(acc, 'isLast', {
+      return _reduceHelper(acc, IS_LAST, {
         pending,
         lastKey,
         tile
@@ -116,7 +129,7 @@ function transformMovableAsDirection (movable) {
     }
 
     if (isFirst) {
-      return _reducer(acc, 'isFirst', {
+      return _reduceHelper(acc, IS_FIRST, {
         tile
       })
     }
@@ -131,20 +144,20 @@ function transformMovableAsDirection (movable) {
 
     // e.g [1, 1], [2, 2], [3, 3]
     if (x === 1 && y === 1) {
-      type = 'isDiagonal'
+      type = IS_DIAGONAL
     }
 
     // e.g [0, 1] [0, 2], [0, 3]
     if (x === 0) {
-      type = 'isVertical'
+      type = IS_VERTICAL
     }
 
     // e.g [1, 0] [2, 0] [3, 0]
     if (y === 0) {
-      type = 'isHorizontal'
+      type = IS_HORIZONTAL
     }
 
-    return _reducer(acc, type, {
+    return _reduceHelper(acc, type, {
       pending,
       lastKey,
       tile

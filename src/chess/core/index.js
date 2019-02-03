@@ -5,3 +5,4 @@ export { default as getSelectedNotation } from './getSelectedNotation'
 export {
   default as transformMovableAsDirection
 } from './transformMovableAsDirection'
+export { default as excludeBlock } from './excludeBlock'

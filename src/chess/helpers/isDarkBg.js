@@ -1,4 +1,3 @@
-import { includes } from 'ramda'
 import { isEven } from '~/utils'
 import parseTileName from './parseTileName'
 import transformRank from './transformRank'
@@ -15,7 +14,7 @@ function isDarkBg (tileName) {
   const rankNameNum = transformRank(rankName)
   const tile = isEven(rankNameNum) ? EVEN_TILES : ODD_TILES
 
-  return includes(fileName, tile)
+  return tile.includes(fileName)
 }
 
 export default isDarkBg

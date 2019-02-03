@@ -1,4 +1,4 @@
-import { transformMovableAsDirection } from '~/chess/libs'
+import { transformMovableAsDirection } from '~/chess/core'
 
 describe('#transformMovableAsDirection', () => {
   it('Get movable with direction', () => {

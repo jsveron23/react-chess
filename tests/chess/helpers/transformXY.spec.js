@@ -1,4 +1,4 @@
-import { transformXY } from '~/chess/libs'
+import { transformXY } from '~/chess/helpers'
 
 describe('#transformXY', () => {
   it('transform file, rank to x, y', () => {

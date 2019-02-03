@@ -1,22 +1,41 @@
 import { connect } from 'react-redux'
+import { compose } from 'ramda'
 import { Board } from '~/components'
 import { selectPiece, setCurrentMovable, toggleTurn } from '~/actions/general'
 import { setNotations } from '~/actions/notations'
 import { isEmpty, isExist } from '~/utils'
-import { getPureMovable, getSelectedNotation } from '~/chess/core'
+import {
+  getPureMovable,
+  getSelectedNotation,
+  transformMovableAsDirection,
+  excludeBlock
+} from '~/chess/core'
 import { getSpecial } from '~/chess/helpers'
 import { RANKS, FILES } from '~/chess/constants'
 
 const mapStateToProps = ({ general, notations }) => {
   const { isMatching, turn, selected, currentMovableTiles } = general
   const movableTiles = getPureMovable(currentMovableTiles)
+  const { selectedPiece } = getSelectedNotation(notations, selected)
+  const special = getSpecial(selectedPiece)
+  const souldExcludeBlock = isEmpty(special) && isExist(movableTiles)
+  let excludeBlockMovable
+
+  if (souldExcludeBlock) {
+    excludeBlockMovable = compose(
+      excludeBlock(notations),
+      transformMovableAsDirection
+    )(movableTiles)
+  }
 
   return {
     isMatching,
     turn,
     selected,
     notations,
-    movableTiles
+    ranks: RANKS,
+    files: FILES,
+    movableTiles: souldExcludeBlock ? excludeBlockMovable : movableTiles
   }
 }
 
@@ -27,28 +46,9 @@ const mapDispatchToProps = {
   toggleTurn
 }
 
-const mergeProps = (stateProps, dispatchProps, ownProps) => {
-  const { selected, notations, movableTiles } = stateProps
-  const { selectedPiece } = getSelectedNotation(notations, selected)
-  const special = getSpecial(selectedPiece)
-
-  if (isEmpty(special) && isExist(movableTiles)) {
-    // direction
-  }
-
-  return {
-    ...stateProps,
-    ...dispatchProps,
-    ...ownProps,
-    ranks: RANKS,
-    files: FILES
-  }
-}
-
 const BoardContainer = connect(
   mapStateToProps,
-  mapDispatchToProps,
-  mergeProps
+  mapDispatchToProps
 )(Board)
 
 export default BoardContainer

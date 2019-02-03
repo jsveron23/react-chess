@@ -6,7 +6,7 @@ import { compose, split, reduce } from 'ramda'
  * @return {Object}
  */
 function parseTileName (tileName) {
-  const _reducer = (tile, val) => {
+  const _reduceFn = (tile, val) => {
     const key = /[1-9]/.test(val) ? 'rankName' : 'fileName'
 
     return {
@@ -16,7 +16,7 @@ function parseTileName (tileName) {
   }
 
   return compose(
-    reduce(_reducer, {}),
+    reduce(_reduceFn, {}),
     split('')
   )(tileName)
 }

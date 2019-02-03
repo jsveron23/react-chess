@@ -1,4 +1,4 @@
-import { getPureMovable } from '~/chess/libs'
+import { getPureMovable } from '~/chess/core'
 
 describe('#getPureMovable', () => {
   it('Get movable tiles', () => {

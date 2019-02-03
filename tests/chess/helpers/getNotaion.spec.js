@@ -1,4 +1,4 @@
-import { getNotation } from '~/chess/libs'
+import { getNotation } from '~/chess/helpers'
 
 // prettier-ignore
 const notations = [

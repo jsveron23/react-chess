@@ -1,4 +1,4 @@
-import { parseNotation } from '~/chess/libs'
+import { parseNotation } from '~/chess/helpers'
 
 describe('#parseNotation', () => {
   it('divides notation as single character', () => {

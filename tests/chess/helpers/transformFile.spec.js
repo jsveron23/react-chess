@@ -1,4 +1,4 @@
-import { transformFile } from '~/chess/libs'
+import { transformFile } from '~/chess/helpers'
 
 describe('#transformFile', () => {
   it('transform file as number', () => {

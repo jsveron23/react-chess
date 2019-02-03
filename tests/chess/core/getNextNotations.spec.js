@@ -1,4 +1,4 @@
-import { getNextNotations } from '~/chess/libs'
+import { getNextNotations } from '~/chess/core'
 
 describe('#getNextNotations', () => {
   it('Get next notations', () => {

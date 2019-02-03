@@ -1,4 +1,4 @@
-import { getAxis } from '~/chess/libs'
+import { getAxis } from '~/chess/core'
 
 describe('#getAxis', () => {
   it('Get movements tiles', () => {

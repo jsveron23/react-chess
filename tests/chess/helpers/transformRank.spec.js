@@ -1,4 +1,4 @@
-import { transformRank } from '~/chess/libs'
+import { transformRank } from '~/chess/helpers'
 
 describe('#transformRank', () => {
   it('transform rank as number', () => {

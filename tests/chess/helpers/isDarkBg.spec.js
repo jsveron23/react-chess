@@ -1,4 +1,4 @@
-import { isDarkBg } from '~/chess/libs'
+import { isDarkBg } from '~/chess/helpers'
 
 describe('#isDarkBg', () => {
   it('is dark background on tile?', () => {

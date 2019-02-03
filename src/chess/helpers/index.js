@@ -3,6 +3,9 @@ export { default as parseNotation } from './parseNotation'
 export { default as parseSelected } from './parseSelected'
 export { default as transformFile } from './transformFile'
 export { default as transformRank } from './transformRank'
+export {
+  default as transformNotationsToTiles
+} from './transformNotationsToTiles'
 export { default as transformXY } from './transformXY'
 export { default as getNotation } from './getNotation'
 export { default as getMovements } from './getMovements'

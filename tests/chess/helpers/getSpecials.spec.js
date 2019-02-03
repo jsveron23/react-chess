@@ -1,4 +1,4 @@
-import { getSpecial } from '~/chess/libs'
+import { getSpecial } from '~/chess/helpers'
 
 const K = ['castling']
 const N = ['jumpover']

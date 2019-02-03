@@ -1,4 +1,4 @@
-import { getSide } from '~/chess/libs'
+import { getSide } from '~/chess/helpers'
 
 describe('#getSide', () => {
   it('get side', () => {

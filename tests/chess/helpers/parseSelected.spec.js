@@ -1,4 +1,4 @@
-import { parseSelected } from '~/chess/libs'
+import { parseSelected } from '~/chess/helpers'
 
 describe('#parseSelected', () => {
   it('parse selected tile', () => {
