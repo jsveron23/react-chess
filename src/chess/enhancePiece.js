@@ -2,12 +2,12 @@ import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import cx from 'classnames'
 import { boundMethod } from 'autobind-decorator'
+import { compose } from 'ramda'
 import { noop } from '~/utils'
 import { getAxis } from '~/chess/core'
 import { getSide } from '~/chess/helpers'
 
 function enhancePiece (WrappedComponent, key) {
-  // TODO: shouldComponentUpdate
   class Piece extends Component {
     static displayName = `enhancePiece(${key})`
 
@@ -55,13 +55,16 @@ function enhancePiece (WrappedComponent, key) {
         setCurrentMovable
       } = this.props
       const isTurn = getSide(key) === turn
-      const id = `${tileName}-${key}`
 
       if (isTurn) {
-        const mvs = getAxis(tileName, piece, turn)
+        const id = `${tileName}-${key}`
 
         selectPiece(id)
-        setCurrentMovable(mvs)
+
+        compose(
+          setCurrentMovable,
+          getAxis(tileName, piece)
+        )(turn)
       }
     }
   }

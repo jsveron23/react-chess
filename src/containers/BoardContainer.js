@@ -7,7 +7,8 @@ import {
   getPureMovable,
   getSelectedNotation,
   transformMovableAsDirection,
-  excludeBlock
+  excludeBlock,
+  includeSpecialMovable
 } from '~/chess/core'
 import { getSpecial } from '~/chess/helpers'
 import { RANKS, FILES } from '~/chess/constants'
@@ -16,9 +17,16 @@ import { isEmpty, isExist } from '~/utils'
 const mapStateToProps = ({ general, notations }) => {
   const { isMatching, turn, selected, currentMovableTiles } = general
   const movableTiles = getPureMovable(currentMovableTiles)
-  const { selectedPiece } = getSelectedNotation(notations, selected)
+  const {
+    selectedPiece,
+    selectedSide,
+    selectedFile,
+    selectedRank
+  } = getSelectedNotation(notations, selected)
   const special = getSpecial(selectedPiece)
   const souldExcludeBlock = isEmpty(special) && isExist(movableTiles)
+  const isSpecialPiece = isExist(special) && isExist(movableTiles)
+  let nextMovableTiles = movableTiles
   let excludeBlockMovable
 
   if (souldExcludeBlock) {
@@ -28,6 +36,18 @@ const mapStateToProps = ({ general, notations }) => {
     )(movableTiles)
   }
 
+  if (isSpecialPiece) {
+    const tile = `${selectedFile}${selectedRank}`
+
+    nextMovableTiles = includeSpecialMovable(
+      selectedPiece,
+      selectedSide,
+      special,
+      tile,
+      movableTiles
+    )
+  }
+
   return {
     isMatching,
     turn,
@@ -35,7 +55,7 @@ const mapStateToProps = ({ general, notations }) => {
     notations,
     ranks: RANKS,
     files: FILES,
-    movableTiles: souldExcludeBlock ? excludeBlockMovable : movableTiles
+    movableTiles: souldExcludeBlock ? excludeBlockMovable : nextMovableTiles
   }
 }
 
