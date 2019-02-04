@@ -3,6 +3,8 @@
  * @param  {string} text
  * @return {RegExp}
  */
-const createRegExp = (text) => new RegExp(text)
+function createRegExp (text) {
+  return new RegExp(text)
+}
 
 export default createRegExp

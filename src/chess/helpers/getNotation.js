@@ -1,5 +1,5 @@
 import { curry } from 'ramda'
-import { isExist } from '~/utils'
+import { isEmpty } from '~/utils'
 
 /**
  * Get notation that includes token (like tile)
@@ -8,8 +8,12 @@ import { isExist } from '~/utils'
  * @return {string}
  */
 function getNotation (notations, token) {
+  if (isEmpty(token)) {
+    return ''
+  }
+
   const notation = notations.find((n) => {
-    return isExist(token) && n.includes(token)
+    return n.includes(token)
   })
 
   return notation || ''

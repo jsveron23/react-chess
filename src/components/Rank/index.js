@@ -24,23 +24,23 @@ const Rank = ({
   return (
     <div className={cls} data-rank={rankName}>
       {files.map((fileName) => {
-        const tileName = `${fileName}${rankName}`
+        const tile = `${fileName}${rankName}`
         const [color, piece] = compose(
           split(''),
           getNotation(notations)
-        )(tileName)
+        )(tile)
         const Piece = getPiece({ color, piece })
 
         return (
           <File
-            key={tileName}
+            key={tile}
             turn={turn}
             piece={piece}
             Piece={Piece}
             notations={notations}
             selected={selected}
             fileName={fileName}
-            tileName={tileName}
+            tile={tile}
             movableTiles={movableTiles}
             selectPiece={selectPiece}
             setCurrentMovable={setCurrentMovable}

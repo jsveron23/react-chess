@@ -4,18 +4,18 @@ import { parseNotation, parseSelected } from '~/chess/helpers'
 /**
  * Get next notations
  * @param  {string} selected
- * @param  {string} tileName
+ * @param  {string} tile
  * @param  {Array}  notations
  * @return {Array}
  */
-function getNextNotations (selected, tileName, notations) {
-  const { selectedTile } = parseSelected(selected)
+function getNextNotations (selected, tile, notations) {
+  const { tile: selectedTile } = parseSelected(selected)
 
   return notations.map((notation) => {
     if (notation.indexOf(selectedTile) > -1) {
       const { side, piece } = parseNotation(notation)
 
-      return `${side}${piece}${tileName}`
+      return `${side}${piece}${tile}`
     }
 
     return notation

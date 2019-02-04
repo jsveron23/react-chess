@@ -2,15 +2,15 @@ import { compose, split, reduce } from 'ramda'
 
 /**
  * Parse tile name to file and rank
- * @param  {string} tileName
+ * @param  {string} tile
  * @return {Object}
  */
-function parseTileName (tileName) {
-  const _reduceFn = (tile, val) => {
-    const key = /[1-9]/.test(val) ? 'rankName' : 'fileName'
+function parseTileName (tile) {
+  const _reduceFn = (acc, val) => {
+    const key = /[1-9]/.test(val) ? 'rank' : 'file'
 
     return {
-      ...tile,
+      ...acc,
       [key]: val
     }
   }
@@ -18,7 +18,7 @@ function parseTileName (tileName) {
   return compose(
     reduce(_reduceFn, {}),
     split('')
-  )(tileName)
+  )(tile)
 }
 
 export default parseTileName

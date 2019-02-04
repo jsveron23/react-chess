@@ -6,9 +6,9 @@ import { split } from 'ramda'
  * @return {Object}
  */
 function parseSelected (selected) {
-  const [selectedTile, selectedSide] = split('-', selected)
+  const [tile, side] = split('-', selected)
 
-  return { selectedTile, selectedSide }
+  return { tile, side }
 }
 
 export default parseSelected

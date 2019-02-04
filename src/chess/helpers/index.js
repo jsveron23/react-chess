@@ -7,6 +7,7 @@ export {
   default as transformNotationsToTiles
 } from './transformNotationsToTiles'
 export { default as transformXY } from './transformXY'
+export { default as replaceNotations } from './replaceNotations'
 export { default as getNotation } from './getNotation'
 export { default as getMovements } from './getMovements'
 export { default as getSpecial } from './getSpecial'

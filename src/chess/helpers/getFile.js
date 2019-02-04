@@ -1,7 +1,7 @@
 import { FILES } from '~/chess/constants'
 
 /**
- * Get file
+ * Get file char
  * @param  {number} fileNum
  * @return {string}
  */

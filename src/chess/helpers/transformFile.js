@@ -2,11 +2,11 @@ import { FILES } from '~/chess/constants'
 
 /**
  * Transform file name as number
- * @param  {string} fileName
+ * @param  {string} file
  * @return {number}
  */
-function transformFile (fileName) {
-  const idx = FILES.indexOf(fileName)
+function transformFile (file) {
+  const idx = FILES.indexOf(file)
 
   return idx > -1 ? idx + 1 : idx
 }

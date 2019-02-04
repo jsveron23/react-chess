@@ -1,10 +1,10 @@
 /**
  * Transform rank name as number
- * @param  {string} rankName
+ * @param  {string} rank
  * @return {number}
  */
-function transformRank (rankName) {
-  return parseInt(rankName, 10)
+function transformRank (rank) {
+  return parseInt(rank, 10)
 }
 
 export default transformRank

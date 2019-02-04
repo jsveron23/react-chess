@@ -8,15 +8,15 @@ import { parseSelected, getNotation } from '~/chess/helpers'
  * @param  {string?} selected
  * @return {Object}
  */
-function getSelectedNotation (notations, selected) {
-  const [selectedSide, selectedPiece, selectedFile, selectedRank] = compose(
+function parseSelectedNotation (notations, selected) {
+  const [side, piece, file, rank] = compose(
     split(''),
     getNotation(notations),
-    extract('selectedTile'),
+    extract('tile'),
     parseSelected
   )(selected)
 
-  return { selectedSide, selectedPiece, selectedFile, selectedRank }
+  return { side, piece, file, rank }
 }
 
-export default curry(getSelectedNotation)
+export default curry(parseSelectedNotation)

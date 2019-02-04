@@ -5,10 +5,10 @@ const initialState = {
   turn: 'white',
   isMatching: false,
   selected: '',
-  currentMovableTiles: []
+  currentMovable: []
 }
 
-const reducer = (state = initialState, action) => {
+function reducer (state = initialState, action) {
   const { type, payload } = action
 
   switch (type) {
@@ -25,7 +25,7 @@ const reducer = (state = initialState, action) => {
     }
 
     case types.CURRENT_MOVABLE_TILES: {
-      return { ...state, currentMovableTiles: payload }
+      return { ...state, currentMovable: payload }
     }
 
     default: {

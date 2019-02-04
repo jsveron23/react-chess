@@ -5,16 +5,15 @@ import { EVEN_TILES, ODD_TILES } from '~/chess/constants'
 
 /**
  * Is dark background?
- * @param  {string}  fileName
- * @param  {number}  rankNameNum
+ * @param  {string}  tile
  * @return {boolean}
  */
-function isDarkBg (tileName) {
-  const { fileName, rankName } = parseTileName(tileName)
-  const rankNameNum = transformRank(rankName)
-  const tile = isEven(rankNameNum) ? EVEN_TILES : ODD_TILES
+function isDarkBg (tile) {
+  const { file, rank } = parseTileName(tile)
+  const rankNum = transformRank(rank)
+  const dividedTile = isEven(rankNum) ? EVEN_TILES : ODD_TILES
 
-  return tile.includes(fileName)
+  return dividedTile.includes(file)
 }
 
 export default isDarkBg

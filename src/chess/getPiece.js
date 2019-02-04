@@ -1,5 +1,3 @@
-import { compose } from 'ramda'
-import { isEmpty } from '~/utils'
 import {
   BlackBishop,
   BlackKing,
@@ -17,45 +15,22 @@ import {
 import enhancePiece from './enhancePiece'
 
 const PIECE_MAP = {
-  bB: BlackBishop,
-  bK: BlackKing,
-  bN: BlackKnight,
-  bP: BlackPawn,
-  bQ: BlackQueen,
-  bR: BlackRook,
-  wB: WhiteBishop,
-  wK: WhiteKing,
-  wN: WhiteKnight,
-  wP: WhitePawn,
-  wQ: WhiteQueen,
-  wR: WhiteRook
+  bB: enhancePiece(BlackBishop, 'bB', 'b'),
+  bK: enhancePiece(BlackKing, 'bK', 'b'),
+  bN: enhancePiece(BlackKnight, 'bN', 'b'),
+  bP: enhancePiece(BlackPawn, 'bP', 'b'),
+  bQ: enhancePiece(BlackQueen, 'bQ', 'b'),
+  bR: enhancePiece(BlackRook, 'bR', 'b'),
+  wB: enhancePiece(WhiteBishop, 'wB', 'w'),
+  wK: enhancePiece(WhiteKing, 'wK', 'w'),
+  wN: enhancePiece(WhiteKnight, 'wN', 'w'),
+  wP: enhancePiece(WhitePawn, 'wP', 'w'),
+  wQ: enhancePiece(WhiteQueen, 'wQ', 'w'),
+  wR: enhancePiece(WhiteRook, 'wR', 'w')
 }
 
-function getEnhancedMap (map) {
-  const streamMap = Object.keys(map)
-
-  return streamMap.reduce((acc, key) => {
-    const Component = map[key]
-    const sideKey = key.slice(0, 1)
-
-    if (isEmpty(Component)) {
-      return acc
-    }
-
-    return {
-      ...acc,
-      [key]: enhancePiece(Component, sideKey)
-    }
-  }, {})
+function getPiece ({ color, piece }) {
+  return PIECE_MAP[`${color}${piece}`]
 }
 
-function getPiece (map) {
-  return ({ color, piece }) => map[`${color}${piece}`]
-}
-
-const getEnhancedPiece = compose(
-  getPiece,
-  getEnhancedMap
-)(PIECE_MAP)
-
-export default getEnhancedPiece
+export default getPiece

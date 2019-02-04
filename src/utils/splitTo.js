@@ -7,7 +7,7 @@ import isEmpty from './isEmpty'
  * @param  {*}      v
  * @return {Object}
  */
-const splitTo = (names, v) => {
+function splitTo (names, v) {
   const mappable = split('', v)
 
   // NOTE: Ramda#reduce will not return index number

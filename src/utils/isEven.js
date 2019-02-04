@@ -3,6 +3,8 @@
  * @param  {number}  v
  * @return {boolean}
  */
-const isEven = (v) => v % 2 === 0
+function isEven (v) {
+  return v % 2 === 0
+}
 
 export default isEven

@@ -3,16 +3,16 @@ import { parseTileName, getMovements, transformXY } from '~/chess/helpers'
 
 /**
  * Get axis([x, y]) from movements of piece
- * @param  {string} tileName
+ * @param  {string} tile
  * @param  {string} piece
  * @param  {string} turn
  * @return {Array}
  */
-function getAxis (tileName, piece, turn) {
+function getAxis (tile, piece, turn) {
   const { x, y } = compose(
     transformXY,
     parseTileName
-  )(tileName)
+  )(tile)
 
   const _mapFn = (mv) => {
     const [mvX, mvY] = mv

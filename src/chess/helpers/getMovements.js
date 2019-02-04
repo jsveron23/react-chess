@@ -1,8 +1,8 @@
 import { MOVEMENTS } from '~/chess/constants'
 
 /**
- * Get movements
- * @param  {string} piece
+ * Get piece movements
+ * @param  {string} piece uppercase
  * @return {Array}
  */
 function getMovements (piece) {

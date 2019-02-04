@@ -7,13 +7,21 @@ import { noop } from '~/utils'
 import { getAxis } from '~/chess/core'
 import { getSide } from '~/chess/helpers'
 
-function enhancePiece (WrappedComponent, key) {
+/**
+ * Higher order component for Chess piece
+ * @see getPiece.js
+ * @param  {Component} WrappedComponent svg-react-loader
+ * @param  {string}    staticKey
+ * @param  {string}    staticTurn
+ * @return {Component}
+ */
+function enhancePiece (WrappedComponent, staticKey, staticTurn) {
   class Piece extends Component {
-    static displayName = `enhancePiece(${key})`
+    static displayName = `enhancePiece(${staticKey})`
 
     static propTypes = {
       turn: PropTypes.string.isRequired,
-      tileName: PropTypes.string.isRequired,
+      tile: PropTypes.string.isRequired,
       piece: PropTypes.string,
       selected: PropTypes.string,
       isMovable: PropTypes.bool,
@@ -28,9 +36,9 @@ function enhancePiece (WrappedComponent, key) {
     }
 
     render () {
-      const { turn, tileName, selected } = this.props
-      const isTurn = getSide(key) === turn
-      const id = `${tileName}-${key}`
+      const { turn, tile, selected } = this.props
+      const isTurn = getSide(staticTurn) === turn
+      const id = `${tile}-${staticTurn}`
       const cls = cx({
         'is-turn': isTurn,
         'is-selected': selected === id
@@ -38,7 +46,7 @@ function enhancePiece (WrappedComponent, key) {
 
       return (
         <div className={cls} onClick={this.handleClick}>
-          <WrappedComponent />
+          <WrappedComponent key={staticKey} />
         </div>
       )
     }
@@ -47,23 +55,15 @@ function enhancePiece (WrappedComponent, key) {
     handleClick (evt) {
       evt.preventDefault()
 
-      const {
-        turn,
-        tileName,
-        selectPiece,
-        piece,
-        setCurrentMovable
-      } = this.props
-      const isTurn = getSide(key) === turn
+      const { turn, tile, selectPiece, piece, setCurrentMovable } = this.props
+      const isTurn = getSide(staticTurn) === turn
 
       if (isTurn) {
-        const id = `${tileName}-${key}`
-
-        selectPiece(id)
+        selectPiece(`${tile}-${staticTurn}`)
 
         compose(
           setCurrentMovable,
-          getAxis(tileName, piece)
+          getAxis(tile, piece)
         )(turn)
       }
     }

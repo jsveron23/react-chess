@@ -5,57 +5,27 @@ import { selectPiece, setCurrentMovable, toggleTurn } from '~/actions/general'
 import { setNotations } from '~/actions/notations'
 import {
   getPureMovable,
-  getSelectedNotation,
+  parseSelectedNotation,
   transformMovableAsDirection,
   excludeBlock,
-  includeSpecialMovable
+  computeSpecial
 } from '~/chess/core'
 import { getSpecial } from '~/chess/helpers'
 import { RANKS, FILES } from '~/chess/constants'
-import { isEmpty, isExist } from '~/utils'
+import { isExist } from '~/utils'
 
-const mapStateToProps = ({ general, notations }) => {
-  const { isMatching, turn, selected, currentMovableTiles } = general
-  const movableTiles = getPureMovable(currentMovableTiles)
-  const {
-    selectedPiece,
-    selectedSide,
-    selectedFile,
-    selectedRank
-  } = getSelectedNotation(notations, selected)
-  const special = getSpecial(selectedPiece)
-  const souldExcludeBlock = isEmpty(special) && isExist(movableTiles)
-  const isSpecialPiece = isExist(special) && isExist(movableTiles)
-  let nextMovableTiles = movableTiles
-  let excludeBlockMovable
-
-  if (souldExcludeBlock) {
-    excludeBlockMovable = compose(
-      excludeBlock(notations),
-      transformMovableAsDirection
-    )(movableTiles)
-  }
-
-  if (isSpecialPiece) {
-    const tile = `${selectedFile}${selectedRank}`
-
-    nextMovableTiles = includeSpecialMovable(
-      selectedPiece,
-      selectedSide,
-      special,
-      tile,
-      movableTiles
-    )
-  }
+function mapStateToProps ({ general, notations }) {
+  const { isMatching, turn, selected, currentMovable } = general
+  const movableTiles = getPureMovable(currentMovable)
 
   return {
     isMatching,
     turn,
     selected,
     notations,
+    movableTiles,
     ranks: RANKS,
-    files: FILES,
-    movableTiles: souldExcludeBlock ? excludeBlockMovable : nextMovableTiles
+    files: FILES
   }
 }
 
@@ -66,9 +36,57 @@ const mapDispatchToProps = {
   toggleTurn
 }
 
+function mergeProps (stateProps, dispatchProps, ownProps) {
+  const { selected, notations, movableTiles } = stateProps
+  let nextMovable = movableTiles
+
+  if (isExist(movableTiles)) {
+    const {
+      piece: selectedPiece,
+      side: selectedSide,
+      file: selectedFile,
+      rank: selectedRank
+    } = parseSelectedNotation(notations, selected)
+    const special = getSpecial(selectedPiece) || []
+    const isNotKnight = !special.includes('jumpover')
+    const isNotPawn = movableTiles.length > 1
+
+    if (isExist(special)) {
+      const tile = `${selectedFile}${selectedRank}`
+
+      const { movable } = computeSpecial(
+        selectedSide,
+        special,
+        tile,
+        movableTiles,
+        notations
+      )
+
+      nextMovable = movable
+    }
+
+    if (isNotKnight && isNotPawn) {
+      nextMovable = compose(
+        excludeBlock(notations),
+
+        // to get rid of block tiles, need direction infomation
+        transformMovableAsDirection
+      )(nextMovable)
+    }
+  }
+
+  return {
+    ...stateProps,
+    ...dispatchProps,
+    ...ownProps,
+    movableTiles: nextMovable
+  }
+}
+
 const BoardContainer = connect(
   mapStateToProps,
-  mapDispatchToProps
+  mapDispatchToProps,
+  mergeProps
 )(Board)
 
 export default BoardContainer

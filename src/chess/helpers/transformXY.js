@@ -8,12 +8,20 @@ import transformRank from './transformRank'
  * @return {Object}
  */
 function transformXY (tile) {
-  const nextTile = typeof tile === 'string' ? parseTileName(tile) : tile
-  const { fileName, rankName } = nextTile
-  const x = transformFile(fileName)
-  const y = transformRank(rankName)
+  let nextTile
 
-  return { x, y }
+  if (typeof tile === 'string') {
+    nextTile = parseTileName(tile)
+  } else {
+    nextTile = tile
+  }
+
+  const { file, rank } = nextTile
+
+  return {
+    x: transformFile(file),
+    y: transformRank(rank)
+  }
 }
 
 export default transformXY

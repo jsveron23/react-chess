@@ -2,18 +2,22 @@ import React, { Component, createElement } from 'react'
 import PropTypes from 'prop-types'
 import cx from 'classnames'
 import { boundMethod } from 'autobind-decorator'
-import { includes } from 'ramda'
+import { includes, compose } from 'ramda'
 import { Blank } from '~/components'
 import { isEmpty, isExist, noop } from '~/utils'
-import { getNextNotations } from '~/chess/core'
-import { isDarkBg } from '~/chess/helpers'
+import {
+  getNextNotations,
+  computeSpecial,
+  parseSelectedNotation
+} from '~/chess/core'
+import { isDarkBg, getSpecial } from '~/chess/helpers'
 import css from './File.css'
 
 class File extends Component {
   static propTypes = {
     turn: PropTypes.string.isRequired,
     fileName: PropTypes.string.isRequired,
-    tileName: PropTypes.string.isRequired,
+    tile: PropTypes.string.isRequired,
     notations: PropTypes.array.isRequired,
     selected: PropTypes.string,
     piece: PropTypes.string,
@@ -37,7 +41,7 @@ class File extends Component {
     const {
       turn,
       fileName,
-      tileName,
+      tile,
       piece,
       Piece,
       selected,
@@ -46,8 +50,8 @@ class File extends Component {
       setCurrentMovable
     } = this.props
 
-    const isDark = isDarkBg(tileName)
-    const isMovable = includes(tileName, movableTiles)
+    const isDark = isDarkBg(tile)
+    const isMovable = includes(tile, movableTiles)
     const cls = cx(css.file, {
       'is-dark': isDark
     })
@@ -55,7 +59,7 @@ class File extends Component {
       turn,
       piece,
       selected,
-      tileName,
+      tile,
       isMovable,
       selectPiece,
       setCurrentMovable
@@ -79,7 +83,7 @@ class File extends Component {
     evt.preventDefault()
 
     const {
-      tileName,
+      tile,
       selected,
       notations,
       movableTiles,
@@ -88,12 +92,25 @@ class File extends Component {
       setNotations,
       toggleTurn
     } = this.props
-    const isMovable = movableTiles.includes(tileName)
+    const isMovable = movableTiles.includes(tile)
 
     if (isMovable && isEmpty(Piece)) {
-      const nextNotations = getNextNotations(selected, tileName, notations)
+      const { side, piece } = parseSelectedNotation(notations, selected)
+      const special = getSpecial(piece)
 
-      setNotations(nextNotations)
+      if (isExist(special)) {
+        const { notations: nextNotations } = compose(
+          computeSpecial(side, special, tile, []),
+          getNextNotations(selected, tile)
+        )(notations)
+
+        setNotations(nextNotations)
+      } else {
+        const nextNotations = getNextNotations(selected, tile, notations)
+
+        setNotations(nextNotations)
+      }
+
       setCurrentMovable([])
       toggleTurn()
     }

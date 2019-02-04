@@ -33,7 +33,6 @@ const VENDOR = [
   'redux-thunk',
   'react-redux',
   'ramda',
-  'memoize-one',
   'autobind-decorator'
 ]
 

@@ -5,6 +5,8 @@ import { curry } from 'ramda'
  * @param  {string} keyName
  * @return {Object}
  */
-const extract = (keyName, obj) => obj[keyName]
+function extract (keyName, obj) {
+  return obj[keyName]
+}
 
 export default curry(extract)
