@@ -3,7 +3,7 @@ import transformFile from './transformFile'
 import transformRank from './transformRank'
 
 /**
- * Transfor, tile to x, y
+ * Transform tile to x, y
  * @param  {Object|string} tile
  * @return {Object}
  */

@@ -33,7 +33,7 @@ function includeSpecialMovable (piece, side, special, tile, movable) {
       return [...movable, `${fileName}${nextY}`]
     }
   } else {
-    // -> King, Night
+    // -> King, Knight
   }
 
   return movable
