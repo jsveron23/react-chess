@@ -1,5 +1,5 @@
 import { curry } from 'ramda'
-import { transformXY, parseTileName, replaceNotations } from '~/chess/helpers'
+import { transformXY, parseTileName, replaceLineup } from '~/chess/helpers'
 import { isExist } from '~/utils'
 
 const DOUBLE_STEP = 'doubleStep'
@@ -15,17 +15,17 @@ const PROMOTION_TILES = {
 }
 
 /**
- * Include special (notations or movable)
+ * Include special (lineup or movable)
  * @param  {string} side
  * @param  {Array}  special
  * @param  {string} tile
  * @param  {Array?} movable
- * @param  {Array?} notations
+ * @param  {Array?} lineup
  * @return {Object}
- *  - notations -> after moving
+ *  - lineup -> after moving
  *  - movable -> before rendering
  */
-function computeSpecial (side, special, tile, movable, notations) {
+function computeSpecial (side, special, tile, movable, lineup) {
   const len = special.length
 
   if (len > 1) {
@@ -42,7 +42,7 @@ function computeSpecial (side, special, tile, movable, notations) {
       const nextY = side === 'w' ? y + 2 : y - 2
       const { file } = parseTileName(tile)
 
-      return { notations, movable: [...movable, `${file}${nextY}`] }
+      return { lineup, movable: [...movable, `${file}${nextY}`] }
     }
 
     // ----------------
@@ -51,16 +51,16 @@ function computeSpecial (side, special, tile, movable, notations) {
     const isMoveToEnd = PROMOTION_TILES[side].includes(tile)
     const isPromotion = special.includes(PROMOTION) && isMoveToEnd
 
-    if (isPromotion && isExist(notations)) {
-      const nextNotations = replaceNotations(side, 'Q', tile, notations)
+    if (isPromotion && isExist(lineup)) {
+      const nextLineup = replaceLineup(side, 'Q', tile, lineup)
 
-      return { notations: nextNotations, movable }
+      return { lineup: nextLineup, movable }
     }
   } else {
     // -> King, Knight
   }
 
-  return { movable, notations }
+  return { movable, lineup }
 }
 
 export default curry(computeSpecial)

@@ -1,17 +1,17 @@
 import { curry, compose, split } from 'ramda'
 import { extract } from '~/utils'
-import { parseSelected, getNotation } from '~/chess/helpers'
+import { parseSelected, getLineupItem } from '~/chess/helpers'
 
 /**
- * Get selected notation
- * @param  {Array}   notations
+ * Get selected lineup
+ * @param  {Array}   lineup
  * @param  {string?} selected
  * @return {Object}
  */
-function parseSelectedNotation (notations, selected) {
+function parseSelectedLineupItem (lineup, selected) {
   const [side, piece, file, rank] = compose(
     split(''),
-    getNotation(notations),
+    getLineupItem(lineup),
     extract('tile'),
     parseSelected
   )(selected)
@@ -19,4 +19,4 @@ function parseSelectedNotation (notations, selected) {
   return { side, piece, file, rank }
 }
 
-export default curry(parseSelectedNotation)
+export default curry(parseSelectedLineupItem)

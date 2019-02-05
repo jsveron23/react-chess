@@ -9,7 +9,7 @@ import {
 } from '~/actions/ingame'
 import {
   getPureMovable,
-  parseSelectedNotation,
+  parseSelectedLineupItem,
   transformMovableAsDirection,
   excludeBlock,
   computeSpecial
@@ -51,7 +51,7 @@ function mergeProps (stateProps, dispatchProps, ownProps) {
       side: selectedSide,
       file: selectedFile,
       rank: selectedRank
-    } = parseSelectedNotation(lineup, selected)
+    } = parseSelectedLineupItem(lineup, selected)
     const special = getSpecial(selectedPiece) || []
     const isNotKnight = !special.includes('jumpover')
     const isNotPawn = movableTiles.length > 1

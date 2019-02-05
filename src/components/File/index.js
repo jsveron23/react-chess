@@ -6,9 +6,9 @@ import { includes, compose } from 'ramda'
 import { Blank } from '~/components'
 import { isEmpty, isExist, noop } from '~/utils'
 import {
-  getNextNotations,
+  getNextLineup,
   computeSpecial,
-  parseSelectedNotation
+  parseSelectedLineupItem
 } from '~/chess/core'
 import { isDarkBg, getSpecial } from '~/chess/helpers'
 import css from './File.css'
@@ -95,20 +95,20 @@ class File extends Component {
     const isMovable = movableTiles.includes(tile)
 
     if (isMovable && isEmpty(Piece)) {
-      const { side, piece } = parseSelectedNotation(lineup, selected)
+      const { side, piece } = parseSelectedLineupItem(lineup, selected)
       const special = getSpecial(piece)
 
       if (isExist(special)) {
-        const { notations: nextNotations } = compose(
+        const { lineup: nextLineup } = compose(
           computeSpecial(side, special, tile, []),
-          getNextNotations(selected, tile)
+          getNextLineup(selected, tile)
         )(lineup)
 
-        drawLineup(nextNotations)
+        drawLineup(nextLineup)
       } else {
-        const nextNotations = getNextNotations(selected, tile, lineup)
+        const nextLineup = getNextLineup(selected, tile, lineup)
 
-        drawLineup(nextNotations)
+        drawLineup(nextLineup)
       }
 
       setMovableTiles([])

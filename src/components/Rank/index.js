@@ -4,7 +4,7 @@ import cx from 'classnames'
 import { compose, split } from 'ramda'
 import getPiece, { File } from '~/components'
 import { noop } from '~/utils'
-import { getNotation } from '~/chess/helpers'
+import { getLineupItem } from '~/chess/helpers'
 import css from './Rank.css'
 
 const Rank = ({
@@ -27,7 +27,7 @@ const Rank = ({
         const tile = `${fileName}${rankName}`
         const [color, piece] = compose(
           split(''),
-          getNotation(lineup)
+          getLineupItem(lineup)
         )(tile)
         const Piece = getPiece({ color, piece })
 

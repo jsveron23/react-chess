@@ -1,21 +1,21 @@
 import { curry, join, compose, flatten, keys, map } from 'ramda'
-import { transformXY, transformNotationsToTiles } from '~/chess/helpers'
+import { transformXY, transformLineupToTiles } from '~/chess/helpers'
 import { createRegExp } from '~/utils'
 
 /**
  * Get rid of blocking tiles path
- * @param  {Array}  notations
+ * @param  {Array}  lineup
  * @param  {Object} movableWithDirection
  * @return {Array}
  */
-function excludeBlock (notations, movableWithDirection) {
+function excludeBlock (lineup, movableWithDirection) {
   const { diagonal, vertical, horizontal } = movableWithDirection
 
   const re = compose(
     createRegExp,
     join('|'),
-    transformNotationsToTiles
-  )(notations)
+    transformLineupToTiles
+  )(lineup)
 
   const directionOnly = {
     diagonal: [...diagonal],

@@ -1,7 +1,7 @@
 import { excludeBlock } from '~/chess/core'
 
 // prettier-ignore
-const notations1 = [
+const lineup1 = [
   'bRa8', 'bNb8', 'bBc8', 'bQd8', 'bKe8', 'bBf8', 'bNg8', 'bRh8',
   'bPa7', 'bPb7', 'bPc7', 'bPd7', 'bPe7', 'bPf7', 'bPg7', 'bPh7',
   'wPa2', 'wPb2', 'wPc2', 'wPd2', 'wPe2', 'wPf2', 'wPg2', 'wPh2',
@@ -16,7 +16,7 @@ const direction1 = {
 }
 
 // prettier-ignore
-const notations2 = [
+const lineup2 = [
   'bRa8', 'bNb8', 'bBc8', 'bQd8', 'bKe8', 'bBf8', 'bNg8', 'bRh8',
   'bPa7', 'bPb7', 'bPc7', 'bPd6', 'bPe7', 'bPf7', 'bPg7', 'bPh7',
   'wPa2', 'wPb3', 'wPc2', 'wPd2', 'wPe2', 'wPf2', 'wPg2', 'wPh2',
@@ -32,7 +32,7 @@ const direction2 = {
 
 describe('#excludeBlock', () => {
   it('exclude bloking path selected piece', () => {
-    expect(excludeBlock(notations1, direction1)).toEqual([])
-    expect(excludeBlock(notations2, direction2)).toEqual(['b2', 'a3'])
+    expect(excludeBlock(lineup1, direction1)).toEqual([])
+    expect(excludeBlock(lineup2, direction2)).toEqual(['b2', 'a3'])
   })
 })

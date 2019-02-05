@@ -24,7 +24,7 @@ describe('#computeSpecial', () => {
       const specialP = SPECIALS[pieceP]
 
       // prettier-ignore
-      const prevNotations = [
+      const prevLineup = [
         'bNc6', 'bBa6', 'bQd8', 'bKe8', 'bBf8', 'bNg8', 'bRh8',
         'bPb5', 'bPc5', 'bPd7', 'bPe7', 'bPf7', 'bPg7', 'bPh7', 'wPa8',
         'wPb2', 'wPc2', 'wPd2', 'wPe2', 'wPf2', 'wPg2', 'wPh2',
@@ -32,7 +32,7 @@ describe('#computeSpecial', () => {
       ]
 
       // prettier-ignore
-      const nextNotations = [
+      const nextLineup = [
         'bNc6', 'bBa6', 'bQd8', 'bKe8', 'bBf8', 'bNg8', 'bRh8',
         'bPb5', 'bPc5', 'bPd7', 'bPe7', 'bPf7', 'bPg7', 'bPh7', 'wQa8',
         'wPb2', 'wPc2', 'wPd2', 'wPe2', 'wPf2', 'wPg2', 'wPh2',
@@ -40,8 +40,8 @@ describe('#computeSpecial', () => {
       ]
 
       expect(
-        computeSpecial('w', specialP, 'a8', [], prevNotations)
-      ).toHaveProperty('notations', nextNotations)
+        computeSpecial('w', specialP, 'a8', [], prevLineup)
+      ).toHaveProperty('lineup', nextLineup)
     })
   })
 })

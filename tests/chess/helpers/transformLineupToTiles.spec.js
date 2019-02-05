@@ -1,7 +1,7 @@
-import { transformNotationsToTiles } from '~/chess/helpers'
+import { transformLineupToTiles } from '~/chess/helpers'
 
 // prettier-ignore
-const notations = [
+const lineup = [
   'bRa8', 'bNb8', 'bBc8', 'bQd8', 'bKe8', 'bBf8', 'bNg8', 'bRh8',
   'bPa7', 'bPb7', 'bPc7', 'bPd7', 'bPe7', 'bPf7', 'bPg7', 'bPh7',
   'wPa3', 'wPb2', 'wPc2', 'wPd2', 'wPe2', 'wPf2', 'wPg2', 'wPh2',
@@ -16,8 +16,8 @@ const tiles = [
   'a1', 'b1', 'c1', 'd1', 'e1', 'f1', 'g1', 'h1'
 ]
 
-describe('#transformNotationsToTiles', () => {
-  it('transform notations to tiles', () => {
-    expect(transformNotationsToTiles(notations)).toEqual(tiles)
+describe('#transformLineupToTiles', () => {
+  it('transform lineup to tiles', () => {
+    expect(transformLineupToTiles(lineup)).toEqual(tiles)
   })
 })

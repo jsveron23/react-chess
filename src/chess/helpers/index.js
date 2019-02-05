@@ -1,14 +1,12 @@
 export { default as parseTileName } from './parseTileName'
-export { default as parseNotation } from './parseNotation'
+export { default as parseLineupItem } from './parseLineupItem'
 export { default as parseSelected } from './parseSelected'
 export { default as transformFile } from './transformFile'
 export { default as transformRank } from './transformRank'
-export {
-  default as transformNotationsToTiles
-} from './transformNotationsToTiles'
+export { default as transformLineupToTiles } from './transformLineupToTiles'
 export { default as transformXY } from './transformXY'
-export { default as replaceNotations } from './replaceNotations'
-export { default as getNotation } from './getNotation'
+export { default as replaceLineup } from './replaceLineup'
+export { default as getLineupItem } from './getLineupItem'
 export { default as getMovements } from './getMovements'
 export { default as getSpecial } from './getSpecial'
 export { default as getSide } from './getSide'
