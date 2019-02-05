@@ -1,32 +1,33 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import cx from 'classnames'
-import { compose, split } from 'ramda'
+import { compose } from 'ramda'
 import getPiece, { File } from '~/components'
+import { getLineupItem, parseLineupItem } from '~/chess/helpers'
 import { noop } from '~/utils'
-import { getLineupItem } from '~/chess/helpers'
 import css from './Rank.css'
 
-const Rank = ({
-  turn,
-  lineup,
-  files,
-  rankName,
-  selected,
-  movableTiles,
-  setSelected,
-  setMovableTiles,
-  drawLineup,
-  toggleTurn
-}) => {
+const Rank = (props) => {
+  const {
+    turn,
+    lineup,
+    files,
+    rankName,
+    selected,
+    movableTiles,
+    setSelected,
+    setMovableTiles,
+    drawLineup,
+    toggleTurn
+  } = props
   const cls = cx(css.rank, 'l-flex-row')
 
   return (
     <div className={cls} data-rank={rankName}>
       {files.map((fileName) => {
         const tile = `${fileName}${rankName}`
-        const [color, piece] = compose(
-          split(''),
+        const { side: color, piece } = compose(
+          parseLineupItem,
           getLineupItem(lineup)
         )(tile)
         const Piece = getPiece({ color, piece })

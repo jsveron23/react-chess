@@ -2,9 +2,9 @@ import React, { Component, createElement } from 'react'
 import PropTypes from 'prop-types'
 import cx from 'classnames'
 import { boundMethod } from 'autobind-decorator'
-import { includes, compose } from 'ramda'
+import { compose } from 'ramda'
 import { Blank } from '~/components'
-import { isEmpty, isExist, noop } from '~/utils'
+import { isEmpty, isExist, extract, noop } from '~/utils'
 import {
   getNextLineup,
   computeSpecial,
@@ -50,11 +50,8 @@ class File extends Component {
       setMovableTiles
     } = this.props
 
-    const isDark = isDarkBg(tile)
-    const isMovable = includes(tile, movableTiles)
-    const cls = cx(css.file, {
-      'is-dark': isDark
-    })
+    const isMovable = movableTiles.includes(tile)
+    const cls = cx(css.file, { 'is-dark': isDarkBg(tile) })
     const pieceProps = {
       turn,
       piece,
@@ -97,20 +94,20 @@ class File extends Component {
     if (isMovable && isEmpty(Piece)) {
       const { side, piece } = parseSelectedLineupItem(lineup, selected)
       const special = getSpecial(piece)
+      let nextLineup
 
+      // draw next lineup
       if (isExist(special)) {
-        const { lineup: nextLineup } = compose(
+        nextLineup = compose(
+          extract('lineup'),
           computeSpecial(side, special, tile, []),
           getNextLineup(selected, tile)
         )(lineup)
-
-        drawLineup(nextLineup)
       } else {
-        const nextLineup = getNextLineup(selected, tile, lineup)
-
-        drawLineup(nextLineup)
+        nextLineup = getNextLineup(selected, tile, lineup)
       }
 
+      drawLineup(nextLineup)
       setMovableTiles([])
       toggleTurn()
     }

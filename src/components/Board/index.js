@@ -4,19 +4,21 @@ import { Rank } from '~/components'
 import { noop } from '~/utils'
 import css from './Board.css'
 
-const Board = ({
-  isMatching,
-  turn,
-  lineup,
-  selected,
-  ranks,
-  files,
-  movableTiles,
-  setSelected,
-  setMovableTiles,
-  drawLineup,
-  toggleTurn
-}) => {
+const Board = (props) => {
+  const {
+    isMatching,
+    turn,
+    lineup,
+    selected,
+    ranks,
+    files,
+    movableTiles,
+    setSelected,
+    setMovableTiles,
+    drawLineup,
+    toggleTurn
+  } = props
+
   if (!isMatching) {
     return null
   }

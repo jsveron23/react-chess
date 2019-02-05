@@ -1,7 +1,7 @@
 import { isEmpty, isExist } from '~/utils'
 import { transformXY } from '~/chess/helpers'
 
-const IS_FIRST = 'IS_FIRST'
+const SHOULD_USE_PENDING = 'SHOULD_USE_PENDING'
 const IS_LAST = 'IS_LAST'
 const IS_DIAGONAL = 'IS_DIAGONAL'
 const IS_VERTICAL = 'IS_VERTICAL'
@@ -39,7 +39,7 @@ function _reduceHelper (withDirection, type, payload) {
   const { pending, lastKey, tile } = payload
 
   switch (type) {
-    case IS_FIRST: {
+    case SHOULD_USE_PENDING: {
       return {
         ...withDirection,
         pending: tile
@@ -114,9 +114,7 @@ function transformMovableAsDirection (movable) {
 
   return movable.reduce((acc, tile, idx) => {
     const { pending, lastKey } = acc
-
-    // TODO: simplify
-    const isFirst = isEmpty(pending) // idx === 0
+    const souldUsePending = isEmpty(pending)
     const isLast = len === idx + 1 && isEmpty(pending) && isExist(lastKey)
 
     // NOTE: last should be checked before first
@@ -128,8 +126,8 @@ function transformMovableAsDirection (movable) {
       })
     }
 
-    if (isFirst) {
-      return _reduceHelper(acc, IS_FIRST, {
+    if (souldUsePending) {
+      return _reduceHelper(acc, SHOULD_USE_PENDING, {
         tile
       })
     }

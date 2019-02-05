@@ -16,7 +16,7 @@ import {
 } from '~/chess/core'
 import { getSpecial } from '~/chess/helpers'
 import { RANKS, FILES } from '~/chess/constants'
-import { isExist } from '~/utils'
+import { isExist, extract } from '~/utils'
 
 function mapStateToProps ({ general, ingame }) {
   const { isMatching } = general
@@ -59,15 +59,10 @@ function mergeProps (stateProps, dispatchProps, ownProps) {
     if (isExist(special)) {
       const tile = `${selectedFile}${selectedRank}`
 
-      const { movable } = computeSpecial(
-        selectedSide,
-        special,
-        tile,
-        movableTiles,
-        lineup
-      )
-
-      nextMovable = movable
+      nextMovable = compose(
+        extract('movable'),
+        computeSpecial(selectedSide, special, tile, movableTiles)
+      )(lineup)
     }
 
     if (isNotKnight && isNotPawn) {
