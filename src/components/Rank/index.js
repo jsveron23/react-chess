@@ -9,14 +9,14 @@ import css from './Rank.css'
 
 const Rank = ({
   turn,
-  notations,
+  lineup,
   files,
   rankName,
   selected,
   movableTiles,
-  selectPiece,
-  setCurrentMovable,
-  setNotations,
+  setSelected,
+  setMovableTiles,
+  drawLineup,
   toggleTurn
 }) => {
   const cls = cx(css.rank, 'l-flex-row')
@@ -27,7 +27,7 @@ const Rank = ({
         const tile = `${fileName}${rankName}`
         const [color, piece] = compose(
           split(''),
-          getNotation(notations)
+          getNotation(lineup)
         )(tile)
         const Piece = getPiece({ color, piece })
 
@@ -37,14 +37,14 @@ const Rank = ({
             turn={turn}
             piece={piece}
             Piece={Piece}
-            notations={notations}
+            lineup={lineup}
             selected={selected}
             fileName={fileName}
             tile={tile}
             movableTiles={movableTiles}
-            selectPiece={selectPiece}
-            setCurrentMovable={setCurrentMovable}
-            setNotations={setNotations}
+            setSelected={setSelected}
+            setMovableTiles={setMovableTiles}
+            drawLineup={drawLineup}
             toggleTurn={toggleTurn}
           />
         )
@@ -54,22 +54,22 @@ const Rank = ({
 }
 
 Rank.propTypes = {
-  notations: PropTypes.array.isRequired,
+  lineup: PropTypes.array.isRequired,
   turn: PropTypes.string.isRequired,
   files: PropTypes.array.isRequired,
   rankName: PropTypes.string.isRequired,
   selected: PropTypes.string,
   currentMovableTiles: PropTypes.array,
-  selectPiece: PropTypes.func,
-  setCurrentMovable: PropTypes.func,
-  setNotations: PropTypes.func,
+  setSelected: PropTypes.func,
+  setMovableTiles: PropTypes.func,
+  drawLineup: PropTypes.func,
   toggleTurn: PropTypes.func
 }
 
 Rank.defaultProps = {
-  selectPiece: noop,
-  setCurrentMovable: noop,
-  setNotations: noop,
+  setSelected: noop,
+  setMovableTiles: noop,
+  drawLineup: noop,
   toggleTurn: noop
 }
 

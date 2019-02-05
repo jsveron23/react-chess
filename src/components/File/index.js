@@ -18,22 +18,22 @@ class File extends Component {
     turn: PropTypes.string.isRequired,
     fileName: PropTypes.string.isRequired,
     tile: PropTypes.string.isRequired,
-    notations: PropTypes.array.isRequired,
+    lineup: PropTypes.array.isRequired,
     selected: PropTypes.string,
     piece: PropTypes.string,
     Piece: PropTypes.func,
     movableTiles: PropTypes.array,
-    selectPiece: PropTypes.func,
-    setCurrentMovable: PropTypes.func,
-    setNotations: PropTypes.func,
+    setSelected: PropTypes.func,
+    setMovableTiles: PropTypes.func,
+    drawLineup: PropTypes.func,
     toggleTurn: PropTypes.func
   }
 
   static defaultProps = {
     movableTiles: [],
-    selectPiece: noop,
-    setCurrentMovable: noop,
-    setNotations: noop,
+    setSelected: noop,
+    setMovableTiles: noop,
+    drawLineup: noop,
     toggleTurn: noop
   }
 
@@ -46,8 +46,8 @@ class File extends Component {
       Piece,
       selected,
       movableTiles,
-      selectPiece,
-      setCurrentMovable
+      setSelected,
+      setMovableTiles
     } = this.props
 
     const isDark = isDarkBg(tile)
@@ -61,8 +61,8 @@ class File extends Component {
       selected,
       tile,
       isMovable,
-      selectPiece,
-      setCurrentMovable
+      setSelected,
+      setMovableTiles
     }
     const blankProps = {
       tagName: 'div',
@@ -85,33 +85,33 @@ class File extends Component {
     const {
       tile,
       selected,
-      notations,
+      lineup,
       movableTiles,
       Piece,
-      setCurrentMovable,
-      setNotations,
+      setMovableTiles,
+      drawLineup,
       toggleTurn
     } = this.props
     const isMovable = movableTiles.includes(tile)
 
     if (isMovable && isEmpty(Piece)) {
-      const { side, piece } = parseSelectedNotation(notations, selected)
+      const { side, piece } = parseSelectedNotation(lineup, selected)
       const special = getSpecial(piece)
 
       if (isExist(special)) {
         const { notations: nextNotations } = compose(
           computeSpecial(side, special, tile, []),
           getNextNotations(selected, tile)
-        )(notations)
+        )(lineup)
 
-        setNotations(nextNotations)
+        drawLineup(nextNotations)
       } else {
-        const nextNotations = getNextNotations(selected, tile, notations)
+        const nextNotations = getNextNotations(selected, tile, lineup)
 
-        setNotations(nextNotations)
+        drawLineup(nextNotations)
       }
 
-      setCurrentMovable([])
+      setMovableTiles([])
       toggleTurn()
     }
   }

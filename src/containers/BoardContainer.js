@@ -1,8 +1,12 @@
 import { connect } from 'react-redux'
 import { compose } from 'ramda'
 import { Board } from '~/components'
-import { selectPiece, setCurrentMovable, toggleTurn } from '~/actions/general'
-import { setNotations } from '~/actions/notations'
+import {
+  toggleTurn,
+  drawLineup,
+  setSelected,
+  setMovableTiles
+} from '~/actions/ingame'
 import {
   getPureMovable,
   parseSelectedNotation,
@@ -14,30 +18,31 @@ import { getSpecial } from '~/chess/helpers'
 import { RANKS, FILES } from '~/chess/constants'
 import { isExist } from '~/utils'
 
-function mapStateToProps ({ general, notations }) {
-  const { isMatching, turn, selected, currentMovable } = general
-  const movableTiles = getPureMovable(currentMovable)
+function mapStateToProps ({ general, ingame }) {
+  const { isMatching } = general
+  const { present } = ingame
+  const { turn, lineup, selected, movableTiles } = present
 
   return {
     isMatching,
     turn,
     selected,
-    notations,
-    movableTiles,
+    lineup,
     ranks: RANKS,
-    files: FILES
+    files: FILES,
+    movableTiles: getPureMovable(movableTiles)
   }
 }
 
 const mapDispatchToProps = {
-  selectPiece,
-  setCurrentMovable,
-  setNotations,
+  setSelected,
+  setMovableTiles,
+  drawLineup,
   toggleTurn
 }
 
 function mergeProps (stateProps, dispatchProps, ownProps) {
-  const { selected, notations, movableTiles } = stateProps
+  const { selected, lineup, movableTiles } = stateProps
   let nextMovable = movableTiles
 
   if (isExist(movableTiles)) {
@@ -46,7 +51,7 @@ function mergeProps (stateProps, dispatchProps, ownProps) {
       side: selectedSide,
       file: selectedFile,
       rank: selectedRank
-    } = parseSelectedNotation(notations, selected)
+    } = parseSelectedNotation(lineup, selected)
     const special = getSpecial(selectedPiece) || []
     const isNotKnight = !special.includes('jumpover')
     const isNotPawn = movableTiles.length > 1
@@ -59,7 +64,7 @@ function mergeProps (stateProps, dispatchProps, ownProps) {
         special,
         tile,
         movableTiles,
-        notations
+        lineup
       )
 
       nextMovable = movable
@@ -67,7 +72,7 @@ function mergeProps (stateProps, dispatchProps, ownProps) {
 
     if (isNotKnight && isNotPawn) {
       nextMovable = compose(
-        excludeBlock(notations),
+        excludeBlock(lineup),
 
         // to get rid of block tiles, need direction infomation
         transformMovableAsDirection

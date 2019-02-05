@@ -7,14 +7,14 @@ import css from './Board.css'
 const Board = ({
   isMatching,
   turn,
-  notations,
+  lineup,
   selected,
   ranks,
   files,
   movableTiles,
-  selectPiece,
-  setCurrentMovable,
-  setNotations,
+  setSelected,
+  setMovableTiles,
+  drawLineup,
   toggleTurn
 }) => {
   if (!isMatching) {
@@ -28,14 +28,14 @@ const Board = ({
           <Rank
             key={rankName}
             turn={turn}
-            notations={notations}
+            lineup={lineup}
             selected={selected}
             files={files}
             rankName={rankName}
             movableTiles={movableTiles}
-            selectPiece={selectPiece}
-            setCurrentMovable={setCurrentMovable}
-            setNotations={setNotations}
+            setSelected={setSelected}
+            setMovableTiles={setMovableTiles}
+            drawLineup={drawLineup}
             toggleTurn={toggleTurn}
           />
         )
@@ -49,18 +49,19 @@ Board.propTypes = {
   turn: PropTypes.string.isRequired,
   ranks: PropTypes.array.isRequired,
   files: PropTypes.array.isRequired,
+  lineup: PropTypes.array.isRequired,
   selected: PropTypes.string,
   movableTiles: PropTypes.array,
-  selectPiece: PropTypes.func,
-  setCurrentMovable: PropTypes.func,
-  setNotations: PropTypes.func,
+  setSelected: PropTypes.func,
+  setMovableTiles: PropTypes.func,
+  drawLineup: PropTypes.func,
   toggleTurn: PropTypes.func
 }
 
 Board.defaultProps = {
-  selectPiece: noop,
-  setCurrentMovable: noop,
-  setNotations: noop,
+  setSelected: noop,
+  setMovableTiles: noop,
+  drawLineup: noop,
   toggleTurn: noop
 }
 

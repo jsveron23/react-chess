@@ -1,11 +1,18 @@
 import { connect } from 'react-redux'
 import { curry } from 'ramda'
+import { ActionCreators } from 'redux-undo'
 import { toggleMatchStatus } from '~/actions/general'
 import { Menu } from '~/components'
 
-const MAIN_MENU = ['Resume Game', 'Human vs. Human', 'Human vs. CPU']
-const GAME_MENU = ['Main', 'Undo']
-const DISABLED_MENU = ['Undo', 'Human vs. CPU']
+const RESUME_GAME = 'Resume Game'
+const HUMAN_VS_HUMAN = 'Human vs. Human'
+const HUMAN_VS_CPU = 'Human vs. CPU'
+const MAIN = 'Main'
+const UNDO = 'Undo'
+
+const MAIN_MENU = [RESUME_GAME, HUMAN_VS_HUMAN, HUMAN_VS_CPU]
+const GAME_MENU = [MAIN, UNDO]
+const DISABLED_MENU = [HUMAN_VS_CPU]
 
 const mapStateToProps = ({ general }) => {
   const { isMatching } = general
@@ -14,9 +21,15 @@ const mapStateToProps = ({ general }) => {
   return { isMatching, items }
 }
 
-const mapDispatchToProps = (dispatch) => {
+const mapDispatchToProps = (dispatch, ownProps) => {
   const onClick = (name, evt) => {
     evt.preventDefault()
+
+    if (name === UNDO) {
+      dispatch(ActionCreators.undo())
+
+      return
+    }
 
     if (!DISABLED_MENU.includes(name)) {
       dispatch(toggleMatchStatus())

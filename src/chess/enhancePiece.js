@@ -25,14 +25,14 @@ function enhancePiece (WrappedComponent, staticKey, staticTurn) {
       piece: PropTypes.string,
       selected: PropTypes.string,
       isMovable: PropTypes.bool,
-      selectPiece: PropTypes.func,
-      setCurrentMovable: PropTypes.func
+      setSelected: PropTypes.func,
+      setMovableTiles: PropTypes.func
     }
 
     static defaultProps = {
       isMovable: false,
-      selectPiece: noop,
-      setCurrentMovable: noop
+      setSelected: noop,
+      setMovableTiles: noop
     }
 
     render () {
@@ -55,14 +55,14 @@ function enhancePiece (WrappedComponent, staticKey, staticTurn) {
     handleClick (evt) {
       evt.preventDefault()
 
-      const { turn, tile, selectPiece, piece, setCurrentMovable } = this.props
+      const { turn, tile, piece, setSelected, setMovableTiles } = this.props
       const isTurn = getSide(staticTurn) === turn
 
       if (isTurn) {
-        selectPiece(`${tile}-${staticTurn}`)
+        setSelected(`${tile}-${staticTurn}`)
 
         compose(
-          setCurrentMovable,
+          setMovableTiles,
           getAxis(tile, piece)
         )(turn)
       }

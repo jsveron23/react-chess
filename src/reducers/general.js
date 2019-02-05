@@ -1,31 +1,18 @@
 import * as types from '~/actions'
 
 const initialState = {
-  title: 'React Chess',
-  turn: 'white',
-  isMatching: false,
-  selected: '',
-  currentMovable: []
+  isMatching: false
 }
 
 function reducer (state = initialState, action) {
-  const { type, payload } = action
+  const { type } = action
 
   switch (type) {
     case types.TOGGLE_MATCH_STATUS: {
-      return { ...state, isMatching: !state.isMatching }
-    }
-
-    case types.TOGGLE_TURN: {
-      return { ...state, turn: payload }
-    }
-
-    case types.SELECT_PIECE: {
-      return { ...state, selected: payload }
-    }
-
-    case types.CURRENT_MOVABLE_TILES: {
-      return { ...state, currentMovable: payload }
+      return {
+        ...state,
+        isMatching: !state.isMatching
+      }
     }
 
     default: {
