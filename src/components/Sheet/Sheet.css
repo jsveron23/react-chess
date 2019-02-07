@@ -1,6 +1,8 @@
 .sheet {
   margin-top: 50px;
   width: 400px;
+  max-height: 140px;
+  overflow: auto;
 
   & .sheet-index,
   & .sheet-white,
@@ -11,16 +13,20 @@
 
   & .sheet-index {
     font-style: italic;
+    text-align: center;
+    background-color: #eee;
     color: #777;
     width: 10%;
   }
 
   & .sheet-white,
   & .sheet-black {
-    width: 40%;
+    padding-left: 10px;
+    width: 45%;
   }
 
   & .sheet-black {
-    background-color: #ddd;
+    background-color: #000;
+    color: #fff;
   }
 }
