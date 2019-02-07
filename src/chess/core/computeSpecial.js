@@ -1,5 +1,10 @@
 import { curry } from 'ramda'
-import { transformXY, parseTileName, replaceLineup } from '~/chess/helpers'
+import {
+  transformXY,
+  parseTileName,
+  replaceLineup,
+  getLineupItem
+} from '~/chess/helpers'
 import { isExist } from '~/utils'
 
 const DOUBLE_STEP = 'doubleStep'
@@ -41,6 +46,14 @@ function computeSpecial (side, special, tile, movable, lineup) {
       const { y } = transformXY(tile)
       const nextY = side === 'w' ? y + 2 : y - 2
       const { file } = parseTileName(tile)
+      const [nextTile] = movable // it should be one tile
+      const lineupItem = getLineupItem(lineup, nextTile)
+
+      // if some piece on the path
+      // it works like `excludeBlock`
+      if (isExist(lineupItem)) {
+        return { lineup, movable }
+      }
 
       return { lineup, movable: [...movable, `${file}${nextY}`] }
     }
