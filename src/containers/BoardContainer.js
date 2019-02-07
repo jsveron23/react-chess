@@ -53,6 +53,7 @@ function mergeProps (stateProps, dispatchProps, ownProps) {
       rank: selectedRank
     } = parseSelectedLineupItem(lineup, selected)
     const special = getSpecial(selectedPiece) || []
+    const isNotKing = !special.includes('castling')
     const isNotKnight = !special.includes('jumpover')
     const isNotPawn = movableTiles.length > 1
 
@@ -65,7 +66,7 @@ function mergeProps (stateProps, dispatchProps, ownProps) {
       )(lineup)
     }
 
-    if (isNotKnight && isNotPawn) {
+    if (isNotKing && isNotKnight && isNotPawn) {
       nextMovable = compose(
         excludeBlock(lineup),
 
