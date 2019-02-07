@@ -53,9 +53,6 @@ function mergeProps (stateProps, dispatchProps, ownProps) {
       rank: selectedRank
     } = parseSelectedLineupItem(lineup, selected)
     const special = getSpecial(selectedPiece) || []
-    const isNotKing = !special.includes('castling')
-    const isNotKnight = !special.includes('jumpover')
-    const isNotPawn = movableTiles.length > 1
 
     if (isExist(special)) {
       const tile = `${selectedFile}${selectedRank}`
@@ -64,9 +61,7 @@ function mergeProps (stateProps, dispatchProps, ownProps) {
         extract('movable'),
         computeSpecial(selectedSide, special, tile, movableTiles)
       )(lineup)
-    }
-
-    if (isNotKing && isNotKnight && isNotPawn) {
+    } else {
       nextMovable = compose(
         excludeBlock(lineup),
 

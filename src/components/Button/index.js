@@ -1,6 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import cx from 'classnames'
+import { noop } from '~/utils'
 import css from './Button.css'
 
 const Button = ({ isDisabled, children, className, onClick }) => {
@@ -22,7 +23,7 @@ Button.propTypes = {
 }
 
 Button.defaultProps = {
-  onClick: function () {}
+  onClick: noop
 }
 
 export default Button

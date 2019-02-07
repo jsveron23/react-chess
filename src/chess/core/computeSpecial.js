@@ -43,9 +43,6 @@ function computeSpecial (side, special, tile, movable, lineup) {
     const isDoubleStep = special.includes(DOUBLE_STEP) && isFirstMove
 
     if (isDoubleStep && isExist(movable)) {
-      const { y } = transformXY(tile)
-      const nextY = side === 'w' ? y + 2 : y - 2
-      const { file } = parseTileName(tile)
       const [nextTile] = movable // it should be one tile
       const lineupItem = getLineupItem(lineup, nextTile)
 
@@ -54,6 +51,10 @@ function computeSpecial (side, special, tile, movable, lineup) {
       if (isExist(lineupItem)) {
         return { lineup, movable }
       }
+
+      const { y } = transformXY(tile)
+      const nextY = side === 'w' ? y + 2 : y - 2
+      const { file } = parseTileName(tile)
 
       return { lineup, movable: [...movable, `${file}${nextY}`] }
     }

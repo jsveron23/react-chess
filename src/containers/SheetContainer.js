@@ -4,20 +4,15 @@ import { Sheet } from '~/components'
 import { parseLineupItem, getSide } from '~/chess/helpers'
 import { isExist } from '~/utils'
 
-const getPastLineupList = compose(
-  map((item) => item.lineup),
-  reverse
-)
-
-const mapStateToProps = ({ ingame }) => {
-  const { present, past } = ingame
-  const pastLineupList = getPastLineupList(past)
-  const mergedHistory = [present.lineup, ...pastLineupList]
+/**
+ * Organize by moves
+ * @param  {Array} mergedHistory
+ * @return {Array}
+ */
+const getMoveList = (mergedHistory) => {
   const len = mergedHistory.length
-  // let nextHistory = []
 
-  // score sheet logic
-  const moves = mergedHistory.reduce((acc, log, idx) => {
+  return mergedHistory.reduce((acc, log, idx) => {
     const curr = log
     const prev = mergedHistory[idx + 1]
 
@@ -37,10 +32,17 @@ const mapStateToProps = ({ ingame }) => {
 
     return acc
   }, [])
+}
 
+/**
+ * Organize by a pack (white, black)
+ * @param  {Array} moveList
+ * @return {Array}
+ */
+const getSheet = (moveList) => {
   let sheet = []
 
-  reverse(moves).forEach((move, idx) => {
+  moveList.forEach((move, idx) => {
     const clone = [...sheet]
     const [first, ...rest] = clone
 
@@ -61,6 +63,25 @@ const mapStateToProps = ({ ingame }) => {
       ]
     }
   }, [])
+
+  return sheet
+}
+
+const mergeHistory = (presentLineup) => (pastLineupList) => [
+  presentLineup,
+  ...pastLineupList
+]
+
+const mapStateToProps = ({ ingame }) => {
+  const { present, past } = ingame
+  const sheet = compose(
+    getSheet,
+    reverse,
+    getMoveList,
+    mergeHistory(present.lineup),
+    map((item) => item.lineup),
+    reverse
+  )(past)
 
   return { sheet }
 }
