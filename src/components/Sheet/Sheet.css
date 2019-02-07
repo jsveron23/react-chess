@@ -3,6 +3,7 @@
   width: 400px;
   max-height: 140px;
   overflow: auto;
+  scroll-behavior: smooth;
 
   & .sheet-index,
   & .sheet-white,

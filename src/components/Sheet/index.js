@@ -1,12 +1,17 @@
-import React from 'react'
+import React, { useEffect, useRef } from 'react'
 import PropTypes from 'prop-types'
 import css from './Sheet.css'
 
 const Sheet = ({ sheet }) => {
   const len = sheet.length
+  const sheetRef = useRef(null)
+
+  useEffect(() => {
+    sheetRef.current.scrollTop = 0
+  })
 
   return (
-    <ul className={css.sheet}>
+    <ul ref={sheetRef} className={css.sheet}>
       {sheet.map((item, idx) => {
         const { white, black } = item
         const key = `${idx}-${white}-${black}`
