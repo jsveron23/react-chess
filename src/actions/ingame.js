@@ -28,14 +28,14 @@ export function toggleTurn () {
   }
 }
 
-export function drawLineup (alignedPieces) {
+export function setLineup (alignedPieces) {
   return {
     type: types.DRAW_LINEUP,
     payload: alignedPieces
   }
 }
 
-export function reDrawLineup () {
+export function resetLineup () {
   return {
     type: types.REDRAW_LINEUP
   }

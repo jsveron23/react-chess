@@ -6,7 +6,8 @@ import Menu from './Menu'
 import Board from './Board'
 import Rank from './Rank'
 import File from './File'
+import Sheet from './Sheet'
 import Blank from './Blank'
 
 export default getPiece
-export { Button, Logo, Main, Menu, Board, Rank, File, Blank }
+export { Button, Logo, Main, Menu, Board, Rank, File, Sheet, Blank }

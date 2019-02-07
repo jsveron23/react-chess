@@ -1,0 +1,26 @@
+.sheet {
+  margin-top: 50px;
+  width: 400px;
+
+  & .sheet-index,
+  & .sheet-white,
+  & .sheet-black {
+    padding: 5px 0 5px 5px;
+    border-bottom: 1px solid #ccc;
+  }
+
+  & .sheet-index {
+    font-style: italic;
+    color: #777;
+    width: 10%;
+  }
+
+  & .sheet-white,
+  & .sheet-black {
+    width: 40%;
+  }
+
+  & .sheet-black {
+    background-color: #ddd;
+  }
+}

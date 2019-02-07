@@ -15,7 +15,7 @@ const Board = (props) => {
     movableTiles,
     setSelected,
     setMovableTiles,
-    drawLineup,
+    setLineup,
     toggleTurn
   } = props
 
@@ -37,7 +37,7 @@ const Board = (props) => {
             movableTiles={movableTiles}
             setSelected={setSelected}
             setMovableTiles={setMovableTiles}
-            drawLineup={drawLineup}
+            setLineup={setLineup}
             toggleTurn={toggleTurn}
           />
         )
@@ -56,14 +56,14 @@ Board.propTypes = {
   movableTiles: PropTypes.array,
   setSelected: PropTypes.func,
   setMovableTiles: PropTypes.func,
-  drawLineup: PropTypes.func,
+  setLineup: PropTypes.func,
   toggleTurn: PropTypes.func
 }
 
 Board.defaultProps = {
   setSelected: noop,
   setMovableTiles: noop,
-  drawLineup: noop,
+  setLineup: noop,
   toggleTurn: noop
 }
 

@@ -1,6 +1,11 @@
 import React from 'react'
 import { hot } from 'react-hot-loader'
-import { LogoContainer, MenuContainer, BoardContainer } from '~/containers'
+import {
+  LogoContainer,
+  MenuContainer,
+  BoardContainer,
+  SheetContainer
+} from '~/containers'
 import { Main } from '~/components'
 import '~/styles/app.css'
 
@@ -10,6 +15,7 @@ const App = () => {
       <LogoContainer />
       <MenuContainer />
       <BoardContainer />
+      <SheetContainer />
     </Main>
   )
 }

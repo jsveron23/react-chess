@@ -25,7 +25,7 @@ class File extends Component {
     movableTiles: PropTypes.array,
     setSelected: PropTypes.func,
     setMovableTiles: PropTypes.func,
-    drawLineup: PropTypes.func,
+    setLineup: PropTypes.func,
     toggleTurn: PropTypes.func
   }
 
@@ -33,7 +33,7 @@ class File extends Component {
     movableTiles: [],
     setSelected: noop,
     setMovableTiles: noop,
-    drawLineup: noop,
+    setLineup: noop,
     toggleTurn: noop
   }
 
@@ -86,7 +86,7 @@ class File extends Component {
       movableTiles,
       Piece,
       setMovableTiles,
-      drawLineup,
+      setLineup,
       toggleTurn
     } = this.props
     const isMovable = movableTiles.includes(tile)
@@ -107,7 +107,7 @@ class File extends Component {
         nextLineup = getNextLineup(selected, tile, lineup)
       }
 
-      drawLineup(nextLineup)
+      setLineup(nextLineup)
       setMovableTiles([])
       toggleTurn()
     }

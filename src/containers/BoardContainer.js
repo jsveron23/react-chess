@@ -3,7 +3,7 @@ import { compose } from 'ramda'
 import { Board } from '~/components'
 import {
   toggleTurn,
-  drawLineup,
+  setLineup,
   setSelected,
   setMovableTiles
 } from '~/actions/ingame'
@@ -37,7 +37,7 @@ function mapStateToProps ({ general, ingame }) {
 const mapDispatchToProps = {
   setSelected,
   setMovableTiles,
-  drawLineup,
+  setLineup,
   toggleTurn
 }
 

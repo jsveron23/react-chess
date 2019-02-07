@@ -17,7 +17,7 @@ const Rank = (props) => {
     movableTiles,
     setSelected,
     setMovableTiles,
-    drawLineup,
+    setLineup,
     toggleTurn
   } = props
   const cls = cx(css.rank, 'l-flex-row')
@@ -45,7 +45,7 @@ const Rank = (props) => {
             movableTiles={movableTiles}
             setSelected={setSelected}
             setMovableTiles={setMovableTiles}
-            drawLineup={drawLineup}
+            setLineup={setLineup}
             toggleTurn={toggleTurn}
           />
         )
@@ -63,14 +63,14 @@ Rank.propTypes = {
   currentMovableTiles: PropTypes.array,
   setSelected: PropTypes.func,
   setMovableTiles: PropTypes.func,
-  drawLineup: PropTypes.func,
+  setLineup: PropTypes.func,
   toggleTurn: PropTypes.func
 }
 
 Rank.defaultProps = {
   setSelected: noop,
   setMovableTiles: noop,
-  drawLineup: noop,
+  setLineup: noop,
   toggleTurn: noop
 }
 
