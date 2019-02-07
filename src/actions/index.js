@@ -6,8 +6,8 @@
 
 export const TOGGLE_MATCH_STATUS = 'TOGGLE_MATCH_STATUS'
 export const TOGGLE_TURN = 'TOGGLE_TURN'
-export const DRAW_LINEUP = 'DRAW_LINEUP'
-export const REDRAW_LINEUP = 'REDRAW_LINEUP'
+export const SET_LINEUP = 'SET_LINEUP'
+export const RESET_LINEUP = 'RESET_LINEUP'
 export const SET_SELECTED = 'SET_SELECTED'
 export const SET_MOVABLE_TILES = 'SET_MOVABLE_TILES'
 export const UNDO = 'UNDO'

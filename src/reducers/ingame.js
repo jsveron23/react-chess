@@ -38,14 +38,14 @@ function reducer (state = initialState, action) {
       }
     }
 
-    case types.DRAW_LINEUP: {
+    case types.SET_LINEUP: {
       return {
         ...state,
         lineup: [...payload]
       }
     }
 
-    case types.REDRAW_LINEUP: {
+    case types.RESET_LINEUP: {
       return {
         ...state,
         lineup: [...initialState.lineup]
