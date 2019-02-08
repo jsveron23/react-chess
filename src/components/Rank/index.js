@@ -16,7 +16,7 @@ const Rank = (props) => {
     selected,
     movableTiles,
     setSelected,
-    setMovableTiles,
+    setMovableAxis,
     setLineup,
     toggleTurn
   } = props
@@ -44,7 +44,7 @@ const Rank = (props) => {
             tile={tile}
             movableTiles={movableTiles}
             setSelected={setSelected}
-            setMovableTiles={setMovableTiles}
+            setMovableAxis={setMovableAxis}
             setLineup={setLineup}
             toggleTurn={toggleTurn}
           />
@@ -62,14 +62,14 @@ Rank.propTypes = {
   selected: PropTypes.string,
   currentMovableTiles: PropTypes.array,
   setSelected: PropTypes.func,
-  setMovableTiles: PropTypes.func,
+  setMovableAxis: PropTypes.func,
   setLineup: PropTypes.func,
   toggleTurn: PropTypes.func
 }
 
 Rank.defaultProps = {
   setSelected: noop,
-  setMovableTiles: noop,
+  setMovableAxis: noop,
   setLineup: noop,
   toggleTurn: noop
 }

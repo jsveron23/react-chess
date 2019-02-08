@@ -23,7 +23,7 @@ const File = (props) => {
     selected,
     movableTiles,
     setSelected,
-    setMovableTiles,
+    setMovableAxis,
     setLineup,
     toggleTurn
   } = props
@@ -50,7 +50,7 @@ const File = (props) => {
       }
 
       setLineup(nextLineup)
-      setMovableTiles([])
+      setMovableAxis([])
       toggleTurn()
     }
   }
@@ -62,7 +62,7 @@ const File = (props) => {
     tile,
     isMovable,
     setSelected,
-    setMovableTiles
+    setMovableAxis
   }
 
   const blankProps = {
@@ -91,7 +91,7 @@ File.propTypes = {
   Piece: PropTypes.func,
   movableTiles: PropTypes.array,
   setSelected: PropTypes.func,
-  setMovableTiles: PropTypes.func,
+  setMovableAxis: PropTypes.func,
   setLineup: PropTypes.func,
   toggleTurn: PropTypes.func
 }
@@ -99,7 +99,7 @@ File.propTypes = {
 File.defaultProps = {
   movableTiles: [],
   setSelected: noop,
-  setMovableTiles: noop,
+  setMovableAxis: noop,
   setLineup: noop,
   toggleTurn: noop
 }

@@ -4,7 +4,7 @@ import * as types from '~/actions'
 const initialState = {
   turn: 'white',
   selected: '',
-  movableTiles: [],
+  movableAxis: [],
   lineup: [
     'bRb6', 'bNb8', 'bBc8', 'bQd8', 'bKe8', 'bBf8', 'bNg8', 'bRh8',
     'bPa5', 'bPb7', 'bPc7', 'bPd7', 'bPe7', 'bPf7', 'bPg7', 'bPh7',
@@ -31,10 +31,10 @@ function reducer (state = initialState, action) {
       }
     }
 
-    case types.SET_MOVABLE_TILES: {
+    case types.SET_MOVABLE_AXIS: {
       return {
         ...state,
-        movableTiles: payload
+        movableAxis: payload
       }
     }
 

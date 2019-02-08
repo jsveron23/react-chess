@@ -5,7 +5,7 @@ import {
   toggleTurn,
   setLineup,
   setSelected,
-  setMovableTiles
+  setMovableAxis
 } from '~/actions/ingame'
 import {
   getPureMovable,
@@ -21,7 +21,7 @@ import { isExist } from '~/utils'
 function mapStateToProps ({ general, ingame }) {
   const { isMatching } = general
   const { present } = ingame
-  const { turn, lineup, selected, movableTiles } = present
+  const { turn, lineup, selected, movableAxis } = present
 
   return {
     isMatching,
@@ -30,13 +30,13 @@ function mapStateToProps ({ general, ingame }) {
     lineup,
     ranks: RANKS,
     files: FILES,
-    movableTiles: getPureMovable(movableTiles)
+    movableTiles: getPureMovable(movableAxis)
   }
 }
 
 const mapDispatchToProps = {
   setSelected,
-  setMovableTiles,
+  setMovableAxis,
   setLineup,
   toggleTurn
 }

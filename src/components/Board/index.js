@@ -14,7 +14,7 @@ const Board = (props) => {
     files,
     movableTiles,
     setSelected,
-    setMovableTiles,
+    setMovableAxis,
     setLineup,
     toggleTurn
   } = props
@@ -36,7 +36,7 @@ const Board = (props) => {
             rankName={rankName}
             movableTiles={movableTiles}
             setSelected={setSelected}
-            setMovableTiles={setMovableTiles}
+            setMovableAxis={setMovableAxis}
             setLineup={setLineup}
             toggleTurn={toggleTurn}
           />
@@ -55,14 +55,14 @@ Board.propTypes = {
   selected: PropTypes.string,
   movableTiles: PropTypes.array,
   setSelected: PropTypes.func,
-  setMovableTiles: PropTypes.func,
+  setMovableAxis: PropTypes.func,
   setLineup: PropTypes.func,
   toggleTurn: PropTypes.func
 }
 
 Board.defaultProps = {
   setSelected: noop,
-  setMovableTiles: noop,
+  setMovableAxis: noop,
   setLineup: noop,
   toggleTurn: noop
 }

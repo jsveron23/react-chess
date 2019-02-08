@@ -8,9 +8,9 @@ export function setSelected (piece) {
   }
 }
 
-export function setMovableTiles (movable) {
+export function setMovableAxis (movable) {
   return {
-    type: types.SET_MOVABLE_TILES,
+    type: types.SET_MOVABLE_AXIS,
     payload: movable
   }
 }
