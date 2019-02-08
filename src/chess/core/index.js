@@ -7,3 +7,5 @@ export {
   default as transformMovableAsDirection
 } from './transformMovableAsDirection'
 export { default as excludeBlock } from './excludeBlock'
+export { default as alignHistory } from './alignHistory'
+export { default as alignScoreSheet } from './alignScoreSheet'

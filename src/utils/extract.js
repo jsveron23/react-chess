@@ -1,12 +1,12 @@
 import { curry } from 'ramda'
 
 /**
- * Extract value from object (compose)
- * @param  {string} keyName
- * @return {Object}
+ * Extract value from object/array (compose)
+ * @param  {string|number} keyName
+ * @return {Object|Array}
  */
-function extract (keyName, obj) {
-  return obj[keyName]
+function extract (keyName, x) {
+  return x[keyName]
 }
 
 export default curry(extract)
