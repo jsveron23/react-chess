@@ -31,3 +31,8 @@ button {
   cursor: pointer;
   border: 2px solid #000;
 }
+
+:global(.is-capturable) {
+  cursor: pointer;
+  border: 2px dotted red;
+}

@@ -30,9 +30,10 @@ const direction2 = {
   vertical: []
 }
 
+// TODO: include more complicated test case (like included captuable tiles)
 describe('#excludeBlock', () => {
   it('exclude bloking path selected piece', () => {
-    expect(excludeBlock(lineup1, direction1)).toEqual([])
-    expect(excludeBlock(lineup2, direction2)).toEqual(['b2', 'a3'])
+    expect(excludeBlock('white', lineup1, direction1)).toEqual([])
+    expect(excludeBlock('white')(lineup2, direction2)).toEqual(['b2', 'a3'])
   })
 })

@@ -16,8 +16,10 @@ import { getSide } from '~/chess/helpers'
  * @return {Component}
  */
 function enhancePiece (WrappedComponent, staticKey, staticTurn) {
+  const originalDisplayName = WrappedComponent.name
+
   class Piece extends Component {
-    static displayName = `enhancePiece(${staticKey})`
+    static displayName = `enhancePiece(${originalDisplayName})`
 
     static propTypes = {
       turn: PropTypes.string.isRequired,
@@ -36,16 +38,20 @@ function enhancePiece (WrappedComponent, staticKey, staticTurn) {
     }
 
     render () {
-      const { turn, tile, selected } = this.props
-      const isTurn = getSide(staticTurn) === turn
+      const { turn, tile, selected, isMovable } = this.props
       const id = `${tile}-${staticTurn}`
+      const isTurn = getSide(staticTurn) === turn
+      const isSelected = selected === id
+      const isCapturable = isMovable && !isTurn
       const cls = cx({
         'is-turn': isTurn,
-        'is-selected': selected === id
+        'is-selected': isSelected,
+        'is-capturable': isCapturable
       })
 
       return (
         <div className={cls} onClick={this.handleClick}>
+          {/* TODO: need unique key (include tile name) */}
           <WrappedComponent key={staticKey} />
         </div>
       )
@@ -59,12 +65,19 @@ function enhancePiece (WrappedComponent, staticKey, staticTurn) {
       const isTurn = getSide(staticTurn) === turn
 
       if (isTurn) {
+        // move
+
         setSelected(`${tile}-${staticTurn}`)
 
         compose(
           setMovableTiles,
           getAxis(tile, piece)
         )(turn)
+      } else {
+        // capture
+
+        // TODO: edit excludeBlock if not same turn, leave it as the path
+        console.log('capture', tile)
       }
     }
   }

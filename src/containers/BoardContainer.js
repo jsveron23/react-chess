@@ -42,7 +42,7 @@ const mapDispatchToProps = {
 }
 
 function mergeProps (stateProps, dispatchProps, ownProps) {
-  const { selected, lineup, movableTiles } = stateProps
+  const { turn, selected, lineup, movableTiles } = stateProps
   let nextMovable = movableTiles
 
   if (isExist(movableTiles)) {
@@ -63,7 +63,7 @@ function mergeProps (stateProps, dispatchProps, ownProps) {
       )(lineup)
     } else {
       nextMovable = compose(
-        excludeBlock(lineup),
+        excludeBlock(turn, lineup),
 
         // to get rid of block tiles, need direction infomation
         transformMovableAsDirection
