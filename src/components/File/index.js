@@ -1,9 +1,9 @@
 import React, { createElement } from 'react'
 import PropTypes from 'prop-types'
 import cx from 'classnames'
-import { compose } from 'ramda'
+import { compose, prop as extract } from 'ramda'
 import { Blank } from '~/components'
-import { isEmpty, isExist, extract, noop } from '~/utils'
+import { isEmpty, isExist, noop } from '~/utils'
 import {
   getNextLineup,
   computeSpecial,

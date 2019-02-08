@@ -1,5 +1,5 @@
 import { connect } from 'react-redux'
-import { compose } from 'ramda'
+import { compose, prop as extract } from 'ramda'
 import { Board } from '~/components'
 import {
   toggleTurn,
@@ -16,7 +16,7 @@ import {
 } from '~/chess/core'
 import { getSpecial } from '~/chess/helpers'
 import { RANKS, FILES } from '~/chess/constants'
-import { isExist, extract } from '~/utils'
+import { isExist } from '~/utils'
 
 function mapStateToProps ({ general, ingame }) {
   const { isMatching } = general

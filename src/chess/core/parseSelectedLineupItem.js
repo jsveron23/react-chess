@@ -1,5 +1,4 @@
-import { curry, compose, split } from 'ramda'
-import { extract } from '~/utils'
+import { curry, compose, split, prop as extract } from 'ramda'
 import { parseSelected, getLineupItem } from '~/chess/helpers'
 
 /**
