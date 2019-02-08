@@ -24,7 +24,7 @@ const initialObj = {
   // to compare between previous tile and next tile
   pending: '',
 
-  // key of previous iterate
+  // key of previous uses inside loop
   lastKey: ''
 }
 

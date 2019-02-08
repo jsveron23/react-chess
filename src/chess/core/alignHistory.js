@@ -3,16 +3,16 @@ import { parseLineupItem, getSide } from '~/chess/helpers'
 import { isExist } from '~/utils'
 
 /**
- * Align history by move sequence before align scrore sheet
- * @param  {Array} mergedHistory
+ * Align lineups by move sequence before align scrore sheet
+ * @param  {Array} mergedLineups
  * @return {Array}
  */
-function alignHistory (mergedHistory) {
-  const len = mergedHistory.length
+function alignHistory (mergedLineups) {
+  const len = mergedLineups.length
 
-  return mergedHistory.reduce((acc, lineup, idx) => {
+  return mergedLineups.reduce((acc, lineup, idx) => {
     const currLineup = lineup
-    const prevLineup = mergedHistory[idx + 1]
+    const prevLineup = mergedLineups[idx + 1]
 
     if (isExist(prevLineup) && len > 1) {
       const [lineupItem] = difference(currLineup, prevLineup)

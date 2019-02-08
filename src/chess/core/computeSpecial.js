@@ -62,10 +62,10 @@ function computeSpecial (side, special, tile, movable, lineup) {
     // ----------------
     // after moving (to transform as Queen)
     // ----------------
-    const isMoveToEnd = PROMOTION_TILES[side].includes(tile)
-    const isPromotion = special.includes(PROMOTION) && isMoveToEnd
+    const isMovedToEnd = PROMOTION_TILES[side].includes(tile)
+    const shouldPromotion = special.includes(PROMOTION) && isMovedToEnd
 
-    if (isPromotion && isExist(lineup)) {
+    if (shouldPromotion && isExist(lineup)) {
       const nextLineup = replaceLineup(side, 'Q', tile, lineup)
 
       return { lineup: nextLineup, movable }

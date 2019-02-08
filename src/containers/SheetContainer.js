@@ -1,12 +1,12 @@
 import { connect } from 'react-redux'
-import { compose, map, reverse } from 'ramda'
+import { curry, compose, map, reverse } from 'ramda'
 import { Sheet } from '~/components'
 import { alignHistory, alignScoreSheet } from '~/chess/core'
 
-const mergeLineupList = (presentLineup) => (pastLineupList) => [
+const mergeLineups = curry((presentLineup, pastLineupList) => [
   presentLineup,
   ...pastLineupList
-]
+])
 
 const mapStateToProps = ({ ingame }) => {
   const { present, past } = ingame
@@ -14,8 +14,8 @@ const mapStateToProps = ({ ingame }) => {
     alignScoreSheet,
     reverse,
     alignHistory,
-    mergeLineupList(present.lineup),
-    map((item) => item.lineup),
+    mergeLineups(present.lineup),
+    map((pastItem) => pastItem.lineup),
     reverse
   )(past)
 
