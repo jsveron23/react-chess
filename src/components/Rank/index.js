@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 import cx from 'classnames'
 import { compose } from 'ramda'
 import getPiece, { File } from '~/components'
-import { getLineupItem, parseLineupItem } from '~/chess/helpers'
+import { findLineupItem, parseLineupItem } from '~/chess/helpers'
 import { noop } from '~/utils'
 import css from './Rank.css'
 
@@ -28,8 +28,8 @@ const Rank = (props) => {
         const tile = `${fileName}${rankName}`
         const { side: color, piece } = compose(
           parseLineupItem,
-          getLineupItem(lineup)
-        )(tile)
+          findLineupItem(tile)
+        )(lineup)
         const Piece = getPiece({ color, piece })
 
         return (

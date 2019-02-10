@@ -1,4 +1,4 @@
-import { getMovements } from '~/chess/helpers'
+import { getMovement } from '~/chess/helpers'
 
 // prettier-ignore
 const MOVEMENTS = {
@@ -35,11 +35,11 @@ const MOVEMENTS = {
   ]
 }
 
-describe('#getMovements', () => {
-  it('get movements of piece', () => {
-    expect(getMovements('P')).toEqual(MOVEMENTS['P'])
-    expect(getMovements('B')).toEqual(MOVEMENTS['B'])
-    expect(getMovements('K')).toEqual(MOVEMENTS['K'])
-    expect(getMovements('R')).toEqual(MOVEMENTS['R'])
+describe('#getMovement', () => {
+  it('get movement of piece', () => {
+    expect(getMovement('P')).toEqual(MOVEMENTS['P'])
+    expect(getMovement('B')).toEqual(MOVEMENTS['B'])
+    expect(getMovement('K')).toEqual(MOVEMENTS['K'])
+    expect(getMovement('R')).toEqual(MOVEMENTS['R'])
   })
 })

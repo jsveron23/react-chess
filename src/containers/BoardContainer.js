@@ -29,7 +29,7 @@ function mapStateToProps ({ general, ingame }) {
       side: selectedSide,
       file: selectedFile,
       rank: selectedRank
-    } = parseSelected(lineup, selected)
+    } = parseSelected(selected, lineup)
     const special = getSpecial(selectedPiece) || []
 
     if (isExist(special)) {

@@ -1,4 +1,4 @@
-import { getLineupItem } from '~/chess/helpers'
+import { findLineupItem } from '~/chess/helpers'
 
 // prettier-ignore
 const lineup = [
@@ -8,11 +8,11 @@ const lineup = [
   'wRa1', 'wNb1', 'wBc1', 'wQd1', 'wKe1', 'wBf1', 'wNg1', 'wRh1'
 ]
 
-describe('#getLineupItem', () => {
+describe('#findLineupItem', () => {
   it('get a lineup item that includes token', () => {
-    expect(getLineupItem(lineup, 'b7')).toEqual('bPb7')
-    expect(getLineupItem(lineup)('c2')).toEqual('wPc2')
-    expect(getLineupItem(lineup, 'wK')).toEqual('wKe1')
-    expect(getLineupItem(lineup)('bR')).toEqual('bRa8')
+    expect(findLineupItem('b7', lineup)).toEqual('bPb7')
+    expect(findLineupItem('c2')(lineup)).toEqual('wPc2')
+    expect(findLineupItem('wK', lineup)).toEqual('wKe1')
+    expect(findLineupItem('bR')(lineup)).toEqual('bRa8')
   })
 })

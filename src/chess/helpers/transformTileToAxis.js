@@ -1,6 +1,6 @@
-import parseTileName from './parseTileName'
-import transformFile from './transformFile'
-import transformRank from './transformRank'
+import parseTile from './parseTile'
+import transformFileToX from './transformFileToX'
+import transformRankToY from './transformRankToY'
 
 /**
  * Transform tile to axis
@@ -8,20 +8,12 @@ import transformRank from './transformRank'
  * @return {Object}
  */
 function transformTileToAxis (tile) {
-  let nextTile
+  const parsedTile = parseTile(tile)
+  const { file, rank } = parsedTile
+  const x = transformFileToX(file)
+  const y = transformRankToY(rank)
 
-  if (typeof tile === 'string') {
-    nextTile = parseTileName(tile)
-  } else {
-    nextTile = tile
-  }
-
-  const { file, rank } = nextTile
-
-  return {
-    x: transformFile(file),
-    y: transformRank(rank)
-  }
+  return { x, y }
 }
 
 export default transformTileToAxis

@@ -1,7 +1,7 @@
 import { SPECIALS } from '~/chess/constants'
 
 /**
- * Get special movements
+ * Get special
  * @param  {string} piece
  * @return {Array}
  */

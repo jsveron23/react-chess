@@ -1,7 +1,7 @@
 import { split } from 'ramda'
 
 /**
- * Parse a lineup item to side, piece, file and rank
+ * Parse single item of lineup
  * @param  {string} lineupItem
  * @return {Object}
  */

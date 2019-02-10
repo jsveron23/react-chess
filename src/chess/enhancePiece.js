@@ -18,6 +18,7 @@ import { getSide } from '~/chess/helpers'
 function enhancePiece (WrappedComponent, staticKey, staticTurn) {
   const originalDisplayName = WrappedComponent.name
 
+  // TODO: transform to function component
   class Piece extends Component {
     static displayName = `enhancePiece(${originalDisplayName})`
 
@@ -70,8 +71,8 @@ function enhancePiece (WrappedComponent, staticKey, staticTurn) {
         setSelected(`${tile}-${staticTurn}`)
 
         compose(
-          setMovableAxis,
-          getMovableAxis(tile, piece)
+          setMovableAxis, // -> redux/action
+          getMovableAxis(tile, piece) // -> chess/core
         )(turn)
       } else {
         // capture

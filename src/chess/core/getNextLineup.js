@@ -9,7 +9,7 @@ import { parseLineupItem, parseSelected } from '~/chess/helpers'
  * @return {Array}
  */
 function getNextLineup (selected, tile, lineup) {
-  const { file, rank } = parseSelected(lineup, selected)
+  const { file, rank } = parseSelected(selected, lineup)
   const selectedTile = `${file}${rank}`
 
   return lineup.map((item) => {

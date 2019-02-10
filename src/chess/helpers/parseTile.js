@@ -5,8 +5,12 @@ import { compose, split, reduce } from 'ramda'
  * @param  {string} tile
  * @return {Object}
  */
-function parseTileName (tile) {
-  const _reduceFn = (acc, val) => {
+function parseTile (tile) {
+  if (typeof tile !== 'string') {
+    return tile
+  }
+
+  const reduceFn = (acc, val) => {
     const key = /[1-9]/.test(val) ? 'rank' : 'file'
 
     return {
@@ -16,9 +20,9 @@ function parseTileName (tile) {
   }
 
   return compose(
-    reduce(_reduceFn, {}),
+    reduce(reduceFn, {}),
     split('')
   )(tile)
 }
 
-export default parseTileName
+export default parseTile

@@ -10,7 +10,7 @@ import {
 import {
   transformLineupToTiles,
   transformAxisToTile,
-  getLineupItem,
+  findLineupItem,
   parseLineupItem,
   getSide
 } from '~/chess/helpers'
@@ -48,11 +48,11 @@ function excludeBlock (turn, lineup, movableWithDirection) {
     // checking in same direction
     return axisList.reduce((acc, axis) => {
       const tile = transformAxisToTile(axis)
+      const lineupItem = findLineupItem(tile, lineup)
       const side = compose(
         extract('side'),
-        parseLineupItem,
-        getLineupItem(lineup)
-      )(tile)
+        parseLineupItem
+      )(lineupItem)
       const isEnemy = getSide(side) !== turn
       const isPieceStanding = re.test(tile)
 

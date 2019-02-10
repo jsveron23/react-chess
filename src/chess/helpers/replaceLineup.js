@@ -1,20 +1,19 @@
-import { curry } from 'ramda'
+import { curry, includes } from 'ramda'
 
 /**
- * Replace lineup
- * @param  {string} side
- * @param  {string} piece
- * @param  {string} tile
+ * Replace lineup items of lineup
+ * @param  {string} replace
+ * @param  {string} textToken
  * @param  {Array}  lineup
  * @return {Array}
  */
-function replaceLineup (side, piece, tile, lineup) {
-  return lineup.map((item) => {
-    if (item.includes(tile)) {
-      return `${side}${piece}${tile}`
+function replaceLineup (replace, textToken, lineup) {
+  return lineup.map((lineupItem) => {
+    if (includes(textToken, lineupItem)) {
+      return replace
     }
 
-    return item
+    return lineupItem
   })
 }
 

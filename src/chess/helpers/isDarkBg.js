@@ -1,6 +1,6 @@
 import { isEven } from '~/utils'
-import parseTileName from './parseTileName'
-import transformRank from './transformRank'
+import parseTile from './parseTile'
+import transformRankToY from './transformRankToY'
 import { EVEN_TILES, ODD_TILES } from '~/chess/constants'
 
 /**
@@ -9,9 +9,9 @@ import { EVEN_TILES, ODD_TILES } from '~/chess/constants'
  * @return {boolean}
  */
 function isDarkBg (tile) {
-  const { file, rank } = parseTileName(tile)
-  const rankNum = transformRank(rank)
-  const dividedTile = isEven(rankNum) ? EVEN_TILES : ODD_TILES
+  const { file, rank } = parseTile(tile)
+  const y = transformRankToY(rank)
+  const dividedTile = isEven(y) ? EVEN_TILES : ODD_TILES
 
   return dividedTile.includes(file)
 }

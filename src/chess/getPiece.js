@@ -14,6 +14,7 @@ import {
 } from './components'
 import enhancePiece from './enhancePiece'
 
+// TODO: pass unique key (for Pawn)
 const PIECE_MAP = {
   bB: enhancePiece(BlackBishop, 'bB', 'b'),
   bK: enhancePiece(BlackKing, 'bK', 'b'),

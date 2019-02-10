@@ -31,8 +31,8 @@ const File = (props) => {
 
     if (isMovable && isEmpty(Piece)) {
       const { side: selectedSide, piece: selectedPiece } = parseSelected(
-        lineup,
-        selected
+        selected,
+        lineup
       )
       const special = getSpecial(selectedPiece)
       let nextLineup = getNextLineup(selected, tile, lineup)

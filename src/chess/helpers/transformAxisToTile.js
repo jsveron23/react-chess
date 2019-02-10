@@ -7,10 +7,10 @@ import { getFile } from '~/chess/helpers'
  * @return {Array}
  */
 function transformAxisToTile (axis) {
-  const [fileNum, rankNum] = axis
-  const nextFile = getFile(fileNum)
-  const nextTile = `${nextFile}${rankNum}`
-  const isOutside = isEmpty(nextFile) || rankNum <= 0 || rankNum > 8
+  const [x, y] = axis
+  const nextFile = getFile(x)
+  const nextTile = `${nextFile}${y}`
+  const isOutside = isEmpty(nextFile) || y <= 0 || y > 8
 
   return !isOutside ? nextTile : []
 }

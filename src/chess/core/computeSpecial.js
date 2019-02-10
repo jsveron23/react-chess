@@ -1,9 +1,9 @@
 import { curry } from 'ramda'
 import {
   transformTileToAxis,
-  parseTileName,
+  parseTile,
   replaceLineup,
-  getLineupItem
+  findLineupItem
 } from '~/chess/helpers'
 import { isExist } from '~/utils'
 
@@ -44,7 +44,7 @@ function computeSpecial (side, special, tile, lineup, movable) {
 
     if (isDoubleStep && isExist(movable)) {
       const [nextTile] = movable // it should be one tile
-      const lineupItem = getLineupItem(lineup, nextTile)
+      const lineupItem = findLineupItem(nextTile, lineup)
 
       // if some piece on the path
       // it works like `excludeBlock`
@@ -54,7 +54,7 @@ function computeSpecial (side, special, tile, lineup, movable) {
 
       const { y } = transformTileToAxis(tile)
       const nextY = side === 'w' ? y + 2 : y - 2
-      const { file } = parseTileName(tile)
+      const { file } = parseTile(tile)
 
       return { lineup, movable: [...movable, `${file}${nextY}`] }
     }
@@ -66,7 +66,7 @@ function computeSpecial (side, special, tile, lineup, movable) {
     const shouldPromotion = special.includes(PROMOTION) && isMovedToEnd
 
     if (shouldPromotion && isExist(lineup)) {
-      const nextLineup = replaceLineup(side, 'Q', tile, lineup)
+      const nextLineup = replaceLineup(`${side}Q${tile}`, tile, lineup)
 
       return { lineup: nextLineup, movable }
     }
