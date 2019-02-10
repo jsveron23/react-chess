@@ -3,11 +3,11 @@ import transformFile from './transformFile'
 import transformRank from './transformRank'
 
 /**
- * Transform tile to x, y
+ * Transform tile to axis
  * @param  {Object|string} tile
  * @return {Object}
  */
-function transformXY (tile) {
+function transformTileToAxis (tile) {
   let nextTile
 
   if (typeof tile === 'string') {
@@ -24,4 +24,4 @@ function transformXY (tile) {
   }
 }
 
-export default transformXY
+export default transformTileToAxis

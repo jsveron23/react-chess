@@ -1,11 +1,8 @@
-export { default as getAxis } from './getAxis'
-export { default as getPureMovable } from './getPureMovable'
-export { default as computeSpecial } from './computeSpecial'
+export { default as getMovableAxis } from './getMovableAxis'
+export { default as getMovableTiles } from './getMovableTiles'
 export { default as getNextLineup } from './getNextLineup'
-export { default as parseSelectedLineupItem } from './parseSelectedLineupItem'
-export {
-  default as transformMovableAsDirection
-} from './transformMovableAsDirection'
+export { default as getDirection } from './getDirection'
+export { default as computeSpecial } from './computeSpecial'
 export { default as excludeBlock } from './excludeBlock'
 export { default as alignHistory } from './alignHistory'
 export { default as alignScoreSheet } from './alignScoreSheet'

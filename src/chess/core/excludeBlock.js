@@ -8,8 +8,8 @@ import {
   prop as extract
 } from 'ramda'
 import {
-  transformXY,
   transformLineupToTiles,
+  transformAxisToTile,
   getLineupItem,
   parseLineupItem,
   getSide
@@ -26,8 +26,6 @@ import { createRegExp } from '~/utils'
 function excludeBlock (turn, lineup, movableWithDirection) {
   const { diagonal, vertical, horizontal } = movableWithDirection
 
-  console.log(movableWithDirection)
-
   const re = compose(
     createRegExp,
     join('|'),
@@ -41,14 +39,15 @@ function excludeBlock (turn, lineup, movableWithDirection) {
   }
 
   const _mapFn = (directionKey) => {
-    const tiles = movableWithDirection[directionKey]
+    const axisList = movableWithDirection[directionKey]
     let firstContactEnemy = false // first enemy on a direction
     let foundBlock = false
     let prevX
     let prevY
 
     // checking in same direction
-    return tiles.reduce((acc, tile) => {
+    return axisList.reduce((acc, axis) => {
+      const tile = transformAxisToTile(axis)
       const side = compose(
         extract('side'),
         parseLineupItem,
@@ -57,7 +56,7 @@ function excludeBlock (turn, lineup, movableWithDirection) {
       const isEnemy = getSide(side) !== turn
       const isPieceStanding = re.test(tile)
 
-      const { x, y } = transformXY(tile)
+      const [x, y] = axis
       const intervalX = Math.abs(x - prevX)
       const intervalY = Math.abs(y - prevY)
 
@@ -66,7 +65,7 @@ function excludeBlock (turn, lineup, movableWithDirection) {
       const isChangedDirection = intervalX > 1 || intervalY > 1
 
       if (isChangedDirection) {
-        console.log('change direction!', tile)
+        // console.log('change direction!', tile)
 
         firstContactEnemy = false
         foundBlock = false
@@ -80,13 +79,13 @@ function excludeBlock (turn, lineup, movableWithDirection) {
         firstContactEnemy = true
         foundBlock = true
 
-        console.log('first contact enemy!', tile)
+        // console.log('first contact enemy!', tile)
 
         return [...acc, tile]
       }
 
       if (firstContactEnemy || foundBlock || isPieceStanding) {
-        console.log('found block!', tile)
+        // console.log('found block!', tile)
 
         firstContactEnemy = true
         foundBlock = true
@@ -94,7 +93,7 @@ function excludeBlock (turn, lineup, movableWithDirection) {
         return acc
       }
 
-      console.log('include into movable tiles!', tile)
+      // console.log('include into movable tiles!', tile)
 
       return [...acc, tile]
     }, [])

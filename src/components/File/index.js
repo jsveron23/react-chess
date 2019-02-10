@@ -4,12 +4,8 @@ import cx from 'classnames'
 import { compose, prop as extract } from 'ramda'
 import { Blank } from '~/components'
 import { isEmpty, isExist, noop } from '~/utils'
-import {
-  getNextLineup,
-  computeSpecial,
-  parseSelectedLineupItem
-} from '~/chess/core'
-import { isDarkBg, getSpecial } from '~/chess/helpers'
+import { getNextLineup, computeSpecial } from '~/chess/core'
+import { isDarkBg, getSpecial, parseSelected } from '~/chess/helpers'
 import css from './File.css'
 
 const File = (props) => {
@@ -34,10 +30,10 @@ const File = (props) => {
     evt.preventDefault()
 
     if (isMovable && isEmpty(Piece)) {
-      const {
-        side: selectedSide,
-        piece: selectedPiece
-      } = parseSelectedLineupItem(lineup, selected)
+      const { side: selectedSide, piece: selectedPiece } = parseSelected(
+        lineup,
+        selected
+      )
       const special = getSpecial(selectedPiece)
       let nextLineup = getNextLineup(selected, tile, lineup)
 
@@ -45,8 +41,8 @@ const File = (props) => {
       if (isExist(special)) {
         nextLineup = compose(
           extract('lineup'),
-          computeSpecial(selectedSide, special, tile, [])
-        )(nextLineup)
+          computeSpecial(selectedSide, special, tile, nextLineup)
+        )(movableTiles)
       }
 
       setLineup(nextLineup)

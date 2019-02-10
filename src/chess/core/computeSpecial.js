@@ -1,6 +1,6 @@
 import { curry } from 'ramda'
 import {
-  transformXY,
+  transformTileToAxis,
   parseTileName,
   replaceLineup,
   getLineupItem
@@ -24,13 +24,13 @@ const PROMOTION_TILES = {
  * @param  {string} side
  * @param  {Array}  special
  * @param  {string} tile
- * @param  {Array?} movable
  * @param  {Array?} lineup
+ * @param  {Array?} movable
  * @return {Object}
  *  - lineup -> after moving
  *  - movable -> before rendering
  */
-function computeSpecial (side, special, tile, movable, lineup) {
+function computeSpecial (side, special, tile, lineup, movable) {
   const len = special.length
 
   if (len > 1) {
@@ -52,7 +52,7 @@ function computeSpecial (side, special, tile, movable, lineup) {
         return { lineup, movable }
       }
 
-      const { y } = transformXY(tile)
+      const { y } = transformTileToAxis(tile)
       const nextY = side === 'w' ? y + 2 : y - 2
       const { file } = parseTileName(tile)
 

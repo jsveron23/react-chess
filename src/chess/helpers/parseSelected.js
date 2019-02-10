@@ -1,14 +1,21 @@
-import { split } from 'ramda'
+import { curry, compose, split, prop as extract } from 'ramda'
+import { getLineupItem } from '~/chess/helpers'
 
 /**
- * Parse selected piece to tile and side
- * @param  {string} selected
+ * Get selected lineup
+ * @param  {Array}   lineup
+ * @param  {string?} selected
  * @return {Object}
  */
-function parseSelected (selected) {
-  const [tile, side] = split('-', selected)
+function parseSelected (lineup, selected) {
+  const [side, piece, file, rank] = compose(
+    split(''),
+    getLineupItem(lineup),
+    extract(0),
+    split('-')
+  )(selected)
 
-  return { tile, side }
+  return { side, piece, file, rank }
 }
 
-export default parseSelected
+export default curry(parseSelected)

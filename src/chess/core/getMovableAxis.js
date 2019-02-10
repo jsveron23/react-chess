@@ -1,22 +1,29 @@
 import { curry, compose, map } from 'ramda'
-import { parseTileName, getMovements, transformXY } from '~/chess/helpers'
+import {
+  parseTileName,
+  getMovements,
+  transformTileToAxis
+} from '~/chess/helpers'
 
 /**
- * Get axis([x, y]) from movements of piece
+ * Get movable axis from movements of piece (no invalid axis filter here)
  * @param  {string} tile
  * @param  {string} piece
  * @param  {string} turn
  * @return {Array}
  */
-function getAxis (tile, piece, turn) {
+function getMovableAxis (tile, piece, turn) {
   const { x, y } = compose(
-    transformXY,
+    transformTileToAxis,
     parseTileName
   )(tile)
 
   const _mapFn = (mv) => {
     const [mvX, mvY] = mv
     const nextX = mvX + x
+
+    // white: down -> up
+    // black: up -> down
     const nextY = turn === 'white' ? mvY + y : y - mvY
 
     return [nextX, nextY]
@@ -28,4 +35,4 @@ function getAxis (tile, piece, turn) {
   )(piece)
 }
 
-export default curry(getAxis)
+export default curry(getMovableAxis)

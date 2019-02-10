@@ -4,7 +4,7 @@ import cx from 'classnames'
 import { boundMethod } from 'autobind-decorator'
 import { compose } from 'ramda'
 import { noop } from '~/utils'
-import { getAxis } from '~/chess/core'
+import { getMovableAxis } from '~/chess/core'
 import { getSide } from '~/chess/helpers'
 
 /**
@@ -71,7 +71,7 @@ function enhancePiece (WrappedComponent, staticKey, staticTurn) {
 
         compose(
           setMovableAxis,
-          getAxis(tile, piece)
+          getMovableAxis(tile, piece)
         )(turn)
       } else {
         // capture
