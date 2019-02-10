@@ -65,7 +65,6 @@
   },
   "dependencies": {
     "@babel/polyfill": "^7.2.5",
-    "autobind-decorator": "^2.4.0",
     "classnames": "^2.2.6",
     "prop-types": "^15.6.2",
     "ramda": "^0.26.1",

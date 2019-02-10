@@ -34,7 +34,7 @@ const VENDOR = [
   'react-redux',
   'ramda',
   'redux-undo',
-  'autobind-decorator'
+  'scu-inspector'
 ]
 
 const DEV_SERVER = {

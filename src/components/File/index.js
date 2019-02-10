@@ -58,6 +58,7 @@ const File = (props) => {
     tile,
     lineup,
     isMovable,
+    setLineup,
     setSelected,
     setMovableAxis
   }
