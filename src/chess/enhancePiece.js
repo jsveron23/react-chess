@@ -5,7 +5,7 @@ import { boundMethod } from 'autobind-decorator'
 import { compose } from 'ramda'
 import { noop } from '~/utils'
 import { getMovableAxis } from '~/chess/core'
-import { getSide } from '~/chess/helpers'
+import { getSide, parseSelected } from '~/chess/helpers'
 
 /**
  * Higher order component for Chess piece
@@ -25,6 +25,7 @@ function enhancePiece (WrappedComponent, staticKey, staticTurn) {
     static propTypes = {
       turn: PropTypes.string.isRequired,
       tile: PropTypes.string.isRequired,
+      lineup: PropTypes.array.isRequired,
       piece: PropTypes.string,
       selected: PropTypes.string,
       isMovable: PropTypes.bool,
@@ -39,11 +40,16 @@ function enhancePiece (WrappedComponent, staticKey, staticTurn) {
     }
 
     render () {
-      const { turn, tile, selected, isMovable } = this.props
+      const { turn, tile, selected, lineup, isMovable } = this.props
+      const { side: selectedSide, piece: selectedPiece } = parseSelected(
+        selected,
+        lineup
+      )
       const id = `${tile}-${staticTurn}`
       const isTurn = getSide(staticTurn) === turn
       const isSelected = selected === id
-      const isCapturable = isMovable && !isTurn
+      const ignoreCapture = selectedSide !== staticTurn && selectedPiece === 'P'
+      const isCapturable = isMovable && !isTurn && !ignoreCapture
       const cls = cx({
         'is-turn': isTurn,
         'is-selected': isSelected,
@@ -62,7 +68,14 @@ function enhancePiece (WrappedComponent, staticKey, staticTurn) {
     handleClick (evt) {
       evt.preventDefault()
 
-      const { turn, tile, piece, setSelected, setMovableAxis } = this.props
+      const {
+        turn,
+        tile,
+        piece,
+        isMovable,
+        setSelected,
+        setMovableAxis
+      } = this.props
       const isTurn = getSide(staticTurn) === turn
 
       if (isTurn) {
@@ -74,7 +87,9 @@ function enhancePiece (WrappedComponent, staticKey, staticTurn) {
           setMovableAxis, // -> redux/action
           getMovableAxis(tile, piece) // -> chess/core
         )(turn)
-      } else {
+      }
+
+      if (!isTurn && isMovable) {
         // capture
 
         // TODO: edit excludeBlock if not same turn, leave it as the path
