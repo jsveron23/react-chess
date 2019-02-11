@@ -3,7 +3,7 @@ import { isEmpty } from '~/utils'
 
 /**
  * Find a lineup item
- * @param  {string} token
+ * @param  {string} textToken
  * @param  {Array}  lineup
  * @return {string}
  */

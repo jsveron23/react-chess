@@ -45,13 +45,6 @@ function reducer (state = initialState, action) {
       }
     }
 
-    case types.RESET_LINEUP: {
-      return {
-        ...state,
-        lineup: [...initialState.lineup]
-      }
-    }
-
     default: {
       return state
     }

@@ -1,5 +1,9 @@
+import { compose, prop as extract } from 'ramda'
 import * as types from '~/actions'
 import { ENEMY } from '~/chess/constants'
+import { getMovableAxis, getNextLineup, computeSpecial } from '~/chess/core'
+import { getSpecial, parseSelected } from '~/chess/helpers'
+import { isExist } from '~/utils'
 
 export function setSelected (piece) {
   return {
@@ -11,7 +15,7 @@ export function setSelected (piece) {
 export function setMovableAxis (movable) {
   return {
     type: types.SET_MOVABLE_AXIS,
-    payload: movable
+    payload: movable || []
   }
 }
 
@@ -28,15 +32,44 @@ export function toggleTurn () {
   }
 }
 
-export function setLineup (alignedPieces) {
+export function setLineup (lineup) {
   return {
     type: types.SET_LINEUP,
-    payload: alignedPieces
+    payload: lineup
   }
 }
 
-export function resetLineup () {
-  return {
-    type: types.RESET_LINEUP
+export function setMovable ({ tile, staticTurn, piece }) {
+  return (dispatch, getState) => {
+    const { ingame } = getState()
+    const { present } = ingame
+    const { turn } = present
+    const selected = `${tile}-${staticTurn}`
+    const movableAxis = getMovableAxis(tile, piece, turn)
+
+    dispatch(setSelected(selected))
+    dispatch(setMovableAxis(movableAxis))
+  }
+}
+
+export function setNext ({ tile, movableTiles }) {
+  return (dispatch, getState) => {
+    const { ingame } = getState()
+    const { present } = ingame
+    const { selected, lineup } = present
+    const { piece, side } = parseSelected(selected, lineup)
+    const special = getSpecial(piece)
+    let nextLineup = getNextLineup(selected, tile, lineup)
+
+    if (isExist(special)) {
+      nextLineup = compose(
+        extract('lineup'),
+        computeSpecial(side, special, tile, nextLineup)
+      )(movableTiles)
+    }
+
+    dispatch(setLineup(nextLineup))
+    dispatch(setMovableAxis())
+    dispatch(toggleTurn())
   }
 }

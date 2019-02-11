@@ -14,24 +14,23 @@ import {
 } from './components'
 import enhancePiece from './enhancePiece'
 
-// TODO: pass unique key (for Pawn)
 const PIECE_MAP = {
-  bB: enhancePiece(BlackBishop, 'bB', 'b'),
-  bK: enhancePiece(BlackKing, 'bK', 'b'),
-  bN: enhancePiece(BlackKnight, 'bN', 'b'),
-  bP: enhancePiece(BlackPawn, 'bP', 'b'),
-  bQ: enhancePiece(BlackQueen, 'bQ', 'b'),
-  bR: enhancePiece(BlackRook, 'bR', 'b'),
-  wB: enhancePiece(WhiteBishop, 'wB', 'w'),
-  wK: enhancePiece(WhiteKing, 'wK', 'w'),
-  wN: enhancePiece(WhiteKnight, 'wN', 'w'),
-  wP: enhancePiece(WhitePawn, 'wP', 'w'),
-  wQ: enhancePiece(WhiteQueen, 'wQ', 'w'),
-  wR: enhancePiece(WhiteRook, 'wR', 'w')
+  bB: enhancePiece(BlackBishop)('bB', 'b'),
+  bK: enhancePiece(BlackKing)('bK', 'b'),
+  bN: enhancePiece(BlackKnight)('bN', 'b'),
+  bP: enhancePiece(BlackPawn)('bP', 'b'),
+  bQ: enhancePiece(BlackQueen)('bQ', 'b'),
+  bR: enhancePiece(BlackRook)('bR', 'b'),
+  wB: enhancePiece(WhiteBishop)('wB', 'w'),
+  wK: enhancePiece(WhiteKing)('wK', 'w'),
+  wN: enhancePiece(WhiteKnight)('wN', 'w'),
+  wP: enhancePiece(WhitePawn)('wP', 'w'),
+  wQ: enhancePiece(WhiteQueen)('wQ', 'w'),
+  wR: enhancePiece(WhiteRook)('wR', 'w')
 }
 
-function getPiece ({ color, piece }) {
-  return PIECE_MAP[`${color}${piece}`]
+function getPiece ({ side, piece }) {
+  return PIECE_MAP[`${side}${piece}`]
 }
 
 export default getPiece

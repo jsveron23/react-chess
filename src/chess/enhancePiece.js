@@ -1,10 +1,9 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import cx from 'classnames'
-import { compose } from 'ramda'
+import { curry } from 'ramda'
 import { noop } from '~/utils'
-import { getMovableAxis } from '~/chess/core'
-import { getSide, parseSelected } from '~/chess/helpers'
+import { getSide } from '~/chess/helpers'
 
 /**
  * Higher order component for Chess piece
@@ -20,23 +19,19 @@ function enhancePiece (WrappedComponent, staticKey, staticTurn) {
       turn,
       tile,
       piece,
-      selected,
-      lineup,
+      selectedPiece,
+      selectedSide,
+      selectedFile,
+      selectedRank,
+      // lineup,
       isMovable,
-      // setLineup,
-      setSelected,
-      setMovableAxis
+      // setLineup
+      setMovable
     } = props
-    const {
-      side: selectedSide,
-      piece: selectedPiece,
-      file: selectedFile,
-      rank: selectedRank
-    } = parseSelected(selected, lineup)
-    const id = `${tile}-${staticTurn}`
+    const selectedTile = `${selectedFile}${selectedRank}`
     const isTurn = getSide(staticTurn) === turn
-    const isSelected = selected === id
-    const ignoreCapture = selectedSide !== staticTurn && selectedPiece === 'P'
+    const isSelected = selectedTile === tile
+    const ignoreCapture = selectedPiece === 'P' && selectedSide !== staticTurn
     const isCapturable = isMovable && !isTurn && !ignoreCapture
     const cls = cx({
       'is-turn': isTurn,
@@ -44,21 +39,17 @@ function enhancePiece (WrappedComponent, staticKey, staticTurn) {
       'is-capturable': isCapturable
     })
 
+    // pressing a piece
     function handleClick (evt) {
       evt.preventDefault()
 
       if (isTurn) {
-        setSelected(id)
-
-        compose(
-          setMovableAxis, // -> redux/action
-          getMovableAxis(tile, piece) // -> chess/core
-        )(turn)
+        setMovable({ tile, staticTurn, piece })
       }
 
-      if (!isTurn && isMovable) {
+      if (isCapturable) {
         // capture
-        const by = `${selectedSide}${selectedPiece}${selectedFile}${selectedRank}`
+        const by = `${selectedSide}${selectedPiece}${selectedTile}`
         const gotcha = `${staticTurn}${piece}${tile}`
 
         console.log('by: ', by)
@@ -71,8 +62,7 @@ function enhancePiece (WrappedComponent, staticKey, staticTurn) {
 
     return (
       <div className={cls} onClick={handleClick}>
-        {/* TODO: need unique key (include tile name) */}
-        <WrappedComponent key={staticKey} />
+        <WrappedComponent key={`${staticKey}-${tile}`} />
       </div>
     )
   }
@@ -84,21 +74,22 @@ function enhancePiece (WrappedComponent, staticKey, staticTurn) {
     tile: PropTypes.string.isRequired,
     lineup: PropTypes.array.isRequired,
     piece: PropTypes.string,
-    selected: PropTypes.string,
+    selectedPiece: PropTypes.string,
+    selectedSide: PropTypes.string,
+    selectedFile: PropTypes.string,
+    selectedRank: PropTypes.string,
     isMovable: PropTypes.bool,
     setLineup: PropTypes.func,
-    setSelected: PropTypes.func,
-    setMovableAxis: PropTypes.func
+    setMovable: PropTypes.func
   }
 
   Piece.defaultProps = {
     isMovable: false,
     setLineup: noop,
-    setSelected: noop,
-    setMovableAxis: noop
+    setMovable: noop
   }
 
   return Piece
 }
 
-export default enhancePiece
+export default curry(enhancePiece)

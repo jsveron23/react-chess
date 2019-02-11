@@ -1,11 +1,9 @@
 import React, { createElement } from 'react'
 import PropTypes from 'prop-types'
 import cx from 'classnames'
-import { compose, prop as extract } from 'ramda'
 import { Blank } from '~/components'
 import { isEmpty, isExist, noop } from '~/utils'
-import { getNextLineup, computeSpecial } from '~/chess/core'
-import { isDarkBg, getSpecial, parseSelected } from '~/chess/helpers'
+import { isDarkBg } from '~/chess/helpers'
 import css from './File.css'
 
 const File = (props) => {
@@ -16,51 +14,39 @@ const File = (props) => {
     lineup,
     piece,
     Piece,
-    selected,
+    selectedPiece,
+    selectedSide,
+    selectedFile,
+    selectedRank,
     movableTiles,
-    setSelected,
-    setMovableAxis,
     setLineup,
-    toggleTurn
+    setMovable,
+    setNext
   } = props
 
   const isMovable = movableTiles.includes(tile)
 
+  // pressing a tile
   function handleClick (evt) {
     evt.preventDefault()
 
     if (isMovable && isEmpty(Piece)) {
-      const { side: selectedSide, piece: selectedPiece } = parseSelected(
-        selected,
-        lineup
-      )
-      const special = getSpecial(selectedPiece)
-      let nextLineup = getNextLineup(selected, tile, lineup)
-
-      // draw next lineup
-      if (isExist(special)) {
-        nextLineup = compose(
-          extract('lineup'),
-          computeSpecial(selectedSide, special, tile, nextLineup)
-        )(movableTiles)
-      }
-
-      setLineup(nextLineup)
-      setMovableAxis([])
-      toggleTurn()
+      setNext({ tile, movableTiles })
     }
   }
 
   const pieceProps = {
     turn,
     piece,
-    selected,
+    selectedPiece,
+    selectedSide,
+    selectedFile,
+    selectedRank,
     tile,
     lineup,
     isMovable,
     setLineup,
-    setSelected,
-    setMovableAxis
+    setMovable
   }
 
   const blankProps = {
@@ -84,22 +70,23 @@ File.propTypes = {
   fileName: PropTypes.string.isRequired,
   tile: PropTypes.string.isRequired,
   lineup: PropTypes.array.isRequired,
-  selected: PropTypes.string,
+  selectedPiece: PropTypes.string,
+  selectedSide: PropTypes.string,
+  selectedFile: PropTypes.string,
+  selectedRank: PropTypes.string,
   piece: PropTypes.string,
   Piece: PropTypes.func,
   movableTiles: PropTypes.array,
-  setSelected: PropTypes.func,
-  setMovableAxis: PropTypes.func,
   setLineup: PropTypes.func,
-  toggleTurn: PropTypes.func
+  setMovable: PropTypes.func,
+  setNext: PropTypes.func
 }
 
 File.defaultProps = {
   movableTiles: [],
-  setSelected: noop,
-  setMovableAxis: noop,
   setLineup: noop,
-  toggleTurn: noop
+  setMovable: noop,
+  setNext: noop
 }
 
 export default File

@@ -1,9 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import cx from 'classnames'
-import { compose } from 'ramda'
 import getPiece, { File } from '~/components'
-import { findLineupItem, parseLineupItem } from '~/chess/helpers'
 import { noop } from '~/utils'
 import css from './Rank.css'
 
@@ -13,12 +11,15 @@ const Rank = (props) => {
     lineup,
     files,
     rankName,
-    selected,
+    selectedPiece,
+    selectedSide,
+    selectedFile,
+    selectedRank,
     movableTiles,
-    setSelected,
-    setMovableAxis,
+    getPieceProps,
     setLineup,
-    toggleTurn
+    setMovable,
+    setNext
   } = props
   const cls = cx(css.rank, 'l-flex-row')
 
@@ -26,11 +27,8 @@ const Rank = (props) => {
     <div className={cls} data-rank={rankName}>
       {files.map((fileName) => {
         const tile = `${fileName}${rankName}`
-        const { side: color, piece } = compose(
-          parseLineupItem,
-          findLineupItem(tile)
-        )(lineup)
-        const Piece = getPiece({ color, piece })
+        const { side, piece } = getPieceProps({ tile, lineup })
+        const Piece = getPiece({ side, piece })
 
         return (
           <File
@@ -39,14 +37,16 @@ const Rank = (props) => {
             piece={piece}
             Piece={Piece}
             lineup={lineup}
-            selected={selected}
+            selectedPiece={selectedPiece}
+            selectedSide={selectedSide}
+            selectedFile={selectedFile}
+            selectedRank={selectedRank}
             fileName={fileName}
             tile={tile}
             movableTiles={movableTiles}
-            setSelected={setSelected}
-            setMovableAxis={setMovableAxis}
             setLineup={setLineup}
-            toggleTurn={toggleTurn}
+            setMovable={setMovable}
+            setNext={setNext}
           />
         )
       })}
@@ -59,19 +59,21 @@ Rank.propTypes = {
   turn: PropTypes.string.isRequired,
   files: PropTypes.array.isRequired,
   rankName: PropTypes.string.isRequired,
-  selected: PropTypes.string,
-  currentMovableTiles: PropTypes.array,
-  setSelected: PropTypes.func,
-  setMovableAxis: PropTypes.func,
+  selectedPiece: PropTypes.string,
+  selectedSide: PropTypes.string,
+  selectedFile: PropTypes.string,
+  selectedRank: PropTypes.string,
+  movableTiles: PropTypes.array,
   setLineup: PropTypes.func,
-  toggleTurn: PropTypes.func
+  setMovable: PropTypes.func,
+  setNext: PropTypes.func
 }
 
 Rank.defaultProps = {
   setSelected: noop,
-  setMovableAxis: noop,
   setLineup: noop,
-  toggleTurn: noop
+  setMovable: noop,
+  setNext: noop
 }
 
 export default Rank

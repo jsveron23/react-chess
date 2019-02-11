@@ -9,14 +9,17 @@ const Board = (props) => {
     isMatching,
     turn,
     lineup,
-    selected,
+    selectedPiece,
+    selectedSide,
+    selectedFile,
+    selectedRank,
     ranks,
     files,
     movableTiles,
-    setSelected,
-    setMovableAxis,
+    getPieceProps,
     setLineup,
-    toggleTurn
+    setMovable,
+    setNext
   } = props
 
   if (!isMatching) {
@@ -31,14 +34,17 @@ const Board = (props) => {
             key={rankName}
             turn={turn}
             lineup={lineup}
-            selected={selected}
+            selectedPiece={selectedPiece}
+            selectedSide={selectedSide}
+            selectedFile={selectedFile}
+            selectedRank={selectedRank}
             files={files}
             rankName={rankName}
             movableTiles={movableTiles}
-            setSelected={setSelected}
-            setMovableAxis={setMovableAxis}
+            getPieceProps={getPieceProps}
             setLineup={setLineup}
-            toggleTurn={toggleTurn}
+            setMovable={setMovable}
+            setNext={setNext}
           />
         )
       })}
@@ -52,19 +58,22 @@ Board.propTypes = {
   ranks: PropTypes.array.isRequired,
   files: PropTypes.array.isRequired,
   lineup: PropTypes.array.isRequired,
-  selected: PropTypes.string,
+  selectedPiece: PropTypes.string,
+  selectedSide: PropTypes.string,
+  selectedFile: PropTypes.string,
+  selectedRank: PropTypes.string,
   movableTiles: PropTypes.array,
-  setSelected: PropTypes.func,
-  setMovableAxis: PropTypes.func,
+  getPieceProps: PropTypes.func,
   setLineup: PropTypes.func,
-  toggleTurn: PropTypes.func
+  setMovable: PropTypes.func,
+  setNext: PropTypes.func
 }
 
 Board.defaultProps = {
-  setSelected: noop,
-  setMovableAxis: noop,
+  getPieceProps: noop,
   setLineup: noop,
-  toggleTurn: noop
+  setMovable: noop,
+  setNext: noop
 }
 
 export default Board
