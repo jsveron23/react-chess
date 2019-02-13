@@ -48,11 +48,11 @@ function excludeBlock (turn, lineup, movableWithDirection) {
     // checking in same direction
     return axisList.reduce((acc, axis) => {
       const tile = transformAxisToTile(axis)
-      const lineupItem = findLineupItem(tile, lineup)
       const side = compose(
         extract('side'),
-        parseLineupItem
-      )(lineupItem)
+        parseLineupItem,
+        findLineupItem(tile)
+      )(lineup)
       const isEnemy = getSide(side) !== turn
       const isPieceStanding = re.test(tile)
 
@@ -65,8 +65,6 @@ function excludeBlock (turn, lineup, movableWithDirection) {
       const isChangedDirection = intervalX > 1 || intervalY > 1
 
       if (isChangedDirection) {
-        // console.log('change direction!', tile)
-
         firstContactEnemy = false
         foundBlock = false
       }
@@ -79,21 +77,15 @@ function excludeBlock (turn, lineup, movableWithDirection) {
         firstContactEnemy = true
         foundBlock = true
 
-        // console.log('first contact enemy!', tile)
-
         return [...acc, tile]
       }
 
       if (firstContactEnemy || foundBlock || isPieceStanding) {
-        // console.log('found block!', tile)
-
         firstContactEnemy = true
         foundBlock = true
 
         return acc
       }
-
-      // console.log('include into movable tiles!', tile)
 
       return [...acc, tile]
     }, [])

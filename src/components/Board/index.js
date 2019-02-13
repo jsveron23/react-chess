@@ -16,7 +16,6 @@ const Board = (props) => {
     ranks,
     files,
     movableTiles,
-    getPieceProps,
     setLineup,
     setMovable,
     setNext
@@ -41,7 +40,6 @@ const Board = (props) => {
             files={files}
             rankName={rankName}
             movableTiles={movableTiles}
-            getPieceProps={getPieceProps}
             setLineup={setLineup}
             setMovable={setMovable}
             setNext={setNext}
@@ -63,14 +61,12 @@ Board.propTypes = {
   selectedFile: PropTypes.string,
   selectedRank: PropTypes.string,
   movableTiles: PropTypes.array,
-  getPieceProps: PropTypes.func,
   setLineup: PropTypes.func,
   setMovable: PropTypes.func,
   setNext: PropTypes.func
 }
 
 Board.defaultProps = {
-  getPieceProps: noop,
   setLineup: noop,
   setMovable: noop,
   setNext: noop

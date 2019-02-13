@@ -1,9 +1,18 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import cx from 'classnames'
+import { compose } from 'ramda'
 import getPiece, { File } from '~/components'
+import { findLineupItem, parseLineupItem } from '~/chess/helpers'
 import { noop } from '~/utils'
 import css from './Rank.css'
+
+function getPieceProps (tile) {
+  return compose(
+    parseLineupItem,
+    findLineupItem(tile)
+  )
+}
 
 const Rank = (props) => {
   const {
@@ -16,7 +25,6 @@ const Rank = (props) => {
     selectedFile,
     selectedRank,
     movableTiles,
-    getPieceProps,
     setLineup,
     setMovable,
     setNext
@@ -27,8 +35,8 @@ const Rank = (props) => {
     <div className={cls} data-rank={rankName}>
       {files.map((fileName) => {
         const tile = `${fileName}${rankName}`
-        const { side, piece } = getPieceProps({ tile, lineup })
-        const Piece = getPiece({ side, piece })
+        const { side, piece } = getPieceProps(tile)(lineup)
+        const Piece = getPiece(side)(piece)
 
         return (
           <File

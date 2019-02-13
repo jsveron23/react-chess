@@ -17,8 +17,9 @@ function alignHistory (mergedLineups) {
     if (isExist(prevLineup) && len > 1) {
       const [lineupItem] = difference(currLineup, prevLineup)
       const { side: currSide, piece, file, rank } = parseLineupItem(lineupItem)
+      const isPawn = piece === 'P'
       const side = getSide(currSide)
-      const log = `${piece === 'P' ? '' : piece}${file}${rank}`
+      const log = `${isPawn ? '' : piece}${file}${rank}`
 
       return [
         ...acc,

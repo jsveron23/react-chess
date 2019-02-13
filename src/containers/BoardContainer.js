@@ -8,12 +8,7 @@ import {
   excludeBlock,
   computeSpecial
 } from '~/chess/core'
-import {
-  getSpecial,
-  parseSelected,
-  findLineupItem,
-  parseLineupItem
-} from '~/chess/helpers'
+import { getSpecial, parseSelected } from '~/chess/helpers'
 import { RANKS, FILES } from '~/chess/constants'
 import { isExist } from '~/utils'
 
@@ -42,8 +37,6 @@ function mapStateToProps ({ general, ingame }) {
     } else {
       nextMovable = compose(
         excludeBlock(turn, lineup),
-
-        // to get rid of block tiles, need direction infomation
         getDirection
       )(movableAxis)
     }
@@ -69,24 +62,9 @@ const mapDispatchToProps = {
   setNext
 }
 
-const mergeProps = (stateProps, dispatchProps, ownProps) => {
-  return {
-    ...stateProps,
-    ...dispatchProps,
-    ...ownProps,
-    getPieceProps ({ tile, lineup }) {
-      return compose(
-        parseLineupItem,
-        findLineupItem(tile)
-      )(lineup)
-    }
-  }
-}
-
 const BoardContainer = connect(
   mapStateToProps,
-  mapDispatchToProps,
-  mergeProps
+  mapDispatchToProps
 )(Board)
 
 export default BoardContainer

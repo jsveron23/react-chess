@@ -30,9 +30,10 @@ function enhancePiece (WrappedComponent, staticKey, staticTurn) {
     } = props
     const selectedTile = `${selectedFile}${selectedRank}`
     const isTurn = getSide(staticTurn) === turn
+    const isEnemy = selectedSide !== staticTurn
     const isSelected = selectedTile === tile
-    const ignoreCapture = selectedPiece === 'P' && selectedSide !== staticTurn
-    const isCapturable = isMovable && !isTurn && !ignoreCapture
+    const shouldIgnoreCapture = selectedPiece === 'P' && isEnemy
+    const isCapturable = isMovable && !isTurn && !shouldIgnoreCapture
     const cls = cx({
       'is-turn': isTurn,
       'is-selected': isSelected,

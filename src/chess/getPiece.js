@@ -1,3 +1,4 @@
+import { curry } from 'ramda'
 import {
   BlackBishop,
   BlackKing,
@@ -29,8 +30,8 @@ const PIECE_MAP = {
   wR: enhancePiece(WhiteRook)('wR', 'w')
 }
 
-function getPiece ({ side, piece }) {
+function getPiece (side, piece) {
   return PIECE_MAP[`${side}${piece}`]
 }
 
-export default getPiece
+export default curry(getPiece)

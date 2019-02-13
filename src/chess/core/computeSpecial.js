@@ -43,8 +43,8 @@ function computeSpecial (side, special, tile, lineup, movable) {
     const isDoubleStep = special.includes(DOUBLE_STEP) && isFirstMove
 
     if (isDoubleStep && isExist(movable)) {
-      const [nextTile] = movable // it should be one tile
-      const lineupItem = findLineupItem(nextTile, lineup)
+      const [startTile] = movable // it should be one tile
+      const lineupItem = findLineupItem(startTile, lineup)
 
       // if some piece on the path
       // it works like `excludeBlock`
@@ -55,8 +55,9 @@ function computeSpecial (side, special, tile, lineup, movable) {
       const { y } = transformTileToAxis(tile)
       const nextY = side === 'w' ? y + 2 : y - 2
       const { file } = parseTile(tile)
+      const nextTile = `${file}${nextY}`
 
-      return { lineup, movable: [...movable, `${file}${nextY}`] }
+      return { lineup, movable: [...movable, nextTile] }
     }
 
     // ----------------
