@@ -1,3 +1,4 @@
+import { reduce } from 'ramda'
 import { isExist } from '~/utils'
 
 /**
@@ -6,10 +7,9 @@ import { isExist } from '~/utils'
  * @return {Array}
  */
 const alignScoreSheet = (moveList) => {
-  return moveList.reduce((sheet, move, idx) => {
+  const reduceFn = (sheet, move) => {
     if (isExist(move.black)) {
-      const clone = [...sheet]
-      const [first, ...rest] = clone
+      const [first, ...rest] = sheet
 
       return [
         {
@@ -26,7 +26,9 @@ const alignScoreSheet = (moveList) => {
       },
       ...sheet
     ]
-  }, [])
+  }
+
+  return reduce(reduceFn, [])(moveList)
 }
 
 export default alignScoreSheet

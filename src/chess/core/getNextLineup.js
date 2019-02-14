@@ -1,4 +1,4 @@
-import { curry } from 'ramda'
+import { curry, includes } from 'ramda'
 import { parseLineupItem, parseSelected } from '~/chess/helpers'
 
 /**
@@ -13,7 +13,7 @@ function getNextLineup (selected, tile, lineup) {
   const selectedTile = `${file}${rank}`
 
   return lineup.map((item) => {
-    if (item.indexOf(selectedTile) > -1) {
+    if (includes(selectedTile, item)) {
       const { side, piece } = parseLineupItem(item)
 
       return `${side}${piece}${tile}`

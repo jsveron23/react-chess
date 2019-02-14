@@ -1,7 +1,7 @@
-import { curry } from 'ramda'
+import { curry, includes } from 'ramda'
 import {
   transformTileToAxis,
-  parseTile,
+  transformAxisToTile,
   replaceLineup,
   findLineupItem
 } from '~/chess/helpers'
@@ -25,12 +25,12 @@ const PROMOTION_TILES = {
  * @param  {Array}  special
  * @param  {string} tile
  * @param  {Array?} lineup
- * @param  {Array?} movable
+ * @param  {Array?} movableAxis
  * @return {Object}
  *  - lineup -> after moving
  *  - movable -> before rendering
  */
-function computeSpecial (side, special, tile, lineup, movable) {
+function computeSpecial (side, special, tile, lineup, movableAxis) {
   const len = special.length
 
   if (len > 1) {
@@ -39,43 +39,42 @@ function computeSpecial (side, special, tile, lineup, movable) {
     // ----------------
     // before rendering (to display extended movable)
     // ----------------
-    const isFirstMove = DOUBLE_STEP_TILES[side].includes(tile)
-    const isDoubleStep = special.includes(DOUBLE_STEP) && isFirstMove
+    const isFirstMove = includes(tile, DOUBLE_STEP_TILES[side])
+    const isDoubleStep = includes(DOUBLE_STEP, special) && isFirstMove
 
-    if (isDoubleStep && isExist(movable)) {
-      const [startTile] = movable // it should be one tile
+    if (isDoubleStep && isExist(movableAxis)) {
+      const [startAxis] = movableAxis // it should be one tile
+      const startTile = transformAxisToTile(startAxis)
       const lineupItem = findLineupItem(startTile, lineup)
 
       // if some piece on the path
       // it works like `excludeBlock`
       if (isExist(lineupItem)) {
-        return { lineup, movable }
+        return { lineup, movableAxis }
       }
 
-      const { y } = transformTileToAxis(tile)
+      const { x, y } = transformTileToAxis(tile)
       const nextY = side === 'w' ? y + 2 : y - 2
-      const { file } = parseTile(tile)
-      const nextTile = `${file}${nextY}`
 
-      return { lineup, movable: [...movable, nextTile] }
+      return { lineup, movableAxis: [...movableAxis, [x, nextY]] }
     }
 
     // ----------------
     // after moving (to transform as Queen)
     // ----------------
-    const isMovedToEnd = PROMOTION_TILES[side].includes(tile)
-    const shouldPromotion = special.includes(PROMOTION) && isMovedToEnd
+    const isMovedToEnd = includes(tile, PROMOTION_TILES[side])
+    const shouldPromotion = includes(PROMOTION, special) && isMovedToEnd
 
     if (shouldPromotion && isExist(lineup)) {
       const nextLineup = replaceLineup(`${side}Q${tile}`, tile, lineup)
 
-      return { lineup: nextLineup, movable }
+      return { lineup: nextLineup, movableAxis }
     }
   } else {
     // -> King, Knight
   }
 
-  return { movable, lineup }
+  return { lineup, movableAxis }
 }
 
 export default curry(computeSpecial)

@@ -1,12 +1,4 @@
-import {
-  curry,
-  join,
-  compose,
-  flatten,
-  keys,
-  map,
-  prop as extract
-} from 'ramda'
+import { curry, join, compose, reduce, keys, map, prop as extract } from 'ramda'
 import {
   transformLineupToTiles,
   transformAxisToTile,
@@ -18,6 +10,7 @@ import { createRegExp } from '~/utils'
 
 /**
  * Get rid of blocking tiles path
+ * TODO: optimize
  * @param  {string} turn
  * @param  {Array}  lineup
  * @param  {Object} movableWithDirection
@@ -77,7 +70,7 @@ function excludeBlock (turn, lineup, movableWithDirection) {
         firstContactEnemy = true
         foundBlock = true
 
-        return [...acc, tile]
+        return [...acc, axis]
       }
 
       if (firstContactEnemy || foundBlock || isPieceStanding) {
@@ -87,12 +80,12 @@ function excludeBlock (turn, lineup, movableWithDirection) {
         return acc
       }
 
-      return [...acc, tile]
+      return [...acc, axis]
     }, [])
   }
 
   return compose(
-    flatten,
+    reduce((acc, item) => [...acc, ...item], []),
     map(_mapFn),
     keys
   )(directionOnly)

@@ -8,6 +8,8 @@ const mergeLineups = curry((presentLineup, pastLineupList) => [
   ...pastLineupList
 ])
 
+const getPastLineup = (pastItem) => pastItem.lineup
+
 const mapStateToProps = ({ ingame }) => {
   const { present, past } = ingame
   const sheet = compose(
@@ -15,7 +17,7 @@ const mapStateToProps = ({ ingame }) => {
     reverse,
     alignHistory,
     mergeLineups(present.lineup),
-    map((pastItem) => pastItem.lineup),
+    map(getPastLineup),
     reverse
   )(past)
 

@@ -14,7 +14,7 @@ const initialObj = {
 
 /**
  * Transform movable axis to directions
- * TODO: optimize logic
+ * TODO: optimize
  * @param  {Array} movableAxis
  * @return {Array}
  */
@@ -63,14 +63,14 @@ function getDirection (movableAxis) {
 
     // e.g [1, 0] [2, 0] [3, 0]
     if (y === 0) {
-      const { horizontal } = acc
+      const { horizontal: prevHorizontal = [] } = acc
       const axisList = [beforeAxis, axis]
 
       beforeAxis = axis
 
       return {
         ...acc,
-        horizontal: [...horizontal, ...axisList]
+        horizontal: [...prevHorizontal, ...axisList]
       }
     }
 

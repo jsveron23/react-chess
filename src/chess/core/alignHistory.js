@@ -1,4 +1,4 @@
-import { difference } from 'ramda'
+import { difference, reduce, compose, prop as extract } from 'ramda'
 import { parseLineupItem, getSide } from '~/chess/helpers'
 import { isExist } from '~/utils'
 
@@ -9,14 +9,16 @@ import { isExist } from '~/utils'
  */
 function alignHistory (mergedLineups) {
   const len = mergedLineups.length
-
-  return mergedLineups.reduce((acc, lineup, idx) => {
-    const currLineup = lineup
-    const prevLineup = mergedLineups[idx + 1]
+  const reduceFn = (acc, currLineup) => {
+    const prevIdx = mergedLineups.indexOf(currLineup) + 1
+    const prevLineup = mergedLineups[prevIdx]
 
     if (isExist(prevLineup) && len > 1) {
-      const [lineupItem] = difference(currLineup, prevLineup)
-      const { side: currSide, piece, file, rank } = parseLineupItem(lineupItem)
+      const { side: currSide, piece, file, rank } = compose(
+        parseLineupItem,
+        extract(0),
+        difference(currLineup)
+      )(prevLineup)
       const isPawn = piece === 'P'
       const side = getSide(currSide)
       const log = `${isPawn ? '' : piece}${file}${rank}`
@@ -30,7 +32,9 @@ function alignHistory (mergedLineups) {
     }
 
     return acc
-  }, [])
+  }
+
+  return reduce(reduceFn, [])(mergedLineups)
 }
 
 export default alignHistory

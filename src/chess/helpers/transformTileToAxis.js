@@ -8,8 +8,7 @@ import transformRankToY from './transformRankToY'
  * @return {Object}
  */
 function transformTileToAxis (tile) {
-  const parsedTile = parseTile(tile)
-  const { file, rank } = parsedTile
+  const { file, rank } = parseTile(tile)
   const x = transformFileToX(file)
   const y = transformRankToY(rank)
 

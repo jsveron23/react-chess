@@ -23,6 +23,21 @@ const direction1 = {
 
 describe('#excludeBlock', () => {
   it('exclude bloking path selected piece', () => {
-    expect(excludeBlock('white', lineup1, direction1)).toEqual([])
+    expect(excludeBlock('white', lineup1, direction1)).toEqual([
+      [1, 0],
+      [1, -1],
+      [1, -2],
+      [1, -3],
+      [1, -4],
+      [1, -5],
+      [1, -6],
+      [0, 1],
+      [-1, 1],
+      [-2, 1],
+      [-3, 1],
+      [-4, 1],
+      [-5, 1],
+      [-6, 1]
+    ])
   })
 })

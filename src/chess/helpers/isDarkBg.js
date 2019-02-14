@@ -1,3 +1,4 @@
+import { includes } from 'ramda'
 import { isEven } from '~/utils'
 import parseTile from './parseTile'
 import transformRankToY from './transformRankToY'
@@ -13,7 +14,7 @@ function isDarkBg (tile) {
   const y = transformRankToY(rank)
   const dividedTile = isEven(y) ? EVEN_TILES : ODD_TILES
 
-  return dividedTile.includes(file)
+  return includes(file, dividedTile)
 }
 
 export default isDarkBg

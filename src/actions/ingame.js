@@ -52,11 +52,11 @@ export function setMovable ({ tile, staticTurn, piece }) {
   }
 }
 
-export function setNext ({ tile, movableTiles }) {
+export function setNext (tile) {
   return (dispatch, getState) => {
     const { ingame } = getState()
     const { present } = ingame
-    const { selected, lineup } = present
+    const { selected, lineup, movableAxis } = present
     const { piece, side } = parseSelected(selected, lineup)
     const special = getSpecial(piece)
     let nextLineup = getNextLineup(selected, tile, lineup)
@@ -65,7 +65,7 @@ export function setNext ({ tile, movableTiles }) {
       nextLineup = compose(
         extract('lineup'),
         computeSpecial(side, special, tile, nextLineup)
-      )(movableTiles)
+      )(movableAxis)
     }
 
     dispatch(setLineup(nextLineup))

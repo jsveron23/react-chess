@@ -18,11 +18,11 @@ describe('#computeSpecial', () => {
       ]
       const pieceP = 'P'
       const specialP = SPECIALS[pieceP]
-      const movableP = ['a3']
+      const movableP = [[1, 3]]
 
       expect(
         computeSpecial('w', specialP, 'a2', lineup, movableP)
-      ).toHaveProperty('movable', ['a3', 'a4'])
+      ).toHaveProperty('movableAxis', [[1, 3], [1, 4]])
     })
 
     it('promotion', () => {

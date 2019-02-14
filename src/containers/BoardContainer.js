@@ -23,19 +23,18 @@ function mapStateToProps ({ general, ingame }) {
     rank: selectedRank
   } = parseSelected(selected, lineup)
   const selecteSpecial = getSpecial(selectedPiece) || []
-  let nextMovable
+  let nextMovableAxis = []
 
   if (isExist(movableAxis)) {
     if (isExist(selecteSpecial)) {
       const tile = `${selectedFile}${selectedRank}`
 
-      nextMovable = compose(
-        extract('movable'),
-        computeSpecial(selectedSide, selecteSpecial, tile, lineup),
-        getMovableTiles // TODO: remove this
+      nextMovableAxis = compose(
+        extract('movableAxis'),
+        computeSpecial(selectedSide, selecteSpecial, tile, lineup)
       )(movableAxis)
     } else {
-      nextMovable = compose(
+      nextMovableAxis = compose(
         excludeBlock(turn, lineup),
         getDirection
       )(movableAxis)
@@ -52,7 +51,7 @@ function mapStateToProps ({ general, ingame }) {
     lineup,
     ranks: RANKS,
     files: FILES,
-    movableTiles: nextMovable
+    movableTiles: getMovableTiles(nextMovableAxis)
   }
 }
 

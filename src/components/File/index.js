@@ -1,6 +1,7 @@
 import React, { createElement } from 'react'
 import PropTypes from 'prop-types'
 import cx from 'classnames'
+import { includes } from 'ramda'
 import { Blank } from '~/components'
 import { isEmpty, isExist, noop } from '~/utils'
 import { isDarkBg } from '~/chess/helpers'
@@ -24,14 +25,14 @@ const File = (props) => {
     setNext
   } = props
 
-  const isMovable = movableTiles.includes(tile)
+  const isMovable = includes(tile, movableTiles)
 
   // pressing a tile
   function handleClick (evt) {
     evt.preventDefault()
 
     if (isMovable && isEmpty(Piece)) {
-      setNext({ tile, movableTiles })
+      setNext(tile)
     }
   }
 

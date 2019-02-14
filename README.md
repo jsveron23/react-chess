@@ -4,6 +4,10 @@ Programs must be written for people to read, and only incidentally for machines 
 
 - Abelson & Sussman, Structure and Interpretation of Computer Programs
 
+# Contributions
+
+feel free to submit pull requests!!
+
 # React Chess
 
 - Implement Chess game without Chess library
@@ -22,7 +26,7 @@ open browser, http://localhost:3000
 
 ## Example
 
-[Master branch (WIP)](https://jsveron23-react-chess.herokuapp.com/)
+- [Master branch (WIP)](https://jsveron23-react-chess.herokuapp.com/)
 
 ## License
 
