@@ -23,9 +23,8 @@ function enhancePiece (WrappedComponent, staticKey, staticTurn) {
       selectedSide,
       selectedFile,
       selectedRank,
-      // lineup,
       isMovable,
-      // setLineup
+      setCapturedNext,
       setMovable
     } = props
     const selectedTile = `${selectedFile}${selectedRank}`
@@ -49,15 +48,11 @@ function enhancePiece (WrappedComponent, staticKey, staticTurn) {
       }
 
       if (isCapturable) {
-        // capture
-        const by = `${selectedSide}${selectedPiece}${selectedTile}`
-        const gotcha = `${staticTurn}${piece}${tile}`
-
-        console.log('by: ', by)
-        console.log('captured: ', gotcha)
-
-        // TODO: after captured -> apply to score sheet
-        // setLineup()
+        setCapturedNext({
+          capturedTile: tile,
+          selectedTile: selectedTile,
+          replaceLineupItem: `${selectedSide}${selectedPiece}${tile}`
+        })
       }
     }
 
@@ -73,20 +68,19 @@ function enhancePiece (WrappedComponent, staticKey, staticTurn) {
   Piece.propTypes = {
     turn: PropTypes.string.isRequired,
     tile: PropTypes.string.isRequired,
-    lineup: PropTypes.array.isRequired,
     piece: PropTypes.string,
     selectedPiece: PropTypes.string,
     selectedSide: PropTypes.string,
     selectedFile: PropTypes.string,
     selectedRank: PropTypes.string,
     isMovable: PropTypes.bool,
-    setLineup: PropTypes.func,
+    setCapturedNext: PropTypes.func,
     setMovable: PropTypes.func
   }
 
   Piece.defaultProps = {
     isMovable: false,
-    setLineup: noop,
+    setCapturedNext: noop,
     setMovable: noop
   }
 

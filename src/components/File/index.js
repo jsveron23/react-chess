@@ -12,7 +12,6 @@ const File = (props) => {
     turn,
     fileName,
     tile,
-    lineup,
     piece,
     Piece,
     selectedPiece,
@@ -20,7 +19,7 @@ const File = (props) => {
     selectedFile,
     selectedRank,
     movableTiles,
-    setLineup,
+    setCapturedNext,
     setMovable,
     setNext
   } = props
@@ -44,9 +43,8 @@ const File = (props) => {
     selectedFile,
     selectedRank,
     tile,
-    lineup,
     isMovable,
-    setLineup,
+    setCapturedNext,
     setMovable
   }
 
@@ -70,7 +68,6 @@ File.propTypes = {
   turn: PropTypes.string.isRequired,
   fileName: PropTypes.string.isRequired,
   tile: PropTypes.string.isRequired,
-  lineup: PropTypes.array.isRequired,
   selectedPiece: PropTypes.string,
   selectedSide: PropTypes.string,
   selectedFile: PropTypes.string,
@@ -78,14 +75,14 @@ File.propTypes = {
   piece: PropTypes.string,
   Piece: PropTypes.func,
   movableTiles: PropTypes.array,
-  setLineup: PropTypes.func,
+  setCapturedNext: PropTypes.func,
   setMovable: PropTypes.func,
   setNext: PropTypes.func
 }
 
 File.defaultProps = {
   movableTiles: [],
-  setLineup: noop,
+  setCapturedNext: noop,
   setMovable: noop,
   setNext: noop
 }

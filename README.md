@@ -6,7 +6,7 @@ Programs must be written for people to read, and only incidentally for machines 
 
 # Contributions
 
-feel free to submit pull requests!!
+Feel free to submit pull requests!!
 
 # React Chess
 

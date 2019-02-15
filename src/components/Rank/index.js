@@ -25,7 +25,7 @@ const Rank = (props) => {
     selectedFile,
     selectedRank,
     movableTiles,
-    setLineup,
+    setCapturedNext,
     setMovable,
     setNext
   } = props
@@ -52,7 +52,7 @@ const Rank = (props) => {
             fileName={fileName}
             tile={tile}
             movableTiles={movableTiles}
-            setLineup={setLineup}
+            setCapturedNext={setCapturedNext}
             setMovable={setMovable}
             setNext={setNext}
           />
@@ -72,14 +72,14 @@ Rank.propTypes = {
   selectedFile: PropTypes.string,
   selectedRank: PropTypes.string,
   movableTiles: PropTypes.array,
-  setLineup: PropTypes.func,
+  setCapturedNext: PropTypes.func,
   setMovable: PropTypes.func,
   setNext: PropTypes.func
 }
 
 Rank.defaultProps = {
   setSelected: noop,
-  setLineup: noop,
+  setCapturedNext: noop,
   setMovable: noop,
   setNext: noop
 }

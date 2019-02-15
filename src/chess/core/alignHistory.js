@@ -1,6 +1,14 @@
-import { difference, reduce, compose, prop as extract } from 'ramda'
+import { difference, reduce, compose, curry, prop as extract } from 'ramda'
 import { parseLineupItem, getSide } from '~/chess/helpers'
 import { isExist } from '~/utils'
+
+const getDiffrenceLineupItem = curry((aLineupItem, bLineupItem) => {
+  return compose(
+    parseLineupItem,
+    extract(0),
+    difference(aLineupItem)
+  )(bLineupItem)
+})
 
 /**
  * Align lineups by move sequence before align scrore sheet
@@ -14,19 +22,25 @@ function alignHistory (mergedLineups) {
     const prevLineup = mergedLineups[prevIdx]
 
     if (isExist(prevLineup) && len > 1) {
-      const { side: currSide, piece, file, rank } = compose(
-        parseLineupItem,
-        extract(0),
-        difference(currLineup)
-      )(prevLineup)
+      let lineupItemObj = getDiffrenceLineupItem(currLineup)(prevLineup)
+      let capturedPiece = ''
+
+      if (prevLineup.length !== currLineup.length) {
+        const { piece } = getDiffrenceLineupItem(prevLineup)(currLineup)
+
+        capturedPiece = piece
+      }
+
+      const { side, piece, file, rank } = lineupItemObj
+      const tile = `${file}${rank}`
       const isPawn = piece === 'P'
-      const side = getSide(currSide)
-      const log = `${isPawn ? '' : piece}${file}${rank}`
+      const isCaptured = isExist(capturedPiece)
+      const log = `${isPawn ? '' : piece}${isCaptured ? 'x' : ''}${tile}`
 
       return [
         ...acc,
         {
-          [side]: log
+          [getSide(side)]: log
         }
       ]
     }
@@ -37,4 +51,4 @@ function alignHistory (mergedLineups) {
   return reduce(reduceFn, [])(mergedLineups)
 }
 
-export default alignHistory
+export default curry(alignHistory)

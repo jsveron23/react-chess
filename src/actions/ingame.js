@@ -1,8 +1,8 @@
-import { compose, prop as extract } from 'ramda'
+import { compose, filter, prop as extract } from 'ramda'
 import * as types from '~/actions'
 import { ENEMY } from '~/chess/constants'
 import { getMovableAxis, getNextLineup, computeSpecial } from '~/chess/core'
-import { getSpecial, parseSelected } from '~/chess/helpers'
+import { getSpecial, parseSelected, replaceLineup } from '~/chess/helpers'
 import { isExist } from '~/utils'
 
 export function setSelected (piece) {
@@ -69,6 +69,27 @@ export function setNext (tile) {
     }
 
     dispatch(setLineup(nextLineup))
+    dispatch(setMovableAxis())
+    dispatch(toggleTurn())
+  }
+}
+
+export function setCapturedNext ({
+  capturedTile,
+  selectedTile,
+  replaceLineupItem
+}) {
+  return (dispatch, getState) => {
+    const { ingame } = getState()
+    const { present } = ingame
+    const { lineup } = present
+    const capturedLineup = compose(
+      filter(isExist),
+      replaceLineup(replaceLineupItem, selectedTile),
+      replaceLineup('', capturedTile)
+    )(lineup)
+
+    dispatch(setLineup(capturedLineup))
     dispatch(setMovableAxis())
     dispatch(toggleTurn())
   }

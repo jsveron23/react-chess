@@ -1,7 +1,12 @@
 import { connect } from 'react-redux'
 import { compose, prop as extract } from 'ramda'
 import { Board } from '~/components'
-import { setLineup, setNext, setMovable } from '~/actions/ingame'
+import {
+  setLineup,
+  setNext,
+  setMovable,
+  setCapturedNext
+} from '~/actions/ingame'
 import {
   getMovableTiles,
   getDirection,
@@ -58,7 +63,8 @@ function mapStateToProps ({ general, ingame }) {
 const mapDispatchToProps = {
   setLineup,
   setMovable,
-  setNext
+  setNext,
+  setCapturedNext
 }
 
 const BoardContainer = connect(

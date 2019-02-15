@@ -20,7 +20,7 @@ const PROMOTION_TILES = {
 }
 
 /**
- * Include special (lineup or movable)
+ * Include special (lineup or movableAxis)
  * @param  {string} side
  * @param  {Array}  special
  * @param  {string} tile
@@ -28,7 +28,7 @@ const PROMOTION_TILES = {
  * @param  {Array?} movableAxis
  * @return {Object}
  *  - lineup -> after moving
- *  - movable -> before rendering
+ *  - movableAxis -> before rendering
  */
 function computeSpecial (side, special, tile, lineup, movableAxis) {
   const len = special.length

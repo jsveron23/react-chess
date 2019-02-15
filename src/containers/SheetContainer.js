@@ -12,11 +12,12 @@ const getPastLineup = (pastItem) => pastItem.lineup
 
 const mapStateToProps = ({ ingame }) => {
   const { present, past } = ingame
+  const { lineup: presentLineup } = present
   const sheet = compose(
     alignScoreSheet,
     reverse,
     alignHistory,
-    mergeLineups(present.lineup),
+    mergeLineups(presentLineup),
     map(getPastLineup),
     reverse
   )(past)

@@ -8,7 +8,7 @@ import { isExist } from '~/utils'
  * @return {Object}
  */
 function convertKeys (names, x) {
-  const _reduceFn = (acc, key) => {
+  const reduceFn = (acc, key) => {
     const replaceName = names[key]
     const originalVal = x[key]
 
@@ -26,7 +26,7 @@ function convertKeys (names, x) {
   }
 
   return compose(
-    reduce(_reduceFn, {}),
+    reduce(reduceFn, {}),
     keys
   )(x)
 }
