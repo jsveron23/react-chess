@@ -1,8 +1,8 @@
 import React, { useEffect, useRef } from 'react'
 import PropTypes from 'prop-types'
-import css from './Sheet.css'
+import css from './ScoreSheet.css'
 
-const Sheet = ({ sheet }) => {
+const ScoreSheet = ({ sheet }) => {
   const len = sheet.length
   const sheetRef = useRef(null)
 
@@ -28,12 +28,12 @@ const Sheet = ({ sheet }) => {
   )
 }
 
-Sheet.propTypes = {
+ScoreSheet.propTypes = {
   sheet: PropTypes.array
 }
 
-Sheet.defaultProps = {
+ScoreSheet.defaultProps = {
   sheet: []
 }
 
-export default Sheet
+export default ScoreSheet

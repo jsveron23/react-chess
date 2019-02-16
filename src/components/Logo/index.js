@@ -3,10 +3,10 @@ import PropTypes from 'prop-types'
 import cx from 'classnames'
 import css from './Logo.css'
 
-const Logo = ({ isMatching, title }) => {
+const Logo = ({ isDoingMatch, title }) => {
   const cls = cx(css.logo)
 
-  if (isMatching) {
+  if (isDoingMatch) {
     return <div className={cls}>{title}</div>
   }
 
@@ -19,7 +19,7 @@ const Logo = ({ isMatching, title }) => {
 
 Logo.propTypes = {
   title: PropTypes.string.isRequired,
-  isMatching: PropTypes.bool.isRequired
+  isDoingMatch: PropTypes.bool.isRequired
 }
 
 export default Logo

@@ -14,19 +14,19 @@ export const FILES = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h']
  * Even tile name
  * @type {Array}
  */
-export const EVEN_TILES = ['b', 'd', 'f', 'h']
+export const DARK_TILES = ['b', 'd', 'f', 'h']
 
 /**
  * Odd tile name
  * @type {Array}
  */
-export const ODD_TILES = ['a', 'c', 'e', 'g']
+export const LIGHT_TILES = ['a', 'c', 'e', 'g']
 
 /**
- * Enemy
+ * Opponent
  * @type {Object}
  */
-export const ENEMY = {
+export const OPPONENT = {
   white: 'black',
   black: 'white',
   w: 'black',

@@ -3,8 +3,8 @@ import { hot } from 'react-hot-loader'
 import {
   LogoContainer,
   MenuContainer,
-  BoardContainer,
-  SheetContainer
+  DiagramContainer,
+  ScoreSheetContainer
 } from '~/containers'
 import { Main } from '~/components'
 import '~/styles/app.css'
@@ -14,8 +14,8 @@ const App = () => {
     <Main>
       <LogoContainer />
       <MenuContainer />
-      <BoardContainer />
-      <SheetContainer />
+      <DiagramContainer />
+      <ScoreSheetContainer />
     </Main>
   )
 }

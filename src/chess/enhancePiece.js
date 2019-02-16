@@ -24,8 +24,8 @@ function enhancePiece (WrappedComponent, staticKey, staticTurn) {
       selectedFile,
       selectedRank,
       isMovable,
-      setCapturedNext,
-      setMovable
+      setMovable,
+      setCapturedNext
     } = props
     const selectedTile = `${selectedFile}${selectedRank}`
     const isTurn = getSide(staticTurn) === turn
@@ -51,7 +51,7 @@ function enhancePiece (WrappedComponent, staticKey, staticTurn) {
         setCapturedNext({
           capturedTile: tile,
           selectedTile: selectedTile,
-          replaceLineupItem: `${selectedSide}${selectedPiece}${tile}`
+          replaceSnapshotItem: `${selectedSide}${selectedPiece}${tile}`
         })
       }
     }
@@ -74,14 +74,14 @@ function enhancePiece (WrappedComponent, staticKey, staticTurn) {
     selectedFile: PropTypes.string,
     selectedRank: PropTypes.string,
     isMovable: PropTypes.bool,
-    setCapturedNext: PropTypes.func,
-    setMovable: PropTypes.func
+    setMovable: PropTypes.func,
+    setCapturedNext: PropTypes.func
   }
 
   Piece.defaultProps = {
     isMovable: false,
-    setCapturedNext: noop,
-    setMovable: noop
+    setMovable: noop,
+    setCapturedNext: noop
   }
 
   return Piece

@@ -1,12 +1,7 @@
 import { connect } from 'react-redux'
 import { compose, prop as extract } from 'ramda'
-import { Board } from '~/components'
-import {
-  setLineup,
-  setNext,
-  setMovable,
-  setCapturedNext
-} from '~/actions/ingame'
+import { Diagram } from '~/components'
+import { setNext, setMovable, setCapturedNext } from '~/actions/ingame'
 import {
   getMovableTiles,
   getDirection,
@@ -18,17 +13,17 @@ import { RANKS, FILES } from '~/chess/constants'
 import { isExist } from '~/utils'
 
 function mapStateToProps ({ general, ingame }) {
-  const { isMatching } = general
+  const { isDoingMatch } = general
   const { present } = ingame
-  const { turn, lineup, selected, movableAxis } = present
+  const { turn, snapshot, selected, movableAxis } = present
   const {
     piece: selectedPiece,
     side: selectedSide,
     file: selectedFile,
     rank: selectedRank
-  } = parseSelected(selected, lineup)
+  } = parseSelected(selected, snapshot)
   const selecteSpecial = getSpecial(selectedPiece) || []
-  let nextMovableAxis = []
+  let nextMovableAxis = movableAxis
 
   if (isExist(movableAxis)) {
     if (isExist(selecteSpecial)) {
@@ -36,24 +31,24 @@ function mapStateToProps ({ general, ingame }) {
 
       nextMovableAxis = compose(
         extract('movableAxis'),
-        computeSpecial(selectedSide, selecteSpecial, tile, lineup)
+        computeSpecial(selectedSide, selecteSpecial, tile, snapshot)
       )(movableAxis)
     } else {
       nextMovableAxis = compose(
-        excludeBlock(turn, lineup),
+        excludeBlock(turn, snapshot),
         getDirection
       )(movableAxis)
     }
   }
 
   return {
-    isMatching,
+    isDoingMatch,
     turn,
+    snapshot,
     selectedPiece,
     selectedSide,
     selectedFile,
     selectedRank,
-    lineup,
     ranks: RANKS,
     files: FILES,
     movableTiles: getMovableTiles(nextMovableAxis)
@@ -61,15 +56,14 @@ function mapStateToProps ({ general, ingame }) {
 }
 
 const mapDispatchToProps = {
-  setLineup,
   setMovable,
   setNext,
   setCapturedNext
 }
 
-const BoardContainer = connect(
+const DiagramContainer = connect(
   mapStateToProps,
   mapDispatchToProps
-)(Board)
+)(Diagram)
 
-export default BoardContainer
+export default DiagramContainer

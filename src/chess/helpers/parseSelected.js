@@ -1,5 +1,5 @@
 import { curry, compose, split, prop as extract } from 'ramda'
-import { findLineupItem } from '~/chess/helpers'
+import { findSnapshotItem } from '~/chess/helpers'
 
 function _parseSelected (selected) {
   const [tile, side] = split('-', selected)
@@ -10,10 +10,10 @@ function _parseSelected (selected) {
 /**
  * Parse selected
  * @param  {string?} selected
- * @param  {Array}   lineup
+ * @param  {Array}   snapshot
  * @return {Object}
  */
-function parseSelected (selected, lineup) {
+function parseSelected (selected, snapshot) {
   const tile = compose(
     extract('tile'),
     _parseSelected
@@ -21,8 +21,8 @@ function parseSelected (selected, lineup) {
 
   const [side, piece, file, rank] = compose(
     split(''),
-    findLineupItem(tile)
-  )(lineup)
+    findSnapshotItem(tile)
+  )(snapshot)
 
   return { side, piece, file, rank }
 }

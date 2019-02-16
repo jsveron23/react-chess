@@ -1,9 +1,9 @@
 import { curry, join, compose, reduce, keys, map, prop as extract } from 'ramda'
 import {
-  transformLineupToTiles,
+  transformSnapshotToTiles,
   transformAxisToTile,
-  findLineupItem,
-  parseLineupItem,
+  findSnapshotItem,
+  parseSnapshotItem,
   getSide
 } from '~/chess/helpers'
 import { createRegExp } from '~/utils'
@@ -12,18 +12,18 @@ import { createRegExp } from '~/utils'
  * Get rid of blocking tiles path
  * TODO: optimize
  * @param  {string} turn
- * @param  {Array}  lineup
+ * @param  {Array}  snapshot
  * @param  {Object} movableWithDirection
  * @return {Array}
  */
-function excludeBlock (turn, lineup, movableWithDirection) {
+function excludeBlock (turn, snapshot, movableWithDirection) {
   const { diagonal, vertical, horizontal } = movableWithDirection
 
   const re = compose(
     createRegExp,
     join('|'),
-    transformLineupToTiles
-  )(lineup)
+    transformSnapshotToTiles
+  )(snapshot)
 
   const directionOnly = {
     diagonal: [...diagonal],
@@ -43,9 +43,9 @@ function excludeBlock (turn, lineup, movableWithDirection) {
       const tile = transformAxisToTile(axis)
       const side = compose(
         extract('side'),
-        parseLineupItem,
-        findLineupItem(tile)
-      )(lineup)
+        parseSnapshotItem,
+        findSnapshotItem(tile)
+      )(snapshot)
       const isEnemy = getSide(side) !== turn
       const isPieceStanding = re.test(tile)
 

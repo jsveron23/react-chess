@@ -2,7 +2,7 @@ import { includes } from 'ramda'
 import { isEven } from '~/utils'
 import parseTile from './parseTile'
 import transformRankToY from './transformRankToY'
-import { EVEN_TILES, ODD_TILES } from '~/chess/constants'
+import { DARK_TILES, LIGHT_TILES } from '~/chess/constants'
 
 /**
  * Is dark background?
@@ -12,7 +12,7 @@ import { EVEN_TILES, ODD_TILES } from '~/chess/constants'
 function isDarkBg (tile) {
   const { file, rank } = parseTile(tile)
   const y = transformRankToY(rank)
-  const dividedTile = isEven(y) ? EVEN_TILES : ODD_TILES
+  const dividedTile = isEven(y) ? DARK_TILES : LIGHT_TILES
 
   return includes(file, dividedTile)
 }

@@ -2,8 +2,8 @@ import { curry, includes } from 'ramda'
 import {
   transformTileToAxis,
   transformAxisToTile,
-  replaceLineup,
-  findLineupItem
+  replaceSnapshot,
+  findSnapshotItem
 } from '~/chess/helpers'
 import { isExist } from '~/utils'
 
@@ -20,17 +20,17 @@ const PROMOTION_TILES = {
 }
 
 /**
- * Include special (lineup or movableAxis)
+ * Include special (snapshot or movableAxis)
  * @param  {string} side
  * @param  {Array}  special
  * @param  {string} tile
- * @param  {Array?} lineup
+ * @param  {Array?} snapshot
  * @param  {Array?} movableAxis
  * @return {Object}
- *  - lineup -> after moving
+ *  - snapshot -> after moving
  *  - movableAxis -> before rendering
  */
-function computeSpecial (side, special, tile, lineup, movableAxis) {
+function computeSpecial (side, special, tile, snapshot, movableAxis) {
   const len = special.length
 
   if (len > 1) {
@@ -45,18 +45,18 @@ function computeSpecial (side, special, tile, lineup, movableAxis) {
     if (isDoubleStep && isExist(movableAxis)) {
       const [startAxis] = movableAxis // it should be one tile
       const startTile = transformAxisToTile(startAxis)
-      const lineupItem = findLineupItem(startTile, lineup)
+      const snapshotItem = findSnapshotItem(startTile, snapshot)
 
       // if some piece on the path
       // it works like `excludeBlock`
-      if (isExist(lineupItem)) {
-        return { lineup, movableAxis }
+      if (isExist(snapshotItem)) {
+        return { snapshot, movableAxis }
       }
 
       const { x, y } = transformTileToAxis(tile)
       const nextY = side === 'w' ? y + 2 : y - 2
 
-      return { lineup, movableAxis: [...movableAxis, [x, nextY]] }
+      return { snapshot, movableAxis: [...movableAxis, [x, nextY]] }
     }
 
     // ----------------
@@ -65,16 +65,16 @@ function computeSpecial (side, special, tile, lineup, movableAxis) {
     const isMovedToEnd = includes(tile, PROMOTION_TILES[side])
     const shouldPromotion = includes(PROMOTION, special) && isMovedToEnd
 
-    if (shouldPromotion && isExist(lineup)) {
-      const nextLineup = replaceLineup(`${side}Q${tile}`, tile, lineup)
+    if (shouldPromotion && isExist(snapshot)) {
+      const nextSnapshot = replaceSnapshot(`${side}Q${tile}`, tile, snapshot)
 
-      return { lineup: nextLineup, movableAxis }
+      return { snapshot: nextSnapshot, movableAxis }
     }
   } else {
     // -> King, Knight
   }
 
-  return { lineup, movableAxis }
+  return { snapshot, movableAxis }
 }
 
 export default curry(computeSpecial)

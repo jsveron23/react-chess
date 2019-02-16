@@ -1,8 +1,8 @@
 import { compose, filter, prop as extract } from 'ramda'
 import * as types from '~/actions'
-import { ENEMY } from '~/chess/constants'
-import { getMovableAxis, getNextLineup, computeSpecial } from '~/chess/core'
-import { getSpecial, parseSelected, replaceLineup } from '~/chess/helpers'
+import { OPPONENT } from '~/chess/constants'
+import { getMovableAxis, getNextSnapshot, computeSpecial } from '~/chess/core'
+import { getSpecial, parseSelected, replaceSnapshot } from '~/chess/helpers'
 import { isExist } from '~/utils'
 
 export function setSelected (piece) {
@@ -27,15 +27,15 @@ export function toggleTurn () {
 
     dispatch({
       type: types.TOGGLE_TURN,
-      payload: ENEMY[turn]
+      payload: OPPONENT[turn]
     })
   }
 }
 
-export function setLineup (lineup) {
+export function setSnapshot (snapshot) {
   return {
-    type: types.SET_LINEUP,
-    payload: lineup
+    type: types.SET_SNAPSHOT,
+    payload: snapshot
   }
 }
 
@@ -56,19 +56,19 @@ export function setNext (tile) {
   return (dispatch, getState) => {
     const { ingame } = getState()
     const { present } = ingame
-    const { selected, lineup, movableAxis } = present
-    const { piece, side } = parseSelected(selected, lineup)
+    const { selected, snapshot, movableAxis } = present
+    const { piece, side } = parseSelected(selected, snapshot)
     const special = getSpecial(piece)
-    let nextLineup = getNextLineup(selected, tile, lineup)
+    let nextSnapshot = getNextSnapshot(selected, tile, snapshot)
 
     if (isExist(special)) {
-      nextLineup = compose(
-        extract('lineup'),
-        computeSpecial(side, special, tile, nextLineup)
+      nextSnapshot = compose(
+        extract('snapshot'),
+        computeSpecial(side, special, tile, nextSnapshot)
       )(movableAxis)
     }
 
-    dispatch(setLineup(nextLineup))
+    dispatch(setSnapshot(nextSnapshot))
     dispatch(setMovableAxis())
     dispatch(toggleTurn())
   }
@@ -77,19 +77,19 @@ export function setNext (tile) {
 export function setCapturedNext ({
   capturedTile,
   selectedTile,
-  replaceLineupItem
+  replaceSnapshotItem
 }) {
   return (dispatch, getState) => {
     const { ingame } = getState()
     const { present } = ingame
-    const { lineup } = present
-    const capturedLineup = compose(
+    const { snapshot } = present
+    const capturedSnapshot = compose(
       filter(isExist),
-      replaceLineup(replaceLineupItem, selectedTile),
-      replaceLineup('', capturedTile)
-    )(lineup)
+      replaceSnapshot(replaceSnapshotItem, selectedTile),
+      replaceSnapshot('', capturedTile)
+    )(snapshot)
 
-    dispatch(setLineup(capturedLineup))
+    dispatch(setSnapshot(capturedSnapshot))
     dispatch(setMovableAxis())
     dispatch(toggleTurn())
   }

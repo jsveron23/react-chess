@@ -2,13 +2,13 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { Rank } from '~/components'
 import { noop } from '~/utils'
-import css from './Board.css'
+import css from './Diagram.css'
 
-const Board = (props) => {
+const Diagram = (props) => {
   const {
-    isMatching,
+    isDoingMatch,
     turn,
-    lineup,
+    snapshot,
     selectedPiece,
     selectedSide,
     selectedFile,
@@ -21,18 +21,18 @@ const Board = (props) => {
     setNext
   } = props
 
-  if (!isMatching) {
+  if (!isDoingMatch) {
     return null
   }
 
   return (
-    <div className={css.board}>
+    <div className={css.diagram}>
       {ranks.map((rankName) => {
         return (
           <Rank
             key={rankName}
             turn={turn}
-            lineup={lineup}
+            snapshot={snapshot}
             selectedPiece={selectedPiece}
             selectedSide={selectedSide}
             selectedFile={selectedFile}
@@ -50,12 +50,12 @@ const Board = (props) => {
   )
 }
 
-Board.propTypes = {
-  isMatching: PropTypes.bool.isRequired,
+Diagram.propTypes = {
+  isDoingMatch: PropTypes.bool.isRequired,
   turn: PropTypes.string.isRequired,
   ranks: PropTypes.array.isRequired,
   files: PropTypes.array.isRequired,
-  lineup: PropTypes.array.isRequired,
+  snapshot: PropTypes.array.isRequired,
   selectedPiece: PropTypes.string,
   selectedSide: PropTypes.string,
   selectedFile: PropTypes.string,
@@ -66,10 +66,10 @@ Board.propTypes = {
   setNext: PropTypes.func
 }
 
-Board.defaultProps = {
+Diagram.defaultProps = {
   setCapturedNext: noop,
   setMovable: noop,
   setNext: noop
 }
 
-export default Board
+export default Diagram

@@ -4,9 +4,9 @@ import { Logo } from '~/components'
 const TITLE = 'React Chess'
 
 const mapStateToProps = ({ general }) => {
-  const { isMatching } = general
+  const { isDoingMatch } = general
 
-  return { isMatching, title: TITLE }
+  return { isDoingMatch, title: TITLE }
 }
 
 const MenuContainer = connect(mapStateToProps)(Logo)

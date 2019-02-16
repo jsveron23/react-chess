@@ -15,10 +15,10 @@ const GAME_MENU = [MAIN, UNDO]
 const DISABLED_MENU = [HUMAN_VS_CPU]
 
 const mapStateToProps = ({ general }) => {
-  const { isMatching } = general
-  const items = !isMatching ? MAIN_MENU : GAME_MENU
+  const { isDoingMatch } = general
+  const items = !isDoingMatch ? MAIN_MENU : GAME_MENU
 
-  return { isMatching, items }
+  return { isDoingMatch, items }
 }
 
 const mapDispatchToProps = (dispatch, ownProps) => {

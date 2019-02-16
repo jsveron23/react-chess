@@ -2,11 +2,11 @@ import { reduce } from 'ramda'
 import { isExist } from '~/utils'
 
 /**
- * Align score sheet by chess sides (white, black)
+ * Align score sheet
  * @param  {Array} moveList
  * @return {Array}
  */
-const alignScoreSheet = (moveList) => {
+const applyToScoreSheet = (moveList) => {
   const reduceFn = (sheet, move) => {
     if (isExist(move.black)) {
       const [first, ...rest] = sheet
@@ -31,4 +31,4 @@ const alignScoreSheet = (moveList) => {
   return reduce(reduceFn, [])(moveList)
 }
 
-export default alignScoreSheet
+export default applyToScoreSheet

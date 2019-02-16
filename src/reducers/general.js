@@ -1,7 +1,7 @@
 import * as types from '~/actions'
 
 const initialState = {
-  isMatching: false
+  isDoingMatch: false
 }
 
 function reducer (state = initialState, action) {
@@ -11,7 +11,7 @@ function reducer (state = initialState, action) {
     case types.TOGGLE_MATCH_STATUS: {
       return {
         ...state,
-        isMatching: !state.isMatching
+        isDoingMatch: !state.isDoingMatch
       }
     }
 

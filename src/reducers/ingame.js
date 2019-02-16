@@ -5,7 +5,7 @@ const initialState = {
   turn: 'white',
   selected: '',
   movableAxis: [],
-  lineup: [
+  snapshot: [
     'bRa8', 'bNb8', 'bBc8', 'bQd8', 'bKe8', 'bBf8', 'bNg8', 'bRh8',
     'bPa7', 'bPb7', 'bPc7', 'bPd7', 'bPe7', 'bPf7', 'bPg7', 'bPh7',
     'wPa2', 'wPb2', 'wPc2', 'wPd2', 'wPe2', 'wPf2', 'wPg2', 'wPh2',
@@ -38,10 +38,10 @@ function reducer (state = initialState, action) {
       }
     }
 
-    case types.SET_LINEUP: {
+    case types.SET_SNAPSHOT: {
       return {
         ...state,
-        lineup: [...payload]
+        snapshot: [...payload]
       }
     }
 

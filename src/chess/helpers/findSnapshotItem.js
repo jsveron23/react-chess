@@ -2,20 +2,20 @@ import { curry, find, includes } from 'ramda'
 import { isEmpty } from '~/utils'
 
 /**
- * Find a lineup item
+ * Find a snapshot item
  * @param  {string} textToken
- * @param  {Array}  lineup
+ * @param  {Array}  snapshot
  * @return {string}
  */
-function findLineupItem (textToken, lineup) {
+function findSnapshotItem (textToken, snapshot) {
   if (isEmpty(textToken)) {
     return ''
   }
 
   const fn = includes(textToken)
-  const lineupItem = find(fn, lineup)
+  const snapshotItem = find(fn, snapshot)
 
-  return lineupItem || ''
+  return snapshotItem || ''
 }
 
-export default curry(findLineupItem)
+export default curry(findSnapshotItem)

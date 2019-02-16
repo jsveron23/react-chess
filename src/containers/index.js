@@ -1,6 +1,6 @@
 import LogoContainer from './LogoContainer'
 import MenuContainer from './MenuContainer'
-import BoardContainer from './BoardContainer'
-import SheetContainer from './SheetContainer'
+import DiagramContainer from './DiagramContainer'
+import ScoreSheetContainer from './ScoreSheetContainer'
 
-export { LogoContainer, MenuContainer, BoardContainer, SheetContainer }
+export { LogoContainer, MenuContainer, DiagramContainer, ScoreSheetContainer }

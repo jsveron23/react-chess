@@ -3,7 +3,7 @@
 }
 
 button {
-  &:global(.is-matching) {
+  &:global(.is-doing-match) {
     width: 50px !important;
   }
 }

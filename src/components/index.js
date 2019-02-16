@@ -3,11 +3,11 @@ import Button from './Button'
 import Logo from './Logo'
 import Main from './Main'
 import Menu from './Menu'
-import Board from './Board'
+import Diagram from './Diagram'
 import Rank from './Rank'
 import File from './File'
-import Sheet from './Sheet'
+import ScoreSheet from './ScoreSheet'
 import Blank from './Blank'
 
 export default getPiece
-export { Button, Logo, Main, Menu, Board, Rank, File, Sheet, Blank }
+export { Button, Logo, Main, Menu, Diagram, Rank, File, ScoreSheet, Blank }
