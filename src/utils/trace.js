@@ -5,16 +5,12 @@ import { curry } from 'ramda'
  * @param  {string} label
  * @return {*}
  */
-function _trace (env) {
-  return (label, v) => {
-    if (env !== 'test') {
-      console.log(`${label}: `, v)
-    }
-
-    return v
+function trace (label, v) {
+  if (process.env.NODE_ENV !== 'test') {
+    console.log(`${label}: `, v)
   }
-}
 
-const trace = _trace(process.env.NODE_ENV)
+  return v
+}
 
 export default curry(trace)
