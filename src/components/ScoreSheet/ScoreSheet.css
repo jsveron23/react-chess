@@ -5,6 +5,10 @@
   overflow: auto;
   scroll-behavior: smooth;
 
+  &:not(:global(.is-doing-match)) {
+    display: none;
+  }
+
   & .sheet-index,
   & .sheet-white,
   & .sheet-black {

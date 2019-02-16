@@ -2,12 +2,6 @@
   display: none !important;
 }
 
-button {
-  &:global(.is-doing-match) {
-    width: 50px !important;
-  }
-}
-
 :global(.is-disabled) {
   cursor: not-allowed;
   pointer-events: none;

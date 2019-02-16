@@ -8,8 +8,9 @@ const combineSnapshotList = curry((presentSnapshot, pastSnapshotList) => [
   ...pastSnapshotList
 ])
 
-const mapStateToProps = ({ ingame }) => {
+const mapStateToProps = ({ general, ingame }) => {
   const { present, past } = ingame
+  const { isDoingMatch } = general
   const { snapshot: presentSnapshot } = present
   const sheet = compose(
     applyToScoreSheet,
@@ -20,7 +21,7 @@ const mapStateToProps = ({ ingame }) => {
     reverse
   )(past)
 
-  return { sheet }
+  return { isDoingMatch, sheet }
 }
 
 const ScoreSheetContainer = connect(mapStateToProps)(ScoreSheet)

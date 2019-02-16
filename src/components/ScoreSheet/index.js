@@ -1,17 +1,21 @@
 import React, { useEffect, useRef } from 'react'
 import PropTypes from 'prop-types'
+import cx from 'classnames'
 import css from './ScoreSheet.css'
 
-const ScoreSheet = ({ sheet }) => {
+const ScoreSheet = ({ isDoingMatch, sheet }) => {
   const len = sheet.length
   const sheetRef = useRef(null)
+  const cls = cx(css.sheet, {
+    'is-doing-match': isDoingMatch
+  })
 
   useEffect(() => {
     sheetRef.current.scrollTop = 0
   })
 
   return (
-    <ul ref={sheetRef} className={css.sheet}>
+    <ul ref={sheetRef} className={cls}>
       {sheet.map((item, idx) => {
         const { white, black } = item
         const key = `${idx}-${white}-${black}`

@@ -6,7 +6,11 @@
   }
 
   & .menu-item {
-    & button {
+    & > button {
+      &:global(.is-doing-match) {
+        width: 50px !important;
+      }
+
       width: 150px;
     }
   }
