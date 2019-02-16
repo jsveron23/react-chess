@@ -1,15 +1,18 @@
 import { createStore } from 'redux'
 import thunk from 'redux-thunk'
+import { compose, curry } from 'ramda'
 import reducers from '~/reducers'
 import composeMiddleware from './composeMiddleware'
 
-const configureStore = (initialState = {}) => {
-  const middleware = composeMiddleware(thunk)
+const curriedCreateStore = curry(createStore)
 
-  return createStore(reducers, initialState, middleware)
-}
+const configureStore = (initialState = {}) =>
+  compose(
+    curriedCreateStore(reducers, initialState),
+    composeMiddleware
+  )(thunk)
 
 const store = configureStore()
-store.withInitialState = configureStore
+store.withState = configureStore
 
 export default store
