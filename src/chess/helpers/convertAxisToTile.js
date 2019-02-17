@@ -12,7 +12,7 @@ function convertAxisToTile (axis) {
   const nextTile = `${nextFile}${y}`
   const isOutside = isEmpty(nextFile) || y <= 0 || y > 8
 
-  return !isOutside ? nextTile : []
+  return !isOutside ? nextTile : ''
 }
 
 export default convertAxisToTile
