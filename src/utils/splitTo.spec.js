@@ -11,5 +11,9 @@ describe('#splitTo', () => {
       tony: 'h',
       jin: '2'
     })
+
+    expect(splitTo([function () {}, 'jin'], 'h2-w')).toEqual({
+      'jin': '2'
+    })
   })
 })

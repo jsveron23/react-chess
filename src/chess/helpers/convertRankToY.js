@@ -4,7 +4,13 @@
  * @return {number}
  */
 function convertRankToY (rank) {
-  return parseInt(rank, 10)
+  const y = parseInt(rank, 10)
+
+  if (y >= 9 || y < 0) {
+    return -1
+  }
+
+  return y
 }
 
 export default convertRankToY

@@ -19,5 +19,6 @@ const tiles = [
 describe('#convertSnapshotToTiles', () => {
   it('convert snapshot to tiles', () => {
     expect(convertSnapshotToTiles(snapshot)).toEqual(tiles)
+    expect(convertSnapshotToTiles([])).toEqual([])
   })
 })

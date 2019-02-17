@@ -1,4 +1,4 @@
-import { curry, compose, split, flip, prop as extract } from 'ramda'
+import { curry, compose, split, flip, prop } from 'ramda'
 import findCode from './findCode'
 import _parseSelected from './internal/_parseSelected'
 
@@ -12,7 +12,7 @@ function parseSelected (selected, snapshot) {
   const [side, piece, file, rank] = compose(
     split(''),
     flip(findCode)(snapshot),
-    extract('tile'),
+    prop('tile'),
     _parseSelected
   )(selected)
 

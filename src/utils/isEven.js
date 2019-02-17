@@ -4,6 +4,10 @@
  * @return {boolean}
  */
 function isEven (v) {
+  if (typeof v !== 'number') {
+    return false
+  }
+
   return v % 2 === 0
 }
 

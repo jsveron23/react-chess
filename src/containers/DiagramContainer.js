@@ -1,5 +1,5 @@
 import { connect } from 'react-redux'
-import { compose, prop as extract } from 'ramda'
+import { compose, prop } from 'ramda'
 import { Diagram } from '~/components'
 import { setNext, setMovable, setCapturedNext } from '~/actions/ingame'
 import {
@@ -26,12 +26,12 @@ function mapStateToProps ({ general, ingame }) {
   let nextMovableAxis = movableAxis
 
   if (isExist(movableAxis)) {
-    if (isExist(selecteSpecial)) {
-      const tile = `${selectedFile}${selectedRank}`
+    const selectedTile = `${selectedFile}${selectedRank}`
 
+    if (isExist(selecteSpecial)) {
       nextMovableAxis = compose(
-        extract('movableAxis'),
-        computeSpecial(selectedSide, selecteSpecial, tile, snapshot)
+        prop('movableAxis'),
+        computeSpecial(selectedSide, selecteSpecial, selectedTile, snapshot)
       )(movableAxis)
     } else {
       nextMovableAxis = compose(

@@ -22,8 +22,7 @@ export function setMovableAxis (movable) {
 export function toggleTurn () {
   return (dispatch, getState) => {
     const { ingame } = getState()
-    const { present } = ingame
-    const { turn } = present
+    const { turn } = ingame.present
 
     dispatch({
       type: types.TOGGLE_TURN,
@@ -43,9 +42,8 @@ export function setMovable ({ tile, staticTurn, piece }) {
   return (dispatch, getState) => {
     const { ingame } = getState()
     const { present } = ingame
-    const { turn } = present
     const selected = `${tile}-${staticTurn}`
-    const movableAxis = getMovableAxis(tile, piece, turn)
+    const movableAxis = getMovableAxis(tile, piece, present.turn)
 
     dispatch(setSelected(selected))
     dispatch(setMovableAxis(movableAxis))
@@ -55,8 +53,7 @@ export function setMovable ({ tile, staticTurn, piece }) {
 export function setNext (tile) {
   return (dispatch, getState) => {
     const { ingame } = getState()
-    const { present } = ingame
-    const { selected, snapshot, movableAxis } = present
+    const { selected, snapshot, movableAxis } = ingame.present
     const { piece, side } = parseSelected(selected, snapshot)
     const special = getSpecial(piece)
     let nextSnapshot = getNextSnapshot(selected, tile, snapshot)
@@ -82,12 +79,11 @@ export function setCapturedNext ({
   return (dispatch, getState) => {
     const { ingame } = getState()
     const { present } = ingame
-    const { snapshot } = present
     const capturedSnapshot = compose(
       filter(isExist),
       replaceSnapshot(replaceSnapshotItem, selectedTile),
       replaceSnapshot('', capturedTile)
-    )(snapshot)
+    )(present.snapshot)
 
     dispatch(setSnapshot(capturedSnapshot))
     dispatch(setMovableAxis())

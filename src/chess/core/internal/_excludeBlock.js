@@ -1,4 +1,4 @@
-import { curry, join, compose, prop as extract } from 'ramda'
+import { curry, join, compose, prop } from 'ramda'
 import { createRegExp } from '~/utils'
 import convertSnapshotToTiles from '../../helpers/convertSnapshotToTiles'
 import findCode from '../../helpers/findCode'
@@ -25,7 +25,7 @@ export function _createSnapshopRe (snapshot) {
  */
 export const _getSide = curry(function _getSide (tile, snapshot) {
   return compose(
-    extract('side'),
+    prop('side'),
     parseCode,
     findCode(tile)
   )(snapshot)

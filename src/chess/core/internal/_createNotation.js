@@ -1,4 +1,4 @@
-import { difference, compose, curry, prop as extract } from 'ramda'
+import { difference, compose, curry, prop } from 'ramda'
 import { parseCode } from '~/chess/helpers'
 
 /**
@@ -13,7 +13,7 @@ export const _diffSnapshot = curry(function _diffSnapshot (
 ) {
   return compose(
     parseCode,
-    extract(0),
+    prop(0),
     difference(aSnapshot)
   )(bsnapshot)
 })

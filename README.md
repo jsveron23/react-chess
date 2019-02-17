@@ -4,10 +4,6 @@ Programs must be written for people to read, and only incidentally for machines 
 
 - Abelson & Sussman, Structure and Interpretation of Computer Programs
 
-# Contributions
-
-Feel free to submit pull requests!!
-
 # React Chess
 
 - Implement Chess game without Chess library

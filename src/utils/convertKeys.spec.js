@@ -2,20 +2,23 @@ import { convertKeys } from '~/utils'
 
 describe('#convertKeys', () => {
   describe('convert keys from object', () => {
+    const o = {
+      hello: 'world',
+      world: 'hello'
+    }
+
     it('convert key', () => {
       expect(
         convertKeys(
           {
-            hello: 'kidding'
+            hello: 'kidding',
+            world: 'lol'
           },
-          {
-            hello: 'world',
-            world: 'hello'
-          }
+          o
         )
       ).toEqual({
         kidding: 'world',
-        world: 'hello'
+        lol: 'hello'
       })
     })
 
@@ -23,10 +26,7 @@ describe('#convertKeys', () => {
       expect(
         convertKeys(
           {},
-          {
-            hello: 'world',
-            world: 'hello'
-          }
+          o
         )
       ).toEqual({
         hello: 'world',

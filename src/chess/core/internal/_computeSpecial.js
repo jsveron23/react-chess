@@ -1,4 +1,4 @@
-import { compose, curry, flip, prop as extract } from 'ramda'
+import { compose, curry, flip, prop } from 'ramda'
 import { isExist } from '~/utils'
 import convertAxisToTile from '../../helpers/convertAxisToTile'
 import findCode from '../../helpers/findCode'
@@ -14,6 +14,6 @@ export const _hasCode = curry(function _hasCode (snapshot, movableAxis) {
     isExist,
     flip(findCode)(snapshot),
     convertAxisToTile,
-    extract(0)
+    prop(0)
   )(movableAxis)
 })
