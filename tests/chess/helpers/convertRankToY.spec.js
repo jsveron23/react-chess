@@ -1,0 +1,8 @@
+import { convertRankToY } from '~/chess/helpers'
+
+describe('#convertRankToY', () => {
+  it('convert rank to y', () => {
+    expect(convertRankToY('1')).toEqual(1)
+    expect(convertRankToY('7')).toEqual(7)
+  })
+})

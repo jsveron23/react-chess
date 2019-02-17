@@ -1,5 +1,5 @@
 import { curry, keys, compose, reduce } from 'ramda'
-import _createReduceCb from './internal/_convertKeys'
+import { _createReduceCb } from './internal/_convertKeys'
 
 /**
  * Convert object keys (compose)

@@ -1,12 +1,12 @@
 import { isEmpty } from '~/utils'
-import { getFile } from '~/chess/helpers'
+import getFile from './getFile'
 
 /**
- * Transform axis to tile
+ * Convert axis to tile
  * @param  {Array} axis
  * @return {Array}
  */
-function transformAxisToTile (axis) {
+function convertAxisToTile (axis) {
   const [x, y] = axis
   const nextFile = getFile(x)
   const nextTile = `${nextFile}${y}`
@@ -15,4 +15,4 @@ function transformAxisToTile (axis) {
   return !isOutside ? nextTile : []
 }
 
-export default transformAxisToTile
+export default convertAxisToTile

@@ -10,7 +10,7 @@ function parseTile (tile) {
     return tile
   }
 
-  const reduceFn = (acc, val) => {
+  const reduceCb = (acc, val) => {
     const key = /[1-9]/.test(val) ? 'rank' : 'file'
 
     return {
@@ -20,7 +20,7 @@ function parseTile (tile) {
   }
 
   return compose(
-    reduce(reduceFn, {}),
+    reduce(reduceCb, {}),
     split('')
   )(tile)
 }

@@ -1,47 +1,39 @@
-import { difference, reduce, compose, curry, prop as extract } from 'ramda'
-import { parseSnapshotItem, getSide } from '~/chess/helpers'
+import { curry } from 'ramda'
 import { isExist } from '~/utils'
-
-const getDiffrenceSnapshotItem = curry((aSnapshotItem, bsnapshotItem) => {
-  return compose(
-    parseSnapshotItem,
-    extract(0),
-    difference(aSnapshotItem)
-  )(bsnapshotItem)
-})
+import { _diffSnapshot } from './internal/_createNotation'
+import getSide from '../helpers/getSide'
 
 /**
- * Align moves before align score sheet
+ * Create notation
  * @param  {Array} mergedSnapshots
  * @return {Array}
  */
 function createNotation (mergedSnapshots) {
   const len = mergedSnapshots.length
 
-  const reduceFn = (acc, currSnapshot) => {
-    const prevIdx = mergedSnapshots.indexOf(currSnapshot) + 1
-    const prevSnapshot = mergedSnapshots[prevIdx]
+  const reduceCb = (acc, snapshot, idx) => {
+    const prevSnapshot = mergedSnapshots[idx + 1]
 
     if (isExist(prevSnapshot) && len > 1) {
-      let snapshotItemObj = getDiffrenceSnapshotItem(currSnapshot)(prevSnapshot)
-      let capturedPiece = ''
+      const { side, piece, file, rank } = _diffSnapshot(snapshot, prevSnapshot)
+      const isCaptured = prevSnapshot.length !== snapshot.length
 
-      if (prevSnapshot.length !== currSnapshot.length) {
-        const { piece } = getDiffrenceSnapshotItem(prevSnapshot)(currSnapshot)
+      // if (prevSnapshot.length !== snapshot.length) {
+      //   capturedPiece = compose(
+      //     extract('piece'),
+      //     _diffSnapshot(prevSnapshot)
+      //   )(snapshot)
+      // }
 
-        capturedPiece = piece
-      }
-
-      const { side, piece, file, rank } = snapshotItemObj
       const tile = `${file}${rank}`
       const isPawn = piece === 'P'
-      const isCaptured = isExist(capturedPiece)
-      const notation = `${isPawn ? '' : piece}${isCaptured ? 'x' : ''}${tile}`
+      const sideAsKey = getSide(side)
+      const notation = `${isPawn ? '' : piece}${isCaptured ? ' x ' : ''}${tile}`
 
       return [
         ...acc,
         {
-          [getSide(side)]: notation
+          [sideAsKey]: notation
         }
       ]
     }
@@ -49,7 +41,7 @@ function createNotation (mergedSnapshots) {
     return acc
   }
 
-  return reduce(reduceFn, [])(mergedSnapshots)
+  return mergedSnapshots.reduce(reduceCb, [])
 }
 
 export default curry(createNotation)

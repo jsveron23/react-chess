@@ -1,12 +1,7 @@
-import { curry, join, compose, reduce, keys, map, prop as extract } from 'ramda'
-import {
-  transformSnapshotToTiles,
-  transformAxisToTile,
-  findSnapshotItem,
-  parseSnapshotItem,
-  getSide
-} from '~/chess/helpers'
-import { createRegExp } from '~/utils'
+import { curry, compose, reduce, keys, map } from 'ramda'
+import { _createSnapshopRe, _getSide } from './internal/_excludeBlock'
+import convertAxisToTile from '../helpers/convertAxisToTile'
+import getSide from '../helpers/getSide'
 
 /**
  * Get rid of blocking tiles path
@@ -17,21 +12,9 @@ import { createRegExp } from '~/utils'
  * @return {Array}
  */
 function excludeBlock (turn, snapshot, movableWithDirection) {
-  const { diagonal, vertical, horizontal } = movableWithDirection
+  const re = _createSnapshopRe(snapshot)
 
-  const re = compose(
-    createRegExp,
-    join('|'),
-    transformSnapshotToTiles
-  )(snapshot)
-
-  const directionOnly = {
-    diagonal: [...diagonal],
-    vertical: [...vertical],
-    horizontal: [...horizontal]
-  }
-
-  const _mapFn = (directionKey) => {
+  const mapCb = (directionKey) => {
     const axisList = movableWithDirection[directionKey]
     let firstContactEnemy = false // first enemy on a direction
     let foundBlock = false
@@ -40,12 +23,8 @@ function excludeBlock (turn, snapshot, movableWithDirection) {
 
     // checking in same direction
     return axisList.reduce((acc, axis) => {
-      const tile = transformAxisToTile(axis)
-      const side = compose(
-        extract('side'),
-        parseSnapshotItem,
-        findSnapshotItem(tile)
-      )(snapshot)
+      const tile = convertAxisToTile(axis)
+      const side = _getSide(tile, snapshot)
       const isEnemy = getSide(side) !== turn
       const isPieceStanding = re.test(tile)
 
@@ -86,9 +65,9 @@ function excludeBlock (turn, snapshot, movableWithDirection) {
 
   return compose(
     reduce((acc, item) => [...acc, ...item], []),
-    map(_mapFn),
+    map(mapCb),
     keys
-  )(directionOnly)
+  )(movableWithDirection)
 }
 
 export default curry(excludeBlock)

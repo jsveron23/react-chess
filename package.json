@@ -6,6 +6,7 @@
   "private": true,
   "scripts": {
     "test": "jest --config ./scripts/jest.config.js",
+    "update": "npm-check -u",
     "lint": "eslint src",
     "clean": "rimraf public",
     "build:webpack": "webpack --config ./scripts/webpack.config.js --env.production --display-error-details",
@@ -66,10 +67,10 @@
   "dependencies": {
     "@babel/polyfill": "^7.2.5",
     "classnames": "^2.2.6",
-    "prop-types": "^15.6.2",
+    "prop-types": "^15.7.2",
     "ramda": "^0.26.1",
-    "react": "^16.8.1",
-    "react-dom": "^16.8.1",
+    "react": "^16.8.2",
+    "react-dom": "^16.8.2",
     "react-redux": "^6.0.0",
     "redux": "^4.0.1",
     "redux-thunk": "^2.3.0",

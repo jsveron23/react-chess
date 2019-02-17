@@ -3,14 +3,14 @@ import PropTypes from 'prop-types'
 import cx from 'classnames'
 import { compose } from 'ramda'
 import getPiece, { File } from '~/components'
-import { findSnapshotItem, parseSnapshotItem } from '~/chess/helpers'
+import { findCode, parseCode } from '~/chess/helpers'
 import { noop } from '~/utils'
 import css from './Rank.css'
 
 function getPieceProps (tile) {
   return compose(
-    parseSnapshotItem,
-    findSnapshotItem(tile)
+    parseCode,
+    findCode(tile)
   )
 }
 

@@ -1,7 +1,7 @@
 import { connect } from 'react-redux'
-import { curry, compose, map, reverse } from 'ramda'
+import { curry, compose, map, reverse, prop as extract } from 'ramda'
 import { ScoreSheet } from '~/components'
-import { createNotation, applyToScoreSheet } from '~/chess/core'
+import { createNotation, createScoreSheet } from '~/chess/core'
 
 const combineSnapshotList = curry((presentSnapshot, pastSnapshotList) => [
   presentSnapshot,
@@ -9,17 +9,18 @@ const combineSnapshotList = curry((presentSnapshot, pastSnapshotList) => [
 ])
 
 const mapStateToProps = ({ general, ingame }) => {
-  const { present, past } = ingame
+  const { present } = ingame
   const { isDoingMatch } = general
   const { snapshot: presentSnapshot } = present
   const sheet = compose(
-    applyToScoreSheet,
+    createScoreSheet,
     reverse,
     createNotation,
     combineSnapshotList(presentSnapshot),
     map((pastIngame) => pastIngame.snapshot),
-    reverse
-  )(past)
+    reverse,
+    extract('past')
+  )(ingame)
 
   return { isDoingMatch, sheet }
 }

@@ -1,11 +1,8 @@
 import { curry, includes } from 'ramda'
-import {
-  transformTileToAxis,
-  transformAxisToTile,
-  replaceSnapshot,
-  findSnapshotItem
-} from '~/chess/helpers'
 import { isExist } from '~/utils'
+import { _hasCode } from './internal/_computeSpecial'
+import convertTileToAxis from '../helpers/convertTileToAxis'
+import replaceSnapshot from '../helpers/replaceSnapshot'
 
 const DOUBLE_STEP = 'doubleStep'
 const DOUBLE_STEP_TILES = {
@@ -31,36 +28,33 @@ const PROMOTION_TILES = {
  *  - movableAxis -> before rendering
  */
 function computeSpecial (side, special, tile, snapshot, movableAxis) {
-  const len = special.length
-
-  if (len > 1) {
+  if (special.length > 1) {
     // -> Pawn
 
     // ----------------
-    // before rendering (to display extended movable)
+    // before rendering (append movable axis)
     // ----------------
     const isFirstMove = includes(tile, DOUBLE_STEP_TILES[side])
     const isDoubleStep = includes(DOUBLE_STEP, special) && isFirstMove
 
     if (isDoubleStep && isExist(movableAxis)) {
-      const [startAxis] = movableAxis // it should be one tile
-      const startTile = transformAxisToTile(startAxis)
-      const snapshotItem = findSnapshotItem(startTile, snapshot)
+      const hasCode = _hasCode(snapshot, movableAxis)
 
-      // if some piece on the path
+      // if some piece on movable
       // it works like `excludeBlock`
-      if (isExist(snapshotItem)) {
+      if (hasCode) {
         return { snapshot, movableAxis }
       }
 
-      const { x, y } = transformTileToAxis(tile)
+      const { x, y } = convertTileToAxis(tile)
       const nextY = side === 'w' ? y + 2 : y - 2
+      const nextAxis = [x, nextY]
 
-      return { snapshot, movableAxis: [...movableAxis, [x, nextY]] }
+      return { snapshot, movableAxis: [...movableAxis, nextAxis] }
     }
 
     // ----------------
-    // after moving (to transform as Queen)
+    // after moving (transforming as Queen)
     // ----------------
     const isMovedToEnd = includes(tile, PROMOTION_TILES[side])
     const shouldPromotion = includes(PROMOTION, special) && isMovedToEnd
@@ -71,7 +65,7 @@ function computeSpecial (side, special, tile, snapshot, movableAxis) {
       return { snapshot: nextSnapshot, movableAxis }
     }
   } else {
-    // -> King, Knight
+    // -> King
   }
 
   return { snapshot, movableAxis }

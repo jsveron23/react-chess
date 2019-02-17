@@ -2,12 +2,12 @@ import { reduce } from 'ramda'
 import { isExist } from '~/utils'
 
 /**
- * Align score sheet
+ * Create score sheet
  * @param  {Array} moveList
  * @return {Array}
  */
-const applyToScoreSheet = (moveList) => {
-  const reduceFn = (sheet, move) => {
+const createScoreSheet = (moveList) => {
+  const reduceCb = (sheet, move) => {
     if (isExist(move.black)) {
       const [first, ...rest] = sheet
 
@@ -28,7 +28,7 @@ const applyToScoreSheet = (moveList) => {
     ]
   }
 
-  return reduce(reduceFn, [])(moveList)
+  return reduce(reduceCb, [])(moveList)
 }
 
-export default applyToScoreSheet
+export default createScoreSheet

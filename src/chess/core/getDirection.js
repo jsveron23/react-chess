@@ -2,18 +2,13 @@ import { uniq } from 'ramda'
 import { isEmpty } from '~/utils'
 
 const initialObj = {
-  // direction
   vertical: [],
-
-  // direction
   horizontal: [],
-
-  // direction
   diagonal: []
 }
 
 /**
- * Transform movable axis to directions
+ * Convert movable axis to directions
  * TODO: optimize
  * @param  {Array} movableAxis
  * @return {Array}

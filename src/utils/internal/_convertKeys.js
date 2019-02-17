@@ -6,7 +6,7 @@ import { isExist } from '~/utils'
  * @param  {Object}   v
  * @return {Function}
  */
-function _createReduceCb (names, v) {
+export const _createReduceCb = curry(function _createReduceCb (names, v) {
   /**
    * @callback
    * @param  {Object} acc
@@ -29,6 +29,4 @@ function _createReduceCb (names, v) {
       [key]: originalVal
     }
   }
-}
-
-export default curry(_createReduceCb)
+})

@@ -1,5 +1,6 @@
 import { curry, compose, map } from 'ramda'
-import { parseTile, getMovement, transformTileToAxis } from '~/chess/helpers'
+import convertTileToAxis from '../helpers/convertTileToAxis'
+import getMovement from '../helpers/getMovement'
 
 /**
  * Get movable axis from movements of piece (no invalid axis filter here)
@@ -9,12 +10,9 @@ import { parseTile, getMovement, transformTileToAxis } from '~/chess/helpers'
  * @return {Array}
  */
 function getMovableAxis (tile, piece, turn) {
-  const { x, y } = compose(
-    transformTileToAxis,
-    parseTile
-  )(tile)
+  const { x, y } = convertTileToAxis(tile)
 
-  const _mapFn = (mv) => {
+  const mapCb = (mv) => {
     const [mvX, mvY] = mv
     const nextX = mvX + x
 
@@ -26,7 +24,7 @@ function getMovableAxis (tile, piece, turn) {
   }
 
   return compose(
-    map(_mapFn),
+    map(mapCb),
     getMovement
   )(piece)
 }

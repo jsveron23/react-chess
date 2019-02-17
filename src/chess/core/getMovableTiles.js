@@ -1,5 +1,5 @@
 import { isEmpty } from '~/utils'
-import { transformAxisToTile } from '~/chess/helpers'
+import convertAxisToTile from '../helpers/convertAxisToTile'
 
 /**
  * Get movable tiles
@@ -8,7 +8,7 @@ import { transformAxisToTile } from '~/chess/helpers'
  */
 function getMovableTiles (movableAxis) {
   return movableAxis.reduce((acc, axis) => {
-    const nextTile = transformAxisToTile(axis)
+    const nextTile = convertAxisToTile(axis)
 
     if (isEmpty(nextTile)) {
       return acc
