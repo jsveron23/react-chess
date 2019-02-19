@@ -4,7 +4,7 @@
  * @param  {string}   cwd
  * @return {Function}
  */
-function _resolve (isWin, cwd) {
+function createResolve (isWin, cwd) {
   const separator = isWin ? '\\' : '/'
 
   return (...args) => {
@@ -12,9 +12,9 @@ function _resolve (isWin, cwd) {
   }
 }
 
-const resolve = _resolve(process.platform === 'win32', process.cwd())
-resolve.repoDir = resolve()
+const resolve = createResolve(process.platform === 'win32', process.cwd())
 
 module.exports = {
-  resolve
+  resolve,
+  root: resolve()
 }

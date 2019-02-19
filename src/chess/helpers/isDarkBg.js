@@ -1,8 +1,7 @@
 import { includes } from 'ramda'
 import { isEven } from '~/utils'
+import { parseTile, convertRankToY } from '~/chess/helpers'
 import { DARK_TILES, LIGHT_TILES } from '~/chess/constants'
-import parseTile from './parseTile'
-import convertRankToY from './convertRankToY'
 
 /**
  * Is dark background?

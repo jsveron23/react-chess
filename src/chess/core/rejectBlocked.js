@@ -1,20 +1,27 @@
 import { curry, compose, reduce, keys, map } from 'ramda'
-import { _createSnapshopRe, _getSide } from './internal/_excludeBlock'
-import convertAxisToTile from '../helpers/convertAxisToTile'
-import getSide from '../helpers/getSide'
+import {
+  getSide,
+  convertAxisToTile,
+  findSideByTile,
+  createSnapshotRe
+} from '~/chess/helpers'
 
 /**
- * Get rid of blocking tiles path
  * TODO: optimize
- * @param  {string} turn
- * @param  {Array}  snapshot
- * @param  {Object} movableWithDirection
- * @return {Array}
+ * @param  {string}   turn
+ * @param  {Array}    snapshot
+ * @param  {Object}   movableWithDirection
+ * @return {Function}
  */
-function excludeBlock (turn, snapshot, movableWithDirection) {
-  const re = _createSnapshopRe(snapshot)
+function createMapCb (turn, snapshot, movableWithDirection) {
+  const re = createSnapshotRe(snapshot)
 
-  const mapCb = (directionKey) => {
+  /**
+   * @callback
+   * @param  {string} directionKey
+   * @return {Array}
+   */
+  return (directionKey) => {
     const axisList = movableWithDirection[directionKey]
     let firstContactEnemy = false // first enemy on a direction
     let foundBlock = false
@@ -24,7 +31,7 @@ function excludeBlock (turn, snapshot, movableWithDirection) {
     // checking in same direction
     return axisList.reduce((acc, axis) => {
       const tile = convertAxisToTile(axis)
-      const side = _getSide(tile, snapshot)
+      const side = findSideByTile(tile, snapshot)
       const isEnemy = getSide(side) !== turn
       const isPieceStanding = re.test(tile)
 
@@ -62,6 +69,17 @@ function excludeBlock (turn, snapshot, movableWithDirection) {
       return [...acc, axis]
     }, [])
   }
+}
+
+/**
+ * Get rid of blocked path
+ * @param  {string} turn
+ * @param  {Array}  snapshot
+ * @param  {Object} movableWithDirection
+ * @return {Array}
+ */
+function rejectBlocked (turn, snapshot, movableWithDirection) {
+  const mapCb = createMapCb(turn, snapshot, movableWithDirection)
 
   return compose(
     reduce((acc, item) => [...acc, ...item], []),
@@ -70,4 +88,4 @@ function excludeBlock (turn, snapshot, movableWithDirection) {
   )(movableWithDirection)
 }
 
-export default curry(excludeBlock)
+export default curry(rejectBlocked)

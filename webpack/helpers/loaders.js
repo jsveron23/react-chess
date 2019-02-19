@@ -4,9 +4,9 @@ const { LOADERS } = require('../config')
 /**
  * Get loaders
  * @param  {...string} [...types]
- * @return {Function}
+ * @return {Array}
  */
-function _get (...types) {
+function get (...types) {
   const loaders = types.reduce((acc, loaderName) => {
     const loader = LOADERS[loaderName]
 
@@ -23,5 +23,5 @@ function _get (...types) {
 }
 
 module.exports = {
-  get: _get
+  get
 }

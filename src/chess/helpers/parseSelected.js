@@ -1,6 +1,6 @@
-import { curry, compose, split, flip, prop } from 'ramda'
-import findCode from './findCode'
-import _parseSelected from './internal/_parseSelected'
+import { curry, compose, prop } from 'ramda'
+import { findCode, parseCode } from '~/chess/helpers'
+import { splitTo } from '~/utils'
 
 /**
  * Parse selected
@@ -9,14 +9,12 @@ import _parseSelected from './internal/_parseSelected'
  * @return {Object}
  */
 function parseSelected (selected, snapshot) {
-  const [side, piece, file, rank] = compose(
-    split(''),
-    flip(findCode)(snapshot),
+  return compose(
+    parseCode,
+    findCode(snapshot),
     prop('tile'),
-    _parseSelected
+    splitTo('-', ['tile'])
   )(selected)
-
-  return { side, piece, file, rank }
 }
 
 export default curry(parseSelected)

@@ -4,7 +4,7 @@
  * @return {Array}
  */
 function convertSnapshotToTiles (snapshot) {
-  return snapshot.map((item) => item.substr(2, 2))
+  return snapshot.map((code) => code.substr(2, 2))
 }
 
 export default convertSnapshotToTiles

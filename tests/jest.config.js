@@ -1,7 +1,12 @@
 module.exports = {
   verbose: false,
   rootDir: '..',
-  roots: ['<rootDir>/src'],
+  roots: [
+    '<rootDir>/src/chess',
+    '<rootDir>/src/utils',
+    '<rootDir>/tests/chess',
+    '<rootDir>/tests/utils'
+  ],
   notify: true,
   notifyMode: 'failure',
   transform: {
@@ -12,5 +17,5 @@ module.exports = {
   },
   coveragePathIgnorePatterns: ['/node_modules/'],
   snapshotSerializers: ['enzyme-to-json/serializer'],
-  setupFiles: ['<rootDir>/scripts/setupTests.js']
+  setupFiles: ['<rootDir>/tests/setupTests.js']
 }

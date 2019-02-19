@@ -1,18 +1,10 @@
 import { curry, compose, map } from 'ramda'
-import convertTileToAxis from '../helpers/convertTileToAxis'
-import getMovement from '../helpers/getMovement'
+import { getMovement, convertTileToAxis } from '~/chess/helpers'
 
-/**
- * Get movable axis from movements of piece (no invalid axis filter here)
- * @param  {string} tile
- * @param  {string} piece
- * @param  {string} turn
- * @return {Array}
- */
-function getMovableAxis (tile, piece, turn) {
+function createMapCb (tile, turn) {
   const { x, y } = convertTileToAxis(tile)
 
-  const mapCb = (mv) => {
+  return (mv) => {
     const [mvX, mvY] = mv
     const nextX = mvX + x
 
@@ -22,6 +14,17 @@ function getMovableAxis (tile, piece, turn) {
 
     return [nextX, nextY]
   }
+}
+
+/**
+ * Get movable axis from movements of piece (no invalid axis filter here)
+ * @param  {string} tile
+ * @param  {string} piece
+ * @param  {string} turn
+ * @return {Array}
+ */
+function getMovableAxis (tile, piece, turn) {
+  const mapCb = createMapCb(tile, turn)
 
   return compose(
     map(mapCb),

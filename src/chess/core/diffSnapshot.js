@@ -7,13 +7,12 @@ import { parseCode } from '~/chess/helpers'
  * @param  {Array}  bsnapshot
  * @return {Object}
  */
-export const _diffSnapshot = curry(function _diffSnapshot (
-  aSnapshot,
-  bsnapshot
-) {
+function diffSnapshot (aSnapshot, bsnapshot) {
   return compose(
     parseCode,
     prop(0),
     difference(aSnapshot)
   )(bsnapshot)
-})
+}
+
+export default curry(diffSnapshot)

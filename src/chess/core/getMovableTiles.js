@@ -1,5 +1,5 @@
 import { isEmpty } from '~/utils'
-import convertAxisToTile from '../helpers/convertAxisToTile'
+import { convertAxisToTile } from '~/chess/helpers'
 
 /**
  * Get movable tiles

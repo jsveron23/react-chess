@@ -1,14 +1,14 @@
 /**
  * Is even?
- * @param  {number}  v
+ * @param  {number}  num
  * @return {boolean}
  */
-function isEven (v) {
-  if (typeof v !== 'number') {
+function isEven (num) {
+  if (typeof num !== 'number') {
     return false
   }
 
-  return v % 2 === 0
+  return num % 2 === 0
 }
 
 export default isEven

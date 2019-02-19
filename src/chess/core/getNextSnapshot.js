@@ -1,6 +1,5 @@
 import { curry, includes } from 'ramda'
-import parseCode from '../helpers/parseCode'
-import parseSelected from '../helpers/parseSelected'
+import { parseCode, parseSelected } from '~/chess/helpers'
 
 /**
  * Get next snapshot

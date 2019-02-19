@@ -4,9 +4,9 @@ import { Diagram } from '~/components'
 import { setNext, setMovable, setCapturedNext } from '~/actions/ingame'
 import {
   getMovableTiles,
-  getDirection,
-  excludeBlock,
-  computeSpecial
+  groupByDirection,
+  includeSpecial,
+  rejectBlocked
 } from '~/chess/core'
 import { getSpecial, parseSelected } from '~/chess/helpers'
 import { RANKS, FILES } from '~/chess/constants'
@@ -31,15 +31,17 @@ function mapStateToProps ({ general, ingame }) {
     if (isExist(selecteSpecial)) {
       nextMovableAxis = compose(
         prop('movableAxis'),
-        computeSpecial(selectedSide, selecteSpecial, selectedTile, snapshot)
+        includeSpecial(selectedSide, selecteSpecial, selectedTile, snapshot)
       )(movableAxis)
     } else {
       nextMovableAxis = compose(
-        excludeBlock(turn, snapshot),
-        getDirection
+        rejectBlocked(turn, snapshot),
+        groupByDirection
       )(movableAxis)
     }
   }
+
+  console.log(nextMovableAxis)
 
   return {
     isDoingMatch,

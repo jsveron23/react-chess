@@ -1,4 +1,4 @@
-import { computeSpecial } from '~/chess/core'
+import { includeSpecial } from '~/chess/core'
 
 const SPECIALS = {
   K: ['castling'],
@@ -6,8 +6,8 @@ const SPECIALS = {
   P: ['doubleStep', 'enPassant', 'promotion']
 }
 
-describe('#computeSpecial', () => {
-  describe('Compute special movable', () => {
+describe('#includeSpecial', () => {
+  describe('Include special movable', () => {
     it('doubleStep', () => {
       // prettier-ignore
       const snapshot = [
@@ -21,7 +21,7 @@ describe('#computeSpecial', () => {
       const movableP = [[1, 3]]
 
       expect(
-        computeSpecial('w', specialP, 'a2', snapshot, movableP)
+        includeSpecial('w', specialP, 'a2', snapshot, movableP)
       ).toHaveProperty('movableAxis', [[1, 3], [1, 4]])
     })
 
@@ -46,7 +46,7 @@ describe('#computeSpecial', () => {
       ]
 
       expect(
-        computeSpecial('w', specialP, 'a8', prevSnapshot, [])
+        includeSpecial('w', specialP, 'a8', prevSnapshot, [])
       ).toHaveProperty('snapshot', nextSnapshot)
     })
   })

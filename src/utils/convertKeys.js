@@ -1,19 +1,49 @@
 import { curry, keys, compose, reduce } from 'ramda'
-import { _createReduceCb } from './internal/_convertKeys'
+import { isExist } from '~/utils'
 
 /**
- * Convert object keys (compose)
+ * @param  {Object}   names
+ * @param  {Object}   obj
+ * @return {Function}
+ */
+function createReduceCb (names, obj) {
+  /**
+   * @callback
+   * @param  {Object} acc
+   * @param  {string} key
+   * @return {Object}
+   */
+  return (acc, key) => {
+    const replaceKey = names[key]
+    const originalVal = obj[key]
+
+    if (isExist(replaceKey)) {
+      return {
+        ...acc,
+        [replaceKey]: originalVal
+      }
+    }
+
+    return {
+      ...acc,
+      [key]: originalVal
+    }
+  }
+}
+
+/**
+ * Convert key name inside an object (composable)
  * @param  {Object} names
- * @param  {Object} v
+ * @param  {Object} obj
  * @return {Object}
  */
-function convertKeys (names, v) {
-  const reduceCb = _createReduceCb(names, v)
+function convertKeys (names, obj) {
+  const reduceCb = createReduceCb(names, obj)
 
   return compose(
     reduce(reduceCb, {}),
     keys
-  )(v)
+  )(obj)
 }
 
 export default curry(convertKeys)

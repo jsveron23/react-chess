@@ -1,4 +1,4 @@
-import { excludeBlock } from '~/chess/core'
+import { rejectBlocked } from '~/chess/core'
 
 // prettier-ignore
 const snapshot1 = [
@@ -21,45 +21,45 @@ const direction1 = {
   ]
 }
 
-describe('#excludeBlock', () => {
+describe('#rejectBlocked', () => {
   it('exclude bloking path selected piece', () => {
-    expect(excludeBlock('white', snapshot1, direction1)).toEqual(
+    expect(rejectBlocked('white', snapshot1, direction1)).toEqual(
       expect.arrayContaining([[1, 0]])
     )
-    expect(excludeBlock('white', snapshot1, direction1)).toEqual(
+    expect(rejectBlocked('white', snapshot1, direction1)).toEqual(
       expect.arrayContaining([[1, -1]])
     )
-    expect(excludeBlock('white', snapshot1, direction1)).toEqual(
+    expect(rejectBlocked('white', snapshot1, direction1)).toEqual(
       expect.arrayContaining([[1, -2]])
     )
-    expect(excludeBlock('white', snapshot1, direction1)).toEqual(
+    expect(rejectBlocked('white', snapshot1, direction1)).toEqual(
       expect.arrayContaining([[1, -3]])
     )
-    expect(excludeBlock('white', snapshot1, direction1)).toEqual(
+    expect(rejectBlocked('white', snapshot1, direction1)).toEqual(
       expect.arrayContaining([[1, -4]])
     )
-    expect(excludeBlock('white', snapshot1, direction1)).toEqual(
+    expect(rejectBlocked('white', snapshot1, direction1)).toEqual(
       expect.arrayContaining([[1, -5]])
     )
-    expect(excludeBlock('white', snapshot1, direction1)).toEqual(
+    expect(rejectBlocked('white', snapshot1, direction1)).toEqual(
       expect.arrayContaining([[1, -6]])
     )
-    expect(excludeBlock('white', snapshot1, direction1)).toEqual(
+    expect(rejectBlocked('white', snapshot1, direction1)).toEqual(
       expect.arrayContaining([[-1, 1]])
     )
-    expect(excludeBlock('white', snapshot1, direction1)).toEqual(
+    expect(rejectBlocked('white', snapshot1, direction1)).toEqual(
       expect.arrayContaining([[-2, 1]])
     )
-    expect(excludeBlock('white', snapshot1, direction1)).toEqual(
+    expect(rejectBlocked('white', snapshot1, direction1)).toEqual(
       expect.arrayContaining([[-3, 1]])
     )
-    expect(excludeBlock('white', snapshot1, direction1)).toEqual(
+    expect(rejectBlocked('white', snapshot1, direction1)).toEqual(
       expect.arrayContaining([[-4, 1]])
     )
-    expect(excludeBlock('white', snapshot1, direction1)).toEqual(
+    expect(rejectBlocked('white', snapshot1, direction1)).toEqual(
       expect.arrayContaining([[-5, 1]])
     )
-    expect(excludeBlock('white', snapshot1, direction1)).toEqual(
+    expect(rejectBlocked('white', snapshot1, direction1)).toEqual(
       expect.arrayContaining([[-6, 1]])
     )
   })

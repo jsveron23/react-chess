@@ -1,19 +1,19 @@
 import { curry, includes } from 'ramda'
 
 /**
- * Replace snapshot items of snapshot
+ * Replace code of snapshot
  * @param  {string} replace
- * @param  {string} textToken
+ * @param  {string} token
  * @param  {Array}  snapshot
  * @return {Array}
  */
-function replaceSnapshot (replace, textToken, snapshot) {
-  return snapshot.map((snapshotItem) => {
-    if (includes(textToken, snapshotItem)) {
+function replaceSnapshot (replace, token, snapshot) {
+  return snapshot.map((code) => {
+    if (includes(token, code)) {
       return replace
     }
 
-    return snapshotItem
+    return code
   })
 }
 

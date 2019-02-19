@@ -1,7 +1,7 @@
 import { compose, filter, prop as extract } from 'ramda'
 import * as types from '~/actions'
 import { OPPONENT } from '~/chess/constants'
-import { getMovableAxis, getNextSnapshot, computeSpecial } from '~/chess/core'
+import { getMovableAxis, getNextSnapshot, includeSpecial } from '~/chess/core'
 import { getSpecial, parseSelected, replaceSnapshot } from '~/chess/helpers'
 import { isExist } from '~/utils'
 
@@ -61,7 +61,7 @@ export function setNext (tile) {
     if (isExist(special)) {
       nextSnapshot = compose(
         extract('snapshot'),
-        computeSpecial(side, special, tile, nextSnapshot)
+        includeSpecial(side, special, tile, nextSnapshot)
       )(movableAxis)
     }
 

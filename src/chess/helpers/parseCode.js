@@ -1,4 +1,4 @@
-import { split } from 'ramda'
+import { splitTo } from '~/utils'
 
 /**
  * Parse a code of snapshot
@@ -6,9 +6,7 @@ import { split } from 'ramda'
  * @return {Object}
  */
 function parseCode (code) {
-  const [side, piece, file, rank] = split('', code)
-
-  return { side, piece, file, rank }
+  return splitTo('', ['side', 'piece', 'file', 'rank'], code)
 }
 
 export default parseCode

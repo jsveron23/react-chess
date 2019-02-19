@@ -51,7 +51,7 @@ const ALIAS = {
   '~': Path.resolve('src')
 }
 
-const DEVTOOL = 'cheap-module-eval-source-map'
+const DEVTOOL = 'eval'
 
 const DEVTOOL_PROD = 'source-map'
 
@@ -79,7 +79,7 @@ const LOADERS = {
     include: [Path.resolve('src')],
     loader: 'eslint-loader',
     options: {
-      configFile: `${Path.resolve.repoDir}/.eslintrc.json`
+      configFile: `${Path.root}/.eslintrc.json`
     }
   },
 
@@ -106,7 +106,7 @@ const LOADERS = {
     loader: 'postcss-loader',
     options: {
       config: {
-        path: `${Path.resolve('scripts')}/postcss/postcss.config.js`
+        path: `${Path.resolve('webpack')}/postcss/postcss.config.js`
       }
     }
   },

@@ -1,16 +1,24 @@
 import { curry } from 'ramda'
 
 /**
- * Create RegExp
- * @param  {string} text
+ * Create regular expression
+ * @param  {string} txt
  * @return {RegExp}
  */
-function createRegExp (text) {
-  return new RegExp(text)
+function createRegExp (txt) {
+  return new RegExp(txt)
 }
 
-createRegExp.withOptions = curry((options, text) => {
-  return new RegExp(text, options || '')
-})
+/**
+ * Create regular expression with options
+ * @param  {string} options
+ * @param  {string} txt
+ * @return {RegExp}
+ */
+function withOption (options, txt) {
+  return new RegExp(txt, options || '')
+}
+
+createRegExp.withOptions = curry(withOption)
 
 export default createRegExp

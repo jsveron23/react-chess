@@ -8,12 +8,12 @@ const initialObj = {
 }
 
 /**
- * Convert movable axis to directions
+ * Group by direction
  * TODO: optimize
  * @param  {Array} movableAxis
  * @return {Array}
  */
-function getDirection (movableAxis) {
+function groupByDirection (movableAxis) {
   // to compare between previous tile and next tile
   let beforeAxis
 
@@ -83,4 +83,4 @@ function getDirection (movableAxis) {
   }
 }
 
-export default getDirection
+export default groupByDirection

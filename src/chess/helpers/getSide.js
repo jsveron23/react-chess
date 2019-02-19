@@ -2,11 +2,11 @@ import { SIDE } from '~/chess/constants'
 
 /**
  * Get side
- * @param  {string} key
+ * @param  {string} side
  * @return {string}
  */
-function getSide (key) {
-  return SIDE[key]
+function getSide (side) {
+  return SIDE[side]
 }
 
 export default getSide

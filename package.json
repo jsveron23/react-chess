@@ -5,13 +5,13 @@
   "main": "index.js",
   "private": true,
   "scripts": {
-    "test": "jest --config ./scripts/jest.config.js",
+    "test": "jest --config ./tests/jest.config.js",
     "update": "npm-check -u",
     "lint": "eslint src",
     "clean": "rimraf public",
-    "build:webpack": "webpack --config ./scripts/webpack.config.js --env.production --display-error-details",
+    "build:webpack": "webpack --config ./webpack/webpack.config.js --env.production --display-error-details",
     "build": "npm run clean && npm run build:webpack",
-    "start": "webpack-dev-server --config ./scripts/webpack.config.js"
+    "start": "webpack-dev-server --config ./webpack/webpack.config.js"
   },
   "keywords": [
     "react",
@@ -28,6 +28,7 @@
     "@babel/plugin-proposal-object-rest-spread": "^7.2.0",
     "@babel/plugin-syntax-dynamic-import": "^7.2.0",
     "@babel/plugin-transform-async-to-generator": "^7.2.0",
+    "@babel/plugin-transform-react-jsx-source": "^7.2.0",
     "@babel/preset-env": "^7.1.6",
     "@babel/preset-react": "^7.0.0",
     "babel-core": "^7.0.0-bridge.0",

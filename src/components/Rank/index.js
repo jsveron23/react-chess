@@ -7,10 +7,10 @@ import { findCode, parseCode } from '~/chess/helpers'
 import { noop } from '~/utils'
 import css from './Rank.css'
 
-function getPieceProps (tile) {
+function getPieceProps (snapshot) {
   return compose(
     parseCode,
-    findCode(tile)
+    findCode(snapshot)
   )
 }
 
@@ -35,7 +35,7 @@ const Rank = (props) => {
     <div className={cls} data-rank={rankName}>
       {files.map((fileName) => {
         const tile = `${fileName}${rankName}`
-        const { side, piece } = getPieceProps(tile)(snapshot)
+        const { side, piece } = getPieceProps(snapshot)(tile)
         const Piece = getPiece(side)(piece)
 
         return (

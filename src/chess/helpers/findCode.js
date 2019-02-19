@@ -3,11 +3,11 @@ import { isEmpty } from '~/utils'
 
 /**
  * Find a code
- * @param  {string} searchText
  * @param  {Array}  snapshot
+ * @param  {string} searchText
  * @return {string}
  */
-function findCode (searchText, snapshot) {
+function findCode (snapshot, searchText) {
   if (isEmpty(searchText)) {
     return ''
   }

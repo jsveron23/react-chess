@@ -5,7 +5,7 @@
   "dontLoad": ["node_modules/**"],
   "plugins": {
     "webpack": {
-      "configPath": "script/webpack.config.js"
+      "configPath": "webpack/webpack.config.js"
     },
     "es_modules": true,
     "doc_comment": {

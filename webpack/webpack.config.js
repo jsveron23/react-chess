@@ -67,7 +67,7 @@ function configure (env = {}) {
           include: [Path.resolve('src')],
           use: isDev
             ? Loaders.get('style', 'css', 'postcss')
-            : [Plugins.get.extractCSSLoader, ...Loaders.get('css', 'postcss')]
+            : [Plugins.extractCSSLoader, ...Loaders.get('css', 'postcss')]
         }
       ]
     }

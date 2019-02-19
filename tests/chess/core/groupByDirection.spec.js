@@ -1,6 +1,6 @@
-import { getDirection } from '~/chess/core'
+import { groupByDirection } from '~/chess/core'
 
-describe('#getDirection', () => {
+describe('#groupByDirection', () => {
   it('Get direction', () => {
     // prettier-ignore
     const axis1 = [
@@ -10,7 +10,7 @@ describe('#getDirection', () => {
       [-1, 1], [-2, 1], [-3, 1], [-4, 1], [-5, 1], [-6, 1]
     ]
 
-    expect(getDirection(axis1)).toHaveProperty('vertical', [
+    expect(groupByDirection(axis1)).toHaveProperty('vertical', [
       [1, 2],
       [1, 3],
       [1, 4],
@@ -27,7 +27,7 @@ describe('#getDirection', () => {
       [1, -6]
     ])
 
-    expect(getDirection(axis1)).toHaveProperty('horizontal', [
+    expect(groupByDirection(axis1)).toHaveProperty('horizontal', [
       [2, 1],
       [3, 1],
       [4, 1],

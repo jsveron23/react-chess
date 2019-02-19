@@ -10,9 +10,9 @@ const snapshot = [
 
 describe('#findCode', () => {
   it('get a code that includes token', () => {
-    expect(findCode('b7', snapshot)).toEqual('bPb7')
-    expect(findCode('c2')(snapshot)).toEqual('wPc2')
-    expect(findCode('wK', snapshot)).toEqual('wKe1')
-    expect(findCode('bR')(snapshot)).toEqual('bRa8')
+    expect(findCode(snapshot, 'b7')).toEqual('bPb7')
+    expect(findCode(snapshot)('c2')).toEqual('wPc2')
+    expect(findCode(snapshot, 'wK')).toEqual('wKe1')
+    expect(findCode(snapshot)('bR')).toEqual('bRa8')
   })
 })

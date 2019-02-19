@@ -41,7 +41,7 @@ function reducer (state = initialState, action) {
     case types.SET_SNAPSHOT: {
       return {
         ...state,
-        snapshot: [...payload]
+        snapshot: payload
       }
     }
 

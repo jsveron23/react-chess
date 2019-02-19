@@ -1,12 +1,12 @@
 import { curry } from 'ramda'
 
 /**
- * Trace log (compose)
+ * Simple displying console log (composable)
  * @param  {string} label
  * @return {*}
  */
 function trace (label, v) {
-  if (process.env.NODE_ENV !== 'test') {
+  if (process.env.NODE_ENV === 'development') {
     console.log(`${label}: `, v)
   }
 

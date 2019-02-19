@@ -1,6 +1,21 @@
 import { compose, split, reduce } from 'ramda'
 
 /**
+ * @callback
+ * @param  {Object} acc
+ * @param  {string} txt
+ * @return {Object}
+ */
+function reduceCb (acc, txt) {
+  const key = /[1-9]/.test(txt) ? 'rank' : 'file'
+
+  return {
+    ...acc,
+    [key]: txt
+  }
+}
+
+/**
  * Parse tile name to file and rank
  * @param  {string} tile
  * @return {Object}
@@ -8,15 +23,6 @@ import { compose, split, reduce } from 'ramda'
 function parseTile (tile) {
   if (typeof tile !== 'string') {
     return tile
-  }
-
-  const reduceCb = (acc, val) => {
-    const key = /[1-9]/.test(val) ? 'rank' : 'file'
-
-    return {
-      ...acc,
-      [key]: val
-    }
   }
 
   return compose(

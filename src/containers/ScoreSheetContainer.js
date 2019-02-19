@@ -3,7 +3,7 @@ import { curry, compose, map, reverse, prop } from 'ramda'
 import { ScoreSheet } from '~/components'
 import { createNotation, createScoreSheet } from '~/chess/core'
 
-const combineSnapshotList = curry((presentSnapshot, pastSnapshotList) => [
+const createTimeline = curry((presentSnapshot, pastSnapshotList) => [
   presentSnapshot,
   ...pastSnapshotList
 ])
@@ -15,7 +15,7 @@ const mapStateToProps = ({ general, ingame }) => {
     createScoreSheet,
     reverse,
     createNotation,
-    combineSnapshotList(present.snapshot),
+    createTimeline(present.snapshot),
     map((pastIngame) => pastIngame.snapshot),
     reverse,
     prop('past')

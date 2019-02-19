@@ -1,21 +1,16 @@
 import { curry } from 'ramda'
 import { isExist } from '~/utils'
-import { _diffSnapshot } from './internal/_createNotation'
-import getSide from '../helpers/getSide'
+import { diffSnapshot } from '~/chess/core'
+import { getSide } from '~/chess/helpers'
 
-/**
- * Create notation
- * @param  {Array} mergedSnapshots
- * @return {Array}
- */
-function createNotation (mergedSnapshots) {
-  const len = mergedSnapshots.length
+function createReduceCb (snapshotList) {
+  const len = snapshotList.length
 
-  const reduceCb = (acc, snapshot, idx) => {
-    const prevSnapshot = mergedSnapshots[idx + 1]
+  return (acc, snapshot, idx) => {
+    const prevSnapshot = snapshotList[idx + 1]
 
     if (isExist(prevSnapshot) && len > 1) {
-      const { side, piece, file, rank } = _diffSnapshot(snapshot, prevSnapshot)
+      const { side, piece, file, rank } = diffSnapshot(snapshot, prevSnapshot)
       const isCaptured = prevSnapshot.length !== snapshot.length
 
       // if (prevSnapshot.length !== snapshot.length) {
@@ -40,6 +35,15 @@ function createNotation (mergedSnapshots) {
 
     return acc
   }
+}
+
+/**
+ * Create notation
+ * @param  {Array} mergedSnapshots
+ * @return {Array}
+ */
+function createNotation (mergedSnapshots) {
+  const reduceCb = createReduceCb(mergedSnapshots)
 
   return mergedSnapshots.reduce(reduceCb, [])
 }

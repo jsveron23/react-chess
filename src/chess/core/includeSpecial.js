@@ -1,8 +1,11 @@
 import { curry, includes } from 'ramda'
 import { isExist } from '~/utils'
-import { _hasCode } from './internal/_computeSpecial'
-import convertTileToAxis from '../helpers/convertTileToAxis'
-import replaceSnapshot from '../helpers/replaceSnapshot'
+import {
+  isCodeExist,
+  replaceSnapshot,
+  convertTileToAxis,
+  findCapturable
+} from '~/chess/helpers'
 
 const DOUBLE_STEP = 'doubleStep'
 const DOUBLE_STEP_TILES = {
@@ -27,30 +30,52 @@ const PROMOTION_TILES = {
  *  - snapshot -> after moving
  *  - movableAxis -> before rendering
  */
-function computeSpecial (side, special, tile, snapshot, movableAxis) {
+function includeSpecial (side, special, tile, snapshot, movableAxis) {
   if (special.length > 1) {
     // -> Pawn
+    const { x, y } = convertTileToAxis(tile)
 
     // ----------------
     // before rendering (append movable axis)
     // ----------------
+    const diagonalRightAxis = side === 'w' ? [x + 1, y + 1] : [x - 1, y - 1]
+    const diagonalLeftAxis = side === 'w' ? [x - 1, y + 1] : [x + 1, y - 1]
+    const findTile = findCapturable(snapshot)
+    const diagonalRightTile = findTile(diagonalRightAxis)
+    const diagonalLeftTile = findTile(diagonalLeftAxis)
+    const enPassantAxis = [
+      ...[isExist(diagonalRightTile) ? diagonalRightAxis : []],
+      ...[isExist(diagonalLeftTile) ? diagonalLeftAxis : []]
+    ]
+
     const isFirstMove = includes(tile, DOUBLE_STEP_TILES[side])
     const isDoubleStep = includes(DOUBLE_STEP, special) && isFirstMove
+    let nextMovableAxis = [...movableAxis]
 
+    // TODO: optimize
     if (isDoubleStep && isExist(movableAxis)) {
-      const hasCode = _hasCode(snapshot, movableAxis)
+      const [firstAxis] = movableAxis
+      const isFirstTileBlocked = isCodeExist(snapshot, firstAxis)
 
-      // if some piece on movable
-      // it works like `excludeBlock`
-      if (hasCode) {
-        return { snapshot, movableAxis }
-      }
-
-      const { x, y } = convertTileToAxis(tile)
       const nextY = side === 'w' ? y + 2 : y - 2
       const nextAxis = [x, nextY]
+      const isNextTileBlocked = isCodeExist(snapshot, nextAxis)
 
-      return { snapshot, movableAxis: [...movableAxis, nextAxis] }
+      nextMovableAxis = [...movableAxis, nextAxis]
+
+      if (isFirstTileBlocked) {
+        nextMovableAxis = []
+      }
+
+      if (isNextTileBlocked) {
+        nextMovableAxis = [...movableAxis]
+      }
+    }
+
+    nextMovableAxis = [...nextMovableAxis, ...enPassantAxis].filter(isExist)
+
+    if (isExist(movableAxis)) {
+      return { snapshot, movableAxis: nextMovableAxis }
     }
 
     // ----------------
@@ -71,4 +96,4 @@ function computeSpecial (side, special, tile, snapshot, movableAxis) {
   return { snapshot, movableAxis }
 }
 
-export default curry(computeSpecial)
+export default curry(includeSpecial)
