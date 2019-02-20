@@ -4,7 +4,7 @@ import {
   isCodeExist,
   replaceSnapshot,
   convertTileToAxis,
-  findCapturable
+  findCodeByAxis
 } from '~/chess/helpers'
 
 const DOUBLE_STEP = 'doubleStep'
@@ -40,9 +40,9 @@ function includeSpecial (side, special, tile, snapshot, movableAxis) {
     // ----------------
     const diagonalRightAxis = side === 'w' ? [x + 1, y + 1] : [x - 1, y - 1]
     const diagonalLeftAxis = side === 'w' ? [x - 1, y + 1] : [x + 1, y - 1]
-    const findTile = findCapturable(snapshot)
-    const diagonalRightTile = findTile(diagonalRightAxis)
-    const diagonalLeftTile = findTile(diagonalLeftAxis)
+    const findCapturableTile = findCodeByAxis(snapshot)
+    const diagonalRightTile = findCapturableTile(diagonalRightAxis)
+    const diagonalLeftTile = findCapturableTile(diagonalLeftAxis)
     const enPassantAxis = [
       ...[isExist(diagonalRightTile) ? diagonalRightAxis : []],
       ...[isExist(diagonalLeftTile) ? diagonalLeftAxis : []]

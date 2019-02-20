@@ -2,16 +2,16 @@ import { compose, curry } from 'ramda'
 import { findCode, convertAxisToTile } from '~/chess/helpers'
 
 /**
- * Find capturable tile
+ * Find code by axis
  * @param  {Array}  snapshot
  * @param  {Array}  axis
  * @return {string}
  */
-function findCapturable (snapshot, axis) {
+function findCodeByAxis (snapshot, axis) {
   return compose(
     findCode(snapshot),
     convertAxisToTile
   )(axis)
 }
 
-export default curry(findCapturable)
+export default curry(findCodeByAxis)
