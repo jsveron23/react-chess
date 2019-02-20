@@ -1,7 +1,7 @@
 .sheet {
   margin-top: 50px;
   width: 400px;
-  max-height: 140px;
+  max-height: 180px;
   overflow: auto;
   scroll-behavior: smooth;
 
