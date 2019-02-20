@@ -3,9 +3,20 @@ import { isExist } from '~/utils'
 import { diffSnapshot } from '~/chess/core'
 import { getSide } from '~/chess/helpers'
 
+/**
+ * @param  {Array}    snapshotList
+ * @return {Function}
+ */
 function createReduceCb (snapshotList) {
   const len = snapshotList.length
 
+  /**
+   * @callback
+   * @param  {Array}  acc
+   * @param  {Array}  snapshot
+   * @param  {number} idx
+   * @return {Array}
+   */
   return (acc, snapshot, idx) => {
     const prevSnapshot = snapshotList[idx + 1]
 
@@ -21,9 +32,10 @@ function createReduceCb (snapshotList) {
       // }
 
       const tile = `${file}${rank}`
-      const isPawn = piece === 'P'
+      const isPawn = piece === 'P' && !isCaptured
+      const capturedSymbol = isCaptured ? ' x ' : ''
+      const notation = `${isPawn ? '' : piece}${capturedSymbol}${tile}`
       const sideAsKey = getSide(side)
-      const notation = `${isPawn ? '' : piece}${isCaptured ? ' x ' : ''}${tile}`
 
       return [
         ...acc,

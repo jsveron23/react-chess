@@ -1,4 +1,4 @@
-import { curry, includes } from 'ramda'
+import { curry } from 'ramda'
 
 /**
  * Replace code of snapshot
@@ -9,7 +9,7 @@ import { curry, includes } from 'ramda'
  */
 function replaceSnapshot (replace, token, snapshot) {
   return snapshot.map((code) => {
-    if (includes(token, code)) {
+    if (code.includes(token)) {
       return replace
     }
 

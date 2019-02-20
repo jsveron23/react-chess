@@ -1,9 +1,19 @@
 import { curry, compose, map } from 'ramda'
 import { getMovement, convertTileToAxis } from '~/chess/helpers'
 
+/**
+ * @param  {string}   tile
+ * @param  {string}   turn
+ * @return {Function}
+ */
 function createMapCb (tile, turn) {
   const { x, y } = convertTileToAxis(tile)
 
+  /**
+   * @callback
+   * @param  {Array} mv
+   * @return {Array}
+   */
   return (mv) => {
     const [mvX, mvY] = mv
     const nextX = mvX + x
