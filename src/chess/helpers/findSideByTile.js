@@ -1,14 +1,15 @@
 import { curry, compose, prop } from 'ramda'
-import { findCode, parseCode } from '~/chess/helpers'
+import { getSide, findCode, parseCode } from '~/chess/helpers'
 
 /**
- * Get side of tile of snapshot
- * @param  {string} tile
+ * Find side by tile
  * @param  {Array}  snapshot
+ * @param  {string} tile
  * @return {string}
  */
-function findSideByTile (tile, snapshot) {
+function findSideByTile (snapshot, tile) {
   return compose(
+    getSide,
     prop('side'),
     parseCode,
     findCode(snapshot)

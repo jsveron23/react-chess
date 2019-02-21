@@ -1,6 +1,5 @@
 import { curry, compose, reduce, keys, map } from 'ramda'
 import {
-  getSide,
   convertAxisToTile,
   findSideByTile,
   createSnapshotRe
@@ -31,8 +30,8 @@ function createMapCb (turn, snapshot, movableWithDirection) {
     // checking in same direction
     return axisList.reduce((acc, axis) => {
       const tile = convertAxisToTile(axis)
-      const side = findSideByTile(tile, snapshot)
-      const isEnemy = getSide(side) !== turn
+      const side = findSideByTile(snapshot, tile)
+      const isEnemy = side !== turn
       const isPieceStanding = re.test(tile)
 
       const [x, y] = axis
