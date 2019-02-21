@@ -53,16 +53,20 @@ export function setMovable ({ tile, staticTurn, piece }) {
 export function setNext (tile) {
   return (dispatch, getState) => {
     const { ingame } = getState()
-    const { selected, snapshot, movableAxis } = ingame.present
+    const { selected, snapshot } = ingame.present
     const { piece, side } = parseSelected(selected, snapshot)
     const special = getSpecial(piece)
     let nextSnapshot = getNextSnapshot(selected, tile, snapshot)
 
     if (isExist(special)) {
+      const mockMovableAxis = [
+        /* it sould be empty */
+      ]
+
       nextSnapshot = compose(
         extract('snapshot'),
         includeSpecial(side, special, tile, nextSnapshot)
-      )(movableAxis)
+      )(mockMovableAxis)
     }
 
     dispatch(setSnapshot(nextSnapshot))
