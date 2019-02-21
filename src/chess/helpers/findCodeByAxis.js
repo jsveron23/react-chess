@@ -2,7 +2,7 @@ import { compose, curry } from 'ramda'
 import { findCode, convertAxisToTile } from '~/chess/helpers'
 
 /**
- * Find code by axis
+ * Find a code by axis
  * @param  {Array}  snapshot
  * @param  {Array}  axis
  * @return {string}

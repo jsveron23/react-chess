@@ -41,8 +41,6 @@ function mapStateToProps ({ general, ingame }) {
     }
   }
 
-  console.log(nextMovableAxis)
-
   return {
     isDoingMatch,
     turn,

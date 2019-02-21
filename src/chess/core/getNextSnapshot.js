@@ -1,4 +1,4 @@
-import { curry, includes } from 'ramda'
+import { curry } from 'ramda'
 import { parseCode, parseSelected } from '~/chess/helpers'
 
 /**
@@ -12,14 +12,14 @@ function getNextSnapshot (selected, tile, snapshot) {
   const { file, rank } = parseSelected(selected, snapshot)
   const selectedTile = `${file}${rank}`
 
-  return snapshot.map((item) => {
-    if (includes(selectedTile, item)) {
-      const { side, piece } = parseCode(item)
+  return snapshot.map((code) => {
+    if (code.includes(selectedTile)) {
+      const { side, piece } = parseCode(code)
 
       return `${side}${piece}${tile}`
     }
 
-    return item
+    return code
   })
 }
 

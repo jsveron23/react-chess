@@ -4,18 +4,18 @@ import { isEmpty } from '~/utils'
 /**
  * Find a code
  * @param  {Array}  snapshot
- * @param  {string} searchText
+ * @param  {string} searchTxt
  * @return {string}
  */
-function findCode (snapshot, searchText) {
-  if (isEmpty(searchText)) {
+function findCode (snapshot, searchTxt) {
+  if (isEmpty(searchTxt)) {
     return ''
   }
 
   const code = compose(
     flip(find)(snapshot),
     includes
-  )(searchText)
+  )(searchTxt)
 
   return code || ''
 }

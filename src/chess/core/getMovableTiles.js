@@ -3,7 +3,7 @@ import { convertAxisToTile } from '~/chess/helpers'
 
 /**
  * Get movable tiles
- * @param  {Array} movable
+ * @param  {Array} movableAxis
  * @return {Array}
  */
 function getMovableTiles (movableAxis) {
