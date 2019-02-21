@@ -31,7 +31,9 @@ const PIECE_MAP = {
 }
 
 function getPiece (side, piece) {
-  return PIECE_MAP[`${side}${piece}`]
+  const pieceKey = `${side}${piece}`
+
+  return PIECE_MAP[pieceKey]
 }
 
 export default curry(getPiece)
