@@ -8,7 +8,7 @@ import { findCode, convertAxisToTile } from '~/chess/helpers'
  * @param  {Array}   axis
  * @return {Boolean}
  */
-function isPieceOnTile (snapshot, axis) {
+function isPieceThere (snapshot, axis) {
   if (isEmpty.or(snapshot, axis)) {
     return false
   }
@@ -20,4 +20,4 @@ function isPieceOnTile (snapshot, axis) {
   )(axis)
 }
 
-export default curry(isPieceOnTile)
+export default curry(isPieceThere)

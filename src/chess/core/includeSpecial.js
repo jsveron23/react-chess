@@ -1,7 +1,7 @@
-import { curry, includes } from 'ramda'
+import { compose, prop, curry, includes } from 'ramda'
 import { isExist } from '~/utils'
 import {
-  isCodeExist,
+  isPieceThere,
   replaceSnapshot,
   convertTileToAxis,
   findCodeByAxis
@@ -54,12 +54,14 @@ function includeSpecial (side, special, tile, snapshot, movableAxis) {
 
     // TODO: optimize
     if (isDoubleStep && isExist(movableAxis)) {
-      const [firstAxis] = movableAxis
-      const isFirstTileBlocked = isCodeExist(snapshot, firstAxis)
+      const isFirstTileBlocked = compose(
+        isPieceThere(snapshot),
+        prop(0)
+      )(movableAxis)
 
       const nextY = side === 'w' ? y + 2 : y - 2
       const nextAxis = [x, nextY]
-      const isNextTileBlocked = isCodeExist(snapshot, nextAxis)
+      const isNextTileBlocked = isPieceThere(snapshot, nextAxis)
 
       nextMovableAxis = [...movableAxis, nextAxis]
 

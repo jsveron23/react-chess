@@ -1,4 +1,4 @@
-export { default as isCodeExist } from './isCodeExist'
+export { default as isPieceThere } from './isPieceThere'
 export { default as getMovement } from './getMovement'
 export { default as getSpecial } from './getSpecial'
 export { default as getSide } from './getSide'
