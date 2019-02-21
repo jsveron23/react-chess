@@ -9,20 +9,19 @@ import { isExist } from '~/utils'
 function reduceCb (sheet, move) {
   if (isExist(move.black)) {
     const [first, ...rest] = sheet
-    const appendedScore = {
+    const appendedBlack = {
       ...first,
       black: move.black
     }
 
-    return [appendedScore, ...rest]
+    return [appendedBlack, ...rest]
   }
 
-  return [
-    {
-      white: move.white
-    },
-    ...sheet
-  ]
+  const createWhite = {
+    white: move.white
+  }
+
+  return [createWhite, ...sheet]
 }
 
 /**

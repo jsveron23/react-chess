@@ -1,7 +1,6 @@
 import { curry } from 'ramda'
 import { isExist } from '~/utils'
-import { diffSnapshot } from '~/chess/core'
-import { getSide } from '~/chess/helpers'
+import { getSide, diffSnapshot } from '~/chess/helpers'
 
 /**
  * @param  {Array}    snapshotList
