@@ -7,7 +7,7 @@ const SPECIALS = {
 }
 
 describe('#includeSpecial', () => {
-  describe('Include special movable', () => {
+  describe('include special movement', () => {
     it('doubleStep', () => {
       // prettier-ignore
       const snapshot = [

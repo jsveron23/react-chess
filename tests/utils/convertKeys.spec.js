@@ -1,7 +1,7 @@
 import { convertKeys } from '~/utils'
 
 describe('#convertKeys', () => {
-  describe('convert keys from object', () => {
+  describe('convert keys as preferred names object', () => {
     const o = {
       hello: 'world',
       world: 'hello'
@@ -23,12 +23,7 @@ describe('#convertKeys', () => {
     })
 
     it('empty object', () => {
-      expect(
-        convertKeys(
-          {},
-          o
-        )
-      ).toEqual({
+      expect(convertKeys({}, o)).toEqual({
         hello: 'world',
         world: 'hello'
       })

@@ -36,7 +36,7 @@ const MOVEMENTS = {
 }
 
 describe('#getMovement', () => {
-  it('get movement of piece', () => {
+  it('get a movement of piece', () => {
     expect(getMovement('P')).toEqual(MOVEMENTS['P'])
     expect(getMovement('B')).toEqual(MOVEMENTS['B'])
     expect(getMovement('K')).toEqual(MOVEMENTS['K'])

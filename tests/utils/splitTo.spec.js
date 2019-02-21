@@ -1,7 +1,7 @@
 import { splitTo } from '~/utils'
 
 describe('#splitTo', () => {
-  it('split string and return object as given key names', () => {
+  it('split string to array and return as object', () => {
     expect(splitTo('', ['abc', 'edf'])('h2')).toEqual({
       abc: 'h',
       edf: '2'

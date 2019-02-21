@@ -17,7 +17,7 @@ const tiles = [
 ].join('|')
 
 describe('#createSnapshotRe', () => {
-  it('convert file, rank to x, y', () => {
+  it('create tiles regular expression from snapshot', () => {
     expect(createSnapshotRe(snapshot)).toEqual(new RegExp(tiles))
   })
 })

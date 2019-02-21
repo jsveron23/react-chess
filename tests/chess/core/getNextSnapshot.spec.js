@@ -1,7 +1,7 @@
 import { getNextSnapshot } from '~/chess/core'
 
 describe('#getNextSnapshot', () => {
-  it('Get next snapshot', () => {
+  it('get next snapshot', () => {
     // prettier-ignore
     const prevSnapshot = [
       'bRa8', 'bNb8', 'bBc8', 'bQd8', 'bKe8', 'bBf8', 'bNg8', 'bRh8',

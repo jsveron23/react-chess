@@ -9,7 +9,7 @@ const snapshot = [
 ]
 
 describe('#isPieceThere', () => {
-  it('Is piece in that tile?', () => {
+  it('is piece there?', () => {
     expect(isPieceThere(snapshot)([2, 2])).toBeTruthy()
     expect(isPieceThere(snapshot)([4, 5])).toBeFalsy()
   })

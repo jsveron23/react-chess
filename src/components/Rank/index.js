@@ -2,17 +2,11 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import cx from 'classnames'
 import { compose } from 'ramda'
-import getPiece, { File } from '~/components'
+import { File } from '~/components'
+import getPiece from '~/chess/getPiece'
 import { findCode, parseCode } from '~/chess/helpers'
 import { noop } from '~/utils'
 import css from './Rank.css'
-
-function getPieceProps (snapshot) {
-  return compose(
-    parseCode,
-    findCode(snapshot)
-  )
-}
 
 const Rank = (props) => {
   const {
@@ -35,7 +29,10 @@ const Rank = (props) => {
     <div className={cls} data-rank={rankName}>
       {files.map((fileName) => {
         const tile = `${fileName}${rankName}`
-        const { side, piece } = getPieceProps(snapshot)(tile)
+        const { side, piece } = compose(
+          parseCode,
+          findCode(snapshot)
+        )(tile)
         const Piece = getPiece(side)(piece)
 
         return (

@@ -22,7 +22,7 @@ const direction1 = {
 }
 
 describe('#rejectBlocked', () => {
-  it('exclude bloking path selected piece', () => {
+  it('reject bloked path', () => {
     expect(rejectBlocked('white', snapshot1, direction1)).toEqual(
       expect.arrayContaining([[1, 0]])
     )

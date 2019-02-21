@@ -17,7 +17,7 @@ const snapshot2 = [
 ]
 
 describe('#diffSnapshot', () => {
-  it('Create score sheet', () => {
+  it('Diff two different snapshot', () => {
     expect(diffSnapshot(snapshot2)(snapshot1)).toHaveProperty('side', 'w')
     expect(diffSnapshot(snapshot2)(snapshot1)).toHaveProperty('piece', 'N')
     expect(diffSnapshot(snapshot2)(snapshot1)).toHaveProperty('file', 'c')

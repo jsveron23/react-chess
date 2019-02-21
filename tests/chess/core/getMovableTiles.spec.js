@@ -8,7 +8,7 @@ const axis = [
 ]
 
 describe('#getMovableTiles', () => {
-  it('Get movable tiles', () => {
+  it('get movable tiles', () => {
     expect(getMovableTiles([[1, 3]])).toEqual(['a3'])
     expect(getMovableTiles([[2, 6]])).toEqual(['b6'])
     expect(getMovableTiles(axis)).toEqual(['g7', 'h6', 'e7', 'a3'])
