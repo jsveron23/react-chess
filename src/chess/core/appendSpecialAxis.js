@@ -13,7 +13,7 @@ import _applyEnPassant from './internal/_applyEnPassant'
  * @return {Object}
  */
 function addSpecialAxis (side, special, tile, snapshot, movableAxis) {
-  let nextMovableAxis
+  let nextMovableAxis = [...movableAxis]
 
   if (special.length > 1) {
     const enPassantAxis = _applyEnPassant(side, tile, snapshot)

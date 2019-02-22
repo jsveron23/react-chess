@@ -1,7 +1,7 @@
 /**
  * Redux action types
  *
- * - Assign types here to understand whole app action flows
+ * - Assign action types here to understand whole flows
  */
 
 export const TOGGLE_MATCH_STATUS = 'TOGGLE_MATCH_STATUS'

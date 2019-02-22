@@ -49,12 +49,18 @@ export function setMovable (tile) {
   return (dispatch, getState) => {
     const { ingame } = getState()
     const { present } = ingame
-    const { turn } = present
+    const { turn, snapshot } = present
+
+    const flippedGetMovableAxis = compose(
+      flip,
+      getMovableAxis
+    )(tile)
+
     const movableAxis = compose(
-      flip(getMovableAxis(tile))(turn),
+      flippedGetMovableAxis(turn),
       prop('piece'),
       parseCode,
-      findCode(present.snapshot)
+      findCode(snapshot)
     )(tile)
 
     dispatch(setMovableAxis(movableAxis))
@@ -84,6 +90,7 @@ export function setCapturedNext ({ capturedTile, selectedTile, replaceCode }) {
   return (dispatch, getState) => {
     const { ingame } = getState()
     const { present } = ingame
+
     const capturedSnapshot = compose(
       filter(isExist),
       replaceSnapshot(replaceCode, selectedTile),
