@@ -7,6 +7,13 @@ const PROMOTION_TILES = {
   b: ['a1', 'b1', 'c1', 'd1', 'e1', 'f1', 'g1', 'h1']
 }
 
+/**
+ * @param  {string} side
+ * @param  {string} tile
+ * @param  {Array}  special
+ * @param  {Array}  snapshot
+ * @return {Array}
+ */
 function _applyPromotion (side, tile, special, snapshot) {
   const isMovedToEnd = PROMOTION_TILES[side].includes(tile)
   const shouldPromotion = special.includes(PROMOTION) && isMovedToEnd

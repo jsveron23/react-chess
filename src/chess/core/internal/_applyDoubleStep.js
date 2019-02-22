@@ -18,31 +18,33 @@ const DOUBLE_STEP_TILES = {
  */
 function _applyDoubleStep (side, tile, special, snapshot, movableAxis) {
   const { x, y } = convertTileToAxis(tile)
+
   const isDoubleStep = compose(
     and(special.includes(DOUBLE_STEP)),
     includes(tile)
   )(DOUBLE_STEP_TILES[side])
+
+  const isFirstTileBlocked = compose(
+    isPieceThere(snapshot),
+    prop(0)
+  )(movableAxis)
+
   let nextMovableAxis = [...movableAxis]
 
   if (isDoubleStep && isExist(movableAxis)) {
-    const isFirstTileBlocked = compose(
-      isPieceThere(snapshot),
-      prop(0)
-    )(movableAxis)
-
     const nextY = side === 'w' ? y + 2 : y - 2
     const nextAxis = [x, nextY]
     const isNextTileBlocked = isPieceThere(snapshot, nextAxis)
 
     nextMovableAxis = [...movableAxis, nextAxis]
 
-    if (isFirstTileBlocked) {
-      nextMovableAxis = []
-    }
-
     if (isNextTileBlocked) {
       nextMovableAxis = [...movableAxis]
     }
+  }
+
+  if (isFirstTileBlocked) {
+    nextMovableAxis = []
   }
 
   return nextMovableAxis

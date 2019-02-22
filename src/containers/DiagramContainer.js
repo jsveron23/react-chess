@@ -1,11 +1,11 @@
 import { connect } from 'react-redux'
-import { compose, prop } from 'ramda'
+import { compose } from 'ramda'
 import { Diagram } from '~/components'
 import { setNext, setMovable, setCapturedNext } from '~/actions/ingame'
 import {
   getMovableTiles,
   groupByDirection,
-  includeSpecial,
+  appendSpecialAxis,
   rejectBlocked
 } from '~/chess/core'
 import { getSpecial, parseSelected } from '~/chess/helpers'
@@ -29,10 +29,11 @@ function mapStateToProps ({ general, ingame }) {
     const selectedTile = `${selectedFile}${selectedRank}`
 
     if (isExist(selecteSpecial)) {
-      nextMovableAxis = compose(
-        prop('movableAxis'),
-        includeSpecial(selectedSide, selecteSpecial, selectedTile, snapshot)
-      )(movableAxis)
+      nextMovableAxis = appendSpecialAxis(
+        selectedSide,
+        selecteSpecial,
+        selectedTile
+      )(snapshot, movableAxis)
     } else {
       nextMovableAxis = compose(
         rejectBlocked(turn, snapshot),
