@@ -1,5 +1,5 @@
 const MiniCssExtractPlugin = require('mini-css-extract-plugin')
-const { DEFAULT_PLUGINS, DEV_PLUGINS, PROD_PLUGINS } = require('../config')
+const { DEFAULT_PLUGINS, DEV_PLUGINS, PROD_PLUGINS } = require('./config')
 
 /**
  * Get plugins

@@ -1,7 +1,7 @@
 const webpack = require('webpack')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
 const MiniCssExtractPlugin = require('mini-css-extract-plugin')
-const Path = require('./utils/path')
+const Path = require('./lib/path')
 
 const PORT = process.env.PORT || 3000
 

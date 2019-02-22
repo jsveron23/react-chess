@@ -1,6 +1,6 @@
-const Path = require('./utils/path')
-const Loaders = require('./helpers/loaders')
-const Plugins = require('./helpers/plugins')
+const Path = require('./lib/path')
+const Loaders = require('./loaders')
+const Plugins = require('./plugins')
 const {
   PORT,
   ALIAS,
