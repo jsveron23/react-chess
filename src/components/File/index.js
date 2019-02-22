@@ -1,7 +1,6 @@
 import React, { createElement } from 'react'
 import PropTypes from 'prop-types'
 import cx from 'classnames'
-import { includes } from 'ramda'
 import { Blank } from '~/components'
 import { isEmpty, isExist, noop } from '~/utils'
 import { isDarkBg } from '~/chess/helpers'
@@ -12,7 +11,6 @@ const File = (props) => {
     turn,
     fileName,
     tile,
-    piece,
     Piece,
     selectedPiece,
     selectedSide,
@@ -24,7 +22,7 @@ const File = (props) => {
     setNext
   } = props
 
-  const isMovable = includes(tile, movableTiles)
+  const isMovable = movableTiles.includes(tile)
 
   // pressing a tile
   function handleClick (evt) {
@@ -37,7 +35,6 @@ const File = (props) => {
 
   const pieceProps = {
     turn,
-    piece,
     selectedPiece,
     selectedSide,
     selectedFile,
@@ -72,7 +69,6 @@ File.propTypes = {
   selectedSide: PropTypes.string,
   selectedFile: PropTypes.string,
   selectedRank: PropTypes.string,
-  piece: PropTypes.string,
   Piece: PropTypes.func,
   movableTiles: PropTypes.array,
   setCapturedNext: PropTypes.func,

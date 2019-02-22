@@ -18,7 +18,6 @@ function enhancePiece (WrappedComponent, staticKey, staticTurn) {
     const {
       turn,
       tile,
-      piece,
       selectedPiece,
       selectedSide,
       selectedFile,
@@ -41,14 +40,14 @@ function enhancePiece (WrappedComponent, staticKey, staticTurn) {
       evt.preventDefault()
 
       if (isTurn) {
-        setMovable({ tile, staticTurn, piece })
+        setMovable(tile)
       }
 
       if (isCapturable) {
         setCapturedNext({
+          selectedTile,
           capturedTile: tile,
-          selectedTile: selectedTile,
-          replaceSnapshotItem: `${selectedSide}${selectedPiece}${tile}`
+          replaceCode: `${selectedSide}${selectedPiece}${tile}`
         })
       }
     }
@@ -65,7 +64,6 @@ function enhancePiece (WrappedComponent, staticKey, staticTurn) {
   Piece.propTypes = {
     turn: PropTypes.string.isRequired,
     tile: PropTypes.string.isRequired,
-    piece: PropTypes.string,
     selectedPiece: PropTypes.string,
     selectedSide: PropTypes.string,
     selectedFile: PropTypes.string,

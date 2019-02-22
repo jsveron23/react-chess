@@ -7,18 +7,18 @@ import { isExist } from '~/utils'
  * @return {Array}
  */
 function reduceCb (sheet, move) {
+  const createWhite = {
+    white: move.white
+  }
+
   if (isExist(move.black)) {
     const [first, ...rest] = sheet
-    const appendedBlack = {
+    const createBlack = {
       ...first,
       black: move.black
     }
 
-    return [appendedBlack, ...rest]
-  }
-
-  const createWhite = {
-    white: move.white
+    return [createBlack, ...rest]
   }
 
   return [createWhite, ...sheet]

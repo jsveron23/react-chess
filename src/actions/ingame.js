@@ -1,8 +1,15 @@
-import { compose, filter, prop as extract } from 'ramda'
+import { compose, filter, flip, prop } from 'ramda'
 import * as types from '~/actions'
 import { OPPONENT } from '~/chess/constants'
 import { getMovableAxis, getNextSnapshot, includeSpecial } from '~/chess/core'
-import { getSpecial, parseSelected, replaceSnapshot } from '~/chess/helpers'
+import {
+  getSpecial,
+  parseSelected,
+  replaceSnapshot,
+  getSide,
+  parseCode,
+  findCode
+} from '~/chess/helpers'
 import { isExist } from '~/utils'
 
 export function setSelected (piece) {
@@ -38,15 +45,20 @@ export function setSnapshot (snapshot) {
   }
 }
 
-export function setMovable ({ tile, staticTurn, piece }) {
+export function setMovable (tile) {
   return (dispatch, getState) => {
     const { ingame } = getState()
     const { present } = ingame
-    const selected = `${tile}-${staticTurn}`
-    const movableAxis = getMovableAxis(tile, piece, present.turn)
+    const { turn } = present
+    const movableAxis = compose(
+      flip(getMovableAxis(tile))(turn),
+      prop('piece'),
+      parseCode,
+      findCode(present.snapshot)
+    )(tile)
 
-    dispatch(setSelected(selected))
     dispatch(setMovableAxis(movableAxis))
+    dispatch(setSelected(`${tile}-${getSide(turn)}`))
   }
 }
 
@@ -64,7 +76,7 @@ export function setNext (tile) {
       ]
 
       nextSnapshot = compose(
-        extract('snapshot'),
+        prop('snapshot'),
         includeSpecial(side, special, tile, nextSnapshot)
       )(mockMovableAxis)
     }
@@ -75,17 +87,13 @@ export function setNext (tile) {
   }
 }
 
-export function setCapturedNext ({
-  capturedTile,
-  selectedTile,
-  replaceSnapshotItem
-}) {
+export function setCapturedNext ({ capturedTile, selectedTile, replaceCode }) {
   return (dispatch, getState) => {
     const { ingame } = getState()
     const { present } = ingame
     const capturedSnapshot = compose(
       filter(isExist),
-      replaceSnapshot(replaceSnapshotItem, selectedTile),
+      replaceSnapshot(replaceCode, selectedTile),
       replaceSnapshot('', capturedTile)
     )(present.snapshot)
 

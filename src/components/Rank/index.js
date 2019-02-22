@@ -38,9 +38,8 @@ const Rank = (props) => {
         return (
           <File
             key={tile}
-            turn={turn}
-            piece={piece}
             Piece={Piece}
+            turn={turn}
             selectedPiece={selectedPiece}
             selectedSide={selectedSide}
             selectedFile={selectedFile}
