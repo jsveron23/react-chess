@@ -1,26 +1,8 @@
-import { compose, curry, includes, reject, concat } from 'ramda'
+import { compose, curry, reject, concat } from 'ramda'
 import { isEmpty, isExist } from '~/utils'
-import { replaceSnapshot } from '~/chess/helpers'
 import _applyDoubleStep from './internal/_applyDoubleStep'
 import _applyEnPassant from './internal/_applyEnPassant'
-
-const PROMOTION = 'promotion'
-const PROMOTION_TILES = {
-  w: ['a8', 'b8', 'c8', 'd8', 'e8', 'f8', 'g8', 'h8'],
-  b: ['a1', 'b1', 'c1', 'd1', 'e1', 'f1', 'g1', 'h1']
-}
-
-function _applyPromotion (side, tile, special, snapshot) {
-  const isMovedToEnd = includes(tile, PROMOTION_TILES[side])
-  const shouldPromotion = includes(PROMOTION, special) && isMovedToEnd
-  let nextSnapshot = []
-
-  if (shouldPromotion) {
-    nextSnapshot = replaceSnapshot(`${side}Q${tile}`, tile, snapshot)
-  }
-
-  return nextSnapshot
-}
+import _applyPromotion from './internal/_applyPromotion'
 
 /**
  * Include special (snapshot or movableAxis)
