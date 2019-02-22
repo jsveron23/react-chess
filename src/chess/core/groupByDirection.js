@@ -1,23 +1,30 @@
 import { uniq } from 'ramda'
 import { isEmpty } from '~/utils'
+import _getDirection, {
+  DIAGONAL,
+  HORIZONTAL,
+  VERTICAL
+} from './internal/_getDirection'
 
 const initialObj = {
-  vertical: [],
-  horizontal: [],
-  diagonal: []
+  [DIAGONAL]: [],
+  [HORIZONTAL]: [],
+  [VERTICAL]: []
 }
 
 /**
  * Group by direction
- * TODO: optimize
  * @param  {Array} movableAxis
  * @return {Array}
  */
 function groupByDirection (movableAxis) {
-  // to compare between previous tile and next tile
+  // to compare between previous tile and current tile
   let beforeAxis
 
   const withDirection = movableAxis.reduce((acc, axis) => {
+    const setDirectionKey = _getDirection(acc)
+    let getDirection
+
     if (isEmpty(beforeAxis)) {
       beforeAxis = axis
 
@@ -25,61 +32,33 @@ function groupByDirection (movableAxis) {
     }
 
     const [currentX, currentY] = axis
-    const [beforeAxisX, beforeAxisY] = beforeAxis
+    const [beforeX, beforeY] = beforeAxis
 
-    const x = Math.abs(beforeAxisX - currentX)
-    const y = Math.abs(beforeAxisY - currentY)
+    // TODO: resolve duplicate issue
+    const axisList = [beforeAxis, axis]
 
-    // e.g [1, 1], [2, 2], [3, 3]
+    const x = Math.abs(beforeX - currentX)
+    const y = Math.abs(beforeY - currentY)
+
     if (x === 1 && y === 1) {
-      const { diagonal: prevDiagonal = [] } = acc
-      const axisList = [beforeAxis, axis]
-
-      beforeAxis = axis
-
-      return {
-        ...acc,
-        diagonal: [...prevDiagonal, ...axisList]
-      }
-    }
-
-    // e.g [0, 1] [0, 2], [0, 3]
-    if (x === 0) {
-      const { vertical: prevVertical = [] } = acc
-      const axisList = [beforeAxis, axis]
-
-      beforeAxis = axis
-
-      return {
-        ...acc,
-        vertical: [...prevVertical, ...axisList]
-      }
-    }
-
-    // e.g [1, 0] [2, 0] [3, 0]
-    if (y === 0) {
-      const { horizontal: prevHorizontal = [] } = acc
-      const axisList = [beforeAxis, axis]
-
-      beforeAxis = axis
-
-      return {
-        ...acc,
-        horizontal: [...prevHorizontal, ...axisList]
-      }
+      getDirection = setDirectionKey(DIAGONAL)
+    } else if (x === 0) {
+      getDirection = setDirectionKey(VERTICAL)
+    } else if (y === 0) {
+      getDirection = setDirectionKey(HORIZONTAL)
+    } else {
+      getDirection = setDirectionKey('')
     }
 
     beforeAxis = axis
 
-    return {
-      ...acc
-    }
+    return getDirection(axisList)
   }, initialObj)
 
   return {
-    vertical: uniq(withDirection.vertical),
-    horizontal: uniq(withDirection.horizontal),
-    diagonal: uniq(withDirection.diagonal)
+    [DIAGONAL]: uniq(withDirection[DIAGONAL]),
+    [VERTICAL]: uniq(withDirection[VERTICAL]),
+    [HORIZONTAL]: uniq(withDirection[HORIZONTAL])
   }
 }
 
