@@ -48,6 +48,7 @@ const DEV_SERVER = {
 }
 
 const ALIAS = {
+  'react-dom': '@hot-loader/react-dom',
   '~': Path.resolve('src')
 }
 
