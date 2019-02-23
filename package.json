@@ -68,7 +68,9 @@
   "dependencies": {
     "@babel/polyfill": "^7.2.5",
     "@hot-loader/react-dom": "^16.8.2",
+    "autobind-decorator": "^2.4.0",
     "classnames": "^2.2.6",
+    "memoize-one": "^5.0.0",
     "prop-types": "^15.7.2",
     "ramda": "^0.26.1",
     "react": "^16.8.3",

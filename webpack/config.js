@@ -34,6 +34,8 @@ const VENDOR = [
   'react-redux',
   'ramda',
   'redux-undo',
+  'memoize',
+  'autobind-decorator',
   'scu-inspector'
 ]
 
