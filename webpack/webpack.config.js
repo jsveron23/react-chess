@@ -1,6 +1,7 @@
+const MiniCssExtractPlugin = require('mini-css-extract-plugin')
 const Path = require('./lib/path')
-const Loaders = require('./loaders')
-const Plugins = require('./plugins')
+const Loaders = require('./lib/loaders')
+const Plugins = require('./lib/plugins')
 const {
   PORT,
   ALIAS,
@@ -10,8 +11,23 @@ const {
   DEVTOOL_PROD,
   DEV_SERVER,
   TARGET,
-  SPLIT_CHUNKS
+  SPLIT_CHUNKS,
+  LOADERS,
+  DEFAULT_PLUGINS,
+  DEV_PLUGINS,
+  PROD_PLUGINS
 } = require('./config')
+
+const getLoaders = Loaders.get(LOADERS)
+const getPlugins = Plugins.get(DEFAULT_PLUGINS, DEV_PLUGINS, PROD_PLUGINS)
+
+const entryApp = {
+  development: [
+    `webpack-dev-server/client?http://localhost:${PORT}`,
+    'webpack/hot/only-dev-server'
+  ],
+  production: []
+}
 
 /**
  * Configure
@@ -23,7 +39,6 @@ function configure (env = {}) {
   const isDev = mode === 'development'
   const config = {
     mode,
-    devServer: isDev ? DEV_SERVER : undefined,
     target: TARGET,
     context: Path.resolve('src'),
     performance: {
@@ -34,18 +49,9 @@ function configure (env = {}) {
       alias: ALIAS
     },
     devtool: isDev ? DEVTOOL_PROD : DEVTOOL,
-    plugins: Plugins.get(mode),
+    plugins: getPlugins(mode),
     entry: {
-      app: [
-        ...(isDev
-          ? [
-            `webpack-dev-server/client?http://localhost:${PORT}`,
-            'webpack/hot/only-dev-server'
-          ]
-          : []),
-        '@babel/polyfill',
-        './index'
-      ],
+      app: [...entryApp[mode], '@babel/polyfill', './index'],
       vendor: VENDOR
     },
     output: {
@@ -61,16 +67,22 @@ function configure (env = {}) {
     module: {
       noParse: NO_PARSE,
       rules: [
-        ...Loaders.get('javascript', 'svg'),
+        ...getLoaders('javascript', 'svg'),
         {
           test: /\.css$/,
           include: [Path.resolve('src')],
           use: isDev
-            ? Loaders.get('style', 'css', 'postcss')
-            : [Plugins.extractCSSLoader, ...Loaders.get('css', 'postcss')]
+            ? getLoaders('style', 'css', 'postcss')
+            : [MiniCssExtractPlugin.loader, ...getLoaders('css', 'postcss')]
         }
       ]
     }
+  }
+
+  if (isDev) {
+    Object.assign(config, {
+      devServer: DEV_SERVER
+    })
   }
 
   return config
