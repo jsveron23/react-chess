@@ -1,7 +1,7 @@
 import { curry, keys, compose, reduce } from 'ramda'
 
 /**
- * Convert key name inside an object (composable)
+ * Convert key name (composable)
  * @param  {Object} names
  * @param  {Object} obj
  * @return {Object}

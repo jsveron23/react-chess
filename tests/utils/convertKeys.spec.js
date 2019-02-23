@@ -8,22 +8,48 @@ describe('#convertKeys', () => {
     }
 
     it('convert key', () => {
-      expect(
-        convertKeys(
-          {
-            hello: 'kidding',
-            world: 'lol'
-          },
-          o
-        )
-      ).toEqual({
+      const o1 = {
+        hello: 'kidding',
+        world: 'lol'
+      }
+
+      const o2 = {
+        tony: 'kidding',
+        world: 'lol'
+      }
+
+      expect(convertKeys(o1, o)).toEqual({
         kidding: 'world',
+        lol: 'hello'
+      })
+
+      expect(convertKeys(o2, o)).toEqual({
+        hello: 'world',
         lol: 'hello'
       })
     })
 
     it('empty object', () => {
       expect(convertKeys({}, o)).toEqual({
+        hello: 'world',
+        world: 'hello'
+      })
+
+      expect(convertKeys([], o)).toEqual({
+        hello: 'world',
+        world: 'hello'
+      })
+    })
+
+    it('empty string', () => {
+      expect(convertKeys('', o)).toEqual({
+        hello: 'world',
+        world: 'hello'
+      })
+    })
+
+    it('number zoro', () => {
+      expect(convertKeys(0, o)).toEqual({
         hello: 'world',
         world: 'hello'
       })
