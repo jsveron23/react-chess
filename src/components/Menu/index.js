@@ -13,22 +13,15 @@ const Menu = ({ isDoingMatch, items, onClick }) => {
 
   return (
     <ul className={cls}>
-      {items
-        .map((name) => {
-          return {
-            name,
-            handleClick: onClick(name)
-          }
-        })
-        .map(({ name, handleClick }) => {
-          return (
-            <li key={name} className={css.menuItem}>
-              <Button className={innerCls} onClick={handleClick}>
-                {name}
-              </Button>
-            </li>
-          )
-        })}
+      {items.map((name) => {
+        return (
+          <li key={name} className={css.menuItem}>
+            <Button className={innerCls} onClick={onClick(name)}>
+              {name}
+            </Button>
+          </li>
+        )
+      })}
     </ul>
   )
 }

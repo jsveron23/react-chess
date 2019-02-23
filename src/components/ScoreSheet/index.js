@@ -16,12 +16,14 @@ class ScoreSheet extends Component {
 
   shouldComponentUpdate (nextProps) {
     const prevProps = this.props
-    const shouldUpdate = compose(
+    const isMatchStatusChanged =
+      prevProps.isDoingMatch !== nextProps.isDoingMatch
+    const isSheetChanged = compose(
       isExist,
       difference(nextProps.sheet)
     )(prevProps.sheet)
 
-    if (shouldUpdate) {
+    if (isMatchStatusChanged || isSheetChanged) {
       return true
     }
 
