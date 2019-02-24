@@ -1,4 +1,5 @@
 import { curry } from 'ramda'
+import { isEmpty } from '~/utils'
 
 /**
  * Replace code of snapshot
@@ -8,6 +9,10 @@ import { curry } from 'ramda'
  * @return {Array}
  */
 function replaceSnapshot (replace, token, snapshot) {
+  if (isEmpty.or(replace, token)) {
+    return snapshot
+  }
+
   return snapshot.map((code) => {
     if (code.includes(token)) {
       return replace

@@ -1,5 +1,4 @@
 import { curry } from 'ramda'
-import { replaceSnapshot } from '~/chess/helpers'
 
 const PROMOTION = 'promotion'
 const PROMOTION_TILES = {
@@ -11,19 +10,13 @@ const PROMOTION_TILES = {
  * @param  {string} side
  * @param  {string} tile
  * @param  {Array}  special
- * @param  {Array}  snapshot
  * @return {Array}
  */
-function _applyPromotion (side, tile, special, snapshot) {
+function _applyPromotion (side, tile, special) {
   const isMovedToEnd = PROMOTION_TILES[side].includes(tile)
   const shouldPromotion = special.includes(PROMOTION) && isMovedToEnd
-  let nextSnapshot = []
 
-  if (shouldPromotion) {
-    nextSnapshot = replaceSnapshot(`${side}Q${tile}`, tile, snapshot)
-  }
-
-  return nextSnapshot
+  return shouldPromotion ? `${side}Q${tile}` : ''
 }
 
 export default curry(_applyPromotion)

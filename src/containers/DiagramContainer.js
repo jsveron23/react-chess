@@ -6,7 +6,8 @@ import {
   getMovableTiles,
   appendSpecialAxis,
   rejectBlocked,
-  groupByDirection
+  groupByDirection,
+  createTimeline
 } from '~/chess/core'
 import { getSpecial, parseSelected } from '~/chess/helpers'
 import { RANKS, FILES } from '~/chess/constants'
@@ -14,12 +15,15 @@ import { isExist } from '~/utils'
 
 function mapStateToProps ({ general, ingame }) {
   const { isDoingMatch } = general
-  const { present } = ingame
+  const { present, past } = ingame
   const { turn, snapshot, selected, movableAxis } = present
   const { piece, side, file, rank } = parseSelected(selected, snapshot)
   const special = getSpecial(piece) || []
   const tile = `${file}${rank}`
-  const getSpecialAxisFn = appendSpecialAxis(side, special, tile, snapshot)
+  const getSpecialAxisFn = compose(
+    appendSpecialAxis(side, special, tile),
+    createTimeline(snapshot)
+  )(past)
   const getRegularAxisFn = compose(
     rejectBlocked(turn, snapshot),
     groupByDirection

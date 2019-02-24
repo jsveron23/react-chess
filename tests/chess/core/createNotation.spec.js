@@ -1,7 +1,7 @@
 import { createNotation } from '~/chess/core'
 
 // prettier-ignore
-const notations = [
+const snapshotList = [
   [
     'bRa8', 'bNb8', 'bBc8', 'bQd8', 'bKe8', 'bBf8', 'bNg8', 'bRh8',
     'bPa7', 'bPb5', 'bPc7', 'bPd5', 'bPe7', 'bPf7', 'bPg7', 'bPh7',
@@ -42,7 +42,7 @@ const notations = [
 
 describe('#createNotation', () => {
   it('Create notation', () => {
-    expect(createNotation(notations)).toEqual([
+    expect(createNotation(snapshotList)).toEqual([
       {
         white: 'Nf3'
       },

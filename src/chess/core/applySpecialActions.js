@@ -1,5 +1,6 @@
 import { curry } from 'ramda'
 import { isExist } from '~/utils'
+import { replaceSnapshot } from '~/chess/helpers'
 import _applyPromotion from './internal/_applyPromotion'
 
 /**
@@ -7,12 +8,15 @@ import _applyPromotion from './internal/_applyPromotion'
  * @param  {string} side
  * @param  {Array}  special
  * @param  {string} tile
- * @param  {Array}  snapshot
+ * @param  {Array}  timeline
  * @return {Object}
  */
-function applySpecialActions (side, special, tile, snapshot) {
+function applySpecialActions (side, special, tile, timeline) {
+  const [snapshot] = timeline
+
   if (special.length > 1) {
-    const nextSnapshot = _applyPromotion(side, tile, special, snapshot)
+    const code = _applyPromotion(side, tile, special)
+    const nextSnapshot = replaceSnapshot(code, tile, snapshot)
 
     if (isExist(nextSnapshot)) {
       return nextSnapshot

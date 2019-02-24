@@ -4,7 +4,8 @@ import { OPPONENT } from '~/chess/constants'
 import {
   getMovableAxis,
   getNextSnapshot,
-  applySpecialActions
+  applySpecialActions,
+  createTimeline
 } from '~/chess/core'
 import {
   getSpecial,
@@ -75,13 +76,17 @@ export function setMovable (tile) {
 export function setNext (tile) {
   return (dispatch, getState) => {
     const { ingame } = getState()
-    const { selected, snapshot } = ingame.present
+    const { present, past } = ingame
+    const { selected, snapshot } = present
     const { piece, side } = parseSelected(selected, snapshot)
     const special = getSpecial(piece)
     let nextSnapshot = getNextSnapshot(selected, tile, snapshot)
 
     if (isExist(special)) {
-      nextSnapshot = applySpecialActions(side, special, tile, nextSnapshot)
+      nextSnapshot = compose(
+        applySpecialActions(side, special, tile),
+        createTimeline(nextSnapshot)
+      )(past)
     }
 
     dispatch(setSnapshot(nextSnapshot))
