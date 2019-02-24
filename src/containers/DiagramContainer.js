@@ -1,12 +1,12 @@
 import { connect } from 'react-redux'
-import { compose } from 'ramda'
+import { compose, ifElse, thunkify } from 'ramda'
 import { Diagram } from '~/components'
 import { setNext, setMovable, setCapturedNext } from '~/actions/ingame'
 import {
   getMovableTiles,
-  groupByDirection,
   appendSpecialAxis,
-  rejectBlocked
+  rejectBlocked,
+  groupByDirection
 } from '~/chess/core'
 import { getSpecial, parseSelected } from '~/chess/helpers'
 import { RANKS, FILES } from '~/chess/constants'
@@ -16,43 +16,39 @@ function mapStateToProps ({ general, ingame }) {
   const { isDoingMatch } = general
   const { present } = ingame
   const { turn, snapshot, selected, movableAxis } = present
-  const {
-    piece: selectedPiece,
-    side: selectedSide,
-    file: selectedFile,
-    rank: selectedRank
-  } = parseSelected(selected, snapshot)
-  const selecteSpecial = getSpecial(selectedPiece) || []
-  let nextMovableAxis = movableAxis
+  const { piece, side, file, rank } = parseSelected(selected, snapshot)
+  const special = getSpecial(piece) || []
+  const tile = `${file}${rank}`
+  const getSpecialAxisFn = appendSpecialAxis(side, special, tile, snapshot)
+  const getRegularAxisFn = compose(
+    rejectBlocked(turn, snapshot),
+    groupByDirection
+  )
 
-  if (isExist(movableAxis)) {
-    const selectedTile = `${selectedFile}${selectedRank}`
-
-    if (isExist(selecteSpecial)) {
-      nextMovableAxis = appendSpecialAxis(
-        selectedSide,
-        selecteSpecial,
-        selectedTile
-      )(snapshot, movableAxis)
-    } else {
-      nextMovableAxis = compose(
-        rejectBlocked(turn, snapshot),
-        groupByDirection
-      )(movableAxis)
-    }
-  }
+  // NOTE:
+  // - `get[?]AxisFn` functions will return results after applying `special` argument
+  // - but those functions don't need another argument actually.
+  // - `thunkify` will delay return result until applying last 1 argument which is `special`
+  const nextMovableAxis = compose(
+    getMovableTiles,
+    ifElse(
+      isExist,
+      thunkify(getSpecialAxisFn)(movableAxis),
+      thunkify(getRegularAxisFn)(movableAxis)
+    )
+  )(special)
 
   return {
     isDoingMatch,
     turn,
     snapshot,
-    selectedPiece,
-    selectedSide,
-    selectedFile,
-    selectedRank,
+    selectedPiece: piece,
+    selectedSide: side,
+    selectedFile: file,
+    selectedRank: rank,
     ranks: RANKS,
     files: FILES,
-    movableTiles: getMovableTiles(nextMovableAxis)
+    movableTiles: nextMovableAxis
   }
 }
 

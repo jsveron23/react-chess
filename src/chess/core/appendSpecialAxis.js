@@ -4,7 +4,7 @@ import _applyDoubleStep from './internal/_applyDoubleStep'
 import _applyEnPassant from './internal/_applyEnPassant'
 
 /**
- * Add special axis
+ * Append special axis before moving to tile
  * @param  {string} side
  * @param  {Array}  special
  * @param  {string} tile
@@ -12,7 +12,7 @@ import _applyEnPassant from './internal/_applyEnPassant'
  * @param  {Array}  movableAxis
  * @return {Object}
  */
-function addSpecialAxis (side, special, tile, snapshot, movableAxis) {
+function appendSpecialAxis (side, special, tile, snapshot, movableAxis) {
   let nextMovableAxis = [...movableAxis]
 
   if (special.length > 1) {
@@ -31,4 +31,4 @@ function addSpecialAxis (side, special, tile, snapshot, movableAxis) {
   return nextMovableAxis
 }
 
-export default curry(addSpecialAxis)
+export default curry(appendSpecialAxis)

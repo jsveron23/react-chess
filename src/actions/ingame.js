@@ -1,7 +1,11 @@
 import { compose, filter, flip, prop } from 'ramda'
 import * as types from '~/actions'
 import { OPPONENT } from '~/chess/constants'
-import { getMovableAxis, getNextSnapshot, applySpecial } from '~/chess/core'
+import {
+  getMovableAxis,
+  getNextSnapshot,
+  applySpecialActions
+} from '~/chess/core'
 import {
   getSpecial,
   parseSelected,
@@ -77,7 +81,7 @@ export function setNext (tile) {
     let nextSnapshot = getNextSnapshot(selected, tile, snapshot)
 
     if (isExist(special)) {
-      nextSnapshot = applySpecial(side, special, tile, nextSnapshot)
+      nextSnapshot = applySpecialActions(side, special, tile, nextSnapshot)
     }
 
     dispatch(setSnapshot(nextSnapshot))
