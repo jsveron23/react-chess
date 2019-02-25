@@ -48,7 +48,7 @@ describe('#convertKeys', () => {
       })
     })
 
-    it('number zoro', () => {
+    it('number zero', () => {
       expect(convertKeys(0, o)).toEqual({
         hello: 'world',
         world: 'hello'

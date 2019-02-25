@@ -10,7 +10,7 @@ import _applyEnPassant from './internal/_applyEnPassant'
  * @param  {string} tile
  * @param  {Array}  timeline
  * @param  {Array}  movableAxis
- * @return {Object}
+ * @return {Array}
  */
 function appendSpecialAxis (side, special, tile, timeline, movableAxis) {
   const [snapshot] = timeline

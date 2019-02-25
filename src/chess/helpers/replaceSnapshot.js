@@ -9,7 +9,7 @@ import { isEmpty } from '~/utils'
  * @return {Array}
  */
 function replaceSnapshot (replace, token, snapshot) {
-  if (isEmpty.or(replace, token)) {
+  if (isEmpty(token)) {
     return snapshot
   }
 

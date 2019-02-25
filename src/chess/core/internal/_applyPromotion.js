@@ -7,6 +7,7 @@ const PROMOTION_TILES = {
 }
 
 /**
+ * @TODO: bug, same time when capture on end tile
  * @param  {string} side
  * @param  {string} tile
  * @param  {Array}  special

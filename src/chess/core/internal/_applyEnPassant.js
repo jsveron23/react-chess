@@ -4,6 +4,8 @@ import {
   findCodeByAxis,
   convertTileToAxis,
   diffSnapshot,
+  parseCode,
+  parseTile,
   convertRankToY
 } from '~/chess/helpers'
 
@@ -52,4 +54,30 @@ function _applyEnPassant (side, tile, timeline) {
   ])
 }
 
+/**
+ * @TODO: optimize
+ * @param  {string} side
+ * @param  {string} tile
+ * @param  {Array}  timeline
+ * @return {string}
+ */
+function _changeSnapshot (side, tile, timeline) {
+  const [snapshot, prevSnapshot] = timeline
+  const idx = snapshot.findIndex((code) => code.includes(tile))
+  const beforeMovedCode = prevSnapshot[idx]
+  const { file: beforeMovedFile } = parseCode(beforeMovedCode)
+  const { file, rank } = parseTile(tile)
+  const y = convertRankToY(rank)
+  const isEnPassant = file !== beforeMovedFile
+
+  if (isEnPassant) {
+    const capturedTile = `${file}${y + (side === 'w' ? -1 : 1)}`
+
+    return capturedTile
+  }
+
+  return ''
+}
+
+export const _applySnapshot = curry(_changeSnapshot)
 export default curry(_applyEnPassant)
