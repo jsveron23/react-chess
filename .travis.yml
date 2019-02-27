@@ -7,7 +7,7 @@ sudo: false
 
 branches:
   only:
-    - next
+    - master
 
 script:
   - npm run lint

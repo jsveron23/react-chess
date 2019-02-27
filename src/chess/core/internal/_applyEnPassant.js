@@ -23,7 +23,6 @@ function _applyEnPassant (side, tile, timeline) {
   const diagonalLeftAxis = side === 'w' ? [x - 1, y + 1] : [x + 1, y - 1]
   let additinalAxis = []
 
-  // TODO: implement move but find out how to capture
   if (isExist(prevSnapshot)) {
     const { file: ss1File, rank: ss1Rank } = diffSnapshot(
       snapshot,
