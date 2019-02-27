@@ -6,14 +6,16 @@
   "private": true,
   "scripts": {
     "test": "jest --config ./tests/jest.config.js --detectOpenHandles",
-    "update": "npm-check -u",
     "lint": "eslint src",
     "clean": "rimraf public",
-    "build:webpack": "webpack --config ./webpack/webpack.config.js --env.production --display-error-details",
-    "build": "npm run clean && npm run build:webpack",
-    "gh-pages": "git subtree push --prefix public origin gh-pages",
-    "deploy": "npm run gh-pages",
-    "start": "webpack-dev-server --config ./webpack/webpack.config.js"
+    "prebuild": "npm run clean",
+    "bundle:dev": "webpack-dev-server --config ./scripts/webpack/webpack.config.js",
+    "bundle:prod": "webpack --config ./scripts/webpack/webpack.config.js --env.production --display-error-details",
+    "build": "npm run bundle:prod",
+    "start": "npm run bundle:dev",
+    "deploy": "./scripts/gh-pages/deploy.sh",
+    "update": "npm-check -u",
+    "sync:master": "git reset --hard origin/master"
   },
   "keywords": [
     "react",
