@@ -20,10 +20,6 @@ npm start
 
 open browser, http://localhost:3000
 
-## Example
-
-- [Master branch (WIP)](https://jsveron23-react-chess.herokuapp.com/)
-
 ## License
 
 MIT
