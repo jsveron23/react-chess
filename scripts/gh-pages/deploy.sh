@@ -10,7 +10,7 @@ npm run build
 git add public
 
 # Commit
-git commint -m "Deploy to Github"
+git commit -m "Deploy to Github"
 
 # Deploy
 git subtree push --prefix public origin gh-pages
