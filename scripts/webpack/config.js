@@ -19,8 +19,7 @@ const NO_PARSE = new RegExp(
     'eslint-plugin-promise',
     'eslint-plugin-react',
     'eslint-plugin-standard',
-    'jest',
-    'express' // for Heroku
+    'jest'
   ].join('|')
 )
 
@@ -109,7 +108,7 @@ const LOADERS = {
     loader: 'postcss-loader',
     options: {
       config: {
-        path: `${Path.resolve('webpack')}/postcss/postcss.config.js`
+        path: `${Path.resolve('scripts', 'webpack')}/postcss/postcss.config.js`
       }
     }
   },
