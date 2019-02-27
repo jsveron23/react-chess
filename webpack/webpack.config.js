@@ -56,8 +56,7 @@ function configure (env = {}) {
     },
     output: {
       path: Path.resolve('public'),
-      filename: isDev ? '[name].js' : '[name].[contenthash].js',
-      publicPath: '/'
+      filename: isDev ? '[name].js' : '[name].[contenthash].js'
     },
     optimization: {
       namedModules: isDev,
@@ -67,7 +66,7 @@ function configure (env = {}) {
     module: {
       noParse: NO_PARSE,
       rules: [
-        ...getLoaders('javascript', 'svg'),
+        ...getLoaders('javascript', 'svg', 'url'),
         {
           test: /\.css$/,
           include: [Path.resolve('src')],

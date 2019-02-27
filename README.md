@@ -20,6 +20,10 @@ npm start
 
 open browser, http://localhost:3000
 
+## Demo
+
+[WIP] https://jsveron23.github.io/react-chess
+
 ## License
 
 MIT

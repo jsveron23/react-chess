@@ -1,6 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import cx from 'classnames'
+import logoImg from '~/assets/logo.png'
 import css from './Logo.css'
 
 const Logo = ({ isDoingMatch, title }) => {
@@ -12,7 +13,7 @@ const Logo = ({ isDoingMatch, title }) => {
 
   return (
     <div className={cls}>
-      <img src="/logo.svg" alt={title} className={css.logoImg} />
+      <img src={logoImg} alt={title} className={css.logoImg} />
     </div>
   )
 }
