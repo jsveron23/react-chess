@@ -1,4 +1,4 @@
-import { curry, find, includes, compose, flip } from 'ramda'
+import { curry, defaultTo, includes, compose, flip, find } from 'ramda'
 import { isEmpty } from '~/utils'
 
 /**
@@ -12,12 +12,11 @@ function findCode (snapshot, searchTxt) {
     return ''
   }
 
-  const code = compose(
+  return compose(
+    defaultTo(''),
     flip(find)(snapshot),
     includes
   )(searchTxt)
-
-  return code || ''
 }
 
 export default curry(findCode)
