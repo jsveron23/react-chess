@@ -15,10 +15,6 @@ module.exports = {
   moduleNameMapper: {
     '^~/(.*)$': '<rootDir>/src/$1'
   },
-  collectCoverage: true,
-  coverageDirectory: '<rootDir>/tests/coverage',
-  coverageReporters: ['text', 'lcov'],
-  coveragePathIgnorePatterns: ['/node_modules/'],
   snapshotSerializers: ['enzyme-to-json/serializer'],
   setupFiles: ['<rootDir>/tests/setupTests.js']
 }

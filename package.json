@@ -6,7 +6,8 @@
   "private": true,
   "scripts": {
     "test": "jest --config ./tests/jest.config.js --detectOpenHandles",
-    "coveralls": "npm test | coveralls",
+    "coverage": "jest --config ./tests/jest.config.js --detectOpenHandles --coverage --coverageReporters=text-lcov",
+    "coveralls": "npm run coverage | coveralls",
     "lint": "eslint src",
     "clean": "rimraf public",
     "prebuild": "npm run clean",
