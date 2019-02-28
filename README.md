@@ -1,4 +1,4 @@
-[![MIT license](http://img.shields.io/badge/license-MIT-brightgreen.svg)](LICENSE.md) [![Build Status](https://travis-ci.org/jsveron23/react-chess.svg?branch=next)](https://travis-ci.org/jsveron23/react-chess) [![Coverage Status](https://coveralls.io/repos/github/jsveron23/react-chess/badge.svg?branch=next)](https://coveralls.io/github/jsveron23/react-chess?branch=next)
+[![MIT license](http://img.shields.io/badge/license-MIT-brightgreen.svg)](LICENSE.md) [![Build Status](https://travis-ci.org/jsveron23/react-chess.svg?branch=next)](https://travis-ci.org/jsveron23/react-chess) [![Coverage Status](https://coveralls.io/repos/github/jsveron23/react-chess/badge.svg)](https://coveralls.io/github/jsveron23/react-chess)
 
 Programs must be written for people to read, and only incidentally for machines to execute.
 
