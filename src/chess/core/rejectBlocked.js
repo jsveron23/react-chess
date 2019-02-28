@@ -2,7 +2,7 @@ import { curry, compose, reduce, keys, map } from 'ramda'
 import {
   convertAxisToTile,
   findSideByTile,
-  createSnapshotRe
+  isPieceThere
 } from '~/chess/helpers'
 
 /**
@@ -13,7 +13,7 @@ import {
  * @return {Function}
  */
 function createMapCb (turn, snapshot, movableWithDirection) {
-  const re = createSnapshotRe(snapshot)
+  const isPieceStand = isPieceThere(snapshot)
 
   /**
    * @callback
@@ -32,7 +32,7 @@ function createMapCb (turn, snapshot, movableWithDirection) {
       const tile = convertAxisToTile(axis)
       const side = findSideByTile(snapshot, tile)
       const isEnemy = side !== turn
-      const isPieceStanding = re.test(tile)
+      const isPieceStanding = isPieceStand(axis)
 
       const [x, y] = axis
       const intervalX = Math.abs(x - prevX)
