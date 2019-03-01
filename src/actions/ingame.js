@@ -1,4 +1,4 @@
-import { compose, filter, flip, prop } from 'ramda'
+import { compose, ifElse, filter, thunkify, flip, prop, identity } from 'ramda'
 import * as types from '~/actions'
 import { OPPONENT } from '~/chess/constants'
 import {
@@ -80,14 +80,15 @@ export function setNext (tile) {
     const { selected, snapshot } = present
     const { piece, side } = parseSelected(selected, snapshot)
     const special = getSpecial(piece)
-    let nextSnapshot = getNextSnapshot(selected, tile, snapshot)
-
-    if (isExist(special)) {
-      nextSnapshot = compose(
-        applySpecialActions(side, special, tile),
-        createTimeline(nextSnapshot)
-      )(past)
-    }
+    const thunkIsExist = thunkify(isExist)
+    const getSpecialActionsFn = compose(
+      applySpecialActions(side, special, tile),
+      flip(createTimeline)(past)
+    )
+    const nextSnapshot = compose(
+      ifElse(thunkIsExist(special), getSpecialActionsFn, identity),
+      getNextSnapshot(selected, tile)
+    )(snapshot)
 
     dispatch(setSnapshot(nextSnapshot))
     dispatch(setMovableAxis())
