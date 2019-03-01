@@ -19,6 +19,7 @@ function mapStateToProps ({ general, ingame }) {
   const { turn, snapshot, selected, movableAxis } = present
   const { piece, side, file, rank } = parseSelected(selected, snapshot)
   const special = getSpecial(piece) || []
+  const thunkIsExist = thunkify(isExist)
   const tile = `${file}${rank}`
   const getSpecialAxisFn = compose(
     appendSpecialAxis(side, special, tile),
@@ -28,19 +29,10 @@ function mapStateToProps ({ general, ingame }) {
     rejectBlocked(turn, snapshot),
     groupByDirection
   )
-
-  // NOTE:
-  // - `get[?]AxisFn` functions will return results after applying `special` argument
-  // - but those functions don't need another argument actually.
-  // - `thunkify` will delay return result until applying last 1 argument which is `special`
   const nextMovableAxis = compose(
     getMovableTiles,
-    ifElse(
-      isExist,
-      thunkify(getSpecialAxisFn)(movableAxis),
-      thunkify(getRegularAxisFn)(movableAxis)
-    )
-  )(special)
+    ifElse(thunkIsExist(special), getSpecialAxisFn, getRegularAxisFn)
+  )(movableAxis)
 
   return {
     isDoingMatch,
