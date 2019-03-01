@@ -19,7 +19,8 @@ const NO_PARSE = new RegExp(
     'eslint-plugin-promise',
     'eslint-plugin-react',
     'eslint-plugin-standard',
-    'jest'
+    'jest',
+    'coveralls'
   ].join('|')
 )
 
