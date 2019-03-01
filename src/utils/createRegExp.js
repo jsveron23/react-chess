@@ -2,21 +2,21 @@ import { curry } from 'ramda'
 
 /**
  * Create regular expression
- * @param  {string} txt
+ * @param  {string} str
  * @return {RegExp}
  */
-function createRegExp (txt) {
-  return new RegExp(txt)
+function createRegExp (str) {
+  return new RegExp(str)
 }
 
 /**
  * Create regular expression with options
  * @param  {string} options
- * @param  {string} txt
+ * @param  {string} str
  * @return {RegExp}
  */
-function withOption (options, txt) {
-  return new RegExp(txt, options || '')
+function withOption (options, str) {
+  return new RegExp(str, options || '')
 }
 
 createRegExp.withOptions = curry(withOption)
