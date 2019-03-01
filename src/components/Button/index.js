@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { memo } from 'react'
 import PropTypes from 'prop-types'
 import cx from 'classnames'
 import { noop } from '~/utils'
@@ -26,4 +26,4 @@ Button.defaultProps = {
   onClick: noop
 }
 
-export default Button
+export default memo(Button)

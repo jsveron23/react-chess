@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { memo } from 'react'
 import PropTypes from 'prop-types'
 
 const Blank = ({ tagName, className }) => {
@@ -12,4 +12,4 @@ Blank.propTypes = {
   className: PropTypes.string
 }
 
-export default Blank
+export default memo(Blank)

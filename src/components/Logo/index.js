@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { memo } from 'react'
 import PropTypes from 'prop-types'
 import cx from 'classnames'
 import logoImg from '~/assets/logo.png'
@@ -23,4 +23,4 @@ Logo.propTypes = {
   isDoingMatch: PropTypes.bool.isRequired
 }
 
-export default Logo
+export default memo(Logo)

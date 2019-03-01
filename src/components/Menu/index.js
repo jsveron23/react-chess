@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { memo } from 'react'
 import PropTypes from 'prop-types'
 import cx from 'classnames'
 import { Button } from '~/components'
@@ -36,4 +36,4 @@ Menu.defaultProps = {
   onClick: noop
 }
 
-export default Menu
+export default memo(Menu)
