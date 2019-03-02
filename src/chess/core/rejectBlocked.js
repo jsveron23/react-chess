@@ -1,8 +1,9 @@
 import { curry, compose, reduce, keys, map } from 'ramda'
 import {
   convertAxisToTile,
-  findSideByTile,
-  isPieceThere
+  findCodeByTile,
+  isPieceThere,
+  getSide
 } from '~/chess/helpers'
 
 /**
@@ -14,6 +15,7 @@ import {
  */
 function createMapCb (turn, snapshot, movableWithDirection) {
   const isPieceStand = isPieceThere(snapshot)
+  const parseCodeByTile = findCodeByTile(snapshot)
 
   /**
    * @callback
@@ -30,8 +32,8 @@ function createMapCb (turn, snapshot, movableWithDirection) {
     // checking in same direction
     return axisList.reduce((acc, axis) => {
       const tile = convertAxisToTile(axis)
-      const side = findSideByTile(snapshot, tile)
-      const isEnemy = side !== turn
+      const { side } = parseCodeByTile(tile)
+      const isEnemy = getSide(side) !== turn
       const isPieceStanding = isPieceStand(axis)
 
       const [x, y] = axis

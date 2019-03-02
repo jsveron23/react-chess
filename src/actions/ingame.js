@@ -55,6 +55,7 @@ export function setMovable (tile) {
     const { ingame } = getState()
     const { present } = ingame
     const { turn, snapshot } = present
+    const nextSelected = `${tile}-${getSide(turn)}`
 
     const flippedGetMovableAxis = compose(
       flip,
@@ -69,7 +70,7 @@ export function setMovable (tile) {
     )(tile)
 
     dispatch(setMovableAxis(movableAxis))
-    dispatch(setSelected(`${tile}-${getSide(turn)}`))
+    dispatch(setSelected(nextSelected))
   }
 }
 
