@@ -11,9 +11,9 @@ import {
   getSpecial,
   parseSelected,
   replaceSnapshot,
-  getSide,
   parseCode,
-  findCode
+  findCode,
+  createSelected
 } from '~/chess/helpers'
 import { isExist } from '~/utils'
 
@@ -55,7 +55,7 @@ export function setMovable (tile) {
     const { ingame } = getState()
     const { present } = ingame
     const { turn, snapshot } = present
-    const nextSelected = `${tile}-${getSide(turn)}`
+    const nextSelected = createSelected(tile, turn)
 
     const flippedGetMovableAxis = compose(
       flip,
