@@ -40,7 +40,6 @@ function enhancePiece (WrappedComponent, staticKey, staticTurn) {
     }
 
     getSelectedTile = memoize(createTile)
-    getStaticSide = memoize(getSide)
 
     @boundMethod
     handleClick (evt) {
@@ -59,7 +58,7 @@ function enhancePiece (WrappedComponent, staticKey, staticTurn) {
       } = this.props
 
       const selectedTile = this.getSelectedTile(selectedFile, selectedRank)
-      const isTurn = this.getStaticSide(staticTurn) === turn
+      const isTurn = getSide(staticTurn) === turn
       const isCapturable = isMovable && !isTurn
 
       if (isTurn) {
@@ -72,7 +71,7 @@ function enhancePiece (WrappedComponent, staticKey, staticTurn) {
         setCapturedNext({
           selectedTile,
           capturedTile: tile,
-          replaceCode: code
+          nextCode: code
         })
       }
     }
@@ -80,7 +79,7 @@ function enhancePiece (WrappedComponent, staticKey, staticTurn) {
     render () {
       const { turn, tile, selectedFile, selectedRank, isMovable } = this.props
       const selectedTile = this.getSelectedTile(selectedFile, selectedRank)
-      const isTurn = this.getStaticSide(staticTurn) === turn
+      const isTurn = getSide(staticTurn) === turn
       const isCapturable = isMovable && !isTurn
       const cls = cx({
         'is-turn': isTurn,

@@ -3,11 +3,23 @@ import PropTypes from 'prop-types'
 import cx from 'classnames'
 import memoize from 'memoize-one'
 import { boundMethod } from 'autobind-decorator'
-import { includes } from 'ramda'
+import {
+  curry,
+  compose,
+  includes,
+  ifElse,
+  thunkify,
+  identity,
+  and
+} from 'ramda'
 import { Blank } from '~/components'
 import { isEmpty, isExist, noop } from '~/utils'
 import { isDarkBg } from '~/chess/helpers'
 import css from './File.css'
+
+const curriedCreateElement = curry((Element, props) =>
+  createElement(Element, props)
+)
 
 class File extends Component {
   static propTypes = {
@@ -18,8 +30,8 @@ class File extends Component {
     selectedSide: PropTypes.string,
     selectedFile: PropTypes.string,
     selectedRank: PropTypes.string,
-    Piece: PropTypes.func,
     movableTiles: PropTypes.array,
+    children: PropTypes.func,
     setCapturedNext: PropTypes.func,
     setMovable: PropTypes.func,
     setNext: PropTypes.func
@@ -38,10 +50,13 @@ class File extends Component {
   handleClick (evt) {
     evt.preventDefault()
 
-    const { tile, Piece, movableTiles, setNext } = this.props
-    const isMovable = this.isMovable(tile, movableTiles)
+    const { tile, children, movableTiles, setNext } = this.props
+    const shouldSetNext = compose(
+      and(isEmpty(children)),
+      this.isMovable(tile)
+    )(movableTiles)
 
-    if (isMovable && isEmpty(Piece)) {
+    if (shouldSetNext) {
       setNext(tile)
     }
   }
@@ -51,7 +66,7 @@ class File extends Component {
       turn,
       fileName,
       tile,
-      Piece,
+      children,
       selectedPiece,
       selectedSide,
       selectedFile,
@@ -80,13 +95,19 @@ class File extends Component {
       className: cx({ 'is-movable': isMovable })
     }
 
-    const Element = Piece || Blank
-    const childProps = isExist(Piece) ? pieceProps : blankProps
+    const Element = compose(
+      curriedCreateElement(children || Blank),
+      ifElse(
+        isExist,
+        thunkify(identity)(pieceProps),
+        thunkify(identity)(blankProps)
+      )
+    )(children)
     const cls = cx(css.file, { 'is-dark': isDarkBg(tile) })
 
     return (
       <div className={cls} data-file={fileName} onClick={this.handleClick}>
-        {createElement(Element, childProps)}
+        {Element}
       </div>
     )
   }

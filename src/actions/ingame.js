@@ -1,4 +1,4 @@
-import { compose, ifElse, filter, thunkify, flip, prop, identity } from 'ramda'
+import { compose, ifElse, reject, thunkify, flip, prop, identity } from 'ramda'
 import * as types from '~/actions'
 import { OPPONENT } from '~/chess/constants'
 import {
@@ -15,7 +15,7 @@ import {
   findCode,
   createSelected
 } from '~/chess/helpers'
-import { isExist } from '~/utils'
+import { isEmpty, isExist } from '~/utils'
 
 export function setSelected (piece) {
   return {
@@ -82,10 +82,12 @@ export function setNext (tile) {
     const { piece, side } = parseSelected(selected, snapshot)
     const special = getSpecial(piece)
     const thunkIsExist = thunkify(isExist)
+
     const getSpecialActionsFn = compose(
       applySpecialActions(side, special, tile),
       flip(createTimeline)(past)
     )
+
     const nextSnapshot = compose(
       ifElse(thunkIsExist(special), getSpecialActionsFn, identity),
       getNextSnapshot(selected, tile)
@@ -97,14 +99,14 @@ export function setNext (tile) {
   }
 }
 
-export function setCapturedNext ({ capturedTile, selectedTile, replaceCode }) {
+export function setCapturedNext ({ capturedTile, selectedTile, nextCode }) {
   return (dispatch, getState) => {
     const { ingame } = getState()
     const { present } = ingame
 
     const capturedSnapshot = compose(
-      filter(isExist),
-      replaceSnapshot(replaceCode, selectedTile),
+      reject(isEmpty),
+      replaceSnapshot(nextCode, selectedTile),
       replaceSnapshot('', capturedTile)
     )(present.snapshot)
 

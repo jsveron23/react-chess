@@ -30,24 +30,24 @@ const Rank = (props) => {
       {files.map((fileName) => {
         const tile = `${fileName}${rankName}`
         const { side, piece } = parseCodeByTile(tile)
-        const Piece = getPiece(side, piece)
 
         return (
           <File
             key={tile}
-            Piece={Piece}
             turn={turn}
+            tile={tile}
+            fileName={fileName}
             selectedPiece={selectedPiece}
             selectedSide={selectedSide}
             selectedFile={selectedFile}
             selectedRank={selectedRank}
-            fileName={fileName}
-            tile={tile}
             movableTiles={movableTiles}
             setCapturedNext={setCapturedNext}
             setMovable={setMovable}
             setNext={setNext}
-          />
+          >
+            {getPiece(side, piece)}
+          </File>
         )
       })}
     </div>
