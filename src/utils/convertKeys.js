@@ -9,9 +9,11 @@ import { curry, keys, compose, reduce } from 'ramda'
 function convertKeys (names, obj) {
   return compose(
     reduce((acc, key) => {
+      const nextKey = names[key] || key
+
       return {
         ...acc,
-        [names[key] || key]: obj[key]
+        [nextKey]: obj[key]
       }
     }, {}),
     keys

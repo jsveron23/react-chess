@@ -5,10 +5,10 @@ import _detectEmpty from './_detectEmpty'
  * @return {Function}
  */
 function _isEmpty (fnName) {
-  return (...x) => {
-    const fn = x[fnName].bind(x)
+  return (...args) => {
+    const fn = args[fnName].bind(args)
 
-    return fn((v) => _detectEmpty(v))
+    return fn((x) => _detectEmpty(x))
   }
 }
 

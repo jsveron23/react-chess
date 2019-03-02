@@ -5,18 +5,17 @@ import isEmpty from './isEmpty'
  * Split by token string and return as an object
  * @param  {string} token
  * @param  {Array}  names
- * @param  {string} txt
+ * @param  {string} str
  * @return {Object}
  */
-function splitTo (token, names, txt) {
-  const mappable = split(token, txt)
+function splitTo (token, names, str) {
+  const mappable = split(token, str)
 
-  // NOTE: Ramda#reduce will not return index number
   return mappable.reduce((acc, chunk, idx) => {
     const name = names[idx]
-    const validType = typeof name === 'string' || typeof name === 'number'
+    const isValidType = typeof name === 'string' || typeof name === 'number'
 
-    if (!validType || isEmpty(name)) {
+    if (!isValidType || isEmpty(name)) {
       return acc
     }
 
