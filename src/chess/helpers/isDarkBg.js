@@ -1,3 +1,4 @@
+import { ifElse, includes, thunkify, identity, compose } from 'ramda'
 import { isEven } from '~/utils'
 import { parseTile, convertRankToY } from '~/chess/helpers'
 import { DARK_TILES, LIGHT_TILES } from '~/chess/constants'
@@ -9,10 +10,16 @@ import { DARK_TILES, LIGHT_TILES } from '~/chess/constants'
  */
 function isDarkBg (tile) {
   const { file, rank } = parseTile(tile)
-  const y = convertRankToY(rank)
-  const dividedTile = isEven(y) ? DARK_TILES : LIGHT_TILES
 
-  return dividedTile.includes(file)
+  return compose(
+    includes(file),
+    ifElse(
+      isEven,
+      thunkify(identity)(DARK_TILES),
+      thunkify(identity)(LIGHT_TILES)
+    ),
+    convertRankToY
+  )(rank)
 }
 
 export default isDarkBg
