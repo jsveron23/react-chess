@@ -1,10 +1,9 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import cx from 'classnames'
-import { compose } from 'ramda'
 import { File } from '~/components'
 import getPiece from '~/chess/getPiece'
-import { findCode, parseCode } from '~/chess/helpers'
+import { findCodeByTile } from '~/chess/helpers'
 import { noop } from '~/utils'
 import css from './Rank.css'
 
@@ -24,16 +23,14 @@ const Rank = (props) => {
     setNext
   } = props
   const cls = cx(css.rank, 'l-flex-row')
+  const parseCodeByTile = findCodeByTile(snapshot)
 
   return (
     <div className={cls} data-rank={rankName}>
       {files.map((fileName) => {
         const tile = `${fileName}${rankName}`
-        const { side, piece } = compose(
-          parseCode,
-          findCode(snapshot)
-        )(tile)
-        const Piece = getPiece(side)(piece)
+        const { side, piece } = parseCodeByTile(tile)
+        const Piece = getPiece(side, piece)
 
         return (
           <File
