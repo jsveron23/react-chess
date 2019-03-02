@@ -5,7 +5,7 @@ import memoize from 'memoize-one'
 import { boundMethod } from 'autobind-decorator'
 import { curry } from 'ramda'
 import { noop } from '~/utils'
-import { getSide } from '~/chess/helpers'
+import { getSide, createTile } from '~/chess/helpers'
 
 /**
  * Higher order component for Chess piece
@@ -39,10 +39,7 @@ function enhancePiece (WrappedComponent, staticKey, staticTurn) {
       setCapturedNext: noop
     }
 
-    getSelectedTile = memoize(
-      (selectedFile, selectedRank) => `${selectedFile}${selectedRank}`
-    )
-
+    getSelectedTile = memoize(createTile)
     getStaticSide = memoize(getSide)
 
     @boundMethod
@@ -70,10 +67,12 @@ function enhancePiece (WrappedComponent, staticKey, staticTurn) {
       }
 
       if (isCapturable) {
+        const code = `${selectedSide}${selectedPiece}${tile}`
+
         setCapturedNext({
           selectedTile,
           capturedTile: tile,
-          replaceCode: `${selectedSide}${selectedPiece}${tile}`
+          replaceCode: code
         })
       }
     }
