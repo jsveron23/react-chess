@@ -18,9 +18,9 @@ const Rank = (props) => {
     selectedFile,
     selectedRank,
     movableTiles,
-    setCapturedNext,
-    setMovable,
-    setNext
+    setNextCapturedSnapshot,
+    setNextMovableAxis,
+    setNextSnapshot
   } = props
   const cls = cx(css.rank, 'l-flex-row')
   const parseCodeByTile = findCodeByTile(snapshot)
@@ -42,9 +42,9 @@ const Rank = (props) => {
             selectedFile={selectedFile}
             selectedRank={selectedRank}
             movableTiles={movableTiles}
-            setCapturedNext={setCapturedNext}
-            setMovable={setMovable}
-            setNext={setNext}
+            setNextCapturedSnapshot={setNextCapturedSnapshot}
+            setNextMovableAxis={setNextMovableAxis}
+            setNextSnapshot={setNextSnapshot}
           >
             {getPiece(side, piece)}
           </File>
@@ -64,16 +64,16 @@ Rank.propTypes = {
   selectedFile: PropTypes.string,
   selectedRank: PropTypes.string,
   movableTiles: PropTypes.array,
-  setCapturedNext: PropTypes.func,
-  setMovable: PropTypes.func,
-  setNext: PropTypes.func
+  setNextCapturedSnapshot: PropTypes.func,
+  setNextMovableAxis: PropTypes.func,
+  setNextSnapshot: PropTypes.func
 }
 
 Rank.defaultProps = {
   setSelected: noop,
-  setCapturedNext: noop,
-  setMovable: noop,
-  setNext: noop
+  setNextCapturedSnapshot: noop,
+  setNextMovableAxis: noop,
+  setNextSnapshot: noop
 }
 
 export default Rank

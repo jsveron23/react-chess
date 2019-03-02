@@ -32,16 +32,16 @@ class File extends Component {
     selectedRank: PropTypes.string,
     movableTiles: PropTypes.array,
     children: PropTypes.func,
-    setCapturedNext: PropTypes.func,
-    setMovable: PropTypes.func,
-    setNext: PropTypes.func
+    setNextCapturedSnapshot: PropTypes.func,
+    setNextMovableAxis: PropTypes.func,
+    setNextSnapshot: PropTypes.func
   }
 
   static defaultProps = {
     movableTiles: [],
-    setCapturedNext: noop,
-    setMovable: noop,
-    setNext: noop
+    setNextCapturedSnapshot: noop,
+    setNextMovableAxis: noop,
+    setNextSnapshot: noop
   }
 
   isMovable = memoize(includes)
@@ -50,14 +50,14 @@ class File extends Component {
   handleClick (evt) {
     evt.preventDefault()
 
-    const { tile, children, movableTiles, setNext } = this.props
+    const { tile, children, movableTiles, setNextSnapshot } = this.props
     const shouldSetNext = compose(
       and(isEmpty(children)),
       this.isMovable(tile)
     )(movableTiles)
 
     if (shouldSetNext) {
-      setNext(tile)
+      setNextSnapshot(tile)
     }
   }
 
@@ -72,8 +72,8 @@ class File extends Component {
       selectedFile,
       selectedRank,
       movableTiles,
-      setCapturedNext,
-      setMovable
+      setNextCapturedSnapshot,
+      setNextMovableAxis
     } = this.props
 
     const isMovable = this.isMovable(tile, movableTiles)
@@ -86,8 +86,8 @@ class File extends Component {
       selectedRank,
       tile,
       isMovable,
-      setCapturedNext,
-      setMovable
+      setNextCapturedSnapshot,
+      setNextMovableAxis
     }
 
     const blankProps = {

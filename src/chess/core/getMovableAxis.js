@@ -29,11 +29,11 @@ function createMapCb (tile, turn) {
 /**
  * Get movable axis from movements of piece (no invalid axis filter here)
  * @param  {string} tile
- * @param  {string} piece
  * @param  {string} turn
+ * @param  {string} piece
  * @return {Array}
  */
-function getMovableAxis (tile, piece, turn) {
+function getMovableAxis (tile, turn, piece) {
   const mapCb = createMapCb(tile, turn)
 
   return compose(

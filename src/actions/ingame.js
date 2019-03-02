@@ -1,8 +1,8 @@
-import { compose, ifElse, reject, thunkify, flip, prop, identity } from 'ramda'
+import { compose, ifElse, reject, thunkify, flip, identity } from 'ramda'
 import * as types from '~/actions'
 import { OPPONENT } from '~/chess/constants'
 import {
-  getMovableAxis,
+  getNextMovable,
   getNextSnapshot,
   applySpecialActions,
   createTimeline
@@ -11,8 +11,6 @@ import {
   getSpecial,
   parseSelected,
   replaceSnapshot,
-  parseCode,
-  findCode,
   createSelected
 } from '~/chess/helpers'
 import { isEmpty, isExist } from '~/utils'
@@ -50,31 +48,32 @@ export function setSnapshot (snapshot) {
   }
 }
 
-export function setMovable (tile) {
+export function setNext (snapshot) {
+  return (dispatch) => {
+    dispatch(setSnapshot(snapshot))
+    dispatch(setMovableAxis())
+    dispatch(toggleTurn())
+  }
+}
+
+export function setNextMovableAxis (tile) {
   return (dispatch, getState) => {
     const { ingame } = getState()
     const { present } = ingame
     const { turn, snapshot } = present
+
     const nextSelected = createSelected(tile, turn)
 
-    const flippedGetMovableAxis = compose(
-      flip,
-      getMovableAxis
-    )(tile)
+    const nextMovableAxis = getNextMovable('axis', () => {
+      return { tile, timeline: [snapshot], ...present }
+    })
 
-    const movableAxis = compose(
-      flippedGetMovableAxis(turn),
-      prop('piece'),
-      parseCode,
-      findCode(snapshot)
-    )(tile)
-
-    dispatch(setMovableAxis(movableAxis))
+    dispatch(setMovableAxis(nextMovableAxis))
     dispatch(setSelected(nextSelected))
   }
 }
 
-export function setNext (tile) {
+export function setNextSnapshot (tile) {
   return (dispatch, getState) => {
     const { ingame } = getState()
     const { present, past } = ingame
@@ -93,13 +92,15 @@ export function setNext (tile) {
       getNextSnapshot(selected, tile)
     )(snapshot)
 
-    dispatch(setSnapshot(nextSnapshot))
-    dispatch(setMovableAxis())
-    dispatch(toggleTurn())
+    dispatch(setNext(nextSnapshot))
   }
 }
 
-export function setCapturedNext ({ capturedTile, selectedTile, nextCode }) {
+export function setNextCapturedSnapshot ({
+  capturedTile,
+  selectedTile,
+  nextCode
+}) {
   return (dispatch, getState) => {
     const { ingame } = getState()
     const { present } = ingame
@@ -110,8 +111,6 @@ export function setCapturedNext ({ capturedTile, selectedTile, nextCode }) {
       replaceSnapshot('', capturedTile)
     )(present.snapshot)
 
-    dispatch(setSnapshot(capturedSnapshot))
-    dispatch(setMovableAxis())
-    dispatch(toggleTurn())
+    dispatch(setNext(capturedSnapshot))
   }
 }

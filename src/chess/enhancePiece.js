@@ -29,14 +29,14 @@ function enhancePiece (WrappedComponent, staticKey, staticTurn) {
       selectedFile: PropTypes.string,
       selectedRank: PropTypes.string,
       isMovable: PropTypes.bool,
-      setMovable: PropTypes.func,
-      setCapturedNext: PropTypes.func
+      setNextMovableAxis: PropTypes.func,
+      setNextCapturedSnapshot: PropTypes.func
     }
 
     static defaultProps = {
       isMovable: false,
-      setMovable: noop,
-      setCapturedNext: noop
+      setNextMovableAxis: noop,
+      setNextCapturedSnapshot: noop
     }
 
     getSelectedTile = memoize(createTile)
@@ -53,8 +53,8 @@ function enhancePiece (WrappedComponent, staticKey, staticTurn) {
         selectedSide,
         selectedFile,
         selectedRank,
-        setMovable,
-        setCapturedNext
+        setNextMovableAxis,
+        setNextCapturedSnapshot
       } = this.props
 
       const selectedTile = this.getSelectedTile(selectedFile, selectedRank)
@@ -62,13 +62,13 @@ function enhancePiece (WrappedComponent, staticKey, staticTurn) {
       const isCapturable = isMovable && !isTurn
 
       if (isTurn) {
-        setMovable(tile)
+        setNextMovableAxis(tile)
       }
 
       if (isCapturable) {
         const code = `${selectedSide}${selectedPiece}${tile}`
 
-        setCapturedNext({
+        setNextCapturedSnapshot({
           selectedTile,
           capturedTile: tile,
           nextCode: code
