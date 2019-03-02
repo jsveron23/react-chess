@@ -2,7 +2,7 @@ import { curry } from 'ramda'
 import { isEmpty } from '~/utils'
 
 /**
- * Create tile with file, rank
+ * Create tile
  * @param  {string} file
  * @param  {string} rank
  * @return {string}
