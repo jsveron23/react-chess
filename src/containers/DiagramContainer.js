@@ -1,57 +1,76 @@
 import { connect } from 'react-redux'
-import { compose, ifElse, thunkify } from 'ramda'
+import memoize from 'memoize-one'
+import { curry, compose, equals } from 'ramda'
 import { Diagram } from '~/components'
-import { setNext, setMovable, setCapturedNext } from '~/actions/ingame'
 import {
-  getMovableTiles,
-  appendSpecialAxis,
-  rejectBlocked,
-  groupByDirection,
-  createTimeline
-} from '~/chess/core'
+  setNextSnapshot,
+  setNextMovableAxis,
+  setNextCapturedSnapshot
+} from '~/actions/ingame'
+import { getNextMovable, createTimeline } from '~/chess/core'
 import { getSpecial, parseSelected } from '~/chess/helpers'
 import { RANKS, FILES } from '~/chess/constants'
-import { isExist } from '~/utils'
+
+// reduce arguments length
+const memoizeParseSelected = memoize(parseSelected, equals)
+
+/**
+ * Create getFlatArgs function
+ * @param  {Object}   present
+ * @param  {Object}   past
+ * @return {Function}
+ */
+function createGetFlatArgs (present, past) {
+  const { snapshot, selected } = present
+  const timeline = createTimeline(snapshot, past)
+
+  /**
+   * Passing flatted arguments by function return (no more destructuring assignment)
+   * @return {Object}
+   */
+  return (/* getFlatArgs */) => {
+    const { piece, side, file, rank } = memoizeParseSelected(selected, snapshot)
+    const special = getSpecial(piece) || []
+    const tile = `${file}${rank}`
+
+    return {
+      timeline,
+      special,
+      tile,
+      side,
+      ...present
+    }
+  }
+}
 
 function mapStateToProps ({ general, ingame }) {
   const { isDoingMatch } = general
   const { present, past } = ingame
-  const { turn, snapshot, selected, movableAxis } = present
-  const { piece, side, file, rank } = parseSelected(selected, snapshot)
-  const special = getSpecial(piece) || []
-  const thunkIsExist = thunkify(isExist)
-  const tile = `${file}${rank}`
-  const getSpecialAxisFn = compose(
-    appendSpecialAxis(side, special, tile),
-    createTimeline(snapshot)
+  const { turn, snapshot, selected } = present
+  const { piece, side, file, rank } = memoizeParseSelected(selected, snapshot)
+  const nextMovableTiles = compose(
+    getNextMovable('tiles'),
+    curry(createGetFlatArgs)(present)
   )(past)
-  const getRegularAxisFn = compose(
-    rejectBlocked(turn, snapshot),
-    groupByDirection
-  )
-  const nextMovableAxis = compose(
-    getMovableTiles,
-    ifElse(thunkIsExist(special), getSpecialAxisFn, getRegularAxisFn)
-  )(movableAxis)
 
   return {
     isDoingMatch,
     turn,
     snapshot,
+    ranks: RANKS,
+    files: FILES,
     selectedPiece: piece,
     selectedSide: side,
     selectedFile: file,
     selectedRank: rank,
-    ranks: RANKS,
-    files: FILES,
-    movableTiles: nextMovableAxis
+    movableTiles: nextMovableTiles
   }
 }
 
 const mapDispatchToProps = {
-  setMovable,
-  setNext,
-  setCapturedNext
+  setNextMovableAxis,
+  setNextSnapshot,
+  setNextCapturedSnapshot
 }
 
 const DiagramContainer = connect(

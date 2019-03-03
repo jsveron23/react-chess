@@ -1,5 +1,6 @@
 export { default as getMovableAxis } from './getMovableAxis'
 export { default as getMovableTiles } from './getMovableTiles'
+export { default as getNextMovable } from './getNextMovable'
 export { default as appendSpecialAxis } from './appendSpecialAxis'
 export { default as applySpecialActions } from './applySpecialActions'
 export { default as getNextSnapshot } from './getNextSnapshot'

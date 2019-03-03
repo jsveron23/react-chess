@@ -16,9 +16,9 @@ const Diagram = (props) => {
     ranks,
     files,
     movableTiles,
-    setCapturedNext,
-    setMovable,
-    setNext
+    setNextCapturedSnapshot,
+    setNextMovableAxis,
+    setNextSnapshot
   } = props
 
   if (!isDoingMatch) {
@@ -40,9 +40,9 @@ const Diagram = (props) => {
             files={files}
             rankName={rankName}
             movableTiles={movableTiles}
-            setCapturedNext={setCapturedNext}
-            setMovable={setMovable}
-            setNext={setNext}
+            setNextCapturedSnapshot={setNextCapturedSnapshot}
+            setNextMovableAxis={setNextMovableAxis}
+            setNextSnapshot={setNextSnapshot}
           />
         )
       })}
@@ -61,15 +61,15 @@ Diagram.propTypes = {
   selectedFile: PropTypes.string,
   selectedRank: PropTypes.string,
   movableTiles: PropTypes.array,
-  setCapturedNext: PropTypes.func,
-  setMovable: PropTypes.func,
-  setNext: PropTypes.func
+  setNextCapturedSnapshot: PropTypes.func,
+  setNextMovableAxis: PropTypes.func,
+  setNextSnapshot: PropTypes.func
 }
 
 Diagram.defaultProps = {
-  setCapturedNext: noop,
-  setMovable: noop,
-  setNext: noop
+  setNextCapturedSnapshot: noop,
+  setNextMovableAxis: noop,
+  setNextSnapshot: noop
 }
 
 export default Diagram
