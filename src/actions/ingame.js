@@ -53,6 +53,7 @@ export function setNext (snapshot) {
     dispatch(setSnapshot(snapshot))
     dispatch(setMovableAxis())
     dispatch(toggleTurn())
+    dispatch(setSelected())
   }
 }
 
