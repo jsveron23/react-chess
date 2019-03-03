@@ -9,7 +9,7 @@ import { parseCode, parseSelected } from '~/chess/helpers'
  * @return {Array}
  */
 function getNextSnapshot (selected, tile, snapshot) {
-  const { file, rank } = parseSelected(selected, snapshot)
+  const { file, rank } = parseSelected(snapshot, selected)
   const selectedTile = `${file}${rank}`
 
   return snapshot.map((code) => {

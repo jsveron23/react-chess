@@ -8,7 +8,7 @@ import {
   setNextCapturedSnapshot
 } from '~/actions/ingame'
 import { getNextMovable, createTimeline } from '~/chess/core'
-import { getSpecial, parseSelected } from '~/chess/helpers'
+import { getSpecial, parseSelected, createTile } from '~/chess/helpers'
 import { RANKS, FILES } from '~/chess/constants'
 
 // reduce arguments length
@@ -29,9 +29,9 @@ function createGetFlatArgs (present, past) {
    * @return {Object}
    */
   return (/* getFlatArgs */) => {
-    const { piece, side, file, rank } = memoizeParseSelected(selected, snapshot)
+    const { piece, side, file, rank } = memoizeParseSelected(snapshot, selected)
     const special = getSpecial(piece) || []
-    const tile = `${file}${rank}`
+    const tile = createTile(file, rank)
 
     return {
       timeline,
@@ -47,7 +47,7 @@ function mapStateToProps ({ general, ingame }) {
   const { isDoingMatch } = general
   const { present, past } = ingame
   const { turn, snapshot, selected } = present
-  const { piece, side, file, rank } = memoizeParseSelected(selected, snapshot)
+  const { piece, side, file, rank } = memoizeParseSelected(snapshot, selected)
   const nextMovableTiles = compose(
     getNextMovable('tiles'),
     curry(createGetFlatArgs)(present)

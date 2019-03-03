@@ -10,9 +10,9 @@ const snapshot = [
 
 describe('#parseSelected', () => {
   it('get parsed selected', () => {
-    expect(parseSelected('b2-w', snapshot)).toHaveProperty('piece', 'P')
-    expect(parseSelected('e7-b')(snapshot)).toHaveProperty('side', 'b')
-    expect(parseSelected('g8-b', snapshot)).toHaveProperty('file', 'g')
-    expect(parseSelected('d1-w')(snapshot)).toHaveProperty('rank', '1')
+    expect(parseSelected(snapshot, 'b2-w')).toHaveProperty('piece', 'P')
+    expect(parseSelected(snapshot)('e7-b')).toHaveProperty('side', 'b')
+    expect(parseSelected(snapshot, 'g8-b')).toHaveProperty('file', 'g')
+    expect(parseSelected(snapshot)('d1-w')).toHaveProperty('rank', '1')
   })
 })
