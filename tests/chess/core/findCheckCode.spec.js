@@ -1,7 +1,7 @@
 import { findCheckCode } from '~/chess/core'
 
 describe('#findCheckCode', () => {
-  it('get next movable tiles', () => {
+  it('find check code', () => {
     const getFlatArgs = () => {
       // prettier-ignore
       const snapshot = [
