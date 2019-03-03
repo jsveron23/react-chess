@@ -1,9 +1,10 @@
-import { compose, ifElse, reject, thunkify, flip, identity } from 'ramda'
+import { compose, ifElse, reject, thunkify, flip, identity, map } from 'ramda'
 import * as types from '~/actions'
 import { OPPONENT } from '~/chess/constants'
 import {
   getNextMovable,
   getNextSnapshot,
+  findCheckCode,
   applySpecialActions,
   createTimeline
 } from '~/chess/core'
@@ -11,7 +12,9 @@ import {
   getSpecial,
   parseSelected,
   replaceSnapshot,
-  createSelected
+  createSelected,
+  getPrevSnapshot,
+  diffSnapshot
 } from '~/chess/helpers'
 import { isEmpty, isExist } from '~/utils'
 
@@ -41,6 +44,13 @@ export function toggleTurn () {
   }
 }
 
+export function setCheckBy (code) {
+  return {
+    type: types.SET_CHECK_BY,
+    payload: code
+  }
+}
+
 export function setSnapshot (snapshot) {
   return {
     type: types.SET_SNAPSHOT,
@@ -49,11 +59,26 @@ export function setSnapshot (snapshot) {
 }
 
 export function setNext (snapshot) {
-  return (dispatch) => {
-    dispatch(setSnapshot(snapshot))
-    dispatch(setMovableAxis())
-    dispatch(toggleTurn())
-    dispatch(setSelected())
+  return (dispatch, getState) => {
+    return Promise.all([setSnapshot(snapshot), setMovableAxis(), toggleTurn()])
+      .then(map(dispatch))
+      .then(() => {
+        const { ingame } = getState()
+        const { present, past } = ingame
+        const { turn } = present
+
+        const checkBy = findCheckCode(() => {
+          const { side, piece, file, rank } = compose(
+            diffSnapshot(snapshot),
+            getPrevSnapshot
+          )(past)
+
+          return { turn, snapshot, side, piece, file, rank }
+        })
+
+        return Promise.all([setCheckBy(checkBy), setSelected()])
+      })
+      .then(map(dispatch))
   }
 }
 
@@ -62,7 +87,6 @@ export function setNextMovableAxis (tile) {
     const { ingame } = getState()
     const { present } = ingame
     const { turn, snapshot } = present
-
     const nextSelected = createSelected(tile, turn)
 
     const nextMovableAxis = getNextMovable('axis', () => {
@@ -79,7 +103,7 @@ export function setNextSnapshot (tile) {
     const { ingame } = getState()
     const { present, past } = ingame
     const { selected, snapshot } = present
-    const { piece, side } = parseSelected(selected, snapshot)
+    const { piece, side } = parseSelected(snapshot, selected)
     const special = getSpecial(piece)
     const thunkIsExist = thunkify(isExist)
 

@@ -4,11 +4,11 @@ import { splitTo } from '~/utils'
 
 /**
  * Parse selected
- * @param  {string} selected
  * @param  {Array}  snapshot
+ * @param  {string} selected
  * @return {Object}
  */
-function parseSelected (selected, snapshot) {
+function parseSelected (snapshot, selected) {
   return compose(
     parseCode,
     findCode(snapshot),
