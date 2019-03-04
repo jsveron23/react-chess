@@ -1,4 +1,4 @@
-import { compose, ifElse, reject, flip, identity, map } from 'ramda'
+import { compose, ifElse, reject, flip, identity } from 'ramda'
 import * as types from '~/actions'
 import { OPPONENT } from '~/chess/constants'
 import {
