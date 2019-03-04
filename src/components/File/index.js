@@ -3,17 +3,9 @@ import PropTypes from 'prop-types'
 import cx from 'classnames'
 import memoize from 'memoize-one'
 import { boundMethod } from 'autobind-decorator'
-import {
-  curry,
-  compose,
-  includes,
-  ifElse,
-  thunkify,
-  identity,
-  and
-} from 'ramda'
+import { curry, compose, includes, ifElse, and } from 'ramda'
 import { Blank } from '~/components'
-import { isEmpty, isExist, noop } from '~/utils'
+import { isEmpty, isExist, lazy, noop } from '~/utils'
 import { isDarkBg } from '~/chess/helpers'
 import css from './File.css'
 
@@ -97,11 +89,7 @@ class File extends Component {
 
     const Element = compose(
       curriedCreateElement(children || Blank),
-      ifElse(
-        isExist,
-        thunkify(identity)(pieceProps),
-        thunkify(identity)(blankProps)
-      )
+      ifElse(isExist, lazy(pieceProps), lazy(blankProps))
     )(children)
     const cls = cx(css.file, { 'is-dark': isDarkBg(tile) })
 

@@ -57,5 +57,10 @@ describe('#isExist', () => {
       expect(isExist.and(null, undefined, '', {}, [])).toBeFalsy()
       expect(isExist.or(null, undefined, 'sdfds', {}, [])).toBeTruthy()
     })
+
+    it('Lazy return', () => {
+      expect(isExist.lazy('')()).toBeFalsy()
+      expect(isExist.lazy({ hello: 'world' })()).toBeTruthy()
+    })
   })
 })

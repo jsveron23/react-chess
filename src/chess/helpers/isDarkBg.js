@@ -1,5 +1,5 @@
-import { ifElse, includes, thunkify, identity, compose } from 'ramda'
-import { isEven } from '~/utils'
+import { ifElse, includes, compose } from 'ramda'
+import { isEven, lazy } from '~/utils'
 import { parseTile, convertRankToY } from '~/chess/helpers'
 import { DARK_TILES, LIGHT_TILES } from '~/chess/constants'
 
@@ -13,11 +13,7 @@ function isDarkBg (tile) {
 
   return compose(
     includes(file),
-    ifElse(
-      isEven,
-      thunkify(identity)(DARK_TILES),
-      thunkify(identity)(LIGHT_TILES)
-    ),
+    ifElse(isEven, lazy(DARK_TILES), lazy(LIGHT_TILES)),
     convertRankToY
   )(rank)
 }

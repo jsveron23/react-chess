@@ -47,5 +47,10 @@ describe('#isEmpty', () => {
       expect(isEmpty.and('', { 0: false }, [0], function () {})).toBeFalsy()
       expect(isEmpty.or('', { 0: false }, [0], function () {})).toBeTruthy()
     })
+
+    it('Lazy return', () => {
+      expect(isEmpty.lazy('')()).toBeTruthy()
+      expect(isEmpty.lazy({ hello: 'world' })()).toBeFalsy()
+    })
   })
 })

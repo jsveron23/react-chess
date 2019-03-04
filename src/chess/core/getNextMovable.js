@@ -1,4 +1,4 @@
-import { compose, curry, ifElse, thunkify, prop } from 'ramda'
+import { compose, curry, ifElse, prop } from 'ramda'
 import {
   getMovableAxis,
   getMovableTiles,
@@ -37,7 +37,7 @@ function getNextMovable (type, getFlatArgs) {
 
   return compose(
     getMovableTiles,
-    ifElse(thunkify(isExist)(special), getSpecialAxisFn, getRegularAxisFn)
+    ifElse(isExist.lazy(special), getSpecialAxisFn, getRegularAxisFn)
   )(movableAxis)
 }
 
