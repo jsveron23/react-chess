@@ -1,4 +1,4 @@
-import { compose, ifElse, reject, flip, identity, map } from 'ramda'
+import { compose, ifElse, reject, flip, identity } from 'ramda'
 import * as types from '~/actions'
 import { OPPONENT } from '~/chess/constants'
 import {
@@ -60,25 +60,25 @@ export function setSnapshot (snapshot) {
 
 export function setNext (snapshot) {
   return (dispatch, getState) => {
-    return Promise.all([setSnapshot(snapshot), setMovableAxis(), toggleTurn()])
-      .then(map(dispatch))
-      .then(() => {
-        const { ingame } = getState()
-        const { present, past } = ingame
-        const { turn } = present
+    dispatch(setSnapshot(snapshot))
+    dispatch(setMovableAxis())
+    dispatch(toggleTurn())
+    dispatch(setSelected())
 
-        const checkBy = findCheckCode(() => {
-          const { side, piece, file, rank } = compose(
-            diffSnapshot(snapshot),
-            getPrevSnapshot
-          )(past)
+    const { ingame } = getState()
+    const { present, past } = ingame
+    const { turn } = present
 
-          return { turn, snapshot, side, piece, file, rank }
-        })
+    const checkBy = findCheckCode(() => {
+      const { side, piece, file, rank } = compose(
+        diffSnapshot(snapshot),
+        getPrevSnapshot
+      )(past)
 
-        return Promise.all([setCheckBy(checkBy), setSelected()])
-      })
-      .then(map(dispatch))
+      return { turn, snapshot, side, piece, file, rank }
+    })
+
+    dispatch(setCheckBy(checkBy))
   }
 }
 
