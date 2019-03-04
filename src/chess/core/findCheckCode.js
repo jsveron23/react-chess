@@ -1,7 +1,7 @@
-import { compose, ifElse, thunkify, identity, find } from 'ramda'
+import { compose, ifElse, find } from 'ramda'
 import { getMovableAxis, getNextMovable } from '~/chess/core'
 import { getSpecial, createTile, findCodeByTile } from '~/chess/helpers'
-import { isExist } from '~/utils'
+import { isExist, lazy } from '~/utils'
 
 /**
  * @param  {Array}    snapshot
@@ -36,7 +36,7 @@ function findCheckCode (getFlatArgs) {
   const checkCode = `${side}${piece}${tile}`
 
   return compose(
-    ifElse(isExist, thunkify(identity)(checkCode), thunkify(identity)('')),
+    ifElse(isExist, lazy(checkCode), lazy('')),
     find(mapCb),
     getNextMovable('tiles')
   )(() => {

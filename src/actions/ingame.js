@@ -1,4 +1,4 @@
-import { compose, ifElse, reject, thunkify, flip, identity, map } from 'ramda'
+import { compose, ifElse, reject, flip, identity, map } from 'ramda'
 import * as types from '~/actions'
 import { OPPONENT } from '~/chess/constants'
 import {
@@ -105,7 +105,6 @@ export function setNextSnapshot (tile) {
     const { selected, snapshot } = present
     const { piece, side } = parseSelected(snapshot, selected)
     const special = getSpecial(piece)
-    const thunkIsExist = thunkify(isExist)
 
     const getSpecialActionsFn = compose(
       applySpecialActions(side, special, tile),
@@ -113,7 +112,7 @@ export function setNextSnapshot (tile) {
     )
 
     const nextSnapshot = compose(
-      ifElse(thunkIsExist(special), getSpecialActionsFn, identity),
+      ifElse(isExist.lazy(special), getSpecialActionsFn, identity),
       getNextSnapshot(selected, tile)
     )(snapshot)
 

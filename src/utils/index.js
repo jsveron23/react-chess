@@ -1,4 +1,5 @@
 export { default as noop } from './noop'
+export { default as lazy } from './lazy'
 export { default as isEven } from './isEven'
 export { default as isEmpty } from './isEmpty'
 export { default as isExist } from './isExist'
