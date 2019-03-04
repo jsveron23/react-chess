@@ -44,6 +44,13 @@ export function toggleTurn () {
   }
 }
 
+export function setCheckTo (tile) {
+  return {
+    type: types.SET_CHECK_TO,
+    payload: tile
+  }
+}
+
 export function setCheckBy (code) {
   return {
     type: types.SET_CHECK_BY,
@@ -69,7 +76,7 @@ export function setNext (snapshot) {
     const { present, past } = ingame
     const { turn } = present
 
-    const checkBy = findCheckCode(() => {
+    const { checkTo, checkBy } = findCheckCode(() => {
       const { side, piece, file, rank } = compose(
         diffSnapshot(snapshot),
         getPrevSnapshot
@@ -78,6 +85,7 @@ export function setNext (snapshot) {
       return { turn, snapshot, side, piece, file, rank }
     })
 
+    dispatch(setCheckTo(checkTo))
     dispatch(setCheckBy(checkBy))
   }
 }

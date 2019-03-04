@@ -21,6 +21,9 @@ describe('#findCheckCode', () => {
       }
     }
 
-    expect(findCheckCode(getFlatArgs)).toEqual('bQa5')
+    expect(findCheckCode(getFlatArgs)).toEqual({
+      checkTo: 'e1',
+      checkBy: 'bQa5'
+    })
   })
 })
