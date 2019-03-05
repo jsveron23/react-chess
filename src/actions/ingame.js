@@ -5,10 +5,10 @@ import {
   getNextMovable,
   getNextSnapshot,
   findCheckCode,
-  applySpecialActions,
-  createTimeline
+  applySpecialActions
 } from '~/chess/core'
 import {
+  createTimeline,
   getSpecial,
   parseSelected,
   replaceSnapshot,

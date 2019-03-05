@@ -1,7 +1,8 @@
 import { connect } from 'react-redux'
 import { compose, reverse } from 'ramda'
 import { ScoreSheet } from '~/components'
-import { createTimeline, createNotation, createScoreSheet } from '~/chess/core'
+import { createNotation, createScoreSheet } from '~/chess/core'
+import { createTimeline } from '~/chess/helpers'
 
 const mapStateToProps = ({ general, ingame }) => {
   const { present, past } = ingame
