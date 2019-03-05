@@ -28,27 +28,28 @@ function _getDoubleStepAxis (getFlatArgs) {
  * @return {Array}
  */
 function _applyDoubleStep (side, tile, special, snapshot, movableAxis) {
-  const isIndexBlocked = isBlockedAt(snapshot, movableAxis)
-  const isFirstTileBlocked = isIndexBlocked(0)
+  const isFirstTileBlocked = isBlockedAt(snapshot, movableAxis)(0)
   const isDoubleStep = _isDoubleStep(tile, special, side)
-  const cloneMovableAxis = [...movableAxis]
+  let cloneMovableAxis = [...movableAxis]
 
   if (isFirstTileBlocked) {
     return []
   }
 
   if (isDoubleStep && isExist(movableAxis)) {
-    const isNextTileBlocked = isIndexBlocked(1)
-
-    if (isNextTileBlocked) {
-      return cloneMovableAxis
-    }
-
-    return _getDoubleStepAxis(() => {
+    cloneMovableAxis = _getDoubleStepAxis(() => {
       const { x, y } = convertTileToAxis(tile)
 
       return { x, y, side, movableAxis: cloneMovableAxis }
     })
+
+    const isNextTileBlocked = isBlockedAt(snapshot, cloneMovableAxis)(1)
+
+    if (isNextTileBlocked) {
+      return [...movableAxis]
+    }
+
+    return cloneMovableAxis
   }
 
   return cloneMovableAxis
