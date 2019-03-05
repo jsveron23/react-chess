@@ -2,56 +2,103 @@ import { convertKeys } from '~/utils'
 
 describe('#convertKeys', () => {
   describe('convert keys as preferred names object', () => {
-    const o = {
-      hello: 'world',
-      world: 'hello'
-    }
-
     it('convert key', () => {
-      const o1 = {
-        hello: 'kidding',
-        world: 'lol'
-      }
-
-      const o2 = {
-        tony: 'kidding',
-        world: 'lol'
-      }
-
-      expect(convertKeys(o1, o)).toEqual({
+      expect(
+        convertKeys(
+          {
+            hello: 'kidding',
+            world: 'lol'
+          },
+          {
+            hello: 'world',
+            world: 'hello'
+          }
+        )
+      ).toEqual({
         kidding: 'world',
         lol: 'hello'
       })
 
-      expect(convertKeys(o2, o)).toEqual({
+      expect(
+        convertKeys(
+          {
+            tony: 'kidding',
+            world: 'lol'
+          },
+          {
+            hello: 'world',
+            world: 'hello'
+          }
+        )
+      ).toEqual({
         hello: 'world',
         lol: 'hello'
       })
     })
 
     it('empty object', () => {
-      expect(convertKeys({}, o)).toEqual({
+      expect(
+        convertKeys(
+          {},
+          {
+            hello: 'world',
+            world: 'hello'
+          }
+        )
+      ).toEqual({
         hello: 'world',
         world: 'hello'
       })
 
-      expect(convertKeys([], o)).toEqual({
+      expect(
+        convertKeys([], {
+          hello: 'world',
+          world: 'hello'
+        })
+      ).toEqual({
         hello: 'world',
         world: 'hello'
       })
     })
 
     it('empty string', () => {
-      expect(convertKeys('', o)).toEqual({
+      expect(
+        convertKeys('', {
+          hello: 'world',
+          world: 'hello'
+        })
+      ).toEqual({
         hello: 'world',
         world: 'hello'
       })
     })
 
     it('number zero', () => {
-      expect(convertKeys(0, o)).toEqual({
+      expect(
+        convertKeys(0, {
+          hello: 'world',
+          world: 'hello'
+        })
+      ).toEqual({
         hello: 'world',
         world: 'hello'
+      })
+    })
+
+    it('duplicate', () => {
+      expect(
+        convertKeys(
+          {
+            hello: 'tony',
+            world: 'tony'
+          },
+          {
+            hello: 'world',
+            world: 'hello'
+          }
+        )
+      ).toEqual({
+        tony: 'hello'
       })
     })
   })

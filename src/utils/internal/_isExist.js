@@ -5,6 +5,10 @@ import _detectEmpty from './_detectEmpty'
  * @return {Function}
  */
 function _isExist (fnName) {
+  /**
+   * @param  {...*}    [...args]
+   * @return {boolean}
+   */
   return (...args) => {
     const fn = args[fnName].bind(args)
 
