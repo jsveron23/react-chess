@@ -13,6 +13,7 @@ const Diagram = (props) => {
     selectedSide,
     selectedFile,
     selectedRank,
+    checkTo,
     ranks,
     files,
     movableTiles,
@@ -37,6 +38,7 @@ const Diagram = (props) => {
             selectedSide={selectedSide}
             selectedFile={selectedFile}
             selectedRank={selectedRank}
+            checkTo={checkTo}
             files={files}
             rankName={rankName}
             movableTiles={movableTiles}
@@ -60,6 +62,7 @@ Diagram.propTypes = {
   selectedSide: PropTypes.string,
   selectedFile: PropTypes.string,
   selectedRank: PropTypes.string,
+  checkTo: PropTypes.string,
   movableTiles: PropTypes.array,
   setNextCapturedSnapshot: PropTypes.func,
   setNextMovableAxis: PropTypes.func,

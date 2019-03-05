@@ -46,7 +46,7 @@ function createGetFlatArgs (present, past) {
 function mapStateToProps ({ general, ingame }) {
   const { isDoingMatch } = general
   const { present, past } = ingame
-  const { turn, snapshot, selected } = present
+  const { turn, snapshot, selected, checkTo } = present
   const { piece, side, file, rank } = memoizeParseSelected(snapshot, selected)
   const nextMovableTiles = compose(
     getNextMovable('tiles'),
@@ -56,6 +56,7 @@ function mapStateToProps ({ general, ingame }) {
   return {
     isDoingMatch,
     turn,
+    checkTo,
     snapshot,
     ranks: RANKS,
     files: FILES,

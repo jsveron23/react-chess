@@ -22,6 +22,7 @@ class File extends Component {
     selectedSide: PropTypes.string,
     selectedFile: PropTypes.string,
     selectedRank: PropTypes.string,
+    checkTo: PropTypes.string,
     movableTiles: PropTypes.array,
     children: PropTypes.func,
     setNextCapturedSnapshot: PropTypes.func,
@@ -63,6 +64,7 @@ class File extends Component {
       selectedSide,
       selectedFile,
       selectedRank,
+      checkTo,
       movableTiles,
       setNextCapturedSnapshot,
       setNextMovableAxis
@@ -76,6 +78,7 @@ class File extends Component {
       selectedSide,
       selectedFile,
       selectedRank,
+      checkTo,
       tile,
       isMovable,
       setNextCapturedSnapshot,

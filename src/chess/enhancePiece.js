@@ -28,6 +28,7 @@ function enhancePiece (WrappedComponent, staticKey, staticTurn) {
       selectedSide: PropTypes.string,
       selectedFile: PropTypes.string,
       selectedRank: PropTypes.string,
+      checkTo: PropTypes.string,
       isMovable: PropTypes.bool,
       setNextMovableAxis: PropTypes.func,
       setNextCapturedSnapshot: PropTypes.func
@@ -77,19 +78,30 @@ function enhancePiece (WrappedComponent, staticKey, staticTurn) {
     }
 
     render () {
-      const { turn, tile, selectedFile, selectedRank, isMovable } = this.props
+      const {
+        turn,
+        tile,
+        selectedFile,
+        selectedRank,
+        checkTo,
+        isMovable
+      } = this.props
       const selectedTile = this.getSelectedTile(selectedFile, selectedRank)
       const isTurn = getSide(staticTurn) === turn
       const isCapturable = isMovable && !isTurn
       const cls = cx({
         'is-turn': isTurn,
         'is-capturable': isCapturable,
-        'is-selected': selectedTile === tile
+        'is-selected': selectedTile === tile,
+        'is-check-tile': checkTo === tile
       })
 
       return (
         <div className={cls} onClick={this.handleClick}>
-          <WrappedComponent key={`${staticKey}-${tile}`} />
+          <WrappedComponent
+            key={`${staticKey}-${tile}`}
+            className={cx({ 'is-check-piece': checkTo === tile })}
+          />
         </div>
       )
     }

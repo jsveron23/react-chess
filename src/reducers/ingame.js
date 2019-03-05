@@ -11,6 +11,7 @@ const initialState = {
     'wPa2', 'wPb2', 'wPc2', 'wPd2', 'wPe2', 'wPf2', 'wPg2', 'wPh2',
     'wRa1', 'wNb1', 'wBc1', 'wQd1', 'wKe1', 'wBf1', 'wNg1', 'wRh1'
   ],
+  checkTo: '',
   checkBy: ''
 }
 
@@ -43,6 +44,20 @@ function reducer (state = initialState, action) {
       return {
         ...state,
         snapshot: payload
+      }
+    }
+
+    case types.SET_CHECK_TO: {
+      return {
+        ...state,
+        checkTo: payload
+      }
+    }
+
+    case types.SET_CHECK_BY: {
+      return {
+        ...state,
+        checkBy: payload
       }
     }
 

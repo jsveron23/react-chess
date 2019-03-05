@@ -17,6 +17,7 @@ const Rank = (props) => {
     selectedSide,
     selectedFile,
     selectedRank,
+    checkTo,
     movableTiles,
     setNextCapturedSnapshot,
     setNextMovableAxis,
@@ -41,6 +42,7 @@ const Rank = (props) => {
             selectedSide={selectedSide}
             selectedFile={selectedFile}
             selectedRank={selectedRank}
+            checkTo={checkTo}
             movableTiles={movableTiles}
             setNextCapturedSnapshot={setNextCapturedSnapshot}
             setNextMovableAxis={setNextMovableAxis}
@@ -63,6 +65,7 @@ Rank.propTypes = {
   selectedSide: PropTypes.string,
   selectedFile: PropTypes.string,
   selectedRank: PropTypes.string,
+  checkTo: PropTypes.string,
   movableTiles: PropTypes.array,
   setNextCapturedSnapshot: PropTypes.func,
   setNextMovableAxis: PropTypes.func,
