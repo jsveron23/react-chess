@@ -11,6 +11,7 @@
     "doc_comment": {
       "fullDocs": true,
       "strong": true
-    }
+    },
+    "complete_strings": true
   }
 }
