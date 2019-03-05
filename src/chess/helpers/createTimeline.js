@@ -1,4 +1,4 @@
-import { compose, curry, reverse, map } from 'ramda'
+import { compose, curry, reverse, pluck } from 'ramda'
 
 /**
  * Create timeline (snapshot list)
@@ -7,12 +7,12 @@ import { compose, curry, reverse, map } from 'ramda'
  * @return {Array}
  */
 function createTimeline (presentSnapshot, past) {
-  const pastSnapshotList = compose(
-    map((pastIngame) => pastIngame.snapshot),
+  const prevSnapshotList = compose(
+    pluck('snapshot'),
     reverse
   )(past)
 
-  return [presentSnapshot, ...pastSnapshotList]
+  return [presentSnapshot, ...prevSnapshotList]
 }
 
 export default curry(createTimeline)
