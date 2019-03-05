@@ -1,4 +1,4 @@
-import { compose, curry, includes, and } from 'ramda'
+import * as R from 'ramda'
 
 const DOUBLE_STEP = 'doubleStep'
 const DOUBLE_STEP_TILES = {
@@ -13,10 +13,10 @@ const DOUBLE_STEP_TILES = {
  * @return {boolean}
  */
 function _isDoubleStep (tile, special, side) {
-  return compose(
-    and(special.includes(DOUBLE_STEP)),
-    includes(tile)
+  return R.compose(
+    R.and(special.includes(DOUBLE_STEP)),
+    R.includes(tile)
   )(DOUBLE_STEP_TILES[side])
 }
 
-export default curry(_isDoubleStep)
+export default R.curry(_isDoubleStep)
