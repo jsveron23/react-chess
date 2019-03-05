@@ -1,36 +1,12 @@
-import {
-  curry,
-  of,
-  compose,
-  ifElse,
-  add,
-  concat,
-  assoc,
-  identity,
-  flip
-} from 'ramda'
+import * as R from 'ramda'
 import { isExist, lazy } from '~/utils'
 import _isDoubleStep from './_isDoubleStep'
+import _getDoubleStepAxis from './_getDoubleStepAxis'
 import convertTileToAxis from '../../helpers/convertTileToAxis'
 import isBlockedAt from '../../helpers/isBlockedAt'
 
 /**
- * @param  {Function} getFlatArgs
- * @return {Array}
- */
-function _getDoubleStepAxis (getFlatArgs) {
-  const { x, y, side, movableAxis } = getFlatArgs()
-
-  return compose(
-    concat(movableAxis),
-    of,
-    concat([x]),
-    of,
-    ifElse(lazy(side === 'w'), add(2), add(-2))
-  )(y)
-}
-
-/**
+ * TODO: check block
  * @param  {string} side
  * @param  {string} tile
  * @param  {Array}  special
@@ -39,18 +15,21 @@ function _getDoubleStepAxis (getFlatArgs) {
  * @return {Array}
  */
 function _applyDoubleStep (side, tile, special, snapshot, movableAxis) {
+  const isDoubleStep = _isDoubleStep(tile, special, side)
   const detectBlocked = isBlockedAt(snapshot)
   const isFirstTileBlocked = detectBlocked(movableAxis, 0)
-  const isDoubleStep = _isDoubleStep(tile, special, side)
 
   if (isFirstTileBlocked) {
     return []
   }
 
   if (isDoubleStep && isExist(movableAxis)) {
-    return compose(
+    const flippedDetectBlock = R.flip(detectBlocked)
+
+    return R.compose(
       // condition with result from `_getDoubleStepAxis`
-      ifElse(flip(detectBlocked)(1), lazy(movableAxis), identity),
+      // if block, return original but no block return calculated one
+      R.ifElse(flippedDetectBlock(1), lazy(movableAxis), R.identity),
 
       // passing function to `_getDoubleStepAxis`
       // execute function inside `_getDoubleStepAxis` by using `lazy`
@@ -58,8 +37,8 @@ function _applyDoubleStep (side, tile, special, snapshot, movableAxis) {
       lazy,
 
       // simple merge
-      assoc('side', side),
-      assoc('movableAxis', movableAxis),
+      R.assoc('side', side),
+      R.assoc('movableAxis', movableAxis),
       convertTileToAxis
     )(tile)
   }
@@ -67,4 +46,4 @@ function _applyDoubleStep (side, tile, special, snapshot, movableAxis) {
   return movableAxis
 }
 
-export default curry(_applyDoubleStep)
+export default R.curry(_applyDoubleStep)

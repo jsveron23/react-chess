@@ -1,4 +1,5 @@
-import { curry } from 'ramda'
+import * as R from 'ramda'
+import { lazy } from '~/utils'
 
 const PROMOTION = 'promotion'
 const PROMOTION_TILES = {
@@ -14,10 +15,11 @@ const PROMOTION_TILES = {
  * @return {Array}
  */
 function _applyPromotion (side, tile, special) {
-  const isMovedToEnd = PROMOTION_TILES[side].includes(tile)
-  const shouldPromotion = special.includes(PROMOTION) && isMovedToEnd
-
-  return shouldPromotion ? `${side}Q${tile}` : ''
+  return R.compose(
+    R.ifElse(R.identity, lazy(`${side}Q${tile}`), lazy('')),
+    R.and(special.includes(PROMOTION)),
+    R.includes(tile)
+  )(PROMOTION_TILES[side])
 }
 
-export default curry(_applyPromotion)
+export default R.curry(_applyPromotion)

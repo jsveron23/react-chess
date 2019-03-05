@@ -1,13 +1,11 @@
-import { curry, uniq } from 'ramda'
+import * as R from 'ramda'
 import { isExist } from '~/utils'
-import {
-  findCodeByAxis,
-  convertTileToAxis,
-  diffSnapshot,
-  parseCode,
-  parseTile,
-  convertRankToY
-} from '~/chess/helpers'
+import findCodeByAxis from '../../helpers/findCodeByAxis'
+import convertTileToAxis from '../../helpers/convertTileToAxis'
+import diffSnapshot from '../../helpers/diffSnapshot'
+import parseCode from '../../helpers/parseCode'
+import parseTile from '../../helpers/parseTile'
+import convertRankToY from '../../helpers/convertRankToY'
 
 /**
  * @TODO: optimize
@@ -46,7 +44,7 @@ function _applyEnPassant (side, tile, timeline) {
   const rightTile = findCapturableTile(diagonalRightAxis)
   const leftTile = findCapturableTile(diagonalLeftAxis)
 
-  return uniq([
+  return R.uniq([
     additinalAxis,
     ...[isExist(rightTile) ? diagonalRightAxis : []],
     ...[isExist(leftTile) ? diagonalLeftAxis : []]
@@ -78,5 +76,5 @@ function _changeSnapshot (side, tile, timeline) {
   return ''
 }
 
-export const _applySnapshot = curry(_changeSnapshot)
-export default curry(_applyEnPassant)
+export const _applySnapshot = R.curry(_changeSnapshot)
+export default R.curry(_applyEnPassant)

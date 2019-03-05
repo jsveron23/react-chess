@@ -1,4 +1,4 @@
-import { curry } from 'ramda'
+import * as R from 'ramda'
 
 export const DIAGONAL = 'diagonal'
 export const VERTICAL = 'vertical'
@@ -45,4 +45,4 @@ function _getDirection (state, key, axisList) {
   }
 }
 
-export default curry(_getDirection)
+export default R.curry(_getDirection)
