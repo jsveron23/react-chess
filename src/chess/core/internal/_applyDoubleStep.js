@@ -49,9 +49,15 @@ function _applyDoubleStep (side, tile, special, snapshot, movableAxis) {
 
   if (isDoubleStep && isExist(movableAxis)) {
     return compose(
+      // condition with result from `_getDoubleStepAxis`
       ifElse(flip(detectBlocked)(1), lazy(movableAxis), identity),
+
+      // passing function to `_getDoubleStepAxis`
+      // execute function inside `_getDoubleStepAxis` by using `lazy`
       _getDoubleStepAxis,
       lazy,
+
+      // simple merge
       assoc('side', side),
       assoc('movableAxis', movableAxis),
       convertTileToAxis
