@@ -1,14 +1,12 @@
 import { curry } from 'ramda'
-import { isExist } from '~/utils'
 import { getSide, diffSnapshot } from '~/chess/helpers'
+import { isExist } from '~/utils'
 
 /**
  * @param  {Array}    snapshotList
  * @return {Function}
  */
 function createReduceCb (snapshotList) {
-  const len = snapshotList.length
-
   /**
    * @callback
    * @param  {Array}  acc
@@ -18,17 +16,16 @@ function createReduceCb (snapshotList) {
    */
   return (acc, snapshot, idx) => {
     const prevSnapshot = snapshotList[idx + 1]
+    const len = snapshot.length
 
-    if (isExist(prevSnapshot) && len > 1) {
+    if (isExist(prevSnapshot)) {
+      const prevLen = prevSnapshot.length
       const { side, piece, file, rank } = diffSnapshot(snapshot, prevSnapshot)
-      const isCaptured = prevSnapshot.length !== snapshot.length
+      const isCaptured = len + 1 === prevLen
 
-      // if (prevSnapshot.length !== snapshot.length) {
-      //   capturedPiece = compose(
-      //     extract('piece'),
-      //     _diffSnapshot(prevSnapshot)
-      //   )(snapshot)
-      // }
+      if (Math.abs(prevLen - len) > 1) {
+        throw new Error('Something wrong, please investigate this!')
+      }
 
       const tile = `${file}${rank}`
       const isPawn = piece === 'P' && !isCaptured
@@ -54,6 +51,12 @@ function createReduceCb (snapshotList) {
  * @return {Array}
  */
 function createNotation (mergedSnapshots) {
+  const len = mergedSnapshots.length
+
+  if (len === 1) {
+    return []
+  }
+
   const reduceCb = createReduceCb(mergedSnapshots)
 
   return mergedSnapshots.reduce(reduceCb, [])

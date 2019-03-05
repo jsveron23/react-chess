@@ -1,4 +1,4 @@
-import { createTimeline } from '~/chess/core'
+import { createTimeline } from '~/chess/helpers'
 
 // prettier-ignore
 const presentSnapshot = [

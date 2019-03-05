@@ -1,11 +1,22 @@
-import { compose, prop, curry, includes, and } from 'ramda'
-import { isExist } from '~/utils'
-import { convertTileToAxis, isPieceThere } from '~/chess/helpers'
+import { curry, of, compose, ifElse, add, concat } from 'ramda'
+import { convertTileToAxis, isBlockedAt } from '~/chess/helpers'
+import { isExist, lazy } from '~/utils'
+import _isDoubleStep from './_isDoubleStep'
 
-const DOUBLE_STEP = 'doubleStep'
-const DOUBLE_STEP_TILES = {
-  w: ['a2', 'b2', 'c2', 'd2', 'e2', 'f2', 'g2', 'h2'],
-  b: ['a7', 'b7', 'c7', 'd7', 'e7', 'f7', 'g7', 'h7']
+/**
+ * @param  {Function} getFlatArgs
+ * @return {Array}
+ */
+function _getDoubleStepAxis (getFlatArgs) {
+  const { x, y, side, movableAxis } = getFlatArgs()
+
+  return compose(
+    concat(movableAxis),
+    of,
+    concat([x]),
+    of,
+    ifElse(lazy(side === 'w'), add(2), add(-2))
+  )(y)
 }
 
 /**
@@ -17,37 +28,31 @@ const DOUBLE_STEP_TILES = {
  * @return {Array}
  */
 function _applyDoubleStep (side, tile, special, snapshot, movableAxis) {
-  const { x, y } = convertTileToAxis(tile)
-
-  const isDoubleStep = compose(
-    and(special.includes(DOUBLE_STEP)),
-    includes(tile)
-  )(DOUBLE_STEP_TILES[side])
-
-  const isFirstTileBlocked = compose(
-    isPieceThere(snapshot),
-    prop(0)
-  )(movableAxis)
-
-  let nextMovableAxis = [...movableAxis]
-
-  if (isDoubleStep && isExist(movableAxis)) {
-    const nextY = side === 'w' ? y + 2 : y - 2
-    const nextAxis = [x, nextY]
-    const isNextTileBlocked = isPieceThere(snapshot, nextAxis)
-
-    nextMovableAxis = [...movableAxis, nextAxis]
-
-    if (isNextTileBlocked) {
-      nextMovableAxis = [...movableAxis]
-    }
-  }
+  const isFirstTileBlocked = isBlockedAt(snapshot, movableAxis)(0)
+  const isDoubleStep = _isDoubleStep(tile, special, side)
+  let cloneMovableAxis = [...movableAxis]
 
   if (isFirstTileBlocked) {
-    nextMovableAxis = []
+    return []
   }
 
-  return nextMovableAxis
+  if (isDoubleStep && isExist(movableAxis)) {
+    cloneMovableAxis = _getDoubleStepAxis(() => {
+      const { x, y } = convertTileToAxis(tile)
+
+      return { x, y, side, movableAxis: cloneMovableAxis }
+    })
+
+    const isNextTileBlocked = isBlockedAt(snapshot, cloneMovableAxis)(1)
+
+    if (isNextTileBlocked) {
+      return [...movableAxis]
+    }
+
+    return cloneMovableAxis
+  }
+
+  return cloneMovableAxis
 }
 
 export default curry(_applyDoubleStep)

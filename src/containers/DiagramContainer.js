@@ -7,8 +7,13 @@ import {
   setNextMovableAxis,
   setNextCapturedSnapshot
 } from '~/actions/ingame'
-import { getNextMovable, createTimeline } from '~/chess/core'
-import { getSpecial, parseSelected, createTile } from '~/chess/helpers'
+import { getNextMovable } from '~/chess/core'
+import {
+  createTimeline,
+  getSpecial,
+  parseSelected,
+  createTile
+} from '~/chess/helpers'
 import { RANKS, FILES } from '~/chess/constants'
 
 // reduce arguments length
