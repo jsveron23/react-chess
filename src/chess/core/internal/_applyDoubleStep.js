@@ -1,7 +1,18 @@
-import { curry, of, compose, ifElse, add, concat } from 'ramda'
-import { convertTileToAxis, isBlockedAt } from '~/chess/helpers'
+import {
+  curry,
+  of,
+  compose,
+  ifElse,
+  add,
+  concat,
+  assoc,
+  identity,
+  flip
+} from 'ramda'
 import { isExist, lazy } from '~/utils'
 import _isDoubleStep from './_isDoubleStep'
+import convertTileToAxis from '../../helpers/convertTileToAxis'
+import isBlockedAt from '../../helpers/isBlockedAt'
 
 /**
  * @param  {Function} getFlatArgs
@@ -28,31 +39,32 @@ function _getDoubleStepAxis (getFlatArgs) {
  * @return {Array}
  */
 function _applyDoubleStep (side, tile, special, snapshot, movableAxis) {
-  const isFirstTileBlocked = isBlockedAt(snapshot, movableAxis)(0)
+  const detectBlocked = isBlockedAt(snapshot)
+  const isFirstTileBlocked = detectBlocked(movableAxis, 0)
   const isDoubleStep = _isDoubleStep(tile, special, side)
-  let cloneMovableAxis = [...movableAxis]
 
   if (isFirstTileBlocked) {
     return []
   }
 
   if (isDoubleStep && isExist(movableAxis)) {
-    cloneMovableAxis = _getDoubleStepAxis(() => {
-      const { x, y } = convertTileToAxis(tile)
+    return compose(
+      // condition with result from `_getDoubleStepAxis`
+      ifElse(flip(detectBlocked)(1), lazy(movableAxis), identity),
 
-      return { x, y, side, movableAxis: cloneMovableAxis }
-    })
+      // passing function to `_getDoubleStepAxis`
+      // execute function inside `_getDoubleStepAxis` by using `lazy`
+      _getDoubleStepAxis,
+      lazy,
 
-    const isNextTileBlocked = isBlockedAt(snapshot, cloneMovableAxis)(1)
-
-    if (isNextTileBlocked) {
-      return [...movableAxis]
-    }
-
-    return cloneMovableAxis
+      // simple merge
+      assoc('side', side),
+      assoc('movableAxis', movableAxis),
+      convertTileToAxis
+    )(tile)
   }
 
-  return cloneMovableAxis
+  return movableAxis
 }
 
 export default curry(_applyDoubleStep)
