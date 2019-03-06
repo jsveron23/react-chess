@@ -1,10 +1,11 @@
-import { compose, curry, test } from 'ramda'
+import * as R from 'ramda'
 import { isEmpty } from '~/utils'
-import { createSnapshotRe, convertAxisToTile } from '~/chess/helpers'
+import createSnapshotRe from './createSnapshotRe'
+import convertAxisToTile from './convertAxisToTile'
 
 /**
  * Detect pice on tile tile
- * @param  {string}  snapshot
+ * @param  {String}  snapshot
  * @param  {Array}   axis
  * @return {Boolean}
  */
@@ -15,10 +16,10 @@ function isPieceThere (snapshot, axis) {
 
   const re = createSnapshotRe(snapshot)
 
-  return compose(
-    test(re),
+  return R.compose(
+    R.test(re),
     convertAxisToTile
   )(axis)
 }
 
-export default curry(isPieceThere)
+export default R.curry(isPieceThere)

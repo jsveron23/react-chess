@@ -1,7 +1,7 @@
-import { getPrevSnapshot } from '~/chess/helpers'
+import { getPrevSnapshotList } from '~/chess/helpers'
 
-describe('#getPrevSnapshot', () => {
-  it('get previous snapshot', () => {
+describe('#getPrevSnapshotList', () => {
+  it('get previous snapshot list', () => {
     // prettier-ignore
     const snapshot = [
       'bRa8', 'bNb8', 'bBc8', 'bQa5', 'bKe8', 'bBf8', 'bNg8', 'bRh8',
@@ -11,11 +11,11 @@ describe('#getPrevSnapshot', () => {
     ]
 
     expect(
-      getPrevSnapshot([
+      getPrevSnapshotList([
         {
           snapshot
         }
       ])
-    ).toEqual(snapshot)
+    ).toEqual([snapshot])
   })
 })

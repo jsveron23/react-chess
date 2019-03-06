@@ -1,11 +1,11 @@
-import { curry } from 'ramda'
+import * as R from 'ramda'
 import { isEmpty } from '~/utils'
 
 /**
  * Create tile
- * @param  {string} file
- * @param  {string} rank
- * @return {string}
+ * @param  {String} file
+ * @param  {String} rank
+ * @return {String}
  */
 function createTile (file, rank) {
   if (isEmpty.or(file, rank)) {
@@ -15,4 +15,4 @@ function createTile (file, rank) {
   return `${file}${rank}`
 }
 
-export default curry(createTile)
+export default R.curry(createTile)

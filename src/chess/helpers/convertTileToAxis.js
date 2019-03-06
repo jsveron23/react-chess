@@ -1,8 +1,10 @@
-import { parseTile, convertFileToX, convertRankToY } from '~/chess/helpers'
+import parseTile from './parseTile'
+import convertFileToX from './convertFileToX'
+import convertRankToY from './convertRankToY'
 
 /**
  * Convert tile to axis
- * @param  {string} tile
+ * @param  {String} tile
  * @return {Object}
  */
 function convertTileToAxis (tile) {

@@ -1,18 +1,18 @@
-import { compose, prop, curry } from 'ramda'
-import { isPieceThere } from '~/chess/helpers'
+import * as R from 'ramda'
+import isPieceThere from './isPieceThere'
 
 /**
  * Is index of movable axis blocked?
  * @param  {Array}   snapshot
  * @param  {Array}   movableAxis
- * @param  {number}  idx
- * @return {boolean}
+ * @param  {Number}  idx
+ * @return {Boolean}
  */
 function isBlockedAt (snapshot, movableAxis, idx) {
-  return compose(
+  return R.compose(
     isPieceThere(snapshot),
-    prop(idx)
+    R.prop(idx)
   )(movableAxis)
 }
 
-export default curry(isBlockedAt)
+export default R.curry(isBlockedAt)

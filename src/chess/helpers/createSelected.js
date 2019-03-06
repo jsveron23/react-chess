@@ -1,20 +1,20 @@
-import { compose, join, of, prepend, curry } from 'ramda'
-import { getSide } from '~/chess/helpers'
+import * as R from 'ramda'
+import getSide from './getSide'
 
 /**
  * Create selected
- * @param  {string} tile
- * @param  {string} turn
- * @return {string}
+ * @param  {String} tile
+ * @param  {String} turn
+ * @return {String}
  */
 function createSelected (tile, turn) {
   // ${tile}-${side}
-  return compose(
-    join('-'),
-    prepend(tile),
-    of,
+  return R.compose(
+    R.join('-'),
+    R.prepend(tile),
+    R.of,
     getSide
   )(turn)
 }
 
-export default curry(createSelected)
+export default R.curry(createSelected)

@@ -1,20 +1,21 @@
-import { curry, compose, prop } from 'ramda'
-import { findCode, parseCode } from '~/chess/helpers'
+import * as R from 'ramda'
 import { splitTo } from '~/utils'
+import findCode from './findCode'
+import parseCode from './parseCode'
 
 /**
  * Parse selected
  * @param  {Array}  snapshot
- * @param  {string} selected
+ * @param  {String} selected
  * @return {Object}
  */
 function parseSelected (snapshot, selected) {
-  return compose(
+  return R.compose(
     parseCode,
     findCode(snapshot),
-    prop('tile'),
+    R.prop('tile'),
     splitTo('-', ['tile'])
   )(selected)
 }
 
-export default curry(parseSelected)
+export default R.curry(parseSelected)

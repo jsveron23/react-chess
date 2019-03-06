@@ -1,6 +1,6 @@
-import { join, compose } from 'ramda'
+import * as R from 'ramda'
 import { createRegExp } from '~/utils'
-import { convertSnapshotToTiles } from '~/chess/helpers'
+import convertSnapshotToTiles from './convertSnapshotToTiles'
 
 /**
  * Create regular expression of tile list
@@ -8,9 +8,9 @@ import { convertSnapshotToTiles } from '~/chess/helpers'
  * @return {RegExp}
  */
 function createSnapshotRe (snapshot) {
-  return compose(
+  return R.compose(
     createRegExp,
-    join('|'),
+    R.join('|'),
     convertSnapshotToTiles
   )(snapshot)
 }

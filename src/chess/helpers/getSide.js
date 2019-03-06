@@ -1,9 +1,9 @@
-import { SIDE } from '~/chess/constants'
+import { SIDE } from '../constants'
 
 /**
  * Get side
- * @param  {string} side
- * @return {string}
+ * @param  {String} side
+ * @return {String}
  */
 function getSide (side) {
   return SIDE[side]

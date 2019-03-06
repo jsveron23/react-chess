@@ -2,7 +2,7 @@ import { splitTo } from '~/utils'
 
 /**
  * Parse a code of snapshot
- * @param  {string} code
+ * @param  {String} code
  * @return {Object}
  */
 function parseCode (code) {

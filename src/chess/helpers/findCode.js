@@ -1,22 +1,21 @@
-import { curry, defaultTo, includes, compose, flip, find } from 'ramda'
+import * as R from 'ramda'
 import { isEmpty } from '~/utils'
 
 /**
  * Find a code
  * @param  {Array}  snapshot
- * @param  {string} searchTxt
- * @return {string}
+ * @param  {String} searchTxt
+ * @return {String}
  */
 function findCode (snapshot, searchTxt) {
-  if (isEmpty(searchTxt)) {
-    return ''
-  }
-
-  return compose(
-    defaultTo(''),
-    flip(find)(snapshot),
-    includes
+  return R.unless(
+    isEmpty,
+    R.compose(
+      R.defaultTo(''),
+      R.flip(R.find)(snapshot),
+      R.includes
+    )
   )(searchTxt)
 }
 
-export default curry(findCode)
+export default R.curry(findCode)

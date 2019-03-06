@@ -1,7 +1,7 @@
 /**
  * Convert rank to y
- * @param  {string} rank
- * @return {number}
+ * @param  {String} rank
+ * @return {Number}
  */
 function convertRankToY (rank) {
   const y = parseInt(rank, 10)

@@ -1,9 +1,9 @@
-import { FILES } from '~/chess/constants'
+import { FILES } from '../constants'
 
 /**
  * Get file char
- * @param  {number} fileNum
- * @return {string}
+ * @param  {Number} fileNum
+ * @return {String}
  */
 function getFile (fileNum) {
   return FILES[fileNum - 1]

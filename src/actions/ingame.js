@@ -13,7 +13,7 @@ import {
   parseSelected,
   replaceSnapshot,
   createSelected,
-  getPrevSnapshot,
+  getPrevSnapshotList,
   diffSnapshot
 } from '~/chess/helpers'
 import { isEmpty, isExist, lazy } from '~/utils'
@@ -80,7 +80,8 @@ export function setNext (snapshot) {
       lazy,
       R.mergeWith(R.identity, { turn, snapshot }),
       diffSnapshot(snapshot),
-      getPrevSnapshot
+      R.prop(0),
+      getPrevSnapshotList
     )(past)
 
     dispatch(setCheckTo(checkTo))
