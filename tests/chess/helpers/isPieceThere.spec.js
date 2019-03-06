@@ -12,5 +12,7 @@ describe('#isPieceThere', () => {
   it('is piece there?', () => {
     expect(isPieceThere(snapshot)([2, 2])).toBeTruthy()
     expect(isPieceThere(snapshot)([4, 5])).toBeFalsy()
+    expect(isPieceThere('')([4, 5])).toBeFalsy()
+    expect(isPieceThere('')('')).toBeFalsy()
   })
 })

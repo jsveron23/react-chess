@@ -52,6 +52,7 @@ function mapStateToProps ({ general, ingame }) {
   const { isDoingMatch } = general
   const { present, past } = ingame
   const { turn, snapshot, selected, checkTo } = present
+  console.log(snapshot, past)
   const { piece, side, file, rank } = memoizeParseSelected(snapshot, selected)
   const nextMovableTiles = compose(
     getNextMovable('tiles'),
