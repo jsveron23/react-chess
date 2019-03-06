@@ -8,15 +8,17 @@ const PROMOTION_TILES = {
 }
 
 /**
- * @TODO: bug, same time when capture on end tile
- * @param  {string} side
- * @param  {string} tile
+ * TODO: bug: when capture on end of tile
+ * @param  {String} side
+ * @param  {String} tile
  * @param  {Array}  special
  * @return {Array}
  */
 function _applyPromotion (side, tile, special) {
   return R.compose(
     R.ifElse(R.identity, lazy(`${side}Q${tile}`), lazy('')),
+
+    // is promotion?
     R.and(special.includes(PROMOTION)),
     R.includes(tile)
   )(PROMOTION_TILES[side])

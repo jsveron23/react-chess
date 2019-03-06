@@ -1,10 +1,10 @@
-import { curry } from 'ramda'
-import { parseCode, parseSelected } from '~/chess/helpers'
+import * as R from 'ramda'
+import { parseCode, parseSelected } from '../helpers'
 
 /**
  * Get next snapshot
- * @param  {string} selected
- * @param  {string} tile
+ * @param  {String} selected
+ * @param  {String} tile
  * @param  {Array}  snapshot
  * @return {Array}
  */
@@ -23,4 +23,4 @@ function getNextSnapshot (selected, tile, snapshot) {
   })
 }
 
-export default curry(getNextSnapshot)
+export default R.curry(getNextSnapshot)

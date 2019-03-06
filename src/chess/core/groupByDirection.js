@@ -1,4 +1,4 @@
-import { uniq } from 'ramda'
+import * as R from 'ramda'
 import { isEmpty } from '~/utils'
 import _getDirection, {
   DIAGONAL,
@@ -33,12 +33,11 @@ function groupByDirection (movableAxis) {
 
     const [currentX, currentY] = axis
     const [beforeX, beforeY] = beforeAxis
+    const x = Math.abs(beforeX - currentX)
+    const y = Math.abs(beforeY - currentY)
 
     // TODO: resolve duplicate issue
     const axisList = [beforeAxis, axis]
-
-    const x = Math.abs(beforeX - currentX)
-    const y = Math.abs(beforeY - currentY)
 
     if (x === 1 && y === 1) {
       getDirection = setDirectionKey(DIAGONAL)
@@ -56,9 +55,9 @@ function groupByDirection (movableAxis) {
   }, initialObj)
 
   return {
-    [DIAGONAL]: uniq(withDirection[DIAGONAL]),
-    [VERTICAL]: uniq(withDirection[VERTICAL]),
-    [HORIZONTAL]: uniq(withDirection[HORIZONTAL])
+    [DIAGONAL]: R.uniq(withDirection[DIAGONAL]),
+    [VERTICAL]: R.uniq(withDirection[VERTICAL]),
+    [HORIZONTAL]: R.uniq(withDirection[HORIZONTAL])
   }
 }
 

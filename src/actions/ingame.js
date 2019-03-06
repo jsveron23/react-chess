@@ -1,4 +1,4 @@
-import { compose, ifElse, reject, flip, identity } from 'ramda'
+import * as R from 'ramda'
 import * as types from '~/actions'
 import { OPPONENT } from '~/chess/constants'
 import {
@@ -16,7 +16,7 @@ import {
   getPrevSnapshot,
   diffSnapshot
 } from '~/chess/helpers'
-import { isEmpty, isExist } from '~/utils'
+import { isEmpty, isExist, lazy } from '~/utils'
 
 export function setSelected (piece) {
   return {
@@ -75,15 +75,13 @@ export function setNext (snapshot) {
     const { ingame } = getState()
     const { present, past } = ingame
     const { turn } = present
-
-    const { checkTo, checkBy } = findCheckCode(() => {
-      const { side, piece, file, rank } = compose(
-        diffSnapshot(snapshot),
-        getPrevSnapshot
-      )(past)
-
-      return { turn, snapshot, side, piece, file, rank }
-    })
+    const { checkTo, checkBy } = R.compose(
+      findCheckCode,
+      lazy,
+      R.mergeWith(R.identity, { turn, snapshot }),
+      diffSnapshot(snapshot),
+      getPrevSnapshot
+    )(past)
 
     dispatch(setCheckTo(checkTo))
     dispatch(setCheckBy(checkBy))
@@ -114,13 +112,13 @@ export function setNextSnapshot (tile) {
     const { piece, side } = parseSelected(snapshot, selected)
     const special = getSpecial(piece)
 
-    const getSpecialActionsFn = compose(
+    const getSpecialActionsFn = R.compose(
       applySpecialActions(side, special, tile),
-      flip(createTimeline)(past)
+      R.flip(createTimeline)(past)
     )
 
-    const nextSnapshot = compose(
-      ifElse(isExist.lazy(special), getSpecialActionsFn, identity),
+    const nextSnapshot = R.compose(
+      R.ifElse(isExist.lazy(special), getSpecialActionsFn, R.identity),
       getNextSnapshot(selected, tile)
     )(snapshot)
 
@@ -137,8 +135,8 @@ export function setNextCapturedSnapshot ({
     const { ingame } = getState()
     const { present } = ingame
 
-    const capturedSnapshot = compose(
-      reject(isEmpty),
+    const capturedSnapshot = R.compose(
+      R.reject(isEmpty),
       replaceSnapshot(nextCode, selectedTile),
       replaceSnapshot('', capturedTile)
     )(present.snapshot)

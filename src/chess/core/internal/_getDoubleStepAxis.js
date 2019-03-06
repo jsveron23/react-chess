@@ -13,6 +13,8 @@ function _getDoubleStepAxis (getFlatArgs) {
     R.of,
     R.concat([x]),
     R.of,
+
+    // y ± 2 by side
     R.ifElse(lazy(side === 'w'), R.add(2), R.add(-2))
   )(y)
 }

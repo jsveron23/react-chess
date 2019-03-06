@@ -1,47 +1,55 @@
-import { curry, compose, reduce, keys, map } from 'ramda'
+import * as R from 'ramda'
 import {
   convertAxisToTile,
   findCodeByTile,
   isPieceThere,
   getSide
-} from '~/chess/helpers'
+} from '../helpers'
 
 /**
  * TODO: optimize
- * @param  {string}   turn
+ * NOTE: not work if 1 length of Array
+ * @param  {String}   turn
  * @param  {Array}    snapshot
- * @param  {Object}   movableWithDirection
+ * @param  {Object}   movableByDirection
  * @return {Function}
  */
-function createMapCb (turn, snapshot, movableWithDirection) {
-  const isPieceStand = isPieceThere(snapshot)
+function createMapCb (turn, snapshot, movableByDirection) {
+  const detectBlock = isPieceThere(snapshot)
   const parseCodeByTile = findCodeByTile(snapshot)
 
   /**
    * @callback
-   * @param  {string} directionKey
+   * @param  {String} directionKey
    * @return {Array}
    */
   return (directionKey) => {
-    const axisList = movableWithDirection[directionKey]
-    let firstContactEnemy = false // first enemy on a direction
+    // axis direction (veritical, horizontal, diagonal)
+    const axisList = movableByDirection[directionKey]
+
+    // first enemy on a direction
+    let firstContactEnemy = false
+
     let foundBlock = false
     let prevX
     let prevY
 
-    // checking in same direction
     return axisList.reduce((acc, axis) => {
-      const tile = convertAxisToTile(axis)
-      const { side } = parseCodeByTile(tile)
-      const isEnemy = getSide(side) !== turn
-      const isPieceStanding = isPieceStand(axis)
+      const isBlocked = detectBlock(axis)
+      const isTeamMate = R.compose(
+        R.equals(turn),
+        getSide,
+        R.prop('side'),
+        parseCodeByTile,
+        convertAxisToTile
+      )(axis)
 
       const [x, y] = axis
       const intervalX = Math.abs(x - prevX)
       const intervalY = Math.abs(y - prevY)
 
-      // change direction inside direction
-      // like left, right in same direction
+      // change direction inside axis direction
+      // like left, right
       const isChangedDirection = intervalX > 1 || intervalY > 1
 
       if (isChangedDirection) {
@@ -49,18 +57,18 @@ function createMapCb (turn, snapshot, movableWithDirection) {
         foundBlock = false
       }
 
-      // NOTE: not to finish before saving those
       prevX = x
       prevY = y
 
-      if (!foundBlock && !firstContactEnemy && isEnemy && isPieceStanding) {
+      // include block axis also to set capturable
+      if (!foundBlock && !firstContactEnemy && !isTeamMate && isBlocked) {
         firstContactEnemy = true
         foundBlock = true
 
         return [...acc, axis]
       }
 
-      if (firstContactEnemy || foundBlock || isPieceStanding) {
+      if (firstContactEnemy || foundBlock || isBlocked) {
         firstContactEnemy = true
         foundBlock = true
 
@@ -74,19 +82,19 @@ function createMapCb (turn, snapshot, movableWithDirection) {
 
 /**
  * Get rid of blocked path
- * @param  {string} turn
+ * @param  {String} turn
  * @param  {Array}  snapshot
- * @param  {Object} movableWithDirection
+ * @param  {Object} movableByDirection
  * @return {Array}
  */
-function rejectBlocked (turn, snapshot, movableWithDirection) {
-  const mapCb = createMapCb(turn, snapshot, movableWithDirection)
+function rejectBlocked (turn, snapshot, movableByDirection) {
+  const mapCb = createMapCb(turn, snapshot, movableByDirection)
 
-  return compose(
-    reduce((acc, item) => [...acc, ...item], []),
-    map(mapCb),
-    keys
-  )(movableWithDirection)
+  return R.compose(
+    R.reduce((acc, item) => [...acc, ...item], []),
+    R.map(mapCb),
+    R.keys
+  )(movableByDirection)
 }
 
-export default curry(rejectBlocked)
+export default R.curry(rejectBlocked)

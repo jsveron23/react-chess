@@ -1,13 +1,13 @@
-import { compose, curry, reject, concat } from 'ramda'
+import * as R from 'ramda'
 import { isEmpty } from '~/utils'
 import _applyDoubleStep from './internal/_applyDoubleStep'
 import _applyEnPassant from './internal/_applyEnPassant'
 
 /**
  * Append special axis before moving to tile
- * @param  {string} side
+ * @param  {String} side
  * @param  {Array}  special
- * @param  {string} tile
+ * @param  {String} tile
  * @param  {Array}  timeline
  * @param  {Array}  movableAxis
  * @return {Array}
@@ -23,13 +23,13 @@ function appendSpecialAxis (side, special, tile, timeline, movableAxis) {
       movableAxis
     )
 
-    nextMovableAxis = compose(
-      reject(isEmpty),
-      concat(enPassantAxis)
+    nextMovableAxis = R.compose(
+      R.reject(isEmpty),
+      R.concat(enPassantAxis)
     )(doubleStepAxis)
   }
 
   return nextMovableAxis
 }
 
-export default curry(appendSpecialAxis)
+export default R.curry(appendSpecialAxis)

@@ -1,15 +1,15 @@
-import { curry, compose, reject } from 'ramda'
+import * as R from 'ramda'
 import { isEmpty, isExist } from '~/utils'
-import { replaceSnapshot } from '~/chess/helpers'
+import { replaceSnapshot } from '../helpers'
 import _applyPromotion from './internal/_applyPromotion'
 import { _applySnapshot } from './internal/_applyEnPassant'
 
 /**
  * Apply special actions after moving to tile
  * @TODO: optimize
- * @param  {string} side
+ * @param  {String} side
  * @param  {Array}  special
- * @param  {string} tile
+ * @param  {String} tile
  * @param  {Array}  timeline
  * @return {Array}
  */
@@ -23,8 +23,8 @@ function applySpecialActions (side, special, tile, timeline) {
       const enPassantTile = _applySnapshot(side, tile, timeline)
 
       if (isExist(enPassantTile)) {
-        nextSnapshot = compose(
-          reject(isEmpty),
+        nextSnapshot = R.compose(
+          R.reject(isEmpty),
           replaceSnapshot('', enPassantTile)
         )(snapshot)
       }
@@ -48,4 +48,4 @@ function applySpecialActions (side, special, tile, timeline) {
   return snapshot
 }
 
-export default curry(applySpecialActions)
+export default R.curry(applySpecialActions)

@@ -1,6 +1,6 @@
-import { curry } from 'ramda'
-import { getSide, diffSnapshot } from '~/chess/helpers'
+import * as R from 'ramda'
 import { isExist } from '~/utils'
+import { getSide, diffSnapshot } from '../helpers'
 
 /**
  * @param  {Array}    snapshotList
@@ -11,7 +11,7 @@ function createReduceCb (snapshotList) {
    * @callback
    * @param  {Array}  acc
    * @param  {Array}  snapshot
-   * @param  {number} idx
+   * @param  {Number} idx
    * @return {Array}
    */
   return (acc, snapshot, idx) => {
@@ -62,4 +62,4 @@ function createNotation (mergedSnapshots) {
   return mergedSnapshots.reduce(reduceCb, [])
 }
 
-export default curry(createNotation)
+export default R.curry(createNotation)

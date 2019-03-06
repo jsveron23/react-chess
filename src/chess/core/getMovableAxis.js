@@ -1,13 +1,13 @@
-import { curry, compose, map } from 'ramda'
-import { getMovement, convertTileToAxis } from '~/chess/helpers'
+import * as R from 'ramda'
+import { lazy } from '~/utils'
+import { getMovement, convertTileToAxis } from '../helpers'
 
 /**
- * @param  {string}   tile
- * @param  {string}   turn
+ * @param  {Function} getFlatArgs
  * @return {Function}
  */
-function createMapCb (tile, turn) {
-  const { x, y } = convertTileToAxis(tile)
+function createMapCb (getFlatArgs) {
+  const { x, y, turn } = getFlatArgs()
 
   /**
    * @callback
@@ -28,18 +28,23 @@ function createMapCb (tile, turn) {
 
 /**
  * Get movable axis from movements of piece (no invalid axis filter here)
- * @param  {string} tile
- * @param  {string} turn
- * @param  {string} piece
+ * @param  {String} tile
+ * @param  {String} turn
+ * @param  {String} piece
  * @return {Array}
  */
 function getMovableAxis (tile, turn, piece) {
-  const mapCb = createMapCb(tile, turn)
+  const mapCb = R.compose(
+    createMapCb,
+    lazy,
+    R.mergeWith(R.identity, { turn }),
+    convertTileToAxis
+  )(tile)
 
-  return compose(
-    map(mapCb),
+  return R.compose(
+    R.map(mapCb),
     getMovement
   )(piece)
 }
 
-export default curry(getMovableAxis)
+export default R.curry(getMovableAxis)
