@@ -1,4 +1,5 @@
-import { compose, curry, reverse, pluck } from 'ramda'
+import * as R from 'ramda'
+import getPrevSnapshotList from './getPrevSnapshotList'
 
 /**
  * Create timeline (snapshot list)
@@ -7,12 +8,9 @@ import { compose, curry, reverse, pluck } from 'ramda'
  * @return {Array}
  */
 function createTimeline (presentSnapshot, past) {
-  const prevSnapshotList = compose(
-    pluck('snapshot'),
-    reverse
-  )(past)
+  const prevSnapshotList = getPrevSnapshotList(past)
 
   return [presentSnapshot, ...prevSnapshotList]
 }
 
-export default curry(createTimeline)
+export default R.curry(createTimeline)

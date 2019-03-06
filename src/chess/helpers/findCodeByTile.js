@@ -1,17 +1,18 @@
-import { curry, compose } from 'ramda'
-import { findCode, parseCode } from '~/chess/helpers'
+import * as R from 'ramda'
+import findCode from './findCode'
+import parseCode from './parseCode'
 
 /**
  * Find code by tile
  * @param  {Array}  snapshot
- * @param  {string} tile
- * @return {string}
+ * @param  {String} tile
+ * @return {String}
  */
 function findCodeByTile (snapshot, tile) {
-  return compose(
+  return R.compose(
     parseCode,
     findCode(snapshot)
   )(tile)
 }
 
-export default curry(findCodeByTile)
+export default R.curry(findCodeByTile)

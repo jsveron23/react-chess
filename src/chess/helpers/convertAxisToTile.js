@@ -1,5 +1,5 @@
 import { isEmpty } from '~/utils'
-import { getFile } from '~/chess/helpers'
+import getFile from './getFile'
 
 /**
  * Convert axis to tile

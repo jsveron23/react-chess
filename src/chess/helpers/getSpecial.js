@@ -1,8 +1,8 @@
-import { SPECIALS } from '~/chess/constants'
+import { SPECIALS } from '../constants'
 
 /**
  * Get special
- * @param  {string} piece
+ * @param  {String} piece
  * @return {Array}
  */
 function getSpecial (piece) {

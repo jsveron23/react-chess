@@ -1,25 +1,28 @@
-import { compose, split, reduce } from 'ramda'
+import * as R from 'ramda'
+import { lazy } from '~/utils'
 
 /**
  * Parse tile name to file and rank
- * @param  {string} tile
+ * @param  {String} tile
  * @return {Object}
  */
 function parseTile (tile) {
-  if (typeof tile !== 'string') {
-    return tile
-  }
+  return R.unless(
+    R.compose(
+      R.not,
+      R.is(String)
+    ),
+    R.compose(
+      R.reduce((acc, char) => {
+        const key = R.ifElse(R.test(/[1-9]/), lazy('rank'), lazy('file'))(char)
 
-  return compose(
-    reduce((acc, txt) => {
-      const key = /[1-9]/.test(txt) ? 'rank' : 'file'
-
-      return {
-        ...acc,
-        [key]: txt
-      }
-    }, {}),
-    split('')
+        return {
+          ...acc,
+          [key]: char
+        }
+      }, {}),
+      R.split('')
+    )
   )(tile)
 }
 

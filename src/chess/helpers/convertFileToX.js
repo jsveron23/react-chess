@@ -1,14 +1,16 @@
-import { FILES } from '~/chess/constants'
+import * as R from 'ramda'
+import { FILES } from '../constants'
 
 /**
  * Convert file to x
- * @param  {string} file
- * @return {number}
+ * @param  {String} file
+ * @return {Number}
  */
 function convertFileToX (file) {
-  const idx = FILES.indexOf(file)
-
-  return idx > -1 ? idx + 1 : idx
+  return R.compose(
+    R.ifElse(R.lt(-1), R.add(1), R.identity),
+    R.indexOf(file)
+  )(FILES)
 }
 
 export default convertFileToX

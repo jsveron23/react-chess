@@ -1,25 +1,17 @@
-import { curry } from 'ramda'
-import { isEmpty } from '~/utils'
+import * as R from 'ramda'
+import { isEmpty, lazy } from '~/utils'
 
 /**
  * Replace code of snapshot
- * @param  {string} replace
- * @param  {string} token
+ * @param  {String} replace
+ * @param  {String} token
  * @param  {Array}  snapshot
  * @return {Array}
  */
 function replaceSnapshot (replace, token, snapshot) {
-  if (isEmpty(token)) {
-    return snapshot
-  }
+  const mapCb = R.ifElse(R.includes(token), lazy(replace), R.identity)
 
-  return snapshot.map((code) => {
-    if (code.includes(token)) {
-      return replace
-    }
-
-    return code
-  })
+  return R.ifElse(isEmpty.lazy(token), R.identity, R.map(mapCb))(snapshot)
 }
 
-export default curry(replaceSnapshot)
+export default R.curry(replaceSnapshot)
