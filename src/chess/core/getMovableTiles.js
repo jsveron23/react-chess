@@ -1,5 +1,19 @@
-import { isEmpty } from '~/utils'
-import { convertAxisToTile } from '~/chess/helpers'
+import * as R from 'ramda'
+import { isEmpty, lazy, mergeWithFlat } from '~/utils'
+import { convertAxisToTile } from '../helpers'
+
+/**
+ * @callback
+ * @param  {Array} acc
+ * @param  {Array} axis
+ * @return {Array}
+ */
+function reduceCb (acc, axis) {
+  return R.compose(
+    R.ifElse(isEmpty, lazy(acc), mergeWithFlat(acc)),
+    convertAxisToTile
+  )(axis)
+}
 
 /**
  * Get movable tiles
@@ -7,15 +21,7 @@ import { convertAxisToTile } from '~/chess/helpers'
  * @return {Array}
  */
 function getMovableTiles (movableAxis) {
-  return movableAxis.reduce((acc, axis) => {
-    const nextTile = convertAxisToTile(axis)
-
-    if (isEmpty(nextTile)) {
-      return acc
-    }
-
-    return [...acc, nextTile]
-  }, [])
+  return movableAxis.reduce(reduceCb, [])
 }
 
 export default getMovableTiles

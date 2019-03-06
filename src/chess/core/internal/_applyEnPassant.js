@@ -9,8 +9,8 @@ import convertRankToY from '../../helpers/convertRankToY'
 
 /**
  * @TODO: optimize
- * @param  {string} side
- * @param  {string} tile
+ * @param  {String} side
+ * @param  {String} tile
  * @param  {Array}  timeline
  * @return {Array}
  */

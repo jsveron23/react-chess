@@ -1,17 +1,15 @@
-import { compose, curry, ifElse, prop } from 'ramda'
-import {
-  getMovableAxis,
-  getMovableTiles,
-  appendSpecialAxis,
-  rejectBlocked,
-  groupByDirection
-} from '~/chess/core'
-import { parseCode, findCode } from '~/chess/helpers'
+import * as R from 'ramda'
 import { isExist } from '~/utils'
+import getMovableAxis from './getMovableAxis'
+import getMovableTiles from './getMovableTiles'
+import appendSpecialAxis from './appendSpecialAxis'
+import rejectBlocked from './rejectBlocked'
+import groupByDirection from './groupByDirection'
+import { parseCode, findCode } from '../helpers'
 
 /**
  * Get next movable
- * @param  {string}   type 'tiles', 'axis'
+ * @param  {String}   type 'tiles', 'axis'
  * @param  {Function} getFlatArgs
  * @return {Array}
  */
@@ -20,9 +18,9 @@ function getNextMovable (type, getFlatArgs) {
   const [snapshot] = timeline
 
   if (type === 'axis') {
-    return compose(
+    return R.compose(
       getMovableAxis(tile, turn),
-      prop('piece'),
+      R.prop('piece'),
       parseCode,
       findCode(snapshot)
     )(tile)
@@ -30,15 +28,15 @@ function getNextMovable (type, getFlatArgs) {
 
   const getSpecialAxisFn = appendSpecialAxis(side, special, tile, timeline)
 
-  const getRegularAxisFn = compose(
+  const getRegularAxisFn = R.compose(
     rejectBlocked(turn, snapshot),
     groupByDirection
   )
 
-  return compose(
+  return R.compose(
     getMovableTiles,
-    ifElse(isExist.lazy(special), getSpecialAxisFn, getRegularAxisFn)
+    R.ifElse(isExist.lazy(special), getSpecialAxisFn, getRegularAxisFn)
   )(movableAxis)
 }
 
-export default curry(getNextMovable)
+export default R.curry(getNextMovable)

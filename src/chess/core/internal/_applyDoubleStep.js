@@ -7,8 +7,8 @@ import isBlockedAt from '../../helpers/isBlockedAt'
 
 /**
  * TODO: check block
- * @param  {string} side
- * @param  {string} tile
+ * @param  {String} side
+ * @param  {String} tile
  * @param  {Array}  special
  * @param  {Array}  snapshot
  * @param  {Array}  movableAxis

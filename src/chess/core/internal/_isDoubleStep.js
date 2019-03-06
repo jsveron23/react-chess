@@ -7,9 +7,9 @@ const DOUBLE_STEP_TILES = {
 }
 
 /**
- * @param  {string}  tile
+ * @param  {String}  tile
  * @param  {Array}   special
- * @param  {string}  side
+ * @param  {String}  side
  * @return {boolean}
  */
 function _isDoubleStep (tile, special, side) {

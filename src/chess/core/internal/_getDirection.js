@@ -6,8 +6,8 @@ export const HORIZONTAL = 'horizontal'
 
 /**
  * @param  {Object} state
- * @param  {string} key
- * @param  {array}  axisList
+ * @param  {String} key
+ * @param  {Array}  axisList
  * @return {Object}
  */
 function _getDirection (state, key, axisList) {

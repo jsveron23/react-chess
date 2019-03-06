@@ -1,10 +1,12 @@
-import { compose, reduce } from 'ramda'
-import { getMovableAxis, getNextMovable } from '~/chess/core'
-import { getSpecial, createTile, findCodeByTile } from '~/chess/helpers'
+import * as R from 'ramda'
+import { lazy } from '~/utils'
+import getMovableAxis from './getMovableAxis'
+import getNextMovable from './getNextMovable'
+import { getSpecial, createTile, findCodeByTile } from '../helpers'
 
 /**
- * @param  {string}   side
- * @param  {srring}   checkBy
+ * @param  {String}   side
+ * @param  {String}   checkBy
  * @param  {Array}    snapshot
  * @return {Function}
  */
@@ -13,8 +15,8 @@ function createReduceCb (side, snapshot, checkBy) {
 
   /**
    * @callback
-   * @param  {Obhect}  acc
-   * @param  {string}  mt
+   * @param  {Object}  acc
+   * @param  {String}  mt
    * @return {boolean}
    */
   return (acc, mt) => {
@@ -35,29 +37,23 @@ function createReduceCb (side, snapshot, checkBy) {
 /**
  * Find check code
  * @param  {Function} getFlatArgs
- * @return {string}
+ * @return {String}
  */
 function findCheckCode (getFlatArgs) {
   const { turn, snapshot, side, piece, file, rank } = getFlatArgs()
   const tile = createTile(file, rank)
   const checkCode = `${side}${piece}${tile}`
   const reduceCb = createReduceCb(side, snapshot, checkCode)
+  const initial = { side, tile }
 
-  return compose(
-    reduce(reduceCb, {}),
-    getNextMovable('tiles')
-  )(() => {
-    const nextMovableAxis = getMovableAxis(tile, turn, piece)
-    const special = getSpecial(piece) || []
-
-    return {
-      timeline: [snapshot],
-      movableAxis: nextMovableAxis,
-      side,
-      special,
-      tile
-    }
-  })
+  return R.compose(
+    R.reduce(reduceCb, {}),
+    getNextMovable('tiles'),
+    lazy,
+    R.assoc('special', getSpecial(piece) || []),
+    R.assoc('movableAxis', getMovableAxis(tile, turn, piece)),
+    R.assoc('timeline', [snapshot])
+  )(initial)
 }
 
 export default findCheckCode
