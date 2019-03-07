@@ -26,12 +26,17 @@ function _applyEnPassant (side, tile, timeline) {
       snapshot,
       prevSnapshot
     )
-    const { rank: ss2Rank } = diffSnapshot(prevSnapshot, snapshot)
+
+    const { file: ss2File, rank: ss2Rank } = diffSnapshot(
+      prevSnapshot,
+      snapshot
+    )
+
     const { x: ss1X, y: ss1Y } = convertTileToAxis(`${ss1File}${ss1Rank}`)
-    const ss2Y = convertRankToY(ss2Rank)
+    const { x: ss2X, y: ss2Y } = convertTileToAxis(`${ss2File}${ss2Rank}`)
     const addDSY = side === 'w' ? -2 : 2
     const isDoubleStepped = ss1Y === ss2Y + addDSY
-    const isSameRank = y === ss1Y
+    const isSameRank = y === ss1Y && Math.abs(x - ss2X) === 1
 
     if (isDoubleStepped && isSameRank) {
       const addAxisY = side === 'w' ? 1 : -1
