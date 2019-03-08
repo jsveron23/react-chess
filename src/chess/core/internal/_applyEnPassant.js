@@ -65,7 +65,7 @@ function _applyEnPassant (side, tile, timeline) {
  */
 function _changeSnapshot (side, tile, timeline) {
   const [snapshot, prevSnapshot] = timeline
-  const idx = snapshot.findIndex((code) => code.includes(tile))
+  const idx = snapshot.findIndex(R.includes(tile))
   const beforeMovedCode = prevSnapshot[idx]
   const { file: beforeMovedFile } = parseCode(beforeMovedCode)
   const { file, rank } = parseTile(tile)

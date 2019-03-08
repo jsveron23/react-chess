@@ -1,4 +1,4 @@
-import { curry, split } from 'ramda'
+import * as R from 'ramda'
 import isEmpty from './isEmpty'
 
 /**
@@ -9,7 +9,7 @@ import isEmpty from './isEmpty'
  * @return {Object}
  */
 function splitTo (token, names, str) {
-  const mappable = split(token, str)
+  const mappable = R.split(token, str)
 
   return mappable.reduce((acc, chunk, idx) => {
     const name = names[idx]
@@ -26,4 +26,4 @@ function splitTo (token, names, str) {
   }, {})
 }
 
-export default curry(splitTo)
+export default R.curry(splitTo)

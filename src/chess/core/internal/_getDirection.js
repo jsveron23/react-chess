@@ -12,9 +12,9 @@ export const HORIZONTAL = 'horizontal'
  */
 function _getDirection (state, key, axisList) {
   const {
-    [DIAGONAL]: prevDiagonal = [],
-    [VERTICAL]: prevVertical = [],
-    [HORIZONTAL]: prevHorizontal = []
+    [DIAGONAL]: prevDiagonal,
+    [VERTICAL]: prevVertical,
+    [HORIZONTAL]: prevHorizontal
   } = state
 
   switch (key) {

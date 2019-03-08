@@ -1,4 +1,4 @@
-import { curry, keys, compose, reduce, assoc } from 'ramda'
+import * as R from 'ramda'
 
 /**
  * Convert key name (composable)
@@ -7,10 +7,10 @@ import { curry, keys, compose, reduce, assoc } from 'ramda'
  * @return {Object}
  */
 function convertKeys (names, obj) {
-  return compose(
-    reduce((acc, key) => assoc(names[key] || key, obj[key], acc), {}),
-    keys
+  return R.compose(
+    R.reduce((acc, key) => R.assoc(names[key] || key, obj[key], acc), {}),
+    R.keys
   )(obj)
 }
 
-export default curry(convertKeys)
+export default R.curry(convertKeys)

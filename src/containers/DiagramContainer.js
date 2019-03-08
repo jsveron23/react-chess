@@ -1,6 +1,6 @@
 import { connect } from 'react-redux'
 import memoize from 'memoize-one'
-import { curry, compose, equals } from 'ramda'
+import * as R from 'ramda'
 import { Diagram } from '~/components'
 import {
   setNextSnapshot,
@@ -15,47 +15,44 @@ import {
   createTile
 } from '~/chess/helpers'
 import { RANKS, FILES } from '~/chess/constants'
+import { lazy } from '~/utils'
 
 // reduce arguments length
-const memoizeParseSelected = memoize(parseSelected, equals)
+const memoizeParseSelected = memoize(parseSelected, R.equals)
 
 /**
- * Create getFlatArgs function
  * @param  {Object}   present
- * @param  {Object}   past
+ * @param  {Array}    timeline
  * @return {Function}
  */
-function createGetFlatArgs (present, past) {
+const createGetFlatArgs = R.curry(function createGetFlatArgs (
+  present,
+  timeline
+) {
   const { snapshot, selected } = present
-  const timeline = createTimeline(snapshot, past)
+  const { piece, side, file, rank } = memoizeParseSelected(snapshot, selected)
+  const special = getSpecial(piece) || []
+  const tile = createTile(file, rank)
 
-  /**
-   * Passing flatted arguments by function return (no more destructuring assignment)
-   * @return {Object}
-   */
-  return (/* getFlatArgs */) => {
-    const { piece, side, file, rank } = memoizeParseSelected(snapshot, selected)
-    const special = getSpecial(piece) || []
-    const tile = createTile(file, rank)
-
-    return {
-      timeline,
-      special,
-      tile,
-      side,
-      ...present
-    }
+  return {
+    timeline,
+    special,
+    tile,
+    side,
+    ...present
   }
-}
+})
 
 function mapStateToProps ({ general, ingame }) {
   const { isDoingMatch } = general
   const { present, past } = ingame
   const { turn, snapshot, selected, checkTo } = present
   const { piece, side, file, rank } = memoizeParseSelected(snapshot, selected)
-  const nextMovableTiles = compose(
+  const nextMovableTiles = R.compose(
     getNextMovable('tiles'),
-    curry(createGetFlatArgs)(present)
+    lazy,
+    createGetFlatArgs(present),
+    createTimeline(snapshot)
   )(past)
 
   return {

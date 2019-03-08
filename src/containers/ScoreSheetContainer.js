@@ -1,5 +1,5 @@
 import { connect } from 'react-redux'
-import { compose, reverse } from 'ramda'
+import * as R from 'ramda'
 import { ScoreSheet } from '~/components'
 import { createNotation, createScoreSheet } from '~/chess/core'
 import { createTimeline } from '~/chess/helpers'
@@ -7,9 +7,9 @@ import { createTimeline } from '~/chess/helpers'
 const mapStateToProps = ({ general, ingame }) => {
   const { present, past } = ingame
   const { isDoingMatch } = general
-  const sheet = compose(
+  const sheet = R.compose(
     createScoreSheet,
-    reverse,
+    R.reverse,
     createNotation,
     createTimeline(present.snapshot)
   )(past)

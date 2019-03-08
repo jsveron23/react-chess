@@ -96,9 +96,10 @@ export function setNextMovableAxis (tile) {
     const { turn, snapshot } = present
     const nextSelected = createSelected(tile, turn)
 
-    const nextMovableAxis = getNextMovable('axis', () => {
-      return { tile, timeline: [snapshot], ...present }
-    })
+    const nextMovableAxis = R.compose(
+      getNextMovable('axis'),
+      lazy
+    )({ tile, timeline: [snapshot], ...present })
 
     dispatch(setMovableAxis(nextMovableAxis))
     dispatch(setSelected(nextSelected))
