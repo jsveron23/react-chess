@@ -14,7 +14,6 @@ import _applyEnPassant from './internal/_applyEnPassant'
  */
 function appendSpecialAxis (side, special, tile, timeline, movableAxis) {
   const [snapshot] = timeline
-  let nextMovableAxis = [...movableAxis]
 
   if (special.length > 1) {
     const enPassantAxis = _applyEnPassant(side, tile, timeline)
@@ -23,13 +22,13 @@ function appendSpecialAxis (side, special, tile, timeline, movableAxis) {
       movableAxis
     )
 
-    nextMovableAxis = R.compose(
+    return R.compose(
       R.reject(isEmpty),
       R.concat(enPassantAxis)
     )(doubleStepAxis)
   }
 
-  return nextMovableAxis
+  return [...movableAxis]
 }
 
 export default R.curry(appendSpecialAxis)

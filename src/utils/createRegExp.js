@@ -1,8 +1,8 @@
-import { curry } from 'ramda'
+import * as R from 'ramda'
 
 /**
  * Create regular expression
- * @param  {string} str
+ * @param  {String} str
  * @return {RegExp}
  */
 function createRegExp (str) {
@@ -19,6 +19,6 @@ function withOption (options, str) {
   return new RegExp(str, options || '')
 }
 
-createRegExp.withOptions = curry(withOption)
+createRegExp.withOptions = R.curry(withOption)
 
 export default createRegExp

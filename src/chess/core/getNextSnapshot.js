@@ -11,16 +11,16 @@ import { parseCode, parseSelected } from '../helpers'
 function getNextSnapshot (selected, tile, snapshot) {
   const { file, rank } = parseSelected(snapshot, selected)
   const selectedTile = `${file}${rank}`
+  const mapCb = R.ifElse(
+    R.includes(selectedTile),
+    R.compose(
+      ({ side, piece }) => `${side}${piece}${tile}`,
+      parseCode
+    ),
+    R.identity
+  )
 
-  return snapshot.map((code) => {
-    if (code.includes(selectedTile)) {
-      const { side, piece } = parseCode(code)
-
-      return `${side}${piece}${tile}`
-    }
-
-    return code
-  })
+  return snapshot.map(mapCb)
 }
 
 export default R.curry(getNextSnapshot)

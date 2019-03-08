@@ -25,6 +25,7 @@ class ScoreSheet extends Component {
     equals
   )
 
+  // TODO: not display correctly when undo until timeline end
   shouldComponentUpdate (nextProps) {
     const prevProps = this.props
     const { isDoingMatch, sheet } = nextProps

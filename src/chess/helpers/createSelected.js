@@ -8,7 +8,6 @@ import getSide from './getSide'
  * @return {String}
  */
 function createSelected (tile, turn) {
-  // ${tile}-${side}
   return R.compose(
     R.join('-'),
     R.prepend(tile),

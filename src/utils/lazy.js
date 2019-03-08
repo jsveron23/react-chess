@@ -1,4 +1,4 @@
-import { thunkify, identity } from 'ramda'
+import * as R from 'ramda'
 
 /**
  * Thunk
@@ -6,7 +6,7 @@ import { thunkify, identity } from 'ramda'
  * @return {Function}
  */
 function lazy (v) {
-  return thunkify(identity)(v)
+  return R.thunkify(R.identity)(v)
 }
 
 export default lazy

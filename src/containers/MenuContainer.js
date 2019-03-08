@@ -1,5 +1,5 @@
 import { connect } from 'react-redux'
-import { curry, includes } from 'ramda'
+import * as R from 'ramda'
 import { ActionCreators } from 'redux-undo'
 import { toggleMatchStatus } from '~/actions/general'
 import { Menu } from '~/components'
@@ -23,7 +23,7 @@ const mapStateToProps = ({ general }) => {
 
 const mapDispatchToProps = (dispatch, ownProps) => {
   return {
-    onClick: curry((name, evt) => {
+    onClick: R.curry((name, evt) => {
       evt.preventDefault()
 
       if (name === UNDO) {
@@ -32,7 +32,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
         return
       }
 
-      if (!includes(name, DISABLED_MENU)) {
+      if (!R.includes(name, DISABLED_MENU)) {
         dispatch(toggleMatchStatus())
       }
     })

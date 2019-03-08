@@ -1,4 +1,4 @@
-import { curry } from 'ramda'
+import * as R from 'ramda'
 
 /**
  * Simple displying console log (composable)
@@ -13,4 +13,4 @@ function trace (label, v) {
   return v
 }
 
-export default curry(trace)
+export default R.curry(trace)
