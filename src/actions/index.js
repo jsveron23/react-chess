@@ -4,6 +4,7 @@
  * - Assign action types here to understand whole flows
  */
 
+export const SET_TS = 'SET_TS'
 export const TOGGLE_MATCH_STATUS = 'TOGGLE_MATCH_STATUS'
 export const TOGGLE_TURN = 'TOGGLE_TURN'
 export const SET_CHECK_TO = 'SET_CHECK_TO'
