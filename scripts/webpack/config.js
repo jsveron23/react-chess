@@ -45,7 +45,6 @@ const DEV_SERVER = {
   port: PORT,
   compress: true,
   contentBase: Path.resolve('src', 'assets'),
-  disableHostCheck: true, // for Heroku
   historyApiFallback: true
 }
 
