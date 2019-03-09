@@ -18,17 +18,24 @@ import {
 } from '~/chess/helpers'
 import { isEmpty, isExist, lazy } from '~/utils'
 
-export function setSelected (piece) {
+export function setTs (ts = +new Date()) {
   return {
-    type: types.SET_SELECTED,
-    payload: piece || ''
+    type: types.SET_TS,
+    payload: ts
   }
 }
 
-export function setMovableAxis (movable) {
+export function setSelected (piece = '') {
+  return {
+    type: types.SET_SELECTED,
+    payload: piece
+  }
+}
+
+export function setMovableAxis (movable = []) {
   return {
     type: types.SET_MOVABLE_AXIS,
-    payload: movable || []
+    payload: movable
   }
 }
 
@@ -69,8 +76,9 @@ export function setNext (snapshot) {
   return (dispatch, getState) => {
     dispatch(setSnapshot(snapshot))
     dispatch(setMovableAxis())
-    dispatch(toggleTurn())
     dispatch(setSelected())
+    dispatch(setTs())
+    dispatch(toggleTurn())
 
     const { ingame } = getState()
     const { present, past } = ingame

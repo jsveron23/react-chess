@@ -2,6 +2,7 @@ import * as types from '~/actions'
 
 // prettier-ignore
 const initialState = {
+  timestamp: +new Date(),
   turn: 'white',
   selected: '',
   movableAxis: [],
@@ -19,6 +20,13 @@ function reducer (state = initialState, action) {
   const { type, payload } = action
 
   switch (type) {
+    case types.SET_TS: {
+      return {
+        ...state,
+        timestamp: payload
+      }
+    }
+
     case types.TOGGLE_TURN: {
       return {
         ...state,
