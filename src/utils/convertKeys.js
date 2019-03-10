@@ -8,7 +8,14 @@ import * as R from 'ramda'
  */
 function convertKeys (names, obj) {
   return R.compose(
-    R.reduce((acc, key) => R.assoc(names[key] || key, obj[key], acc), {}),
+    R.reduce((acc, key) => {
+      const nextKey = names[key] || key
+
+      return {
+        ...acc,
+        [nextKey]: obj[key]
+      }
+    }, {}),
     R.keys
   )(obj)
 }

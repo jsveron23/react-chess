@@ -1,5 +1,5 @@
 import * as R from 'ramda'
-import { lazy } from '~/utils'
+import { lazy, merge } from '~/utils'
 import getMovableAxis from './getMovableAxis'
 import getNextMovable from './getNextMovable'
 import { getSpecial, createTile, findCodeByTile } from '../helpers'
@@ -50,9 +50,11 @@ function findCheckCode (getFlatArgs) {
     R.reduce(reduceCb, {}),
     getNextMovable('tiles'),
     lazy,
-    R.assoc('special', getSpecial(piece) || []),
-    R.assoc('movableAxis', getMovableAxis(tile, turn, piece)),
-    R.assoc('timeline', [snapshot])
+    merge({
+      special: getSpecial(piece) || [],
+      movableAxis: getMovableAxis(tile, turn, piece),
+      timeline: [snapshot]
+    })
   )(initial)
 }
 
