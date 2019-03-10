@@ -1,5 +1,5 @@
 import * as R from 'ramda'
-import { isExist, lazy } from '~/utils'
+import { isExist, lazy, merge } from '~/utils'
 import _isDoubleStep from './_isDoubleStep'
 import _getDoubleStepAxis from './_getDoubleStepAxis'
 import convertTileToAxis from '../../helpers/convertTileToAxis'
@@ -36,9 +36,10 @@ function _applyDoubleStep (side, tile, special, snapshot, movableAxis) {
       _getDoubleStepAxis,
       lazy,
 
-      // simple merge
-      R.assoc('side', side),
-      R.assoc('movableAxis', movableAxis),
+      merge({
+        side,
+        movableAxis
+      }),
       convertTileToAxis
     )(tile)
   }
