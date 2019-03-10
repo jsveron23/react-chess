@@ -1,6 +1,9 @@
 /**
  * Get plugins
- * @return {string} nodeEnv
+ * @param  {Array}    defaultPlugins
+ * @param  {Array}    devPlugins
+ * @param  {Array}    prodPlugins
+ * @return {Function}
  */
 function get (defaultPlugins, devPlugins, prodPlugins) {
   return (nodeEnv) => [

@@ -71,10 +71,6 @@ const SPLIT_CHUNKS = {
   }
 }
 
-/**
- * Webpack loaders
- * @type {Object}
- */
 const LOADERS = {
   eslint: {
     test: /\.js$/,
@@ -108,7 +104,7 @@ const LOADERS = {
     loader: 'postcss-loader',
     options: {
       config: {
-        path: `${Path.resolve('scripts', 'webpack')}/postcss/postcss.config.js`
+        path: `${Path.webpack}/postcss/postcss.config.js`
       }
     }
   },
