@@ -1,15 +1,19 @@
+const R = require('ramda')
+
 /**
  * Get plugins
- * @param  {Array}    defaultPlugins
- * @param  {Array}    devPlugins
- * @param  {Array}    prodPlugins
+ * @param  {Array?}   devPlugins
+ * @param  {Array?}   prodPlugins
  * @return {Function}
  */
-function get (defaultPlugins, devPlugins, prodPlugins) {
-  return (nodeEnv) => [
-    ...defaultPlugins,
-    ...(nodeEnv === 'development' ? devPlugins : prodPlugins)
-  ]
+function get (devPlugins = [], prodPlugins = []) {
+  const lazy = R.thunkify(R.identity)
+
+  /**
+   * @param  {String} nodeEnv
+   * @return {Array}
+   */
+  return R.ifElse(R.equals('development'), lazy(devPlugins), lazy(prodPlugins))
 }
 
 module.exports = {

@@ -1,28 +1,52 @@
+const R = require('ramda')
 const webpack = require('webpack')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
 const MiniCssExtractPlugin = require('mini-css-extract-plugin')
 const Path = require('./lib/path')
+const createRe = require('./lib/createRe')
+
+/**
+ * Generic
+ */
 
 const PORT = process.env.PORT || 3000
 
-const NO_PARSE = new RegExp(
-  [
+const DEVTOOL = 'eval'
+
+const DEVTOOL_PROD = 'source-map'
+
+const TARGET = 'web'
+
+const ALIAS = {
+  'react-dom': '@hot-loader/react-dom',
+  '~': Path.resolve('src')
+}
+
+/**
+ * Optimization
+ */
+
+const NO_PARSE = R.compose(
+  createRe,
+  R.join('|'),
+  R.concat([
     'rimraf',
     'prettier',
     'prettier-eslint',
     'enzyme',
     'enzyme-adapter-react-16',
     'enzyme-to-json',
-    'eslint-config-standard',
-    'eslint-plugin-import',
-    'eslint-plugin-node',
-    'eslint-plugin-promise',
-    'eslint-plugin-react',
-    'eslint-plugin-standard',
     'jest',
     'coveralls'
-  ].join('|')
-)
+  ])
+)([
+  'eslint-config-standard',
+  'eslint-plugin-import',
+  'eslint-plugin-node',
+  'eslint-plugin-promise',
+  'eslint-plugin-react',
+  'eslint-plugin-standard'
+])
 
 const VENDOR = [
   'react',
@@ -39,26 +63,6 @@ const VENDOR = [
   'scu-inspector'
 ]
 
-const DEV_SERVER = {
-  hot: true,
-  host: '0.0.0.0',
-  port: PORT,
-  compress: true,
-  contentBase: Path.resolve('src', 'assets'),
-  historyApiFallback: true
-}
-
-const ALIAS = {
-  'react-dom': '@hot-loader/react-dom',
-  '~': Path.resolve('src')
-}
-
-const DEVTOOL = 'eval'
-
-const DEVTOOL_PROD = 'source-map'
-
-const TARGET = 'web'
-
 const SPLIT_CHUNKS = {
   cacheGroups: {
     commons: {
@@ -70,6 +74,23 @@ const SPLIT_CHUNKS = {
     }
   }
 }
+
+/**
+ * Development server
+ */
+
+const DEV_SERVER = {
+  hot: true,
+  host: '0.0.0.0',
+  port: PORT,
+  compress: true,
+  contentBase: Path.resolve('src', 'assets'),
+  historyApiFallback: true
+}
+
+/**
+ * Loaders
+ */
 
 const LOADERS = {
   eslint: {
@@ -132,6 +153,10 @@ const LOADERS = {
   }
 }
 
+/**
+ * Plugins
+ */
+
 const DEFAULT_PLUGINS = [
   new HtmlWebpackPlugin({
     inject: 'body',
@@ -144,13 +169,19 @@ const DEFAULT_PLUGINS = [
   })
 ]
 
-const DEV_PLUGINS = [new webpack.HotModuleReplacementPlugin()]
+const DEV_PLUGINS = R.concat(DEFAULT_PLUGINS, [
+  new webpack.HotModuleReplacementPlugin()
+])
 
-const PROD_PLUGINS = [
+const PROD_PLUGINS = R.concat(DEFAULT_PLUGINS, [
   new MiniCssExtractPlugin({
     filename: '[name].[hash].css'
   })
-]
+])
+
+/**
+ * @exports
+ */
 
 module.exports = {
   PORT,
@@ -163,7 +194,6 @@ module.exports = {
   TARGET,
   SPLIT_CHUNKS,
   LOADERS,
-  DEFAULT_PLUGINS,
   DEV_PLUGINS,
   PROD_PLUGINS
 }
