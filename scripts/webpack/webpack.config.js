@@ -13,13 +13,13 @@ const {
   TARGET,
   SPLIT_CHUNKS,
   LOADERS,
-  DEFAULT_PLUGINS,
   DEV_PLUGINS,
   PROD_PLUGINS
 } = require('./config')
 
+// prepare
 const getLoaders = Loaders.get(LOADERS)
-const getPlugins = Plugins.get(DEFAULT_PLUGINS, DEV_PLUGINS, PROD_PLUGINS)
+const getPlugins = Plugins.get(DEV_PLUGINS, PROD_PLUGINS)
 
 const entryApp = {
   development: [
@@ -30,13 +30,18 @@ const entryApp = {
 }
 
 /**
- * Configure
- * @param  {Object} [env={}]
+ * Configure Webpack
+ * @param  {Object?} [env={}]
  * @return {Object}
  */
 function configure (env = {}) {
   const mode = env.production ? 'production' : 'development'
   const isDev = mode === 'development'
+
+  /**
+   * Config
+   * @type {Object}
+   */
   const config = {
     mode,
     target: TARGET,
