@@ -11,8 +11,8 @@ function createRegExp (str) {
 
 /**
  * Create regular expression with options
- * @param  {string} options
- * @param  {string} str
+ * @param  {String} options
+ * @param  {String} str
  * @return {RegExp}
  */
 function withOption (options, str) {

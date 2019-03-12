@@ -1,13 +1,13 @@
 import _detectEmpty from './_detectEmpty'
 
 /**
- * @param  {string}   fnName
+ * @param  {String}   fnName
  * @return {Function}
  */
 function _isExist (fnName) {
   /**
    * @param  {...*}    [...args]
-   * @return {boolean}
+   * @return {Boolean}
    */
   return (...args) => {
     const fn = args[fnName].bind(args)

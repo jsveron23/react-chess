@@ -1,7 +1,7 @@
 /**
  * Is even?
- * @param  {number}  num
- * @return {boolean}
+ * @param  {Number}  num
+ * @return {Boolean}
  */
 function isEven (num) {
   if (typeof num !== 'number') {

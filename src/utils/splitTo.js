@@ -2,18 +2,23 @@ import * as R from 'ramda'
 import isEmpty from './isEmpty'
 
 /**
- * Split by token string and return as an object
- * @param  {string} token
- * @param  {Array}  names
- * @param  {string} str
- * @return {Object}
+ * @param  {Array}    names
+ * @return {Function}
  */
-function splitTo (token, names, str) {
-  const mappable = R.split(token, str)
+function createReduceCb (names) {
+  let idx = 0
 
-  return mappable.reduce((acc, chunk, idx) => {
+  /**
+   * @callback
+   * @param  {Object} acc
+   * @param  {*}      chunk
+   * @return {Object}
+   */
+  return (acc, chunk) => {
     const name = names[idx]
     const isValidType = typeof name === 'string' || typeof name === 'number'
+
+    idx += 1
 
     if (!isValidType || isEmpty(name)) {
       return acc
@@ -23,7 +28,23 @@ function splitTo (token, names, str) {
       ...acc,
       [name]: chunk
     }
-  }, {})
+  }
+}
+
+/**
+ * Split by token string and return as an object
+ * @param  {String} token
+ * @param  {Array}  names
+ * @param  {String} str
+ * @return {Object}
+ */
+function splitTo (token, names, str) {
+  const reduceCb = createReduceCb(names)
+
+  return R.compose(
+    R.reduce(reduceCb, {}),
+    R.split(token)
+  )(str)
 }
 
 export default R.curry(splitTo)

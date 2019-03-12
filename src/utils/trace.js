@@ -2,7 +2,7 @@ import * as R from 'ramda'
 
 /**
  * Simple displying console log (composable)
- * @param  {string} label
+ * @param  {String} label
  * @return {*}
  */
 function trace (label, v) {

@@ -7,7 +7,7 @@ import * as R from 'ramda'
  * @return {Object}
  */
 function merge (a, b) {
-  return R.mergeWith(R.identity, a, b)
+  return R.mergeWith(R.identity)(a, b)
 }
 
 export default R.curry(merge)
