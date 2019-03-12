@@ -3,13 +3,14 @@ import PropTypes from 'prop-types'
 import cx from 'classnames'
 import memoize from 'memoize-one'
 import { boundMethod } from 'autobind-decorator'
-import { curry, compose, includes, ifElse, and } from 'ramda'
+import * as R from 'ramda'
 import { Blank } from '~/components'
 import { isEmpty, isExist, lazy, noop } from '~/utils'
 import { isDarkBg } from '~/chess/helpers'
 import css from './File.css'
 
-const curriedCreateElement = curry((Element, props) =>
+// NOTE: ignore third arg
+const curriedCreateElement = R.curry((Element, props) =>
   createElement(Element, props)
 )
 
@@ -18,10 +19,8 @@ class File extends Component {
     turn: PropTypes.string.isRequired,
     fileName: PropTypes.string.isRequired,
     tile: PropTypes.string.isRequired,
-    selectedPiece: PropTypes.string,
-    selectedSide: PropTypes.string,
-    selectedFile: PropTypes.string,
-    selectedRank: PropTypes.string,
+    selectedKey: PropTypes.string,
+    selectedTile: PropTypes.string,
     checkTo: PropTypes.string,
     movableTiles: PropTypes.array,
     children: PropTypes.func,
@@ -37,19 +36,19 @@ class File extends Component {
     setNextSnapshot: noop
   }
 
-  isMovable = memoize(includes)
+  isMemoizeMovable = memoize(R.includes, R.equals)
 
   @boundMethod
   handleClick (evt) {
     evt.preventDefault()
 
     const { tile, children, movableTiles, setNextSnapshot } = this.props
-    const shouldSetNext = compose(
-      and(isEmpty(children)),
-      this.isMovable(tile)
+    const shouldSetNextSnapshot = R.compose(
+      R.and(isEmpty(children)),
+      this.isMemoizeMovable(tile)
     )(movableTiles)
 
-    if (shouldSetNext) {
+    if (shouldSetNextSnapshot) {
       setNextSnapshot(tile)
     }
   }
@@ -60,24 +59,20 @@ class File extends Component {
       fileName,
       tile,
       children,
-      selectedPiece,
-      selectedSide,
-      selectedFile,
-      selectedRank,
+      selectedKey,
+      selectedTile,
       checkTo,
       movableTiles,
       setNextCapturedSnapshot,
       setNextMovableAxis
     } = this.props
 
-    const isMovable = this.isMovable(tile, movableTiles)
+    const isMovable = this.isMemoizeMovable(tile, movableTiles)
 
     const pieceProps = {
       turn,
-      selectedPiece,
-      selectedSide,
-      selectedFile,
-      selectedRank,
+      selectedKey,
+      selectedTile,
       checkTo,
       tile,
       isMovable,
@@ -90,9 +85,9 @@ class File extends Component {
       className: cx({ 'is-movable': isMovable })
     }
 
-    const Element = compose(
+    const Element = R.compose(
       curriedCreateElement(children || Blank),
-      ifElse(isExist, lazy(pieceProps), lazy(blankProps))
+      R.ifElse(isExist, lazy(pieceProps), lazy(blankProps))
     )(children)
     const cls = cx(css.file, { 'is-dark': isDarkBg(tile) })
 

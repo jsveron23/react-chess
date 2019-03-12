@@ -1,5 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
+import cx from 'classnames'
 import { Rank } from '~/components'
 import { noop } from '~/utils'
 import css from './Diagram.css'
@@ -9,10 +10,8 @@ const Diagram = (props) => {
     isDoingMatch,
     turn,
     snapshot,
-    selectedPiece,
-    selectedSide,
-    selectedFile,
-    selectedRank,
+    selectedKey,
+    selectedTile,
     checkTo,
     ranks,
     files,
@@ -22,22 +21,20 @@ const Diagram = (props) => {
     setNextSnapshot
   } = props
 
-  if (!isDoingMatch) {
-    return null
-  }
+  const cls = cx(css.diagram, {
+    'is-hidden': !isDoingMatch
+  })
 
   return (
-    <div className={css.diagram}>
+    <div className={cls}>
       {ranks.map((rankName) => {
         return (
           <Rank
             key={rankName}
             turn={turn}
             snapshot={snapshot}
-            selectedPiece={selectedPiece}
-            selectedSide={selectedSide}
-            selectedFile={selectedFile}
-            selectedRank={selectedRank}
+            selectedKey={selectedKey}
+            selectedTile={selectedTile}
             checkTo={checkTo}
             files={files}
             rankName={rankName}
@@ -58,10 +55,8 @@ Diagram.propTypes = {
   ranks: PropTypes.array.isRequired,
   files: PropTypes.array.isRequired,
   snapshot: PropTypes.array.isRequired,
-  selectedPiece: PropTypes.string,
-  selectedSide: PropTypes.string,
-  selectedFile: PropTypes.string,
-  selectedRank: PropTypes.string,
+  selectedKey: PropTypes.string,
+  selectedTile: PropTypes.string,
   checkTo: PropTypes.string,
   movableTiles: PropTypes.array,
   setNextCapturedSnapshot: PropTypes.func,
