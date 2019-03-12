@@ -1,7 +1,7 @@
 /**
  * Detect empty value whether it is empty
  * @param  {*}       v
- * @return {boolean}
+ * @return {Boolean}
  */
 function _detectEmpty (v) {
   if (typeof v === 'function' || typeof v === 'symbol') {

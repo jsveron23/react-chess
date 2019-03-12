@@ -7,15 +7,10 @@ import * as R from 'ramda'
  * @return {Object}
  */
 function convertKeys (names, obj) {
-  return R.compose(
-    R.reduce((acc, key) => {
-      const nextKey = names[key] || key
+  const reduceCb = (acc, key) => R.assoc(names[key] || key, obj[key])(acc)
 
-      return {
-        ...acc,
-        [nextKey]: obj[key]
-      }
-    }, {}),
+  return R.compose(
+    R.reduce(reduceCb, {}),
     R.keys
   )(obj)
 }
