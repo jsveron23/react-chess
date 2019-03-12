@@ -1,4 +1,4 @@
-import { curry } from 'ramda'
+import * as R from 'ramda'
 import {
   BlackBishop,
   BlackKing,
@@ -36,4 +36,4 @@ function getPiece (side, piece) {
   return PIECE_MAP[pieceKey]
 }
 
-export default curry(getPiece)
+export default R.curry(getPiece)

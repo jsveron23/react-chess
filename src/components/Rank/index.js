@@ -1,11 +1,16 @@
 import React from 'react'
 import PropTypes from 'prop-types'
+import memoize from 'memoize-one'
 import cx from 'classnames'
+import * as R from 'ramda'
 import { File } from '~/components'
 import getPiece from '~/chess/getPiece'
-import { findCodeByTile } from '~/chess/helpers'
+import { findCodeByTile, createTile } from '~/chess/helpers'
 import { noop } from '~/utils'
 import css from './Rank.css'
+
+const memoizeCreateTile = memoize(createTile)
+const memoizeFindCodeByTile = memoize(findCodeByTile, R.equals)
 
 const Rank = (props) => {
   const {
@@ -13,10 +18,8 @@ const Rank = (props) => {
     snapshot,
     files,
     rankName,
-    selectedPiece,
-    selectedSide,
-    selectedFile,
-    selectedRank,
+    selectedKey,
+    selectedTile,
     checkTo,
     movableTiles,
     setNextCapturedSnapshot,
@@ -24,13 +27,12 @@ const Rank = (props) => {
     setNextSnapshot
   } = props
   const cls = cx(css.rank, 'l-flex-row')
-  const parseCodeByTile = findCodeByTile(snapshot)
 
   return (
     <div className={cls} data-rank={rankName}>
       {files.map((fileName) => {
-        const tile = `${fileName}${rankName}`
-        const { side, piece } = parseCodeByTile(tile)
+        const tile = memoizeCreateTile(fileName, rankName)
+        const { side, piece } = memoizeFindCodeByTile(snapshot, tile)
 
         return (
           <File
@@ -38,10 +40,8 @@ const Rank = (props) => {
             turn={turn}
             tile={tile}
             fileName={fileName}
-            selectedPiece={selectedPiece}
-            selectedSide={selectedSide}
-            selectedFile={selectedFile}
-            selectedRank={selectedRank}
+            selectedKey={selectedKey}
+            selectedTile={selectedTile}
             checkTo={checkTo}
             movableTiles={movableTiles}
             setNextCapturedSnapshot={setNextCapturedSnapshot}
@@ -61,10 +61,8 @@ Rank.propTypes = {
   turn: PropTypes.string.isRequired,
   files: PropTypes.array.isRequired,
   rankName: PropTypes.string.isRequired,
-  selectedPiece: PropTypes.string,
-  selectedSide: PropTypes.string,
-  selectedFile: PropTypes.string,
-  selectedRank: PropTypes.string,
+  selectedKey: PropTypes.string,
+  selectedTile: PropTypes.string,
   checkTo: PropTypes.string,
   movableTiles: PropTypes.array,
   setNextCapturedSnapshot: PropTypes.func,

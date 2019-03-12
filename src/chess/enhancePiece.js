@@ -1,11 +1,10 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import cx from 'classnames'
-import memoize from 'memoize-one'
 import { boundMethod } from 'autobind-decorator'
-import { curry } from 'ramda'
+import * as R from 'ramda'
 import { noop } from '~/utils'
-import { getSide, createTile } from '~/chess/helpers'
+import { getSide } from '~/chess/helpers'
 
 /**
  * Higher order component for Chess piece
@@ -24,10 +23,8 @@ function enhancePiece (WrappedComponent, staticKey, staticTurn) {
     static propTypes = {
       turn: PropTypes.string.isRequired,
       tile: PropTypes.string.isRequired,
-      selectedPiece: PropTypes.string,
-      selectedSide: PropTypes.string,
-      selectedFile: PropTypes.string,
-      selectedRank: PropTypes.string,
+      selectedKey: PropTypes.string,
+      selectedTile: PropTypes.string,
       checkTo: PropTypes.string,
       isMovable: PropTypes.bool,
       setNextMovableAxis: PropTypes.func,
@@ -40,8 +37,6 @@ function enhancePiece (WrappedComponent, staticKey, staticTurn) {
       setNextCapturedSnapshot: noop
     }
 
-    getSelectedTile = memoize(createTile)
-
     @boundMethod
     handleClick (evt) {
       evt.preventDefault()
@@ -50,15 +45,12 @@ function enhancePiece (WrappedComponent, staticKey, staticTurn) {
         isMovable,
         turn,
         tile,
-        selectedPiece,
-        selectedSide,
-        selectedFile,
-        selectedRank,
+        selectedKey,
+        selectedTile,
         setNextMovableAxis,
         setNextCapturedSnapshot
       } = this.props
 
-      const selectedTile = this.getSelectedTile(selectedFile, selectedRank)
       const isTurn = getSide(staticTurn) === turn
       const isCapturable = isMovable && !isTurn
 
@@ -67,7 +59,7 @@ function enhancePiece (WrappedComponent, staticKey, staticTurn) {
       }
 
       if (isCapturable) {
-        const code = `${selectedSide}${selectedPiece}${tile}`
+        const code = `${selectedKey}${tile}`
 
         setNextCapturedSnapshot({
           selectedTile,
@@ -78,15 +70,7 @@ function enhancePiece (WrappedComponent, staticKey, staticTurn) {
     }
 
     render () {
-      const {
-        turn,
-        tile,
-        selectedFile,
-        selectedRank,
-        checkTo,
-        isMovable
-      } = this.props
-      const selectedTile = this.getSelectedTile(selectedFile, selectedRank)
+      const { turn, tile, selectedTile, checkTo, isMovable } = this.props
       const isTurn = getSide(staticTurn) === turn
       const isCapturable = isMovable && !isTurn
       const cls = cx({
@@ -110,4 +94,4 @@ function enhancePiece (WrappedComponent, staticKey, staticTurn) {
   return Piece
 }
 
-export default curry(enhancePiece)
+export default R.curry(enhancePiece)

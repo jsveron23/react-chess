@@ -1,12 +1,9 @@
-import React, { Component } from 'react'
+import React, { PureComponent } from 'react'
 import PropTypes from 'prop-types'
 import cx from 'classnames'
-import memoize from 'memoize-one'
-import { compose, difference, equals } from 'ramda'
-import { isExist } from '~/utils'
 import css from './ScoreSheet.css'
 
-class ScoreSheet extends Component {
+class ScoreSheet extends PureComponent {
   static propTypes = {
     isDoingMatch: PropTypes.bool.isRequired,
     sheet: PropTypes.array
@@ -14,29 +11,6 @@ class ScoreSheet extends Component {
 
   static defaultProps = {
     sheet: []
-  }
-
-  isSheetChanged = memoize(
-    (nextSheet, prevSheet) =>
-      compose(
-        isExist,
-        difference(nextSheet)
-      )(prevSheet),
-    equals
-  )
-
-  // TODO: not display correctly when undo until timeline end
-  shouldComponentUpdate (nextProps) {
-    const prevProps = this.props
-    const { isDoingMatch, sheet } = nextProps
-    const isMatchStatusChanged = prevProps.isDoingMatch !== isDoingMatch
-    const isSheetChanged = this.isSheetChanged(sheet, prevProps.sheet)
-
-    if (isMatchStatusChanged || isSheetChanged) {
-      return true
-    }
-
-    return false
   }
 
   componentDidUpdate () {

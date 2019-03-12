@@ -17,41 +17,40 @@ import {
 import { RANKS, FILES } from '~/chess/constants'
 import { lazy } from '~/utils'
 
-// reduce arguments length
 const memoizeParseSelected = memoize(parseSelected, R.equals)
+const memoizeCreateTile = memoize(createTile)
 
 /**
- * @param  {Object}   present
- * @param  {Array}    timeline
- * @return {Function}
+ * A function for `getNextMovable`
+ * @param  {Object} present
+ * @param  {Array}  timeline
+ * @return {Object}
  */
-const createGetFlatArgs = R.curry(function createGetFlatArgs (
-  present,
-  timeline
-) {
+function getFlatArgs (present, timeline) {
   const { snapshot, selected } = present
   const { piece, side, file, rank } = memoizeParseSelected(snapshot, selected)
+  const tile = memoizeCreateTile(file, rank)
   const special = getSpecial(piece) || []
-  const tile = createTile(file, rank)
 
-  return {
+  return lazy({
     timeline,
     special,
     tile,
     side,
     ...present
-  }
-})
+  })
+}
 
 function mapStateToProps ({ general, ingame }) {
   const { isDoingMatch } = general
   const { present, past } = ingame
   const { turn, snapshot, selected, checkTo } = present
   const { piece, side, file, rank } = memoizeParseSelected(snapshot, selected)
+  const selectedKey = `${side}${piece}`
+  const selectedTile = memoizeCreateTile(file, rank)
   const nextMovableTiles = R.compose(
     getNextMovable('tiles'),
-    lazy,
-    createGetFlatArgs(present),
+    R.curry(getFlatArgs)(present),
     createTimeline(snapshot)
   )(past)
 
@@ -60,12 +59,10 @@ function mapStateToProps ({ general, ingame }) {
     turn,
     checkTo,
     snapshot,
+    selectedKey,
+    selectedTile,
     ranks: RANKS,
     files: FILES,
-    selectedPiece: piece,
-    selectedSide: side,
-    selectedFile: file,
-    selectedRank: rank,
     movableTiles: nextMovableTiles
   }
 }
