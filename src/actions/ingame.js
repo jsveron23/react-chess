@@ -72,6 +72,13 @@ export function setSnapshot (snapshot) {
   }
 }
 
+export function restartGame (ts = +new Date()) {
+  return {
+    type: types.RESTART_GAME,
+    payload: ts
+  }
+}
+
 export function setNext (snapshot) {
   return (dispatch, getState) => {
     dispatch(setSnapshot(snapshot))

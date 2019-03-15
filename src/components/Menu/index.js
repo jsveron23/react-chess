@@ -5,7 +5,7 @@ import { Button } from '~/components'
 import { noop } from '~/utils'
 import css from './Menu.css'
 
-const Menu = ({ isDoingMatch, items, onClick }) => {
+const Menu = ({ isDoingMatch, items, disabledItems, onClick }) => {
   const cls = cx(css.menu, {
     [css.menuIngame]: isDoingMatch
   })
@@ -14,6 +14,10 @@ const Menu = ({ isDoingMatch, items, onClick }) => {
   return (
     <ul className={cls}>
       {items.map((name) => {
+        if (disabledItems.includes(name)) {
+          return null
+        }
+
         const handleClick = onClick(name)
 
         return (
@@ -31,10 +35,12 @@ const Menu = ({ isDoingMatch, items, onClick }) => {
 Menu.propTypes = {
   isDoingMatch: PropTypes.bool.isRequired,
   items: PropTypes.array.isRequired,
+  disabledItems: PropTypes.array,
   onClick: PropTypes.func
 }
 
 Menu.defaultProps = {
+  disabledItems: [],
   onClick: noop
 }
 

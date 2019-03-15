@@ -1,8 +1,8 @@
 import { connect } from 'react-redux'
-import * as R from 'ramda'
 import { ActionCreators } from 'redux-undo'
-import { toggleMatchStatus } from '~/actions/general'
 import { Menu } from '~/components'
+import { toggleMatchStatus } from '~/actions/general'
+import { restartGame } from '~/actions/ingame'
 
 const RESUME_GAME = 'Resume Game'
 const HUMAN_VS_HUMAN = 'Human vs. Human'
@@ -10,20 +10,24 @@ const HUMAN_VS_CPU = 'Human vs. CPU'
 const MAIN = 'Main'
 const UNDO = 'Undo'
 
-const MAIN_MENU = [RESUME_GAME, HUMAN_VS_HUMAN, HUMAN_VS_CPU]
-const GAME_MENU = [MAIN, UNDO]
-const DISABLED_MENU = [HUMAN_VS_CPU]
+const MAIN_ITEMS = [RESUME_GAME, HUMAN_VS_HUMAN, HUMAN_VS_CPU]
+const GAME_ITEMS = [MAIN, UNDO]
+const DISABLED_ITEMS = [HUMAN_VS_CPU]
 
 const mapStateToProps = ({ general }) => {
   const { isDoingMatch } = general
-  const items = !isDoingMatch ? MAIN_MENU : GAME_MENU
+  const items = !isDoingMatch ? MAIN_ITEMS : GAME_ITEMS
 
-  return { isDoingMatch, items }
+  return {
+    disabledItems: DISABLED_ITEMS,
+    isDoingMatch,
+    items
+  }
 }
 
-const mapDispatchToProps = (dispatch, ownProps) => {
+const mapDispatchToProps = (dispatch) => {
   return {
-    onClick: R.curry((name, evt) => {
+    onClick: (name) => (evt) => {
       evt.preventDefault()
 
       if (name === UNDO) {
@@ -32,10 +36,21 @@ const mapDispatchToProps = (dispatch, ownProps) => {
         return
       }
 
-      if (!R.includes(name, DISABLED_MENU)) {
+      if (name === HUMAN_VS_HUMAN) {
+        const shouldRestart = window.confirm('Restart game?')
+
+        if (!shouldRestart) {
+          return
+        }
+
+        dispatch(restartGame(/* TODO: save */))
+        dispatch(ActionCreators.clearHistory())
+      }
+
+      if (!DISABLED_ITEMS.includes(name)) {
         dispatch(toggleMatchStatus())
       }
-    })
+    }
   }
 }
 
