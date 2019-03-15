@@ -2,7 +2,7 @@ import * as types from '~/actions'
 
 // prettier-ignore
 const initialState = {
-  timestamp: +new Date(),
+  timestamp: null,
   turn: 'white',
   selected: '',
   movableAxis: [],
@@ -23,6 +23,13 @@ function reducer (state = initialState, action) {
     case types.SET_TS: {
       return {
         ...state,
+        timestamp: payload
+      }
+    }
+
+    case types.RESTART_GAME: {
+      return {
+        ...initialState,
         timestamp: payload
       }
     }
