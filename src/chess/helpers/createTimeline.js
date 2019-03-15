@@ -3,14 +3,14 @@ import getPrevSnapshotList from './getPrevSnapshotList'
 
 /**
  * Create timeline (snapshot list)
- * @param  {Array} presentSnapshot
+ * @param  {Array} snapshot
  * @param  {Array} past
  * @return {Array}
  */
-function createTimeline (presentSnapshot, past) {
+function createTimeline (snapshot, past) {
   const prevSnapshotList = getPrevSnapshotList(past)
 
-  return [presentSnapshot, ...prevSnapshotList]
+  return [snapshot, ...prevSnapshotList]
 }
 
 export default R.curry(createTimeline)

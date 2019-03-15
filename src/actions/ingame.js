@@ -16,7 +16,7 @@ import {
   getPrevSnapshotList,
   diffSnapshot
 } from '~/chess/helpers'
-import { isEmpty, isExist, lazy } from '~/utils'
+import { isEmpty, isExist, lazy, merge } from '~/utils'
 
 export function setTs (ts = +new Date()) {
   return {
@@ -86,10 +86,9 @@ export function setNext (snapshot) {
     const { checkTo, checkBy } = R.compose(
       findCheckCode,
       lazy,
-      R.mergeWith(R.identity, { turn, snapshot }),
+      merge({ turn, snapshot }),
       diffSnapshot(snapshot),
-      R.prop(0),
-      getPrevSnapshotList
+      getPrevSnapshotList.withIndex(0)
     )(past)
 
     dispatch(setCheckTo(checkTo))
