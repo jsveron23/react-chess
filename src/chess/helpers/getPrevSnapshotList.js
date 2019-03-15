@@ -1,15 +1,27 @@
 import * as R from 'ramda'
+import { isExist } from '~/utils'
 
 /**
- * Get previous snapshot
- * @param  {Array} past
- * @return {Array}
+ * Get previous snapshot list
+ * @param  {Number}   idx
+ * @return {Function}
  */
-function getPrevSnapshotList (past) {
-  return R.compose(
-    R.pluck('snapshot'),
-    R.reverse
-  )(past)
+function createGetPrevSnapshotList (idx) {
+  /**
+   * @param  {Array} past
+   * @return {Array}
+   */
+  return (past) => {
+    const prevSnapshotList = R.compose(
+      R.pluck('snapshot'),
+      R.reverse
+    )(past)
+
+    return isExist(idx) ? R.prop(idx, prevSnapshotList) : prevSnapshotList
+  }
 }
 
-export default R.curry(getPrevSnapshotList)
+const getPrevSnapshotList = createGetPrevSnapshotList()
+getPrevSnapshotList.withIndex = createGetPrevSnapshotList
+
+export default getPrevSnapshotList

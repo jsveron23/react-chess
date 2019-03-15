@@ -1,5 +1,5 @@
 import * as R from 'ramda'
-import { lazy } from '~/utils'
+import { lazy, merge } from '~/utils'
 import { getMovement, convertTileToAxis } from '../helpers'
 
 /**
@@ -37,7 +37,7 @@ function getMovableAxis (tile, turn, piece) {
   const mapCb = R.compose(
     createMapCb,
     lazy,
-    R.mergeWith(R.identity, { turn }),
+    merge({ turn }),
     convertTileToAxis
   )(tile)
 
