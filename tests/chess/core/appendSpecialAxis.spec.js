@@ -24,7 +24,7 @@ describe('#appendSpecialAxis', () => {
       const movableP = [[1, 3]]
 
       expect(
-        appendSpecialAxis('w', specialP, 'a2', timeline, movableP)
+        appendSpecialAxis('w', specialP, 'a2', '', timeline, movableP)
       ).toEqual([[1, 3], [1, 4]])
     })
 
@@ -43,7 +43,7 @@ describe('#appendSpecialAxis', () => {
       const movableP = [[1, 3]]
 
       expect(
-        appendSpecialAxis('w', specialP, 'a2', timeline, movableP)
+        appendSpecialAxis('w', specialP, 'a2', '', timeline, movableP)
       ).toEqual([])
     })
 
@@ -62,7 +62,7 @@ describe('#appendSpecialAxis', () => {
       const movableP = [[1, 3]]
 
       expect(
-        appendSpecialAxis('w', specialP, 'a2', timeline, movableP)
+        appendSpecialAxis('w', specialP, 'a2', '', timeline, movableP)
       ).toEqual([[1, 3]])
     })
 
@@ -81,7 +81,7 @@ describe('#appendSpecialAxis', () => {
       const movableP = [[1, 4]]
 
       expect(
-        appendSpecialAxis('w', specialP, 'a3', timeline, movableP)
+        appendSpecialAxis('w', specialP, 'a3', '', timeline, movableP)
       ).toEqual([[1, 4]])
     })
 
@@ -100,7 +100,7 @@ describe('#appendSpecialAxis', () => {
       const movableP = [[1, 4]]
 
       expect(
-        appendSpecialAxis('w', specialP, 'a3', timeline, movableP)
+        appendSpecialAxis('w', specialP, 'a3', '', timeline, movableP)
       ).toEqual([])
     })
 
@@ -125,10 +125,10 @@ describe('#appendSpecialAxis', () => {
       const movableP = [[1, 5]]
 
       expect(
-        appendSpecialAxis('w', specialP, 'a4', timeline, movableP)
+        appendSpecialAxis('w', specialP, 'a4', '', timeline, movableP)
       ).toEqual(expect.arrayContaining([[1, 5]]))
       expect(
-        appendSpecialAxis('w', specialP, 'a4', timeline, movableP)
+        appendSpecialAxis('w', specialP, 'a4', '', timeline, movableP)
       ).toEqual(expect.arrayContaining([[2, 5]]))
     })
 
@@ -148,13 +148,13 @@ describe('#appendSpecialAxis', () => {
       const movableP = [[4, 3]]
 
       expect(
-        appendSpecialAxis('w', specialP, 'd2', timeline, movableP)
+        appendSpecialAxis('w', specialP, 'd2', '', timeline, movableP)
       ).toEqual(expect.arrayContaining([[4, 3]]))
       expect(
-        appendSpecialAxis('w', specialP, 'd2', timeline, movableP)
+        appendSpecialAxis('w', specialP, 'd2', '', timeline, movableP)
       ).toEqual(expect.arrayContaining([[4, 4]]))
       expect(
-        appendSpecialAxis('w', specialP, 'd2', timeline, movableP)
+        appendSpecialAxis('w', specialP, 'd2', '', timeline, movableP)
       ).toEqual(expect.arrayContaining([[5, 3]]))
     })
   })

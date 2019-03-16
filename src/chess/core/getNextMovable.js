@@ -14,7 +14,15 @@ import { parseCode, findCode } from '../helpers'
  * @return {Array}
  */
 function getNextMovable (type, getFlatArgs) {
-  const { turn, movableAxis, timeline, special, side, tile } = getFlatArgs()
+  const {
+    turn,
+    movableAxis,
+    timeline,
+    special,
+    side,
+    tile,
+    checkBy
+  } = getFlatArgs()
   const [snapshot] = timeline
 
   if (type === 'axis') {
@@ -26,7 +34,14 @@ function getNextMovable (type, getFlatArgs) {
     )(tile)
   }
 
-  const getSpecialAxisFn = appendSpecialAxis(side, special, tile, timeline)
+  // TODO: optimize args length
+  const getSpecialAxisFn = appendSpecialAxis(
+    side,
+    special,
+    tile,
+    checkBy,
+    timeline
+  )
 
   const getRegularAxisFn = R.compose(
     rejectBlocked(turn, snapshot),
