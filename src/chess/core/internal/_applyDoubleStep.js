@@ -6,7 +6,9 @@ import convertTileToAxis from '../../helpers/convertTileToAxis'
 import isBlockedAt from '../../helpers/isBlockedAt'
 
 /**
- * TODO: check block
+ * TODO:
+ * - check block
+ * - remove movableAxis arg
  * @param  {String} side
  * @param  {String} tile
  * @param  {Array}  timeline

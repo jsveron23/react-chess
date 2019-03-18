@@ -1,40 +1,68 @@
 import * as R from 'ramda'
-import { isExist } from '~/utils'
-import _isKingMoved from './_isKingMoved'
-import _isLeftRookMoved from './_isLeftRookMoved'
-import _isRightRookMoved from './_isRightRookMoved'
-import convertTileToAxis from '../../helpers/convertTileToAxis'
-import parseCode from '../../helpers/parseCode'
+import {
+  isMoved,
+  convertTileToAxis,
+  isCheck as detectCheck
+} from '../../helpers'
+
+const KING_TILE = {
+  w: 'Ke1',
+  b: 'Ke8'
+}
+
+const ROOK_QSIDE_TILE = {
+  w: 'Ra1',
+  b: 'Rh8'
+}
+
+const ROOK_KSIDE_TILE = {
+  w: 'Rh1',
+  b: 'Ra8'
+}
 
 const IGNORE_TILES = ['b1', 'd8']
 
+const QUEEN_SIDE = {
+  w: ['b1', 'c1', 'd1'],
+  b: ['f8', 'g8']
+}
+
+const KING_SIDE = {
+  w: ['f1', 'g1'],
+  b: ['b8', 'c8', 'd8']
+}
+
+/**
+ * TODO: more conditions
+ * @param  {String} side
+ * @param  {String} checkBy
+ * @param  {Array}  timeline
+ * @return {Array}
+ */
 function _applyCastling (side, checkBy, timeline) {
-  const isKingMoved = _isKingMoved(timeline, side)
-  const isLeftRookMoved = _isLeftRookMoved(timeline, side)
-  const isRightRookMoved = _isRightRookMoved(timeline, side)
-  const isCheck = R.ifElse(
-    isExist,
-    R.compose(
-      R.not,
-      R.equals(side),
-      R.prop('side'),
-      parseCode
-    ),
-    R.F
-  )(checkBy)
+  const detectMoved = isMoved(timeline)
+
+  const kingCode = `${side}${KING_TILE[side]}`
+  const isKingMoved = detectMoved(kingCode)
+
+  const queenSideCode = `${side}${ROOK_QSIDE_TILE[side]}`
+  const isLeftRookMoved = detectMoved(queenSideCode)
+
+  const kingSideCode = `${side}${ROOK_KSIDE_TILE[side]}`
+  const isRightRookMoved = detectMoved(kingSideCode)
+
+  const isCheck = detectCheck(checkBy, side)
 
   if (!isCheck && !isKingMoved) {
     const [snapshot] = timeline
     let checkPath = []
 
     if (!isLeftRookMoved) {
-      checkPath = side === 'w' ? ['b1', 'c1', 'd1'] : ['f8', 'g8']
+      checkPath = QUEEN_SIDE[side]
     }
 
     if (!isRightRookMoved) {
-      checkPath = checkPath.concat(
-        side === 'w' ? ['f1', 'g1'] : ['b8', 'c8', 'd8']
-      )
+      checkPath = checkPath.concat(KING_SIDE[side])
     }
 
     const ableToMove = snapshot.some((code) => !checkPath.includes(code))

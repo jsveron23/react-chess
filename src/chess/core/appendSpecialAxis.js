@@ -6,6 +6,7 @@ import _applyCastling from './internal/_applyCastling'
 
 /**
  * Append special axis before moving to tile
+ * TODO: return only their axis
  * @param  {String} side
  * @param  {Array}  special
  * @param  {String} tile
