@@ -3,12 +3,12 @@ import { isEmpty } from '~/utils'
 import findCode from './findCode'
 
 /**
- * Is piece moved?
+ * Detect is piece moved?
  * @param  {Array}   timeline
  * @param  {String}  searchTxt
  * @return {Boolean}
  */
-function isMoved (timeline, searchTxt) {
+function detectMoved (timeline, searchTxt) {
   return timeline.some((snapshot) => {
     return R.compose(
       isEmpty,
@@ -17,4 +17,4 @@ function isMoved (timeline, searchTxt) {
   })
 }
 
-export default R.curry(isMoved)
+export default R.curry(detectMoved)

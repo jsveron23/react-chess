@@ -1,6 +1,6 @@
-import { isMoved } from '~/chess/helpers'
+import { detectMoved } from '~/chess/helpers'
 
-describe('#isMoved', () => {
+describe('#detectMoved', () => {
   // prettier-ignore
   const timeline = [
     [
@@ -41,9 +41,9 @@ describe('#isMoved', () => {
     ]
   ]
 
-  it('is moved?', () => {
-    expect(isMoved(timeline, 'wK')).toBeFalsy()
-    expect(isMoved(timeline, 'wNc1')).toBeTruthy()
-    expect(isMoved(timeline, 'bPb5')).toBeTruthy()
+  it('Detect is piece moved?', () => {
+    expect(detectMoved(timeline, 'wK')).toBeFalsy()
+    expect(detectMoved(timeline, 'wNc1')).toBeTruthy()
+    expect(detectMoved(timeline, 'bPb5')).toBeTruthy()
   })
 })

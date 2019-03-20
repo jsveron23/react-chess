@@ -1,6 +1,6 @@
 import * as R from 'ramda'
 import {
-  isMoved,
+  detectMoved,
   convertTileToAxis,
   convertSnapshotToTiles,
   detectCheck
@@ -66,17 +66,15 @@ function isBlock (timeline, tiles) {
  * @return {Array}
  */
 function _applyCastling (side, checkBy, timeline) {
-  const detectMoved = isMoved(timeline)
+  const awaitDetectMoved = detectMoved(timeline)
 
   const kingCode = `${side}${KING_TILE[side]}`
-  const isKingMoved = detectMoved(kingCode)
-
   const queenSideCode = `${side}${ROOK_QSIDE_TILE[side]}`
-  const isLeftRookMoved = detectMoved(queenSideCode)
-
   const kingSideCode = `${side}${ROOK_KSIDE_TILE[side]}`
-  const isRightRookMoved = detectMoved(kingSideCode)
 
+  const isKingMoved = awaitDetectMoved(kingCode)
+  const isLeftRookMoved = awaitDetectMoved(queenSideCode)
+  const isRightRookMoved = awaitDetectMoved(kingSideCode)
   const isCheck = detectCheck(checkBy, side)
 
   if (!isCheck && !isKingMoved) {
