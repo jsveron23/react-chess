@@ -1,7 +1,7 @@
 import * as R from 'ramda'
 import {
   detectMoved,
-  convertTileToAxis,
+  insertAxisByTiles,
   convertSnapshotToTiles,
   detectCheck
 } from '../../helpers'
@@ -21,7 +21,7 @@ const ROOK_KSIDE_TILE = {
   b: 'Ra8'
 }
 
-const IGNORE_TILES = ['b1', 'd8']
+const IGNORE_AXIS_LIST = [[2, 1], [4, 8]]
 
 const QUEEN_SIDE = {
   w: ['b1', 'c1', 'd1'],
@@ -31,18 +31,6 @@ const QUEEN_SIDE = {
 const KING_SIDE = {
   w: ['f1', 'g1'],
   b: ['b8', 'c8', 'd8']
-}
-
-function incAxis (tiles, initial) {
-  return tiles.reduce((acc, pathTile) => {
-    if (IGNORE_TILES.includes(pathTile)) {
-      return acc
-    }
-
-    const { x, y } = convertTileToAxis(pathTile)
-
-    return [...acc, [x, y]]
-  }, initial)
 }
 
 function isBlock (timeline, tiles) {
@@ -68,14 +56,11 @@ function isBlock (timeline, tiles) {
 function _applyCastling (side, checkBy, timeline) {
   const awaitDetectMoved = detectMoved(timeline)
 
-  const kingCode = `${side}${KING_TILE[side]}`
-  const queenSideCode = `${side}${ROOK_QSIDE_TILE[side]}`
-  const kingSideCode = `${side}${ROOK_KSIDE_TILE[side]}`
-
-  const isKingMoved = awaitDetectMoved(kingCode)
-  const isLeftRookMoved = awaitDetectMoved(queenSideCode)
-  const isRightRookMoved = awaitDetectMoved(kingSideCode)
+  const isKingMoved = awaitDetectMoved(`${side}${KING_TILE[side]}`)
+  const isLeftRookMoved = awaitDetectMoved(`${side}${ROOK_QSIDE_TILE[side]}`)
+  const isRightRookMoved = awaitDetectMoved(`${side}${ROOK_KSIDE_TILE[side]}`)
   const isCheck = detectCheck(checkBy, side)
+  let axisList = []
 
   if (!isCheck && !isKingMoved) {
     const queenSideTiles = QUEEN_SIDE[side]
@@ -83,20 +68,19 @@ function _applyCastling (side, checkBy, timeline) {
     const detectBlock = R.curry(isBlock)(timeline)
     const isQsTileBlocked = detectBlock(queenSideTiles)
     const isKsTilesBlocked = detectBlock(kingSideTiles)
-    let axlisList = []
 
     if (!isLeftRookMoved && !isQsTileBlocked) {
-      axlisList = incAxis(queenSideTiles, axlisList)
+      axisList = insertAxisByTiles(axisList, queenSideTiles)
     }
 
     if (!isRightRookMoved && !isKsTilesBlocked) {
-      axlisList = incAxis(kingSideTiles, axlisList)
+      axisList = insertAxisByTiles(axisList, kingSideTiles)
     }
 
-    return axlisList
+    return R.without(IGNORE_AXIS_LIST, axisList)
   }
 
-  return []
+  return axisList
 }
 
 export default R.curry(_applyCastling)
