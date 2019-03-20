@@ -3,12 +3,12 @@ import { isExist } from '~/utils'
 import parseCode from './parseCode'
 
 /**
- * Is check?
+ * Detect is check?
  * @param  {String}  checkBy
  * @param  {String}  side
  * @return {Boolean}
  */
-function isCheck (checkBy, side) {
+function detectCheck (checkBy, side) {
   return R.ifElse(
     isExist,
     R.compose(
@@ -21,4 +21,4 @@ function isCheck (checkBy, side) {
   )(checkBy)
 }
 
-export default R.curry(isCheck)
+export default R.curry(detectCheck)

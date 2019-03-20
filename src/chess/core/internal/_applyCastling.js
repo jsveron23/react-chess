@@ -3,7 +3,7 @@ import {
   isMoved,
   convertTileToAxis,
   convertSnapshotToTiles,
-  isCheck as detectCheck
+  detectCheck
 } from '../../helpers'
 
 const KING_TILE = {
