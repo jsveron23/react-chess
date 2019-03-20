@@ -2,6 +2,7 @@ import * as R from 'ramda'
 import {
   isMoved,
   convertTileToAxis,
+  convertSnapshotToTiles,
   isCheck as detectCheck
 } from '../../helpers'
 
@@ -32,6 +33,31 @@ const KING_SIDE = {
   b: ['b8', 'c8', 'd8']
 }
 
+function incAxis (tiles, initial) {
+  return tiles.reduce((acc, pathTile) => {
+    if (IGNORE_TILES.includes(pathTile)) {
+      return acc
+    }
+
+    const { x, y } = convertTileToAxis(pathTile)
+
+    return [...acc, [x, y]]
+  }, initial)
+}
+
+function isBlock (timeline, tiles) {
+  const flippedSomeFn = R.compose(
+    R.flip(R.any),
+    convertSnapshotToTiles,
+    R.prop(0)
+  )(timeline)
+
+  return R.compose(
+    flippedSomeFn,
+    R.flip(R.includes)
+  )(tiles)
+}
+
 /**
  * TODO: more conditions
  * @param  {String} side
@@ -54,30 +80,22 @@ function _applyCastling (side, checkBy, timeline) {
   const isCheck = detectCheck(checkBy, side)
 
   if (!isCheck && !isKingMoved) {
-    const [snapshot] = timeline
-    let checkPath = []
+    const queenSideTiles = QUEEN_SIDE[side]
+    const kingSideTiles = KING_SIDE[side]
+    const detectBlock = R.curry(isBlock)(timeline)
+    const isQsTileBlocked = detectBlock(queenSideTiles)
+    const isKsTilesBlocked = detectBlock(kingSideTiles)
+    let axlisList = []
 
-    if (!isLeftRookMoved) {
-      checkPath = QUEEN_SIDE[side]
+    if (!isLeftRookMoved && !isQsTileBlocked) {
+      axlisList = incAxis(queenSideTiles, axlisList)
     }
 
-    if (!isRightRookMoved) {
-      checkPath = checkPath.concat(KING_SIDE[side])
+    if (!isRightRookMoved && !isKsTilesBlocked) {
+      axlisList = incAxis(kingSideTiles, axlisList)
     }
 
-    const ableToMove = snapshot.some((code) => !checkPath.includes(code))
-
-    if (ableToMove) {
-      return checkPath.reduce((acc, pathTile) => {
-        if (IGNORE_TILES.includes(pathTile)) {
-          return acc
-        }
-
-        const { x, y } = convertTileToAxis(pathTile)
-
-        return [...acc, [x, y]]
-      }, [])
-    }
+    return axlisList
   }
 
   return []
