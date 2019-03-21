@@ -2,7 +2,7 @@ import * as R from 'ramda'
 import {
   insertAxisByTiles,
   detectMoved,
-  detectBlock,
+  detectRemain,
   detectCheck
 } from '../../helpers'
 
@@ -50,18 +50,20 @@ function _applyCastling (side, checkBy, timeline) {
   let axisList = []
 
   if (!isCheck && !isKingMoved) {
-    const awaitDetectBlock = detectBlock(timeline)
+    const [snapshot] = timeline
+    const awaitDetectRemain = detectRemain(snapshot)
 
     const queenSideTiles = QUEEN_SIDE[side]
     const kingSideTiles = KING_SIDE[side]
-    const isQsTileBlocked = awaitDetectBlock(queenSideTiles)
-    const isKsTilesBlocked = awaitDetectBlock(kingSideTiles)
 
-    if (!isLeftRookMoved && !isQsTileBlocked) {
+    const isQsBlocked = awaitDetectRemain(queenSideTiles)
+    const isKsBlocked = awaitDetectRemain(kingSideTiles)
+
+    if (!isLeftRookMoved && !isQsBlocked) {
       axisList = insertAxisByTiles(axisList, queenSideTiles)
     }
 
-    if (!isRightRookMoved && !isKsTilesBlocked) {
+    if (!isRightRookMoved && !isKsBlocked) {
       axisList = insertAxisByTiles(axisList, kingSideTiles)
     }
 

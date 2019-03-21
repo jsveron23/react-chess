@@ -2,18 +2,16 @@ import * as R from 'ramda'
 import convertSnapshotToTiles from './convertSnapshotToTiles'
 
 /**
- * Detect block piece from timeline
- * TODO: merge with isBlockAt
- * @param  {Array}   timeline
+ * Detect remain tiles from snapshot
+ * @param  {Array}   snapshot
  * @param  {Array}   tiles
  * @return {Boolean}
  */
-function detectBlock (timeline, tiles) {
+function detectRemain (snapshot, tiles) {
   const flippedSomeFn = R.compose(
     R.flip(R.any),
-    convertSnapshotToTiles,
-    R.prop(0)
-  )(timeline)
+    convertSnapshotToTiles
+  )(snapshot)
 
   return R.compose(
     flippedSomeFn,
@@ -21,4 +19,4 @@ function detectBlock (timeline, tiles) {
   )(tiles)
 }
 
-export default R.curry(detectBlock)
+export default R.curry(detectRemain)
