@@ -1,6 +1,8 @@
 import * as R from 'ramda'
-import { isEmpty, lazy, mergeWithFlat } from '~/utils'
+import { isEmpty, lazy } from '~/utils'
 import { convertAxisToTile } from '../helpers'
+
+const concatWithFlat = R.flip(R.append)
 
 /**
  * @callback
@@ -10,7 +12,7 @@ import { convertAxisToTile } from '../helpers'
  */
 function reduceCb (acc, axis) {
   return R.compose(
-    R.ifElse(isEmpty, lazy(acc), mergeWithFlat(acc)),
+    R.ifElse(isEmpty, lazy(acc), concatWithFlat(acc)),
     convertAxisToTile
   )(axis)
 }

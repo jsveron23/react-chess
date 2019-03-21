@@ -17,39 +17,39 @@ import {
 import { RANKS, FILES } from '~/chess/constants'
 import { lazy } from '~/utils'
 
-const memoizeParseSelected = memoize(parseSelected, R.equals)
-const memoizeCreateTile = memoize(createTile)
+const memoAwaitParseSelected = memoize(
+  (snapshot) => parseSelected(snapshot),
+  R.equals
+)
+const memoCreateTile = memoize(createTile)
 
-/**
- * A function for `getNextMovable`
- * @param  {Object} present
- * @param  {Array}  timeline
- * @return {Object}
- */
 function getFlatArgs (present, timeline) {
   const { snapshot, selected } = present
-  const { piece, side, file, rank } = memoizeParseSelected(snapshot, selected)
-  const tile = memoizeCreateTile(file, rank)
-  const special = getSpecial(piece) || []
+  const awaitParseSelected = memoAwaitParseSelected(snapshot)
+  const { piece, side, file, rank } = awaitParseSelected(selected)
+  const tile = memoCreateTile(file, rank)
+  const special = getSpecial(piece)
 
-  return lazy({
+  return {
     timeline,
     special,
     tile,
     side,
     ...present
-  })
+  }
 }
 
 function mapStateToProps ({ general, ingame }) {
   const { isDoingMatch } = general
   const { present, past } = ingame
   const { turn, snapshot, selected, checkTo } = present
-  const { piece, side, file, rank } = memoizeParseSelected(snapshot, selected)
+  const awaitParseSelected = memoAwaitParseSelected(snapshot)
+  const { piece, side, file, rank } = awaitParseSelected(selected)
   const selectedKey = `${side}${piece}`
-  const selectedTile = memoizeCreateTile(file, rank)
+  const selectedTile = memoCreateTile(file, rank)
   const nextMovableTiles = R.compose(
     getNextMovable('tiles'),
+    lazy,
     R.curry(getFlatArgs)(present),
     createTimeline(snapshot)
   )(past)

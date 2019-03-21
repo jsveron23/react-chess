@@ -9,6 +9,6 @@ describe('#getSpecial', () => {
     expect(getSpecial('P')).toEqual(P)
     expect(getSpecial('K')).toEqual(K)
     expect(getSpecial('N')).toEqual(N)
-    expect(getSpecial('Q')).toBeUndefined()
+    expect(getSpecial('Q')).toEqual([])
   })
 })

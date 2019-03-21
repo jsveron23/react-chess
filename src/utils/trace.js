@@ -1,7 +1,7 @@
 import * as R from 'ramda'
 
 /**
- * Simple displying console log (composable)
+ * Display log during compose
  * @param  {String} label
  * @return {*}
  */
