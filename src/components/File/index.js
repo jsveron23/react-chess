@@ -6,7 +6,7 @@ import { boundMethod } from 'autobind-decorator'
 import * as R from 'ramda'
 import { Blank } from '~/components'
 import { isEmpty, isExist, lazy, noop } from '~/utils'
-import { isDarkBg } from '~/chess/helpers'
+import { detectDarkBg } from '~/chess/helpers'
 import css from './File.css'
 
 // NOTE: ignore third arg
@@ -89,7 +89,7 @@ class File extends Component {
       curriedCreateElement(children || Blank),
       R.ifElse(isExist, lazy(pieceProps), lazy(blankProps))
     )(children)
-    const cls = cx(css.file, { 'is-dark': isDarkBg(tile) })
+    const cls = cx(css.file, { 'is-dark': detectDarkBg(tile) })
 
     return (
       <div className={cls} data-file={fileName} onClick={this.handleClick}>
