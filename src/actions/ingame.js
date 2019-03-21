@@ -51,14 +51,14 @@ export function toggleTurn () {
   }
 }
 
-export function setCheckTo (tile) {
+export function setCheckTo (tile = '') {
   return {
     type: types.SET_CHECK_TO,
     payload: tile
   }
 }
 
-export function setCheckBy (code) {
+export function setCheckBy (code = '') {
   return {
     type: types.SET_CHECK_BY,
     payload: code

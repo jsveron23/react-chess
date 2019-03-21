@@ -6,16 +6,18 @@ import convertTileToAxis from '../../helpers/convertTileToAxis'
 import isBlockedAt from '../../helpers/isBlockedAt'
 
 /**
- * TODO: check block
+ * TODO:
+ * - check block
+ * - remove movableAxis arg
  * @param  {String} side
  * @param  {String} tile
- * @param  {Array}  special
- * @param  {Array}  snapshot
+ * @param  {Array}  timeline
  * @param  {Array}  movableAxis
  * @return {Array}
  */
-function _applyDoubleStep (side, tile, special, snapshot, movableAxis) {
-  const isDoubleStep = _isDoubleStep(tile, special, side)
+function _applyDoubleStep (side, tile, timeline, movableAxis) {
+  const [snapshot] = timeline
+  const isDoubleStep = _isDoubleStep(tile, side)
   const detectBlocked = isBlockedAt(snapshot)
   const isFirstTileBlocked = detectBlocked(movableAxis, 0)
 
