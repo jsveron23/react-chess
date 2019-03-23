@@ -1,4 +1,4 @@
-import { isPieceThere } from '~/chess/helpers'
+import { detectRemainByAxis } from '~/chess/helpers'
 
 // prettier-ignore
 const snapshot = [
@@ -8,11 +8,11 @@ const snapshot = [
   'wRa1', 'wNb1', 'wBc1', 'wQd1', 'wKe1', 'wBf1', 'wNg1', 'wRh1'
 ]
 
-describe('#isPieceThere', () => {
+describe('#detectRemainByAxis', () => {
   it('is piece there?', () => {
-    expect(isPieceThere(snapshot)([2, 2])).toBeTruthy()
-    expect(isPieceThere(snapshot)([4, 5])).toBeFalsy()
-    expect(isPieceThere('')([4, 5])).toBeFalsy()
-    expect(isPieceThere('')('')).toBeFalsy()
+    expect(detectRemainByAxis(snapshot)([2, 2])).toBeTruthy()
+    expect(detectRemainByAxis(snapshot)([4, 5])).toBeFalsy()
+    expect(detectRemainByAxis('')([4, 5])).toBeFalsy()
+    expect(detectRemainByAxis('')('')).toBeFalsy()
   })
 })

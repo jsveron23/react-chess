@@ -2,7 +2,7 @@ import * as R from 'ramda'
 import convertSnapshotToTiles from './convertSnapshotToTiles'
 
 /**
- * Detect remain tiles from snapshot
+ * Detect remain tiles on snapshot
  * @param  {Array}   snapshot
  * @param  {Array}   tiles
  * @return {Boolean}

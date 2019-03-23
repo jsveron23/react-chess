@@ -1,5 +1,5 @@
 import * as R from 'ramda'
-import isPieceThere from './isPieceThere'
+import detectRemainByAxis from './detectRemainByAxis'
 
 /**
  * Is index of movable axis blocked?
@@ -10,7 +10,7 @@ import isPieceThere from './isPieceThere'
  */
 function isBlockedAt (snapshot, movableAxis, idx) {
   return R.compose(
-    isPieceThere(snapshot),
+    detectRemainByAxis(snapshot),
     R.prop(idx)
   )(movableAxis)
 }
