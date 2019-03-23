@@ -1,6 +1,6 @@
-import { isBlockedAt } from '~/chess/helpers'
+import { detectBlockedAt } from '~/chess/helpers'
 
-describe('#isBlockedAt', () => {
+describe('#detectBlockedAt', () => {
   it('is index blocked?', () => {
     // prettier-ignore
     const snapshot1 = [
@@ -18,7 +18,7 @@ describe('#isBlockedAt', () => {
       'wRa1', 'wNb1', 'wBc1', 'wQd1', 'wKe1', 'wBf1', 'wNg1', 'wRh1'
     ]
 
-    expect(isBlockedAt(snapshot1)([[2, 3]], 0)).toBeFalsy()
-    expect(isBlockedAt(snapshot2, [[3, 3]], 0)).toBeTruthy()
+    expect(detectBlockedAt(snapshot1)([[2, 3]], 0)).toBeFalsy()
+    expect(detectBlockedAt(snapshot2, [[3, 3]], 0)).toBeTruthy()
   })
 })

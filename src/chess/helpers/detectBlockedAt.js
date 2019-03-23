@@ -8,11 +8,11 @@ import detectRemainByAxis from './detectRemainByAxis'
  * @param  {Number}  idx
  * @return {Boolean}
  */
-function isBlockedAt (snapshot, movableAxis, idx) {
+function detectBlockedAt (snapshot, movableAxis, idx) {
   return R.compose(
     detectRemainByAxis(snapshot),
     R.prop(idx)
   )(movableAxis)
 }
 
-export default R.curry(isBlockedAt)
+export default R.curry(detectBlockedAt)

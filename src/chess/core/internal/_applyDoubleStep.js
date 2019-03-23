@@ -3,7 +3,7 @@ import { isExist, lazy, merge } from '~/utils'
 import _isDoubleStep from './_isDoubleStep'
 import _getDoubleStepAxis from './_getDoubleStepAxis'
 import convertTileToAxis from '../../helpers/convertTileToAxis'
-import isBlockedAt from '../../helpers/isBlockedAt'
+import detectBlockedAt from '../../helpers/detectBlockedAt'
 
 /**
  * TODO:
@@ -18,7 +18,7 @@ import isBlockedAt from '../../helpers/isBlockedAt'
 function _applyDoubleStep (side, tile, timeline, movableAxis) {
   const [snapshot] = timeline
   const isDoubleStep = _isDoubleStep(tile, side)
-  const detectBlocked = isBlockedAt(snapshot)
+  const detectBlocked = detectBlockedAt(snapshot)
   const isFirstTileBlocked = detectBlocked(movableAxis, 0)
 
   if (isFirstTileBlocked) {
