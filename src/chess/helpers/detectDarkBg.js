@@ -5,11 +5,11 @@ import convertRankToY from './convertRankToY'
 import { DARK_TILES, LIGHT_TILES } from '../constants'
 
 /**
- * Is dark background?
+ * Detect dark background?
  * @param  {String}  tile
  * @return {Boolean}
  */
-function isDarkBg (tile) {
+function detectDarkBg (tile) {
   const { file, rank } = parseTile(tile)
 
   return R.compose(
@@ -19,4 +19,4 @@ function isDarkBg (tile) {
   )(rank)
 }
 
-export default isDarkBg
+export default detectDarkBg

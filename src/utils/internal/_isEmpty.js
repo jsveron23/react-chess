@@ -1,4 +1,4 @@
-import _detectEmpty from './_detectEmpty'
+import * as R from 'ramda'
 
 /**
  * @param  {String}   fnName
@@ -12,7 +12,7 @@ function _isEmpty (fnName) {
   return (...args) => {
     const fn = args[fnName].bind(args)
 
-    return fn((x) => _detectEmpty(x))
+    return fn((x) => R.isEmpty(x) || R.isNil(x))
   }
 }
 

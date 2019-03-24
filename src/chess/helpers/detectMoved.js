@@ -1,7 +1,5 @@
 import * as R from 'ramda'
-import { isEmpty } from '~/utils'
-import findCode from './findCode'
-
+import detectCodeRemoved from './detectCodeRemoved'
 /**
  * Detect is piece moved?
  * @param  {Array}   timeline
@@ -9,12 +7,10 @@ import findCode from './findCode'
  * @return {Boolean}
  */
 function detectMoved (timeline, searchTxt) {
-  return timeline.some((snapshot) => {
-    return R.compose(
-      isEmpty,
-      findCode(snapshot)
-    )(searchTxt)
-  })
+  return R.compose(
+    R.flip(R.any)(timeline),
+    detectCodeRemoved
+  )(searchTxt)
 }
 
 export default R.curry(detectMoved)

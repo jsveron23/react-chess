@@ -4,12 +4,12 @@ import createSnapshotRe from './createSnapshotRe'
 import convertAxisToTile from './convertAxisToTile'
 
 /**
- * Detect pice on tile tile
+ * Detect remain tile by axis
  * @param  {String}  snapshot
  * @param  {Array}   axis
  * @return {Boolean}
  */
-function isPieceThere (snapshot, axis) {
+function detectRemainByAxis (snapshot, axis) {
   if (isEmpty.or(snapshot, axis)) {
     return false
   }
@@ -22,4 +22,4 @@ function isPieceThere (snapshot, axis) {
   )(axis)
 }
 
-export default R.curry(isPieceThere)
+export default R.curry(detectRemainByAxis)

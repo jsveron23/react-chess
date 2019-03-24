@@ -32,7 +32,7 @@ function createReduceCb (names) {
 }
 
 /**
- * Split by token string and return as an object
+ * Split by token and return as an object
  * @param  {String} token
  * @param  {Array}  names
  * @param  {String} str

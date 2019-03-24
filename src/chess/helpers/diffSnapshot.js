@@ -1,18 +1,18 @@
-import { difference, compose, curry, prop } from 'ramda'
+import * as R from 'ramda'
 import { parseCode } from '~/chess/helpers'
 
 /**
  * Get parsed code after getting difference
  * @param  {Array}  aSnapshot
- * @param  {Array}  bsnapshot
+ * @param  {Array}  bSnapshot
  * @return {Object}
  */
-function diffSnapshot (aSnapshot, bsnapshot) {
-  return compose(
+function diffSnapshot (aSnapshot, bSnapshot) {
+  return R.compose(
     parseCode,
-    prop(0),
-    difference(aSnapshot)
-  )(bsnapshot)
+    R.prop(0),
+    R.difference(aSnapshot)
+  )(bSnapshot)
 }
 
-export default curry(diffSnapshot)
+export default R.curry(diffSnapshot)

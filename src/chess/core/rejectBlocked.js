@@ -2,7 +2,7 @@ import * as R from 'ramda'
 import {
   convertAxisToTile,
   findCodeByTile,
-  isPieceThere,
+  detectRemainByAxis,
   getSide
 } from '../helpers'
 
@@ -15,7 +15,7 @@ import {
  * @return {Function}
  */
 function createMapCb (turn, snapshot, movableByDirection) {
-  const detectBlock = isPieceThere(snapshot)
+  const detectBlock = detectRemainByAxis(snapshot)
   const parseCodeByTile = findCodeByTile(snapshot)
 
   /**

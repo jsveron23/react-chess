@@ -1,9 +1,9 @@
 import { detectCheck } from '~/chess/helpers'
 
 describe('#detectCheck', () => {
-  it('Detect is check?', () => {
-    expect(detectCheck('bQa5', 'w')).toBeTruthy()
-    expect(detectCheck('bQa5', 'b')).toBeFalsy()
-    expect(detectCheck('wRe4', 'b')).toBeTruthy()
+  it('detect is check?', () => {
+    expect(detectCheck('w', 'bQa5')).toBeTruthy()
+    expect(detectCheck('b', 'bQa5')).toBeFalsy()
+    expect(detectCheck('b', 'wRe4')).toBeTruthy()
   })
 })

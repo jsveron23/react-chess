@@ -1,24 +1,15 @@
 import * as R from 'ramda'
-import { isExist } from '~/utils'
-import parseCode from './parseCode'
+import detectOpponentByCode from './detectOpponentByCode'
 
 /**
  * Detect is check?
- * @param  {String}  checkBy
+ * TODO: check opponent is King
  * @param  {String}  side
+ * @param  {String}  checkBy
  * @return {Boolean}
  */
-function detectCheck (checkBy, side) {
-  return R.ifElse(
-    isExist,
-    R.compose(
-      R.not,
-      R.equals(side),
-      R.prop('side'),
-      parseCode
-    ),
-    R.F
-  )(checkBy)
+function detectCheck (side, checkBy) {
+  return detectOpponentByCode(side, checkBy)
 }
 
 export default R.curry(detectCheck)

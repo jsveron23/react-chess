@@ -3,11 +3,17 @@ import convertTileToAxis from './convertTileToAxis'
 
 /**
  * Insert into axis list that after converted tiles
- * @param  {Array}   initial
- * @param  {Array}   tiles
- * @return {Boolean}
+ * @param  {Array} initial
+ * @param  {Array} tiles
+ * @return {Array}
  */
-function insertAxisByTiles (initial, tiles) {
+function insertAxis (initial, tiles) {
+  const [axis] = initial
+
+  if (!Array.isArray(axis)) {
+    initial = []
+  }
+
   return tiles.reduce((acc, tile) => {
     const { x, y } = convertTileToAxis(tile)
 
@@ -15,4 +21,4 @@ function insertAxisByTiles (initial, tiles) {
   }, initial)
 }
 
-export default R.curry(insertAxisByTiles)
+export default R.curry(insertAxis)

@@ -14,18 +14,18 @@ const MAIN_ITEMS = [RESUME_GAME, HUMAN_VS_HUMAN, HUMAN_VS_CPU]
 const GAME_ITEMS = [MAIN, UNDO]
 const DISABLED_ITEMS = [HUMAN_VS_CPU]
 
-const mapStateToProps = ({ general }) => {
+function mapStateToProps ({ general }) {
   const { isDoingMatch } = general
   const items = !isDoingMatch ? MAIN_ITEMS : GAME_ITEMS
 
   return {
-    disabledItems: DISABLED_ITEMS,
     isDoingMatch,
-    items
+    items,
+    disabledItems: DISABLED_ITEMS
   }
 }
 
-const mapDispatchToProps = (dispatch) => {
+function mapDispatchToProps (dispatch) {
   return {
     onClick: (name) => (evt) => {
       evt.preventDefault()

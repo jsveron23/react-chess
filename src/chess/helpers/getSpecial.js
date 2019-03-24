@@ -6,7 +6,7 @@ import { SPECIALS } from '../constants'
  * @return {Array}
  */
 function getSpecial (piece) {
-  return SPECIALS[piece]
+  return SPECIALS[piece] || []
 }
 
 export default getSpecial

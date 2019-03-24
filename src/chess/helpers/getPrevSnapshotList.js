@@ -1,5 +1,5 @@
 import * as R from 'ramda'
-import { isExist } from '~/utils'
+import { isEmpty } from '~/utils'
 
 /**
  * Get previous snapshot list
@@ -11,14 +11,11 @@ function createGetPrevSnapshotList (idx) {
    * @param  {Array} past
    * @return {Array}
    */
-  return (past) => {
-    const prevSnapshotList = R.compose(
-      R.pluck('snapshot'),
-      R.reverse
-    )(past)
-
-    return isExist(idx) ? R.prop(idx, prevSnapshotList) : prevSnapshotList
-  }
+  return R.compose(
+    R.unless(isEmpty.lazy(idx), R.prop(idx)),
+    R.pluck('snapshot'),
+    R.reverse
+  )
 }
 
 const getPrevSnapshotList = createGetPrevSnapshotList()
