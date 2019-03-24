@@ -41,7 +41,7 @@ describe('#detectMoved', () => {
     ]
   ]
 
-  it('Detect is piece moved?', () => {
+  it('detect is piece moved?', () => {
     expect(detectMoved(timeline, 'wK')).toBeFalsy()
     expect(detectMoved(timeline, 'wNc1')).toBeTruthy()
     expect(detectMoved(timeline, 'bPb5')).toBeTruthy()

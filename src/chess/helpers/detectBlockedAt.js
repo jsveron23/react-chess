@@ -2,7 +2,7 @@ import * as R from 'ramda'
 import detectRemainByAxis from './detectRemainByAxis'
 
 /**
- * Is index of movable axis blocked?
+ * Detect pice there at index?
  * @param  {Array}   snapshot
  * @param  {Array}   movableAxis
  * @param  {Number}  idx

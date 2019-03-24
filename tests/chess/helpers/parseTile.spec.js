@@ -6,6 +6,5 @@ describe('#parseTile', () => {
       file: 'g',
       rank: '5'
     })
-    expect(parseTile({})).toEqual({})
   })
 })

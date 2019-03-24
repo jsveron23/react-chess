@@ -8,15 +8,12 @@ import convertSnapshotToTiles from './convertSnapshotToTiles'
  * @return {Boolean}
  */
 function detectRemain (snapshot, tiles) {
-  const flippedSomeFn = R.compose(
-    R.flip(R.any),
-    convertSnapshotToTiles
-  )(snapshot)
+  const detectIncluded = R.flip(R.includes)(tiles)
 
   return R.compose(
-    flippedSomeFn,
-    R.flip(R.includes)
-  )(tiles)
+    R.any(detectIncluded),
+    convertSnapshotToTiles
+  )(snapshot)
 }
 
 export default R.curry(detectRemain)

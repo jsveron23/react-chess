@@ -1,6 +1,6 @@
 import * as R from 'ramda'
 import {
-  insertAxisByTiles,
+  insertAxis,
   detectMoved,
   detectRemain,
   detectCheck
@@ -46,7 +46,7 @@ function _applyCastling (side, checkBy, timeline) {
   const isKingMoved = awaitDetectMoved(`${side}${KING_TILE[side]}`)
   const isLeftRookMoved = awaitDetectMoved(`${side}${ROOK_QSIDE_TILE[side]}`)
   const isRightRookMoved = awaitDetectMoved(`${side}${ROOK_KSIDE_TILE[side]}`)
-  const isCheck = detectCheck(checkBy, side)
+  const isCheck = detectCheck(side, checkBy)
   let axisList = []
 
   if (!isCheck && !isKingMoved) {
@@ -60,11 +60,11 @@ function _applyCastling (side, checkBy, timeline) {
     const isKsBlocked = awaitDetectRemain(kingSideTiles)
 
     if (!isLeftRookMoved && !isQsBlocked) {
-      axisList = insertAxisByTiles(axisList, queenSideTiles)
+      axisList = insertAxis(axisList, queenSideTiles)
     }
 
     if (!isRightRookMoved && !isKsBlocked) {
-      axisList = insertAxisByTiles(axisList, kingSideTiles)
+      axisList = insertAxis(axisList, kingSideTiles)
     }
 
     return R.without(IGNORE_AXIS_LIST, axisList)

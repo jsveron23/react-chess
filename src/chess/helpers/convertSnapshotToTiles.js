@@ -1,10 +1,12 @@
+import convertCodeToTile from './convertCodeToTile'
+
 /**
- * Convert snapshot to tiles
+ * Convert code inside snapshot into tiles
  * @param  {Array} snapshot
  * @return {Array}
  */
 function convertSnapshotToTiles (snapshot) {
-  return snapshot.map((code) => code.substr(2, 2))
+  return snapshot.map(convertCodeToTile)
 }
 
 export default convertSnapshotToTiles
