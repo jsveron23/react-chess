@@ -50,11 +50,13 @@ function _applyCastling (side, checkBy, timeline) {
   let axisList = []
 
   if (!isCheck && !isKingMoved) {
-    const [snapshot] = timeline
-    const awaitDetectRemain = detectRemain(snapshot)
-
     const queenSideTiles = QUEEN_SIDE[side]
     const kingSideTiles = KING_SIDE[side]
+
+    const awaitDetectRemain = R.compose(
+      detectRemain,
+      R.prop(0)
+    )(timeline)
 
     const isQsBlocked = awaitDetectRemain(queenSideTiles)
     const isKsBlocked = awaitDetectRemain(kingSideTiles)

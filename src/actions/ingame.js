@@ -14,7 +14,9 @@ import {
   replaceSnapshot,
   createSelected,
   getPrevSnapshotList,
-  diffSnapshot
+  diffSnapshot,
+  parseCode,
+  createTile
 } from '~/chess/helpers'
 import { isEmpty, isExist, lazy, merge } from '~/utils'
 
@@ -149,14 +151,30 @@ export function setNextCapturedSnapshot ({
 }) {
   return (dispatch, getState) => {
     const { ingame } = getState()
-    const { present } = ingame
+    const { present, past } = ingame
+    const { snapshot } = present
+    const { piece, side, file, rank } = parseCode(nextCode)
+    const tile = createTile(file, rank)
+    const special = getSpecial(piece)
 
     const capturedSnapshot = R.compose(
       R.reject(isEmpty),
       replaceSnapshot(nextCode, selectedTile),
       replaceSnapshot('', capturedTile)
-    )(present.snapshot)
+    )(snapshot)
 
-    dispatch(setNext(capturedSnapshot))
+    // TODO: optimize
+    const getSpecialActionsFn = R.compose(
+      applySpecialActions(side, special, tile),
+      R.flip(createTimeline)(past)
+    )
+
+    const nextSnapshot = R.ifElse(
+      isExist.lazy(special),
+      getSpecialActionsFn,
+      R.identity
+    )(capturedSnapshot)
+
+    dispatch(setNext(nextSnapshot))
   }
 }

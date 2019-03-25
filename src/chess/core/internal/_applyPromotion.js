@@ -1,4 +1,5 @@
 import * as R from 'ramda'
+import { pass } from '~/utils'
 
 const PROMOTION = 'promotion'
 const PROMOTION_TILES = {
@@ -14,12 +15,11 @@ const PROMOTION_TILES = {
  * @return {Array}
  */
 function _applyPromotion (side, tile, special) {
-  const isPromotion = R.compose(
+  return R.compose(
+    R.flip(pass)(`${side}Q${tile}`),
     R.and(special.includes(PROMOTION)),
     R.includes(tile)
   )(PROMOTION_TILES[side])
-
-  return isPromotion ? `${side}Q${tile}` : ''
 }
 
 export default R.curry(_applyPromotion)
