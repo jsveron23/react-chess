@@ -16,9 +16,11 @@ import detectBlockedAt from '../../helpers/detectBlockedAt'
  * @return {Array}
  */
 function _applyDoubleStep (side, tile, timeline, movableAxis) {
-  const [snapshot] = timeline
   const isDoubleStep = _isDoubleStep(tile, side)
-  const detectBlocked = detectBlockedAt(snapshot)
+  const detectBlocked = R.compose(
+    detectBlockedAt,
+    R.prop(0)
+  )(timeline)
   const isFirstTileBlocked = detectBlocked(movableAxis, 0)
 
   if (isFirstTileBlocked) {
