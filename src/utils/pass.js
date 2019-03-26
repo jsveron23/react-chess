@@ -1,7 +1,7 @@
 import * as R from 'ramda'
 
 /**
- * Return empty string except true
+ * Pass empty string unless true
  * @param  {Boolean} is
  * @param  {*}       v
  * @return {*}

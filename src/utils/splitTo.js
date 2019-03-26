@@ -1,50 +1,31 @@
 import * as R from 'ramda'
-import isEmpty from './isEmpty'
+import isInvalidKey from './isInvalidKey'
+import lazy from './lazy'
 
 /**
- * @param  {Array}    names
- * @return {Function}
- */
-function createReduceCb (names) {
-  let idx = 0
-
-  /**
-   * @callback
-   * @param  {Object} acc
-   * @param  {*}      chunk
-   * @return {Object}
-   */
-  return (acc, chunk) => {
-    const name = names[idx]
-    const isValidType = typeof name === 'string' || typeof name === 'number'
-
-    idx += 1
-
-    if (!isValidType || isEmpty(name)) {
-      return acc
-    }
-
-    return {
-      ...acc,
-      [name]: chunk
-    }
-  }
-}
-
-/**
- * Split by token and return as an object
+ * Split by token and create object with name as key
  * @param  {String} token
  * @param  {Array}  names
- * @param  {String} str
+ * @param  {String} txt
  * @return {Object}
  */
-function splitTo (token, names, str) {
-  const reduceCb = createReduceCb(names)
+function splitTo (token, names, txt) {
+  const reduce = R.addIndex(R.reduce)
 
   return R.compose(
-    R.reduce(reduceCb, {}),
+    reduce((acc, chunk, idx) => {
+      const name = names[idx]
+
+      return R.unless(
+        R.compose(
+          lazy,
+          isInvalidKey
+        )(name),
+        R.assoc(name, chunk)
+      )(acc)
+    }, {}),
     R.split(token)
-  )(str)
+  )(txt)
 }
 
 export default R.curry(splitTo)

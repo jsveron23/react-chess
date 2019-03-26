@@ -1,7 +1,7 @@
 import { isExist } from '~/utils'
 
 describe('#isExist', () => {
-  describe('check exist value and multiple arguments', () => {
+  describe('Is value exist?s', () => {
     it('Type checking: String', () => {
       expect(isExist('')).toBeFalsy()
       expect(isExist('{}')).toBeTruthy()

@@ -2,7 +2,7 @@ import * as types from '~/actions'
 
 // prettier-ignore
 const initialState = {
-  timestamp: null,
+  timestamp: +new Date(),
   turn: 'white',
   selected: '',
   movableAxis: [],

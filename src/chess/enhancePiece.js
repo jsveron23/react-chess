@@ -12,8 +12,8 @@ import { getSide } from '~/chess/helpers'
  * - that is not defining prop types, events and life cycle methods
  * @see getPiece.js
  * @param  {Component} WrappedComponent svg-react-loader
- * @param  {string}    staticKey
- * @param  {string}    staticTurn
+ * @param  {String}    staticKey
+ * @param  {String}    staticTurn
  * @return {Component}
  */
 function enhancePiece (WrappedComponent, staticKey, staticTurn) {
