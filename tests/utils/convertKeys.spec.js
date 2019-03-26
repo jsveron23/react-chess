@@ -1,7 +1,7 @@
 import { convertKeys } from '~/utils'
 
 describe('#convertKeys', () => {
-  describe('convert keys as preferred names object', () => {
+  describe('Convert key name (composable)', () => {
     it('convert key', () => {
       expect(
         convertKeys(

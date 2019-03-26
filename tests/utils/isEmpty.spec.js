@@ -1,7 +1,7 @@
 import { isEmpty } from '~/utils'
 
 describe('#isEmpty', () => {
-  describe('check empty value and multiple arguments', () => {
+  describe('Is value empty?', () => {
     it('Type checking: String', () => {
       expect(isEmpty('')).toBeTruthy()
       expect(isEmpty('{}')).toBeFalsy()
