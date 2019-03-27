@@ -18,7 +18,7 @@ import {
   parseCode,
   createTile
 } from '~/chess/helpers'
-import { isEmpty, isExist, lazy, merge } from '~/utils'
+import { isEmpty, lazy, merge } from '~/utils'
 
 export function setTs (ts = +new Date()) {
   return {
@@ -136,7 +136,7 @@ export function setNextSnapshot (tile) {
     )
 
     const nextSnapshot = R.compose(
-      R.ifElse(isExist.lazy(special), getSpecialActionsFn, R.identity),
+      R.unless(isEmpty.lazy(special), getSpecialActionsFn),
       getNextSnapshot(selected, tile)
     )(snapshot)
 
@@ -163,7 +163,7 @@ export function setNextCapturedSnapshot ({
     )
 
     const nextSnapshot = R.compose(
-      R.ifElse(isExist.lazy(special), getSpecialActionsFn, R.identity),
+      R.unless(isEmpty.lazy(special), getSpecialActionsFn),
       R.reject(isEmpty),
       replaceSnapshot(nextCode, selectedTile),
       replaceSnapshot('', capturedTile)
