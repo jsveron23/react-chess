@@ -8,7 +8,7 @@ import { FILES } from '../constants'
  */
 function convertFileToX (file) {
   return R.compose(
-    R.ifElse(R.lt(-1), R.add(1), R.identity),
+    R.unless(R.gte(-1), R.add(1)),
     R.indexOf(file)
   )(FILES)
 }

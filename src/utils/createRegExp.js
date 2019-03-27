@@ -15,10 +15,10 @@ function createRegExp (str) {
  * @param  {String} str
  * @return {RegExp}
  */
-function withOption (options, str) {
+function withOptions (options, str) {
   return new RegExp(str, options || '')
 }
 
-createRegExp.withOptions = R.curry(withOption)
+createRegExp.withOptions = R.curry(withOptions)
 
 export default createRegExp
