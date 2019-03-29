@@ -1,5 +1,4 @@
-import * as R from 'ramda'
-import { isEven, lazy } from '~/utils'
+import { isEven } from '~/utils'
 import parseTile from './parseTile'
 import convertRankToY from './convertRankToY'
 import { DARK_TILES, LIGHT_TILES } from '../constants'
@@ -11,12 +10,10 @@ import { DARK_TILES, LIGHT_TILES } from '../constants'
  */
 function detectDarkBg (tile) {
   const { file, rank } = parseTile(tile)
+  const y = convertRankToY(rank)
+  const tiles = isEven(y) ? DARK_TILES : LIGHT_TILES
 
-  return R.compose(
-    R.includes(file),
-    R.ifElse(isEven, lazy(DARK_TILES), lazy(LIGHT_TILES)),
-    convertRankToY
-  )(rank)
+  return tiles.includes(file)
 }
 
 export default detectDarkBg

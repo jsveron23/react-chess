@@ -8,13 +8,14 @@ import { isEmpty } from '~/utils'
  * @return {String}
  */
 function findCode (snapshot, searchTxt) {
-  return R.unless(
-    isEmpty,
-    R.compose(
-      R.defaultTo(''),
-      R.flip(R.find)(snapshot),
-      R.includes
-    )
+  if (isEmpty(searchTxt)) {
+    return searchTxt
+  }
+
+  return R.compose(
+    R.defaultTo(''),
+    R.flip(R.find)(snapshot),
+    R.includes
   )(searchTxt)
 }
 

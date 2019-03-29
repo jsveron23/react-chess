@@ -9,12 +9,9 @@ import getSide from './getSide'
  * @return {String}
  */
 function createSelected (tile, turn) {
-  return R.compose(
-    R.join('-'),
-    R.prepend(tile),
-    R.of,
-    getSide
-  )(turn)
+  const side = getSide(turn)
+
+  return `${tile}-${side}`
 }
 
 export default R.curry(createSelected)

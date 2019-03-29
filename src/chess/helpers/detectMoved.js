@@ -7,10 +7,9 @@ import detectCodeRemoved from './detectCodeRemoved'
  * @return {Boolean}
  */
 function detectMoved (timeline, searchTxt) {
-  return R.compose(
-    R.flip(R.any)(timeline),
-    detectCodeRemoved
-  )(searchTxt)
+  const awaitDetectCodeRemoved = detectCodeRemoved(searchTxt)
+
+  return timeline.some(awaitDetectCodeRemoved)
 }
 
 export default R.curry(detectMoved)

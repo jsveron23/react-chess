@@ -1,5 +1,5 @@
 import * as R from 'ramda'
-import { isEmpty, lazy } from '~/utils'
+import { isEmpty } from '~/utils'
 
 /**
  * Replace code of snapshot
@@ -9,9 +9,17 @@ import { isEmpty, lazy } from '~/utils'
  * @return {Array}
  */
 function replaceSnapshot (replace, token, snapshot) {
-  const mapCb = R.ifElse(R.includes(token), lazy(replace), R.identity)
+  if (isEmpty(token)) {
+    return snapshot
+  }
 
-  return R.ifElse(isEmpty.lazy(token), R.identity, R.map(mapCb))(snapshot)
+  return snapshot.map((code) => {
+    if (code.includes(token)) {
+      return replace
+    }
+
+    return code
+  })
 }
 
 export default R.curry(replaceSnapshot)
