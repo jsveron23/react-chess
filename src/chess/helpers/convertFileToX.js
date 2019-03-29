@@ -1,4 +1,3 @@
-import * as R from 'ramda'
 import { FILES } from '../constants'
 
 /**
@@ -7,10 +6,13 @@ import { FILES } from '../constants'
  * @return {Number}
  */
 function convertFileToX (file) {
-  return R.compose(
-    R.unless(R.gte(-1), R.add(1)),
-    R.indexOf(file)
-  )(FILES)
+  const fileIdx = FILES.indexOf(file)
+
+  if (fileIdx === -1) {
+    return -1
+  }
+
+  return fileIdx + 1
 }
 
 export default convertFileToX

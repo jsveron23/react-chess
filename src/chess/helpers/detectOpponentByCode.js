@@ -9,13 +9,14 @@ import parseCode from './parseCode'
  * @return {Boolean}
  */
 function detectOpponentByCode (side, code) {
+  const isNotEquals = R.complement(R.equals)
+
   if (isEmpty(code)) {
     return false
   }
 
   return R.compose(
-    R.not,
-    R.equals(side),
+    isNotEquals(side),
     R.prop('side'),
     parseCode
   )(code)

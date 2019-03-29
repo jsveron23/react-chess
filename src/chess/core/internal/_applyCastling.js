@@ -3,7 +3,7 @@ import {
   insertAxis,
   detectMoved,
   detectRemain,
-  detectCheck
+  detectOpponentByCode
 } from '../../helpers'
 
 const KING_TILE = {
@@ -46,7 +46,7 @@ function _applyCastling (side, checkBy, timeline) {
   const isKingMoved = awaitDetectMoved(`${side}${KING_TILE[side]}`)
   const isLeftRookMoved = awaitDetectMoved(`${side}${ROOK_QSIDE_TILE[side]}`)
   const isRightRookMoved = awaitDetectMoved(`${side}${ROOK_KSIDE_TILE[side]}`)
-  const isCheck = detectCheck(side, checkBy)
+  const isCheck = detectOpponentByCode(side, checkBy)
   let axisList = []
 
   if (!isCheck && !isKingMoved) {

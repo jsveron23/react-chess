@@ -1,4 +1,3 @@
-import * as R from 'ramda'
 import parseCode from './parseCode'
 import createTile from './createTile'
 
@@ -8,10 +7,9 @@ import createTile from './createTile'
  * @return {String}
  */
 function convertCodeToTile (code) {
-  return R.compose(
-    R.converge(createTile, [R.prop('file'), R.prop('rank')]),
-    parseCode
-  )(code)
+  const { file, rank } = parseCode(code)
+
+  return createTile(file, rank)
 }
 
 export default convertCodeToTile
