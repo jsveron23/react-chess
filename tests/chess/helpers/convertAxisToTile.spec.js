@@ -1,4 +1,4 @@
-import { convertAxisToTile } from '~/chess/helpers'
+import { convertAxisToTile } from '~/chess/helper'
 
 describe('#convertAxisToTile', () => {
   it('convert axis to tile', () => {

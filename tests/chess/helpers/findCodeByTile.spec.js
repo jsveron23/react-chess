@@ -1,4 +1,4 @@
-import { findCodeByTile } from '~/chess/helpers'
+import { findCodeByTile } from '~/chess/helper'
 
 // prettier-ignore
 const snapshot = [

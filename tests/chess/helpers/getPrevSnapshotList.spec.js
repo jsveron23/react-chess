@@ -1,4 +1,4 @@
-import { getPrevSnapshotList } from '~/chess/helpers'
+import { getPrevSnapshotList } from '~/chess/helper'
 
 describe('#getPrevSnapshotList', () => {
   it('get previous snapshot list', () => {

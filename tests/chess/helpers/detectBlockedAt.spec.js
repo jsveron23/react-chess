@@ -1,4 +1,4 @@
-import { detectBlockedAt } from '~/chess/helpers'
+import { detectBlockedAt } from '~/chess/helper'
 
 describe('#detectBlockedAt', () => {
   it('is index blocked?', () => {

@@ -1,4 +1,4 @@
-import { detectDarkBg } from '~/chess/helpers'
+import { detectDarkBg } from '~/chess/helper'
 
 describe('#detectDarkBg', () => {
   it('is dark background?', () => {

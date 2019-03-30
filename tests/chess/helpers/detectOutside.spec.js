@@ -1,4 +1,4 @@
-import { detectOutside } from '~/chess/helpers'
+import { detectOutside } from '~/chess/helper'
 
 describe('#detectOutside', () => {
   it('detect outside of diagram', () => {
