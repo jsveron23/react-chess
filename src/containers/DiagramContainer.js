@@ -13,7 +13,7 @@ import {
   getSpecial,
   parseSelected,
   createTile
-} from '~/chess/helpers'
+} from '~/chess/helper'
 import { RANKS, FILES } from '~/chess/constants'
 import { lazy } from '~/utils'
 

@@ -1,10 +1,9 @@
-import React, { Component } from 'react'
+import React, { useCallback } from 'react'
 import PropTypes from 'prop-types'
 import cx from 'classnames'
-import { boundMethod } from 'autobind-decorator'
 import * as R from 'ramda'
 import { noop } from '~/utils'
-import { getSide } from '~/chess/helpers'
+import { getSide } from '~/chess/helper'
 
 /**
  * Higher order component for Chess piece
@@ -17,42 +16,29 @@ import { getSide } from '~/chess/helpers'
  * @return {Component}
  */
 function enhancePiece (WrappedComponent, staticKey, staticTurn) {
-  class Piece extends Component {
-    static displayName = `enhancePiece(${WrappedComponent.name})`
+  const Piece = (props) => {
+    const {
+      turn,
+      tile,
+      selectedKey,
+      selectedTile,
+      checkTo,
+      isMovable,
+      setNextMovableAxis,
+      setNextCapturedSnapshot
+    } = props
 
-    static propTypes = {
-      turn: PropTypes.string.isRequired,
-      tile: PropTypes.string.isRequired,
-      selectedKey: PropTypes.string,
-      selectedTile: PropTypes.string,
-      checkTo: PropTypes.string,
-      isMovable: PropTypes.bool,
-      setNextMovableAxis: PropTypes.func,
-      setNextCapturedSnapshot: PropTypes.func
-    }
+    const isTurn = getSide(staticTurn) === turn
+    const isCapturable = isMovable && !isTurn
+    const cls = cx({
+      'is-turn': isTurn,
+      'is-capturable': isCapturable,
+      'is-selected': selectedTile === tile,
+      'is-check-tile': checkTo === tile
+    })
 
-    static defaultProps = {
-      isMovable: false,
-      setNextMovableAxis: noop,
-      setNextCapturedSnapshot: noop
-    }
-
-    @boundMethod
-    handleClick (evt) {
+    const handleClick = useCallback((evt) => {
       evt.preventDefault()
-
-      const {
-        isMovable,
-        turn,
-        tile,
-        selectedKey,
-        selectedTile,
-        setNextMovableAxis,
-        setNextCapturedSnapshot
-      } = this.props
-
-      const isTurn = getSide(staticTurn) === turn
-      const isCapturable = isMovable && !isTurn
 
       if (isTurn) {
         setNextMovableAxis(tile)
@@ -67,28 +53,35 @@ function enhancePiece (WrappedComponent, staticKey, staticTurn) {
           nextCode: code
         })
       }
-    }
+    })
 
-    render () {
-      const { turn, tile, selectedTile, checkTo, isMovable } = this.props
-      const isTurn = getSide(staticTurn) === turn
-      const isCapturable = isMovable && !isTurn
-      const cls = cx({
-        'is-turn': isTurn,
-        'is-capturable': isCapturable,
-        'is-selected': selectedTile === tile,
-        'is-check-tile': checkTo === tile
-      })
+    return (
+      <div className={cls} onClick={handleClick}>
+        <WrappedComponent
+          key={`${staticKey}-${tile}`}
+          className={cx({ 'is-check-piece': checkTo === tile })}
+        />
+      </div>
+    )
+  }
 
-      return (
-        <div className={cls} onClick={this.handleClick}>
-          <WrappedComponent
-            key={`${staticKey}-${tile}`}
-            className={cx({ 'is-check-piece': checkTo === tile })}
-          />
-        </div>
-      )
-    }
+  Piece.displayName = `enhancePiece(${WrappedComponent.name})`
+
+  Piece.propTypes = {
+    turn: PropTypes.string.isRequired,
+    tile: PropTypes.string.isRequired,
+    selectedKey: PropTypes.string,
+    selectedTile: PropTypes.string,
+    checkTo: PropTypes.string,
+    isMovable: PropTypes.bool,
+    setNextMovableAxis: PropTypes.func,
+    setNextCapturedSnapshot: PropTypes.func
+  }
+
+  Piece.defaultProps = {
+    isMovable: false,
+    setNextMovableAxis: noop,
+    setNextCapturedSnapshot: noop
   }
 
   return Piece

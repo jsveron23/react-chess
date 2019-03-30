@@ -1,5 +1,5 @@
 import * as R from 'ramda'
-import { parseCode } from '~/chess/helpers'
+import parseCode from './parseCode'
 
 /**
  * Get parsed code after getting difference

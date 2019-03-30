@@ -5,7 +5,7 @@ import getMovableTiles from './getMovableTiles'
 import appendSpecialAxis from './appendSpecialAxis'
 import rejectBlocked from './rejectBlocked'
 import groupByDirection from './groupByDirection'
-import { parseCode, findCode } from '../helpers'
+import { parseCode, findCode } from '../helper'
 
 /**
  * Get next movable
