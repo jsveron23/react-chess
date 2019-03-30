@@ -1,46 +1,45 @@
-import React, { PureComponent } from 'react'
+import React, { useRef, useEffect } from 'react'
 import PropTypes from 'prop-types'
 import cx from 'classnames'
 import css from './ScoreSheet.css'
 
-class ScoreSheet extends PureComponent {
-  static propTypes = {
-    isDoingMatch: PropTypes.bool.isRequired,
-    sheet: PropTypes.array
-  }
+const ScoreSheet = ({ isDoingMatch, sheet }) => {
+  const sheetRef = useRef(null)
 
-  static defaultProps = {
-    sheet: []
-  }
+  useEffect(() => {
+    sheetRef.current.scrollTop = 0
+  })
 
-  componentDidUpdate () {
-    this.sheetRef.scrollTop = 0
-  }
+  const len = sheet.length
+  const cls = cx(css.sheet, {
+    'is-doing-match': isDoingMatch
+  })
 
-  render () {
-    const { isDoingMatch, sheet } = this.props
-    const len = sheet.length
-    const cls = cx(css.sheet, {
-      'is-doing-match': isDoingMatch
-    })
+  return (
+    <ul ref={sheetRef} className={cls}>
+      {sheet.map((item, idx) => {
+        const { white, black } = item
+        const key = `${idx}-${white}-${black}`
 
-    return (
-      <ul ref={(el) => (this.sheetRef = el)} className={cls}>
-        {sheet.map((item, idx) => {
-          const { white, black } = item
-          const key = `${idx}-${white}-${black}`
+        return (
+          <li key={key} className="l-flex-row">
+            <span className={css.sheetIndex}>{len - idx}</span>
+            <span className={css.sheetWhite}>{white}</span>
+            <span className={css.sheetBlack}>{black}</span>
+          </li>
+        )
+      })}
+    </ul>
+  )
+}
 
-          return (
-            <li key={key} className="l-flex-row">
-              <span className={css.sheetIndex}>{len - idx}</span>
-              <span className={css.sheetWhite}>{white}</span>
-              <span className={css.sheetBlack}>{black}</span>
-            </li>
-          )
-        })}
-      </ul>
-    )
-  }
+ScoreSheet.propTypes = {
+  isDoingMatch: PropTypes.bool.isRequired,
+  sheet: PropTypes.array
+}
+
+ScoreSheet.defaultProps = {
+  sheet: []
 }
 
 export default ScoreSheet

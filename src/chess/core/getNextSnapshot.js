@@ -1,5 +1,5 @@
 import * as R from 'ramda'
-import { parseCode, parseSelected, createTile } from '../helpers'
+import { parseCode, parseSelected, createTile } from '../helper'
 
 /**
  * Get next snapshot

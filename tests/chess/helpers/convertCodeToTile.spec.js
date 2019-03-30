@@ -1,4 +1,4 @@
-import { convertCodeToTile } from '~/chess/helpers'
+import { convertCodeToTile } from '~/chess/helper'
 
 describe('#convertCodeToTile', () => {
   it('convert code to tile', () => {

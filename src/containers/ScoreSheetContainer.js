@@ -3,7 +3,7 @@ import memoize from 'memoize-one'
 import * as R from 'ramda'
 import { ScoreSheet } from '~/components'
 import { createNotation, createScoreSheet } from '~/chess/core'
-import { createTimeline } from '~/chess/helpers'
+import { createTimeline } from '~/chess/helper'
 
 const memoAwaitCreateSheet = memoize(
   (snapshot) =>

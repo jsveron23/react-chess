@@ -1,4 +1,4 @@
-import { replaceSnapshot } from '~/chess/helpers'
+import { replaceSnapshot } from '~/chess/helper'
 
 describe('#replaceSnapshot', () => {
   it('replace snapshot', () => {

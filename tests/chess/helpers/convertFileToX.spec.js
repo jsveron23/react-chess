@@ -1,4 +1,4 @@
-import { convertFileToX } from '~/chess/helpers'
+import { convertFileToX } from '~/chess/helper'
 
 describe('#convertFileToX', () => {
   it('convert file to x', () => {

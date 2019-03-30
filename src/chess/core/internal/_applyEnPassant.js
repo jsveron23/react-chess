@@ -1,11 +1,13 @@
 import * as R from 'ramda'
 import { isExist } from '~/utils'
-import findCodeByAxis from '../../helpers/findCodeByAxis'
-import convertTileToAxis from '../../helpers/convertTileToAxis'
-import diffSnapshot from '../../helpers/diffSnapshot'
-import parseCode from '../../helpers/parseCode'
-import parseTile from '../../helpers/parseTile'
-import convertRankToY from '../../helpers/convertRankToY'
+import {
+  findCodeByAxis,
+  convertTileToAxis,
+  diffSnapshot,
+  parseCode,
+  parseTile,
+  convertRankToY
+} from '../../helper'
 
 /**
  * @TODO: optimize

@@ -1,4 +1,4 @@
-import { createSelected } from '~/chess/helpers'
+import { createSelected } from '~/chess/helper'
 
 describe('#createSelected', () => {
   it('create selected', () => {

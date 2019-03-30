@@ -1,4 +1,4 @@
-import { detectOpponentByCode } from '~/chess/helpers'
+import { detectOpponentByCode } from '~/chess/helper'
 
 describe('#detectOpponentByCode', () => {
   it('detect opponent', () => {

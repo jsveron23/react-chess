@@ -59,7 +59,6 @@ const VENDOR = [
   'ramda',
   'redux-undo',
   'memoize-one',
-  'autobind-decorator',
   'scu-inspector'
 ]
 

@@ -1,4 +1,4 @@
-import { insertAxis } from '~/chess/helpers'
+import { insertAxis } from '~/chess/helper'
 
 describe('#insertAxis', () => {
   it('insert into axis list that after converted tiles', () => {
