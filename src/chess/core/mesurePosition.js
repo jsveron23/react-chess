@@ -2,7 +2,7 @@ import * as R from 'ramda'
 import { getCodeChanges, convertCodeToTile, convertTileToAxis } from '../helper'
 
 /**
- * Mesure position to animate
+ * Mesure position to be animated
  * TODO:
  * - get width dynamically
  * - sometimes miss-calculated (like Knight case)
