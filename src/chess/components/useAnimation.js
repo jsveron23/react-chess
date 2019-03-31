@@ -13,7 +13,6 @@ function useAnimation (animate, tile) {
   const props = willChange
     ? {
       from: {
-        position: 'relative',
         top: animate.top,
         left: animate.left
       },

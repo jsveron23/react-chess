@@ -17,7 +17,7 @@ import useAnimation from './useAnimation'
  * @param  {String}    staticTurn
  * @return {Component}
  */
-function enhancePiece (WrappedComponent, staticKey, staticTurn) {
+function svgWrapper (WrappedComponent, staticKey, staticTurn) {
   const Piece = (props) => {
     const {
       turn,
@@ -34,7 +34,7 @@ function enhancePiece (WrappedComponent, staticKey, staticTurn) {
     const style = useAnimation(animate, tile)
     const isTurn = getSide(staticTurn) === turn
     const isCapturable = isMovable && !isTurn
-    const cls = cx({
+    const cls = cx('wrapper', {
       'is-turn': isTurn,
       'is-capturable': isCapturable,
       'is-selected': selectedTile === tile,
@@ -69,7 +69,7 @@ function enhancePiece (WrappedComponent, staticKey, staticTurn) {
     )
   }
 
-  Piece.displayName = `enhancePiece(${WrappedComponent.name})`
+  Piece.displayName = `svgWrapper(${WrappedComponent.name})`
 
   Piece.propTypes = {
     turn: PropTypes.string.isRequired,
@@ -92,4 +92,4 @@ function enhancePiece (WrappedComponent, staticKey, staticTurn) {
   return Piece
 }
 
-export default R.curry(enhancePiece)
+export default R.curry(svgWrapper)
