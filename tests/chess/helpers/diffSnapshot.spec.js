@@ -18,9 +18,6 @@ const snapshot2 = [
 
 describe('#diffSnapshot', () => {
   it('Diff two different snapshot', () => {
-    expect(diffSnapshot(snapshot2)(snapshot1)).toHaveProperty('side', 'w')
-    expect(diffSnapshot(snapshot2)(snapshot1)).toHaveProperty('piece', 'N')
-    expect(diffSnapshot(snapshot2)(snapshot1)).toHaveProperty('file', 'c')
-    expect(diffSnapshot(snapshot2)(snapshot1)).toHaveProperty('rank', '3')
+    expect(diffSnapshot(snapshot2)(snapshot1)).toEqual('wNc3')
   })
 })

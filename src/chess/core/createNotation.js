@@ -1,6 +1,6 @@
 import * as R from 'ramda'
 import { isExist } from '~/utils'
-import { getSide, diffSnapshot } from '../helper'
+import { parseCode, getSide, diffSnapshot } from '../helper'
 
 /**
  * @param  {Array}    snapshotList
@@ -20,7 +20,10 @@ function createReduceCb (snapshotList) {
 
     if (isExist(prevSnapshot)) {
       const prevLen = prevSnapshot.length
-      const { side, piece, file, rank } = diffSnapshot(snapshot, prevSnapshot)
+      const { side, piece, file, rank } = R.compose(
+        parseCode,
+        diffSnapshot(snapshot)
+      )(prevSnapshot)
       const isCaptured = len + 1 === prevLen
 
       if (Math.abs(prevLen - len) > 1) {

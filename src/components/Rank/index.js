@@ -22,6 +22,7 @@ const Rank = (props) => {
     selectedTile,
     checkTo,
     movableTiles,
+    animate,
     setNextCapturedSnapshot,
     setNextMovableAxis,
     setNextSnapshot
@@ -44,6 +45,7 @@ const Rank = (props) => {
             selectedTile={selectedTile}
             checkTo={checkTo}
             movableTiles={movableTiles}
+            animate={animate}
             setNextCapturedSnapshot={setNextCapturedSnapshot}
             setNextMovableAxis={setNextMovableAxis}
             setNextSnapshot={setNextSnapshot}
@@ -65,6 +67,7 @@ Rank.propTypes = {
   selectedTile: PropTypes.string,
   checkTo: PropTypes.string,
   movableTiles: PropTypes.array,
+  animate: PropTypes.object,
   setNextCapturedSnapshot: PropTypes.func,
   setNextMovableAxis: PropTypes.func,
   setNextSnapshot: PropTypes.func

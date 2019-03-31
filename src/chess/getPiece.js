@@ -13,21 +13,21 @@ import {
   WhiteQueen,
   WhiteRook
 } from './components'
-import enhancePiece from './enhancePiece'
+import svgWrapper from './components/svgWrapper'
 
 const PIECE_MAP = {
-  bB: enhancePiece(BlackBishop)('bB', 'b'),
-  bK: enhancePiece(BlackKing)('bK', 'b'),
-  bN: enhancePiece(BlackKnight)('bN', 'b'),
-  bP: enhancePiece(BlackPawn)('bP', 'b'),
-  bQ: enhancePiece(BlackQueen)('bQ', 'b'),
-  bR: enhancePiece(BlackRook)('bR', 'b'),
-  wB: enhancePiece(WhiteBishop)('wB', 'w'),
-  wK: enhancePiece(WhiteKing)('wK', 'w'),
-  wN: enhancePiece(WhiteKnight)('wN', 'w'),
-  wP: enhancePiece(WhitePawn)('wP', 'w'),
-  wQ: enhancePiece(WhiteQueen)('wQ', 'w'),
-  wR: enhancePiece(WhiteRook)('wR', 'w')
+  bB: svgWrapper(BlackBishop)('bB', 'b'),
+  bK: svgWrapper(BlackKing)('bK', 'b'),
+  bN: svgWrapper(BlackKnight)('bN', 'b'),
+  bP: svgWrapper(BlackPawn)('bP', 'b'),
+  bQ: svgWrapper(BlackQueen)('bQ', 'b'),
+  bR: svgWrapper(BlackRook)('bR', 'b'),
+  wB: svgWrapper(WhiteBishop)('wB', 'w'),
+  wK: svgWrapper(WhiteKing)('wK', 'w'),
+  wN: svgWrapper(WhiteKnight)('wN', 'w'),
+  wP: svgWrapper(WhitePawn)('wP', 'w'),
+  wQ: svgWrapper(WhiteQueen)('wQ', 'w'),
+  wR: svgWrapper(WhiteRook)('wR', 'w')
 }
 
 function getPiece (side, piece) {

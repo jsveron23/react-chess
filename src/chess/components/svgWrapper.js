@@ -1,9 +1,11 @@
-import React, { useCallback } from 'react'
+import React from 'react'
 import PropTypes from 'prop-types'
+import { animated } from 'react-spring'
 import cx from 'classnames'
 import * as R from 'ramda'
 import { noop } from '~/utils'
 import { getSide } from '~/chess/helper'
+import useAnimation from './useAnimation'
 
 /**
  * Higher order component for Chess piece
@@ -15,7 +17,7 @@ import { getSide } from '~/chess/helper'
  * @param  {String}    staticTurn
  * @return {Component}
  */
-function enhancePiece (WrappedComponent, staticKey, staticTurn) {
+function svgWrapper (WrappedComponent, staticKey, staticTurn) {
   const Piece = (props) => {
     const {
       turn,
@@ -24,20 +26,22 @@ function enhancePiece (WrappedComponent, staticKey, staticTurn) {
       selectedTile,
       checkTo,
       isMovable,
+      animate,
       setNextMovableAxis,
       setNextCapturedSnapshot
     } = props
 
+    const style = useAnimation(animate, tile)
     const isTurn = getSide(staticTurn) === turn
     const isCapturable = isMovable && !isTurn
-    const cls = cx({
+    const cls = cx('wrapper', {
       'is-turn': isTurn,
       'is-capturable': isCapturable,
       'is-selected': selectedTile === tile,
       'is-check-tile': checkTo === tile
     })
 
-    const handleClick = useCallback((evt) => {
+    function handleClick (evt) {
       evt.preventDefault()
 
       if (isTurn) {
@@ -53,19 +57,19 @@ function enhancePiece (WrappedComponent, staticKey, staticTurn) {
           nextCode: code
         })
       }
-    })
+    }
 
     return (
-      <div className={cls} onClick={handleClick}>
+      <animated.div style={style} className={cls} onClick={handleClick}>
         <WrappedComponent
           key={`${staticKey}-${tile}`}
           className={cx({ 'is-check-piece': checkTo === tile })}
         />
-      </div>
+      </animated.div>
     )
   }
 
-  Piece.displayName = `enhancePiece(${WrappedComponent.name})`
+  Piece.displayName = `svgWrapper(${WrappedComponent.name})`
 
   Piece.propTypes = {
     turn: PropTypes.string.isRequired,
@@ -74,6 +78,7 @@ function enhancePiece (WrappedComponent, staticKey, staticTurn) {
     selectedTile: PropTypes.string,
     checkTo: PropTypes.string,
     isMovable: PropTypes.bool,
+    animate: PropTypes.object,
     setNextMovableAxis: PropTypes.func,
     setNextCapturedSnapshot: PropTypes.func
   }
@@ -87,4 +92,4 @@ function enhancePiece (WrappedComponent, staticKey, staticTurn) {
   return Piece
 }
 
-export default R.curry(enhancePiece)
+export default R.curry(svgWrapper)

@@ -1,5 +1,4 @@
 import * as R from 'ramda'
-import parseCode from './parseCode'
 
 /**
  * Get parsed code after getting difference
@@ -9,7 +8,7 @@ import parseCode from './parseCode'
  */
 function diffSnapshot (aSnapshot, bSnapshot) {
   return R.compose(
-    parseCode,
+    R.defaultTo(''),
     R.prop(0),
     R.difference(aSnapshot)
   )(bSnapshot)

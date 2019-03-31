@@ -96,8 +96,10 @@ export function setNext (snapshot) {
       findCheckCode,
       lazy,
       merge({ turn, snapshot }),
+      parseCode,
       diffSnapshot(snapshot),
-      getPrevSnapshotList.withIndex(0)
+      R.prop(0),
+      getPrevSnapshotList
     )(past)
 
     dispatch(setCheckTo(checkTo))
