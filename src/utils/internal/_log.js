@@ -7,6 +7,8 @@ import * as R from 'ramda'
  */
 function _log (label, v) {
   console.log(`${label}: `, v)
+
+  return v
 }
 
 export default R.curry(_log)

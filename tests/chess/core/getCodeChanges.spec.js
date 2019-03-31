@@ -1,4 +1,4 @@
-import { getCodeChanges } from '~/chess/helper'
+import { getCodeChanges } from '~/chess/core'
 
 // prettier-ignore
 const snapshot = [
