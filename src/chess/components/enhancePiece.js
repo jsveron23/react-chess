@@ -1,9 +1,11 @@
-import React, { useCallback } from 'react'
+import React from 'react'
 import PropTypes from 'prop-types'
+import { animated } from 'react-spring'
 import cx from 'classnames'
 import * as R from 'ramda'
 import { noop } from '~/utils'
 import { getSide } from '~/chess/helper'
+import useAnimation from './useAnimation'
 
 /**
  * Higher order component for Chess piece
@@ -24,10 +26,12 @@ function enhancePiece (WrappedComponent, staticKey, staticTurn) {
       selectedTile,
       checkTo,
       isMovable,
+      animate,
       setNextMovableAxis,
       setNextCapturedSnapshot
     } = props
 
+    const style = useAnimation(animate, tile)
     const isTurn = getSide(staticTurn) === turn
     const isCapturable = isMovable && !isTurn
     const cls = cx({
@@ -37,7 +41,7 @@ function enhancePiece (WrappedComponent, staticKey, staticTurn) {
       'is-check-tile': checkTo === tile
     })
 
-    const handleClick = useCallback((evt) => {
+    function handleClick (evt) {
       evt.preventDefault()
 
       if (isTurn) {
@@ -53,15 +57,15 @@ function enhancePiece (WrappedComponent, staticKey, staticTurn) {
           nextCode: code
         })
       }
-    })
+    }
 
     return (
-      <div className={cls} onClick={handleClick}>
+      <animated.div style={style} className={cls} onClick={handleClick}>
         <WrappedComponent
           key={`${staticKey}-${tile}`}
           className={cx({ 'is-check-piece': checkTo === tile })}
         />
-      </div>
+      </animated.div>
     )
   }
 
@@ -74,6 +78,7 @@ function enhancePiece (WrappedComponent, staticKey, staticTurn) {
     selectedTile: PropTypes.string,
     checkTo: PropTypes.string,
     isMovable: PropTypes.bool,
+    animate: PropTypes.object,
     setNextMovableAxis: PropTypes.func,
     setNextCapturedSnapshot: PropTypes.func
   }

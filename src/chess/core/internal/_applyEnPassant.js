@@ -24,15 +24,15 @@ function _applyEnPassant (side, tile, timeline) {
   let additinalAxis = []
 
   if (isExist(prevSnapshot)) {
-    const { file: ss1File, rank: ss1Rank } = diffSnapshot(
-      snapshot,
-      prevSnapshot
-    )
+    const { file: ss1File, rank: ss1Rank } = R.compose(
+      parseCode,
+      diffSnapshot(snapshot)
+    )(prevSnapshot)
 
-    const { file: ss2File, rank: ss2Rank } = diffSnapshot(
-      prevSnapshot,
-      snapshot
-    )
+    const { file: ss2File, rank: ss2Rank } = R.compose(
+      parseCode,
+      diffSnapshot(prevSnapshot)
+    )(snapshot)
 
     const { x: ss1X, y: ss1Y } = convertTileToAxis(`${ss1File}${ss1Rank}`)
     const { x: ss2X, y: ss2Y } = convertTileToAxis(`${ss2File}${ss2Rank}`)

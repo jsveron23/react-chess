@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react'
+import React from 'react'
 import PropTypes from 'prop-types'
 import cx from 'classnames'
 import * as R from 'ramda'
@@ -18,6 +18,7 @@ const File = (props) => {
     selectedTile,
     checkTo,
     movableTiles,
+    animate,
     setNextCapturedSnapshot,
     setNextMovableAxis,
     setNextSnapshot
@@ -25,7 +26,7 @@ const File = (props) => {
 
   const isMovable = movableTiles.includes(tile)
 
-  const handleClick = useCallback((evt) => {
+  function handleClick (evt) {
     evt.preventDefault()
 
     const shouldSetNextSnapshot = isEmpty(children) && isMovable
@@ -33,7 +34,7 @@ const File = (props) => {
     if (shouldSetNextSnapshot) {
       setNextSnapshot(tile)
     }
-  })
+  }
 
   const pieceProps = {
     turn,
@@ -42,6 +43,7 @@ const File = (props) => {
     checkTo,
     tile,
     isMovable,
+    animate,
     setNextCapturedSnapshot,
     setNextMovableAxis
   }
@@ -72,6 +74,7 @@ File.propTypes = {
   selectedTile: PropTypes.string,
   checkTo: PropTypes.string,
   movableTiles: PropTypes.array,
+  animate: PropTypes.object,
   children: PropTypes.func,
   setNextCapturedSnapshot: PropTypes.func,
   setNextMovableAxis: PropTypes.func,

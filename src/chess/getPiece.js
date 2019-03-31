@@ -13,7 +13,7 @@ import {
   WhiteQueen,
   WhiteRook
 } from './components'
-import enhancePiece from './enhancePiece'
+import enhancePiece from './components/enhancePiece'
 
 const PIECE_MAP = {
   bB: enhancePiece(BlackBishop)('bB', 'b'),

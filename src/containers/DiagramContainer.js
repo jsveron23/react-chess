@@ -7,15 +7,16 @@ import {
   setNextMovableAxis,
   setNextCapturedSnapshot
 } from '~/actions/ingame'
-import { getNextMovable } from '~/chess/core'
+import { getNextMovable, mesurePosition } from '~/chess/core'
 import {
   createTimeline,
   getSpecial,
   parseSelected,
-  createTile
+  createTile,
+  getPrevSnapshotList
 } from '~/chess/helper'
 import { RANKS, FILES } from '~/chess/constants'
-import { lazy } from '~/utils'
+import { lazy, isExist, isEmpty } from '~/utils'
 
 const memoAwaitParseSelected = memoize(
   (snapshot) => parseSelected(snapshot),
@@ -53,12 +54,21 @@ function mapStateToProps ({ general, ingame }) {
     R.curry(getFlatArgs)(present),
     createTimeline(snapshot)
   )(past)
+  let animate = {}
+
+  // for animation
+  if (isExist(past) && isEmpty(nextMovableTiles)) {
+    const [prevSnapshot] = getPrevSnapshotList(past)
+
+    animate = mesurePosition(snapshot, prevSnapshot, 49.75)
+  }
 
   return {
     isDoingMatch,
     turn,
     checkTo,
     snapshot,
+    animate,
     selectedKey,
     selectedTile,
     ranks: RANKS,
