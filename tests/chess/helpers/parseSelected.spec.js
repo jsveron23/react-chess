@@ -1,4 +1,4 @@
-import { parseSelected } from '~/chess/helper'
+import { parseSelected } from '~/chess/helpers'
 
 // prettier-ignore
 const snapshot = [

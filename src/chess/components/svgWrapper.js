@@ -4,7 +4,7 @@ import { animated } from 'react-spring'
 import cx from 'classnames'
 import * as R from 'ramda'
 import { noop } from '~/utils'
-import { getSide } from '~/chess/helper'
+import { getSide } from '~/chess/helpers'
 import useAnimation from './useAnimation'
 
 /**

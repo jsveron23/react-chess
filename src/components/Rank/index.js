@@ -5,7 +5,7 @@ import cx from 'classnames'
 import * as R from 'ramda'
 import { File } from '~/components'
 import getPiece from '~/chess/getPiece'
-import { findCodeByTile, createTile } from '~/chess/helper'
+import { findCodeByTile, createTile } from '~/chess/helpers'
 import { noop } from '~/utils'
 import css from './Rank.css'
 

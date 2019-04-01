@@ -1,4 +1,4 @@
-import { convertRankToY } from '~/chess/helper'
+import { convertRankToY } from '~/chess/helpers'
 
 describe('#convertRankToY', () => {
   it('convert rank to y', () => {

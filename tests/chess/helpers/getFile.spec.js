@@ -1,4 +1,4 @@
-import { getFile } from '~/chess/helper'
+import { getFile } from '~/chess/helpers'
 
 describe('#getFile', () => {
   it('get a file', () => {

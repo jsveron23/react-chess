@@ -1,4 +1,4 @@
-import { detectRemain } from '~/chess/helper'
+import { detectRemain } from '~/chess/helpers'
 
 describe('#detectRemain', () => {
   it('detect remain tiles from snapshot', () => {

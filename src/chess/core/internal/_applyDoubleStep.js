@@ -2,7 +2,7 @@ import * as R from 'ramda'
 import { isExist, lazy, merge } from '~/utils'
 import _isDoubleStep from './_isDoubleStep'
 import _getDoubleStepAxis from './_getDoubleStepAxis'
-import { convertTileToAxis, detectBlockedAt } from '../../helper'
+import { convertTileToAxis, detectBlockedAt } from '../../helpers'
 
 /**
  * TODO:

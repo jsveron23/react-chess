@@ -1,4 +1,4 @@
-import { parseCode } from '~/chess/helper'
+import { parseCode } from '~/chess/helpers'
 
 describe('#parseCode', () => {
   it('divides a code as single character', () => {

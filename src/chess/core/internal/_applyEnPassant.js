@@ -7,7 +7,7 @@ import {
   parseCode,
   parseTile,
   convertRankToY
-} from '../../helper'
+} from '../../helpers'
 
 /**
  * @TODO: optimize

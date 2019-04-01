@@ -1,4 +1,4 @@
-import { createTile } from '~/chess/helper'
+import { createTile } from '~/chess/helpers'
 
 describe('#createTile', () => {
   it('find a code by token', () => {

@@ -4,7 +4,7 @@ import cx from 'classnames'
 import * as R from 'ramda'
 import { Blank } from '~/components'
 import { isEmpty, isExist, lazy, noop } from '~/utils'
-import { detectDarkBg } from '~/chess/helper'
+import { detectDarkBg } from '~/chess/helpers'
 import { createElement } from '~/externals'
 import css from './File.css'
 
@@ -25,16 +25,8 @@ const File = (props) => {
   } = props
 
   const isMovable = movableTiles.includes(tile)
-
-  function handleClick (evt) {
-    evt.preventDefault()
-
-    const shouldSetNextSnapshot = isEmpty(children) && isMovable
-
-    if (shouldSetNextSnapshot) {
-      setNextSnapshot(tile)
-    }
-  }
+  const isDark = detectDarkBg(tile)
+  const cls = cx(css.file, { 'is-dark': isDark })
 
   const pieceProps = {
     turn,
@@ -57,7 +49,16 @@ const File = (props) => {
     createElement(children || Blank),
     R.ifElse(isExist, lazy(pieceProps), lazy(blankProps))
   )(children)
-  const cls = cx(css.file, { 'is-dark': detectDarkBg(tile) })
+
+  function handleClick (evt) {
+    evt.preventDefault()
+
+    const shouldSetNextSnapshot = isEmpty(children) && isMovable
+
+    if (shouldSetNextSnapshot) {
+      setNextSnapshot(tile)
+    }
+  }
 
   return (
     <div className={cls} data-file={fileName} onClick={handleClick}>

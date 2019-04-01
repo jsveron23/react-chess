@@ -1,11 +1,12 @@
 import * as R from 'ramda'
-import { getCodeChanges, convertCodeToTile, convertTileToAxis } from '../helper'
+import getCodeChanges from './getCodeChanges'
+import { convertCodeToTile, convertTileToAxis } from '../helpers'
 
 /**
  * Mesure position to be animated
  * TODO:
  * - get width dynamically
- * - sometimes miss-calculated (like Knight case)
+ * - require special move also (Pawn)
  * @param  {Array}  snapshot
  * @param  {Array}  prevSnapshot
  * @param  {Number} width
@@ -14,17 +15,16 @@ import { getCodeChanges, convertCodeToTile, convertTileToAxis } from '../helper'
 function mesurePosition (snapshot, prevSnapshot, width) {
   const { nextCode, prevCode } = getCodeChanges(snapshot, prevSnapshot)
   const nextTile = convertCodeToTile(nextCode)
-  const prevTile = convertCodeToTile(prevCode)
   const { x: nextX, y: nextY } = convertTileToAxis(nextTile)
+  const prevTile = convertCodeToTile(prevCode)
   const { x: prevX, y: prevY } = convertTileToAxis(prevTile)
+  const top = (nextY - prevY) * width
+  const left = (prevX - nextX) * width
 
   return {
-    tile: nextTile,
-    // prevTile,
-    // prevLeft: (prevX - nextX) * width,
-    left: (prevX - nextX) * width,
-    // prevTop: (prevY - nextY) * width,
-    top: (nextY - prevY) * width
+    left,
+    top,
+    tile: nextTile
   }
 }
 

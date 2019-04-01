@@ -1,4 +1,4 @@
-import { convertSnapshotToTiles } from '~/chess/helper'
+import { convertSnapshotToTiles } from '~/chess/helpers'
 
 // prettier-ignore
 const snapshot = [

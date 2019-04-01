@@ -17,7 +17,7 @@ import {
   diffSnapshot,
   parseCode,
   createTile
-} from '~/chess/helper'
+} from '~/chess/helpers'
 import { isEmpty, lazy, merge } from '~/utils'
 
 export function setTs (ts = +new Date()) {

@@ -1,4 +1,4 @@
-import { convertTileToAxis } from '~/chess/helper'
+import { convertTileToAxis } from '~/chess/helpers'
 
 describe('#convertTileToAxis', () => {
   it('convert file, rank to x, y', () => {

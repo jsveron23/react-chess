@@ -14,7 +14,7 @@ import {
   parseSelected,
   createTile,
   getPrevSnapshotList
-} from '~/chess/helper'
+} from '~/chess/helpers'
 import { RANKS, FILES } from '~/chess/constants'
 import { lazy, isExist, isEmpty } from '~/utils'
 

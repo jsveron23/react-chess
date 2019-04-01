@@ -1,4 +1,4 @@
-import { diffSnapshot } from '~/chess/helper'
+import { diffSnapshot } from '~/chess/helpers'
 
 // prettier-ignore
 const snapshot1 = [

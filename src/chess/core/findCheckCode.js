@@ -2,7 +2,7 @@ import * as R from 'ramda'
 import { lazy, merge } from '~/utils'
 import getMovableAxis from './getMovableAxis'
 import getNextMovable from './getNextMovable'
-import { getSpecial, createTile, findCodeByTile } from '../helper'
+import { getSpecial, createTile, findCodeByTile } from '../helpers'
 
 /**
  * @param  {String}   side
