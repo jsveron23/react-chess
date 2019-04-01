@@ -1,5 +1,6 @@
 module.exports = {
   verbose: false,
+  silent: true,
   rootDir: '..',
   roots: [
     '<rootDir>/src/chess',
