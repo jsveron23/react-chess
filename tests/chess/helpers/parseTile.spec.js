@@ -1,4 +1,4 @@
-import { parseTile } from '~/chess/helper'
+import { parseTile } from '~/chess/helpers'
 
 describe('#parseTile', () => {
   it('divides a tile as single character', () => {

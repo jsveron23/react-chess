@@ -1,4 +1,4 @@
-import { detectCodeRemoved } from '~/chess/helper'
+import { detectCodeRemoved } from '~/chess/helpers'
 
 describe('#detectCodeRemoved', () => {
   it('detect code of snapshot removed', () => {

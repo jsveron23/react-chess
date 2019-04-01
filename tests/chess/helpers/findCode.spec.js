@@ -1,4 +1,4 @@
-import { findCode } from '~/chess/helper'
+import { findCode } from '~/chess/helpers'
 
 // prettier-ignore
 const snapshot = [

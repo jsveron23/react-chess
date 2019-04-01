@@ -4,7 +4,7 @@ import {
   findCodeByTile,
   detectRemainByAxis,
   getSide
-} from '../helper'
+} from '../helpers'
 
 /**
  * TODO: optimize

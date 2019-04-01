@@ -1,6 +1,6 @@
 import * as R from 'ramda'
 import { isExist } from '~/utils'
-import { parseCode, getSide, diffSnapshot } from '../helper'
+import { parseCode, getSide, diffSnapshot } from '../helpers'
 
 /**
  * @param  {Array}    snapshotList

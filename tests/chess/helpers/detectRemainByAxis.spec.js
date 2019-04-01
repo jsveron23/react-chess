@@ -1,4 +1,4 @@
-import { detectRemainByAxis } from '~/chess/helper'
+import { detectRemainByAxis } from '~/chess/helpers'
 
 // prettier-ignore
 const snapshot = [

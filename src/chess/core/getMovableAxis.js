@@ -1,6 +1,6 @@
 import * as R from 'ramda'
 import { lazy, merge } from '~/utils'
-import { getMovement, convertTileToAxis } from '../helper'
+import { getMovement, convertTileToAxis } from '../helpers'
 
 /**
  * @param  {Function} getFlatArgs

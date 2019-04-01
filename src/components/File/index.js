@@ -4,7 +4,7 @@ import cx from 'classnames'
 import * as R from 'ramda'
 import { Blank } from '~/components'
 import { isEmpty, isExist, lazy, noop } from '~/utils'
-import { detectDarkBg } from '~/chess/helper'
+import { detectDarkBg } from '~/chess/helpers'
 import { createElement } from '~/externals'
 import css from './File.css'
 

@@ -8,7 +8,7 @@ import {
   convertAxisToTile,
   convertCodeToTile,
   convertTileToAxis
-} from '../helper'
+} from '../helpers'
 
 /**
  * Get code changes after moving piece

@@ -4,7 +4,7 @@ import {
   detectMoved,
   detectRemain,
   detectOpponentByCode
-} from '../../helper'
+} from '../../helpers'
 
 const KING_TILE = {
   w: 'Ke1',

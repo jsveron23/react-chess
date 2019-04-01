@@ -1,6 +1,6 @@
 import * as R from 'ramda'
 import getCodeChanges from './getCodeChanges'
-import { convertCodeToTile, convertTileToAxis } from '../helper'
+import { convertCodeToTile, convertTileToAxis } from '../helpers'
 
 /**
  * Mesure position to be animated
@@ -20,8 +20,6 @@ function mesurePosition (snapshot, prevSnapshot, width) {
   const { x: prevX, y: prevY } = convertTileToAxis(prevTile)
   const top = (nextY - prevY) * width
   const left = (prevX - nextX) * width
-
-  console.log(nextCode, prevCode)
 
   return {
     left,

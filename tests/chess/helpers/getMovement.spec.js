@@ -1,4 +1,4 @@
-import { getMovement } from '~/chess/helper'
+import { getMovement } from '~/chess/helpers'
 
 // prettier-ignore
 const MOVEMENTS = {

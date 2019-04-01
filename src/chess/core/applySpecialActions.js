@@ -1,8 +1,8 @@
 import * as R from 'ramda'
 import { isEmpty, isExist } from '~/utils'
-import { replaceSnapshot } from '../helper'
 import _applyPromotion from './internal/_applyPromotion'
 import { _applySnapshot } from './internal/_applyEnPassant'
+import { replaceSnapshot } from '../helpers'
 
 /**
  * Apply special actions after moving to tile

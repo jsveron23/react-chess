@@ -1,6 +1,6 @@
 import * as R from 'ramda'
 import { isEmpty, lazy } from '~/utils'
-import { convertAxisToTile } from '../helper'
+import { convertAxisToTile } from '../helpers'
 
 const concatWithFlat = R.flip(R.append)
 

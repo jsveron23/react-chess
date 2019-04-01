@@ -1,4 +1,4 @@
-import { findCodeByAxis } from '~/chess/helper'
+import { findCodeByAxis } from '~/chess/helpers'
 
 // prettier-ignore
 const snapshot = [

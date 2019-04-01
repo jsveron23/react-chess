@@ -1,4 +1,4 @@
-import { detectMoved } from '~/chess/helper'
+import { detectMoved } from '~/chess/helpers'
 
 describe('#detectMoved', () => {
   // prettier-ignore
