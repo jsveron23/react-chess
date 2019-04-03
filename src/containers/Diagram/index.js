@@ -1,5 +1,4 @@
 import { connect } from 'react-redux'
-import memoize from 'memoize-one'
 import * as R from 'ramda'
 import { Diagram } from '~/components'
 import {
@@ -16,44 +15,25 @@ import {
   getPrevSnapshotList
 } from '~/chess/helpers'
 import { RANKS, FILES } from '~/chess/constants'
-import { lazy, isExist, isEmpty } from '~/utils'
-
-const memoAwaitParseSelected = memoize(
-  (snapshot) => parseSelected(snapshot),
-  R.equals
-)
-const memoCreateTile = memoize(createTile)
-
-function getFlatArgs (present, timeline) {
-  const { snapshot, selected } = present
-  const awaitParseSelected = memoAwaitParseSelected(snapshot)
-  const { piece, side, file, rank } = awaitParseSelected(selected)
-  const tile = memoCreateTile(file, rank)
-  const special = getSpecial(piece)
-
-  return {
-    timeline,
-    special,
-    tile,
-    side,
-    ...present
-  }
-}
+import { lazy, merge, isExist, isEmpty } from '~/utils'
 
 function mapStateToProps ({ general, ingame }) {
-  const { isDoingMatch } = general
   const { present, past } = ingame
   const { turn, snapshot, selected, checkTo } = present
-  const awaitParseSelected = memoAwaitParseSelected(snapshot)
-  const { piece, side, file, rank } = awaitParseSelected(selected)
-  const selectedKey = `${side}${piece}`
-  const selectedTile = memoCreateTile(file, rank)
+  const timeline = createTimeline(snapshot, past)
+  const { piece, side, file, rank } = parseSelected(snapshot, selected)
+  const special = getSpecial(piece)
+  const selectedTile = createTile(file, rank)
   const nextMovableTiles = R.compose(
     getNextMovable('tiles'),
     lazy,
-    R.curry(getFlatArgs)(present),
-    createTimeline(snapshot)
-  )(past)
+    merge({ ...present })
+  )({
+    timeline,
+    special,
+    side,
+    tile: selectedTile
+  })
   let animate = {}
 
   // for animation
@@ -64,15 +44,15 @@ function mapStateToProps ({ general, ingame }) {
   }
 
   return {
-    isDoingMatch,
     turn,
     checkTo,
     snapshot,
     animate,
-    selectedKey,
     selectedTile,
     ranks: RANKS,
     files: FILES,
+    selectedKey: `${side}${piece}`,
+    isDoingMatch: general.isDoingMatch,
     movableTiles: nextMovableTiles
   }
 }

@@ -5,7 +5,7 @@ import * as R from 'ramda'
 import { Blank } from '~/components'
 import { isEmpty, isExist, lazy, noop } from '~/utils'
 import { detectDarkBg } from '~/chess/helpers'
-import { createElement } from '~/externals'
+import createElement from './createElement'
 import css from './File.css'
 
 const File = (props) => {
