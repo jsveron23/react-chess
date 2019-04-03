@@ -18,7 +18,11 @@ const Menu = ({ isDoingMatch, items, disabledItems, onClick }) => {
           return null
         }
 
-        const handleClick = onClick(name)
+        const handleClick = function handleClick (evt) {
+          evt.preventDefault()
+
+          onClick(name)
+        }
 
         return (
           <li key={name} className={css.menuItem}>

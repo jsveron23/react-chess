@@ -1,7 +1,6 @@
 import { connect } from 'react-redux'
 import { Logo } from '~/components'
-
-const TITLE = 'React Chess'
+import { TITLE } from './constants'
 
 function mapStateToProps ({ general }) {
   const { isDoingMatch } = general

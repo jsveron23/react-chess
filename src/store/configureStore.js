@@ -1,7 +1,7 @@
 import thunk from 'redux-thunk'
 import * as R from 'ramda'
 import reducers from '~/reducers'
-import { createStore } from '~/externals'
+import createStore from './createStore'
 import composeMiddleware from './composeMiddleware'
 
 function configureStore (initialState = {}) {
