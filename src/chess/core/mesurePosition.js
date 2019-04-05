@@ -4,9 +4,6 @@ import { convertCodeToTile, convertTileToAxis } from '../helpers'
 
 /**
  * Mesure position to be animated
- * TODO:
- * - get width dynamically
- * - require special move also (Pawn)
  * @param  {Array}  snapshot
  * @param  {Array}  prevSnapshot
  * @param  {Number} width

@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useMemo } from 'react'
 import PropTypes from 'prop-types'
 import cx from 'classnames'
 import * as R from 'ramda'
@@ -8,7 +8,7 @@ import { detectDarkBg } from '~/chess/helpers'
 import createElement from './createElement'
 import css from './File.css'
 
-const File = (props) => {
+const File = React.forwardRef(function File (props, ref) {
   const {
     turn,
     fileName,
@@ -24,31 +24,32 @@ const File = (props) => {
     setNextSnapshot
   } = props
 
-  const isMovable = movableTiles.includes(tile)
-  const isDark = detectDarkBg(tile)
+  const isMovable = useMemo(() => movableTiles.includes(tile), [movableTiles, tile])
+  const isDark = useMemo(() => detectDarkBg(tile), [tile])
+  const awaitCreateElement = useMemo(() => createElement(children || Blank), [children])
+  const getElement = R.compose(
+    awaitCreateElement,
+    R.ifElse(
+      isExist,
+      lazy({
+        turn,
+        selectedKey,
+        selectedTile,
+        checkTo,
+        tile,
+        isMovable,
+        animate,
+        setNextCapturedSnapshot,
+        setNextMovableAxis
+      }),
+      lazy({
+        tagName: 'div',
+        className: cx({ 'is-movable': isMovable })
+      })
+    )
+  )
+
   const cls = cx(css.file, { 'is-dark': isDark })
-
-  const pieceProps = {
-    turn,
-    selectedKey,
-    selectedTile,
-    checkTo,
-    tile,
-    isMovable,
-    animate,
-    setNextCapturedSnapshot,
-    setNextMovableAxis
-  }
-
-  const blankProps = {
-    tagName: 'div',
-    className: cx({ 'is-movable': isMovable })
-  }
-
-  const Element = R.compose(
-    createElement(children || Blank),
-    R.ifElse(isExist, lazy(pieceProps), lazy(blankProps))
-  )(children)
 
   function handleClick (evt) {
     evt.preventDefault()
@@ -61,11 +62,11 @@ const File = (props) => {
   }
 
   return (
-    <div className={cls} data-file={fileName} onClick={handleClick}>
-      {Element}
+    <div ref={ref} className={cls} data-file={fileName} onClick={handleClick}>
+      {getElement(children)}
     </div>
   )
-}
+})
 
 File.propTypes = {
   turn: PropTypes.string.isRequired,

@@ -1,11 +1,15 @@
-import React from 'react'
+import React, { useMemo } from 'react'
 import PropTypes from 'prop-types'
-import { animated } from 'react-spring'
+import { useSpring, animated } from 'react-spring'
 import cx from 'classnames'
 import * as R from 'ramda'
 import { noop } from '~/utils'
 import { getSide } from '~/chess/helpers'
-import useAnimation from './useAnimation'
+
+const POSITION_DEFAULT = {
+  top: 0,
+  left: 0
+}
 
 /**
  * Higher order component for Chess piece
@@ -18,6 +22,8 @@ import useAnimation from './useAnimation'
  * @return {Component}
  */
 function svgWrapper (WrappedComponent, staticKey, staticTurn) {
+  const staticSide = getSide(staticTurn)
+
   const Piece = (props) => {
     const {
       turn,
@@ -31,14 +37,44 @@ function svgWrapper (WrappedComponent, staticKey, staticTurn) {
       setNextCapturedSnapshot
     } = props
 
-    const style = useAnimation(animate, tile)
-    const isTurn = getSide(staticTurn) === turn
+    const key = useMemo(() => `${staticKey}-${tile}`, [tile])
+
+    // return a memoized if provide `animate` data is always same
+    const position = useMemo(() => {
+      const reduceCb = (acc, key) => {
+        const val = animate[key]
+
+        if (key === 'tile' || val === 0) {
+          return acc
+        }
+
+        return { ...acc, [key]: val }
+      }
+
+      return R.compose(
+        R.reduce(reduceCb, POSITION_DEFAULT),
+        R.keys
+      )(animate)
+    }, [animate])
+
+    const measured = {
+      from: { ...position },
+      to: POSITION_DEFAULT
+    }
+
+    // get animation style
+    const style = useSpring(measured)
+
+    const isTurn = staticSide === turn
     const isCapturable = isMovable && !isTurn
+    const isSelected = selectedTile === tile
+    const isCheck = checkTo === tile
+
     const cls = cx('wrapper', {
       'is-turn': isTurn,
       'is-capturable': isCapturable,
-      'is-selected': selectedTile === tile,
-      'is-check-tile': checkTo === tile
+      'is-selected': isSelected,
+      'is-check-tile': isCheck
     })
 
     function handleClick (evt) {
@@ -60,11 +96,8 @@ function svgWrapper (WrappedComponent, staticKey, staticTurn) {
     }
 
     return (
-      <animated.div style={style} className={cls} onClick={handleClick}>
-        <WrappedComponent
-          key={`${staticKey}-${tile}`}
-          className={cx({ 'is-check-piece': checkTo === tile })}
-        />
+      <animated.div className={cls} style={style} onClick={handleClick}>
+        <WrappedComponent key={key} className={cx({ 'is-check-piece': isCheck })} />
       </animated.div>
     )
   }
@@ -78,13 +111,17 @@ function svgWrapper (WrappedComponent, staticKey, staticTurn) {
     selectedTile: PropTypes.string,
     checkTo: PropTypes.string,
     isMovable: PropTypes.bool,
-    animate: PropTypes.object,
+    animate: PropTypes.shape({
+      from: PropTypes.number,
+      to: PropTypes.number
+    }),
     setNextMovableAxis: PropTypes.func,
     setNextCapturedSnapshot: PropTypes.func
   }
 
   Piece.defaultProps = {
     isMovable: false,
+    animate: POSITION_DEFAULT,
     setNextMovableAxis: noop,
     setNextCapturedSnapshot: noop
   }

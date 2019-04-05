@@ -1,6 +1,5 @@
-import React from 'react'
+import React, { createRef, useMemo } from 'react'
 import PropTypes from 'prop-types'
-import memoize from 'memoize-one'
 import cx from 'classnames'
 import * as R from 'ramda'
 import { File } from '~/components'
@@ -8,9 +7,7 @@ import getPiece from '~/chess/getPiece'
 import { findCodeByTile, createTile } from '~/chess/helpers'
 import { noop } from '~/utils'
 import css from './Rank.css'
-
-const memoizeCreateTile = memoize(createTile)
-const memoizeFindCodeByTile = memoize(findCodeByTile, R.equals)
+import useMeasure from './useMeasure'
 
 const Rank = (props) => {
   const {
@@ -22,22 +19,31 @@ const Rank = (props) => {
     selectedTile,
     checkTo,
     movableTiles,
-    animate,
+    getPosition,
     setNextCapturedSnapshot,
     setNextMovableAxis,
     setNextSnapshot
   } = props
   const cls = cx(css.rank, 'l-flex-row')
 
+  // get with
+  const ref = createRef()
+  const width = useMeasure(ref)
+
+  const awaitCreateTile = useMemo(() => R.flip(createTile)(rankName), [rankName])
+  const awaitFindCodeByTile = useMemo(() => findCodeByTile(snapshot), [snapshot])
+
   return (
     <div className={cls} data-rank={rankName}>
       {files.map((fileName) => {
-        const tile = memoizeCreateTile(fileName, rankName)
-        const { side, piece } = memoizeFindCodeByTile(snapshot, tile)
+        const tile = awaitCreateTile(fileName)
+        const { side, piece } = awaitFindCodeByTile(tile)
+        const animate = getPosition(width)
 
         return (
           <File
             key={tile}
+            ref={ref}
             turn={turn}
             tile={tile}
             fileName={fileName}
@@ -67,7 +73,7 @@ Rank.propTypes = {
   selectedTile: PropTypes.string,
   checkTo: PropTypes.string,
   movableTiles: PropTypes.array,
-  animate: PropTypes.object,
+  getPosition: PropTypes.func,
   setNextCapturedSnapshot: PropTypes.func,
   setNextMovableAxis: PropTypes.func,
   setNextSnapshot: PropTypes.func
@@ -75,6 +81,7 @@ Rank.propTypes = {
 
 Rank.defaultProps = {
   setSelected: noop,
+  getPosition: noop,
   setNextCapturedSnapshot: noop,
   setNextMovableAxis: noop,
   setNextSnapshot: noop
