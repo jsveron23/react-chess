@@ -5,22 +5,21 @@ import { ScoreSheet } from '~/components'
 import { createNotation, createScoreSheet } from '~/chess/core'
 import { createTimeline } from '~/chess/helpers'
 
-const memoAwaitCreateSheet = memoize(
-  (snapshot) =>
+const memoizeCreateSheet = memoize(
+  (snapshot, past) =>
     R.compose(
       createScoreSheet,
       R.reverse,
       createNotation,
       createTimeline(snapshot)
-    ),
+    )(past),
   R.equals
 )
 
 function mapStateToProps ({ general, ingame }) {
   const { present, past } = ingame
   const { isDoingMatch } = general
-  const awaitCreateSheet = memoAwaitCreateSheet(present.snapshot)
-  const sheet = awaitCreateSheet(past)
+  const sheet = memoizeCreateSheet(present.snapshot, past)
 
   return { isDoingMatch, sheet }
 }

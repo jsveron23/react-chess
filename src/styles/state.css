@@ -43,6 +43,16 @@
   animation-iteration-count: infinite;
 }
 
+:global(.is-white) {
+  background-color: #fff;
+  color: #000;
+}
+
+:global(.is-black) {
+  background-color: #000;
+  color: #fff;
+}
+
 @keyframes shake {
   10%,
   90% {

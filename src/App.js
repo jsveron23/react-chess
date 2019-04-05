@@ -3,6 +3,7 @@ import { hot } from 'react-hot-loader'
 import {
   LogoContainer,
   MenuContainer,
+  TurnContainer,
   DiagramContainer,
   ScoreSheetContainer
 } from '~/containers'
@@ -14,6 +15,7 @@ const App = () => {
     <Main>
       <LogoContainer />
       <MenuContainer />
+      <TurnContainer />
       <DiagramContainer />
       <ScoreSheetContainer />
     </Main>
