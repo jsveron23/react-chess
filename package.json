@@ -1,6 +1,6 @@
 {
   "name": "react-chess",
-  "version": "0.5.0",
+  "version": "0.6.0",
   "description": "Chess game",
   "main": "index.js",
   "private": true,
@@ -21,9 +21,7 @@
   },
   "keywords": [
     "react",
-    "chess",
-    "fp",
-    "functional programming"
+    "chess"
   ],
   "author": "Tony Jin <jsveron23@gmail.com>",
   "license": "MIT",
