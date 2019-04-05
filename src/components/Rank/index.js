@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState, useEffect } from 'react'
 import PropTypes from 'prop-types'
 import memoize from 'memoize-one'
 import cx from 'classnames'
@@ -22,22 +22,32 @@ const Rank = (props) => {
     selectedTile,
     checkTo,
     movableTiles,
-    animate,
+    measureDistance,
     setNextCapturedSnapshot,
     setNextMovableAxis,
     setNextSnapshot
   } = props
   const cls = cx(css.rank, 'l-flex-row')
+  const ref = React.createRef()
+  const [width, setWidth] = useState(0)
+
+  useEffect(() => {
+    const { width } = window.getComputedStyle(ref.current)
+
+    setWidth(parseFloat(width))
+  }, [ref])
 
   return (
     <div className={cls} data-rank={rankName}>
       {files.map((fileName) => {
         const tile = memoizeCreateTile(fileName, rankName)
         const { side, piece } = memoizeFindCodeByTile(snapshot, tile)
+        const animate = measureDistance(width)
 
         return (
           <File
             key={tile}
+            ref={ref}
             turn={turn}
             tile={tile}
             fileName={fileName}
@@ -67,7 +77,7 @@ Rank.propTypes = {
   selectedTile: PropTypes.string,
   checkTo: PropTypes.string,
   movableTiles: PropTypes.array,
-  animate: PropTypes.object,
+  measureDistance: PropTypes.func,
   setNextCapturedSnapshot: PropTypes.func,
   setNextMovableAxis: PropTypes.func,
   setNextSnapshot: PropTypes.func
@@ -75,6 +85,7 @@ Rank.propTypes = {
 
 Rank.defaultProps = {
   setSelected: noop,
+  measureDistance: noop,
   setNextCapturedSnapshot: noop,
   setNextMovableAxis: noop,
   setNextSnapshot: noop

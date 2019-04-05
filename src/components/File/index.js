@@ -8,7 +8,7 @@ import { detectDarkBg } from '~/chess/helpers'
 import createElement from './createElement'
 import css from './File.css'
 
-const File = (props) => {
+const File = React.forwardRef((props, ref) => {
   const {
     turn,
     fileName,
@@ -61,11 +61,11 @@ const File = (props) => {
   }
 
   return (
-    <div className={cls} data-file={fileName} onClick={handleClick}>
+    <div ref={ref} className={cls} data-file={fileName} onClick={handleClick}>
       {Element}
     </div>
   )
-}
+})
 
 File.propTypes = {
   turn: PropTypes.string.isRequired,

@@ -34,20 +34,21 @@ function mapStateToProps ({ general, ingame }) {
     side,
     tile: selectedTile
   })
-  let animate = {}
+  let getPosition
 
   // for animation
   if (isExist(past) && isEmpty(nextMovableTiles)) {
     const [prevSnapshot] = getPrevSnapshotList(past)
 
-    animate = mesurePosition(snapshot, prevSnapshot, 49.75)
+    // until getting last argument
+    getPosition = mesurePosition(snapshot, prevSnapshot)
   }
 
   return {
     turn,
     checkTo,
     snapshot,
-    animate,
+    getPosition,
     selectedTile,
     ranks: RANKS,
     files: FILES,

@@ -16,7 +16,7 @@ const Diagram = (props) => {
     ranks,
     files,
     movableTiles,
-    animate,
+    measureDistance,
     setNextCapturedSnapshot,
     setNextMovableAxis,
     setNextSnapshot
@@ -40,7 +40,7 @@ const Diagram = (props) => {
             files={files}
             rankName={rankName}
             movableTiles={movableTiles}
-            animate={animate}
+            measureDistance={measureDistance}
             setNextCapturedSnapshot={setNextCapturedSnapshot}
             setNextMovableAxis={setNextMovableAxis}
             setNextSnapshot={setNextSnapshot}
@@ -61,13 +61,14 @@ Diagram.propTypes = {
   selectedTile: PropTypes.string,
   checkTo: PropTypes.string,
   movableTiles: PropTypes.array,
-  animate: PropTypes.object,
+  measureDistance: PropTypes.func,
   setNextCapturedSnapshot: PropTypes.func,
   setNextMovableAxis: PropTypes.func,
   setNextSnapshot: PropTypes.func
 }
 
 Diagram.defaultProps = {
+  measureDistance: noop,
   setNextCapturedSnapshot: noop,
   setNextMovableAxis: noop,
   setNextSnapshot: noop

@@ -1,11 +1,11 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { animated } from 'react-spring'
+import { useSpring, animated } from 'react-spring'
 import cx from 'classnames'
 import * as R from 'ramda'
-import { noop } from '~/utils'
+import { noop, isExist } from '~/utils'
 import { getSide } from '~/chess/helpers'
-import useAnimation from './useAnimation'
+// import useAnimation from './useAnimation'
 
 /**
  * Higher order component for Chess piece
@@ -31,7 +31,20 @@ function svgWrapper (WrappedComponent, staticKey, staticTurn) {
       setNextCapturedSnapshot
     } = props
 
-    const style = useAnimation(animate, tile)
+    const willChange = isExist(animate) && animate.tile === tile
+    const measured = willChange
+      ? {
+        from: {
+          top: animate.top,
+          left: animate.left
+        },
+        to: {
+          top: 0,
+          left: 0
+        }
+      }
+      : {}
+    const style = useSpring(measured)
     const isTurn = getSide(staticTurn) === turn
     const isCapturable = isMovable && !isTurn
     const cls = cx('wrapper', {
@@ -60,7 +73,7 @@ function svgWrapper (WrappedComponent, staticKey, staticTurn) {
     }
 
     return (
-      <animated.div style={style} className={cls} onClick={handleClick}>
+      <animated.div className={cls} style={style} onClick={handleClick}>
         <WrappedComponent
           key={`${staticKey}-${tile}`}
           className={cx({ 'is-check-piece': checkTo === tile })}
