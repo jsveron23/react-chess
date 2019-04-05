@@ -1,11 +1,7 @@
 import { connect } from 'react-redux'
 import * as R from 'ramda'
 import { Diagram } from '~/components'
-import {
-  setNextSnapshot,
-  setNextMovableAxis,
-  setNextCapturedSnapshot
-} from '~/actions/ingame'
+import { setNextSnapshot, setNextMovableAxis, setNextCapturedSnapshot } from '~/actions/ingame'
 import { getNextMovable, mesurePosition } from '~/chess/core'
 import {
   createTimeline,
