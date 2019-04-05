@@ -6,7 +6,7 @@ Programs must be written for people to read, and only incidentally for machines 
 
 # React Chess
 
-- Roadmap: [Milestones](milestones)
+- Roadmap: [Milestones](/milestones)
 - Plan to wrap with `Electron` or `React Native`
 
 # Following

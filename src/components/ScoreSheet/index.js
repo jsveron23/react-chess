@@ -1,4 +1,4 @@
-import React, { useRef, useEffect } from 'react'
+import React, { useRef, useEffect, memo } from 'react'
 import PropTypes from 'prop-types'
 import cx from 'classnames'
 import css from './ScoreSheet.css'
@@ -14,6 +14,8 @@ const ScoreSheet = ({ isDoingMatch, sheet }) => {
   const cls = cx(css.sheet, {
     'is-doing-match': isDoingMatch
   })
+
+  console.log('render')
 
   return (
     <ul ref={sheetRef} className={cls}>
@@ -42,4 +44,4 @@ ScoreSheet.defaultProps = {
   sheet: []
 }
 
-export default ScoreSheet
+export default memo(ScoreSheet)
