@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { memo } from 'react'
 import PropTypes from 'prop-types'
 import cx from 'classnames'
 import { Rank } from '~/components'
@@ -74,4 +74,4 @@ Diagram.defaultProps = {
   setNextSnapshot: noop
 }
 
-export default Diagram
+export default memo(Diagram)

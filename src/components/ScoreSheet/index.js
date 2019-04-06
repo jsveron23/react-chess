@@ -15,8 +15,6 @@ const ScoreSheet = ({ isDoingMatch, sheet }) => {
     'is-doing-match': isDoingMatch
   })
 
-  console.log('render')
-
   return (
     <ul ref={sheetRef} className={cls}>
       {sheet.map((item, idx) => {

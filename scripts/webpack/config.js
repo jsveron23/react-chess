@@ -2,6 +2,7 @@ const R = require('ramda')
 const webpack = require('webpack')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
 const MiniCssExtractPlugin = require('mini-css-extract-plugin')
+const TerserPlugin = require('terser-webpack-plugin')
 const Path = require('./lib/path')
 const createRe = require('./lib/createRe')
 
@@ -60,6 +61,24 @@ const VENDOR = [
   'redux-undo',
   'memoize-one',
   'scu-inspector'
+]
+
+const MINIMIZER = [
+  new TerserPlugin({
+    chunkFilter: (chunk) => {
+      if (chunk.name === 'vendor') {
+        return false
+      }
+
+      return true
+    },
+    terserOptions: {
+      compress: {
+        drop_console: true
+      },
+      ie8: false
+    }
+  })
 ]
 
 const SPLIT_CHUNKS = {
@@ -168,9 +187,7 @@ const DEFAULT_PLUGINS = [
   })
 ]
 
-const DEV_PLUGINS = R.concat(DEFAULT_PLUGINS, [
-  new webpack.HotModuleReplacementPlugin()
-])
+const DEV_PLUGINS = R.concat(DEFAULT_PLUGINS, [new webpack.HotModuleReplacementPlugin()])
 
 const PROD_PLUGINS = R.concat(DEFAULT_PLUGINS, [
   new MiniCssExtractPlugin({
@@ -191,6 +208,7 @@ module.exports = {
   DEVTOOL,
   DEVTOOL_PROD,
   TARGET,
+  MINIMIZER,
   SPLIT_CHUNKS,
   LOADERS,
   DEV_PLUGINS,

@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react'
+import React from 'react'
 import PropTypes from 'prop-types'
 import cx from 'classnames'
 import * as R from 'ramda'
@@ -24,11 +24,10 @@ const File = React.forwardRef(function File (props, ref) {
     setNextSnapshot
   } = props
 
-  const isMovable = useMemo(() => movableTiles.includes(tile), [movableTiles, tile])
-  const isDark = useMemo(() => detectDarkBg(tile), [tile])
-  const awaitCreateElement = useMemo(() => createElement(children || Blank), [children])
+  const isMovable = movableTiles.includes(tile)
+  const isDark = detectDarkBg(tile)
   const getElement = R.compose(
-    awaitCreateElement,
+    createElement(children || Blank),
     R.ifElse(
       isExist,
       lazy({

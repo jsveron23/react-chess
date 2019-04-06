@@ -27,6 +27,9 @@ function createReduceCb (snapshotList) {
       const isCaptured = len + 1 === prevLen
 
       if (Math.abs(prevLen - len) > 1) {
+        // eslint-disable-next-line
+        debugger
+
         throw new Error('Something wrong, please investigate this!')
       }
 

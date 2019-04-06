@@ -5,15 +5,13 @@ import { ScoreSheet } from '~/components'
 import { createNotation, createScoreSheet } from '~/chess/core'
 import { createTimeline } from '~/chess/helpers'
 
-const memoizeCreateSheet = memoize(
-  (snapshot, past) =>
-    R.compose(
-      createScoreSheet,
-      R.reverse,
-      createNotation,
-      createTimeline(snapshot)
-    )(past),
-  R.equals
+const memoizeCreateSheet = memoize((snapshot, past) =>
+  R.compose(
+    createScoreSheet,
+    R.reverse,
+    createNotation,
+    createTimeline(snapshot)
+  )(past)
 )
 
 function mapStateToProps ({ general, ingame }) {
