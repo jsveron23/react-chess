@@ -53,7 +53,7 @@ function configure (env = {}) {
       symlinks: false,
       alias: ALIAS
     },
-    devtool: isDev ? DEVTOOL_PROD : DEVTOOL,
+    devtool: isDev ? DEVTOOL : DEVTOOL_PROD,
     plugins: getPlugins(mode),
     entry: {
       app: [...entryApp[mode], '@babel/polyfill', './index'],

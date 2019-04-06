@@ -37,7 +37,7 @@ function svgWrapper (WrappedComponent, staticKey, staticTurn) {
       setNextCapturedSnapshot
     } = props
 
-    const key = useMemo(() => `${staticKey}-${tile}`, [tile])
+    const key = `${staticKey}-${tile}`
 
     // return a memoized if provide `animate` data is always same
     const position = useMemo(() => {
@@ -57,13 +57,11 @@ function svgWrapper (WrappedComponent, staticKey, staticTurn) {
       )(animate)
     }, [animate])
 
-    const measured = {
+    // get animation style
+    const style = useSpring({
       from: { ...position },
       to: POSITION_DEFAULT
-    }
-
-    // get animation style
-    const style = useSpring(measured)
+    })
 
     const isTurn = staticSide === turn
     const isCapturable = isMovable && !isTurn

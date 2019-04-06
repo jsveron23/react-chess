@@ -1,13 +1,15 @@
-import React, { createRef, useMemo } from 'react'
+import React, { createRef } from 'react'
 import PropTypes from 'prop-types'
 import cx from 'classnames'
-import * as R from 'ramda'
+import memoize from 'memoize-one'
 import { File } from '~/components'
 import getPiece from '~/chess/getPiece'
 import { findCodeByTile, createTile } from '~/chess/helpers'
 import { noop } from '~/utils'
 import css from './Rank.css'
 import useMeasure from './useMeasure'
+
+const memoizeGetPiece = memoize(getPiece)
 
 const Rank = (props) => {
   const {
@@ -26,18 +28,15 @@ const Rank = (props) => {
   } = props
   const cls = cx(css.rank, 'l-flex-row')
 
-  // get with
+  // get width
   const ref = createRef()
   const width = useMeasure(ref)
-
-  const awaitCreateTile = useMemo(() => R.flip(createTile)(rankName), [rankName])
-  const awaitFindCodeByTile = useMemo(() => findCodeByTile(snapshot), [snapshot])
 
   return (
     <div className={cls} data-rank={rankName}>
       {files.map((fileName) => {
-        const tile = awaitCreateTile(fileName)
-        const { side, piece } = awaitFindCodeByTile(tile)
+        const tile = createTile(fileName, rankName)
+        const { side, piece } = findCodeByTile(snapshot, tile)
         const animate = getPosition(width)
 
         return (
@@ -56,7 +55,7 @@ const Rank = (props) => {
             setNextMovableAxis={setNextMovableAxis}
             setNextSnapshot={setNextSnapshot}
           >
-            {getPiece(side, piece)}
+            {memoizeGetPiece(side, piece)}
           </File>
         )
       })}

@@ -1,4 +1,5 @@
 import { connect } from 'react-redux'
+import memoize from 'memoize-one'
 import * as R from 'ramda'
 import { Diagram } from '~/components'
 import { setNextSnapshot, setNextMovableAxis, setNextCapturedSnapshot } from '~/actions/ingame'
@@ -11,20 +12,27 @@ import {
   getPrevSnapshotList
 } from '~/chess/helpers'
 import { RANKS, FILES } from '~/chess/constants'
-import { lazy, merge, isExist, isEmpty } from '~/utils'
+import { lazy, isExist, isEmpty } from '~/utils'
+
+// no extra rendering when clicking same Chess piece
+const memoizeGetNextMovable = memoize(
+  R.compose(
+    getNextMovable('tiles'),
+    lazy
+  ),
+  R.equals
+)
 
 function mapStateToProps ({ general, ingame }) {
+  const { isDoingMatch } = general
   const { present, past } = ingame
   const { turn, snapshot, selected, checkTo } = present
   const timeline = createTimeline(snapshot, past)
   const { piece, side, file, rank } = parseSelected(snapshot, selected)
   const special = getSpecial(piece)
   const selectedTile = createTile(file, rank)
-  const nextMovableTiles = R.compose(
-    getNextMovable('tiles'),
-    lazy,
-    merge({ ...present })
-  )({
+  const nextMovableTiles = memoizeGetNextMovable({
+    ...present,
     timeline,
     special,
     side,
@@ -46,10 +54,10 @@ function mapStateToProps ({ general, ingame }) {
     snapshot,
     getPosition,
     selectedTile,
+    isDoingMatch,
     ranks: RANKS,
     files: FILES,
     selectedKey: `${side}${piece}`,
-    isDoingMatch: general.isDoingMatch,
     movableTiles: nextMovableTiles
   }
 }
