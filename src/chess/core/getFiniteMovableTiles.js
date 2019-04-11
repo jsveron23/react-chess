@@ -13,6 +13,9 @@ import { parseCode, convertAxisToTile, convertCodeToTile, convertTileToAxis } fr
  * @return {String}
  */
 function getFiniteMovableTiles (piece, checkTo, checkBy, timeline, movableTiles) {
+  // TODO: kinds of utils
+  const throughIt = (a, b) => R.ifElse(lazy(a > b), decrease, increase)(a, b)
+
   const { side: checkToSide } = parseCode(checkTo)
   const checkToTile = convertCodeToTile(checkTo)
   const { side: checkBySide } = parseCode(checkBy)
@@ -30,17 +33,19 @@ function getFiniteMovableTiles (piece, checkTo, checkBy, timeline, movableTiles)
     let xList = []
     let yList = []
 
-    // TODO:
-    // implement for straight atack
-
-    // diagonal attack
     if (x === y) {
-      const throughIt = (a, b) => R.ifElse(lazy(a > b), decrease, increase)(a, b)
-
       xList = throughIt(...xArgs)
       yList = throughIt(...yArgs)
     } else {
-      console.log('straight')
+      // TODO: Knight attck
+
+      if (checkByX === checkToX) {
+        xList = R.times(() => checkByX, Math.abs(checkByY - checkToY))
+        yList = throughIt(...yArgs)
+      } else if (checkByY === checkToY) {
+        xList = throughIt(...xArgs)
+        yList = R.times(() => checkByY, Math.abs(checkByX - checkToX))
+      }
     }
 
     const byTo = R.compose(
