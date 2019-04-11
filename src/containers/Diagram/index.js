@@ -3,7 +3,7 @@ import memoize from 'memoize-one'
 import * as R from 'ramda'
 import { Diagram } from '~/components'
 import { setNextSnapshot, setNextMovableAxis, setNextCapturedSnapshot } from '~/actions/ingame'
-import { getNextMovable, mesurePosition } from '~/chess/core'
+import { getNextMovable, getFiniteMovableTiles, mesurePosition } from '~/chess/core'
 import {
   createTimeline,
   getSpecial,
@@ -26,26 +26,41 @@ const memoizeGetNextMovable = memoize(
 function mapStateToProps ({ general, ingame }) {
   const { isDoingMatch } = general
   const { present, past } = ingame
-  const { turn, snapshot, selected, checkTo } = present
+  const { turn, snapshot, selected, checkTo, checkBy } = present
   const timeline = createTimeline(snapshot, past)
   const { piece, side, file, rank } = parseSelected(snapshot, selected)
   const special = getSpecial(piece)
   const selectedTile = createTile(file, rank)
-  const nextMovableTiles = memoizeGetNextMovable({
+
+  let nextMovableTiles = memoizeGetNextMovable({
     ...present,
     timeline,
     special,
     side,
     tile: selectedTile
   })
+
   let getPosition
 
   // for animation
-  if (isExist(past) && isEmpty(nextMovableTiles)) {
-    const [prevSnapshot] = getPrevSnapshotList(past)
+  if (isExist(past)) {
+    const prevSnapshotList = getPrevSnapshotList(past)
+    const [prevSnapshot] = prevSnapshotList
 
-    // until getting last argument
-    getPosition = mesurePosition(snapshot, prevSnapshot)
+    if (isEmpty(nextMovableTiles)) {
+      // until getting last argument
+      getPosition = mesurePosition(snapshot, prevSnapshot)
+    }
+
+    if (isExist(checkBy)) {
+      nextMovableTiles = getFiniteMovableTiles(
+        piece,
+        checkTo,
+        checkBy,
+        prevSnapshotList,
+        nextMovableTiles
+      )
+    }
   }
 
   return {

@@ -4,7 +4,7 @@ import { useSpring, animated } from 'react-spring'
 import cx from 'classnames'
 import * as R from 'ramda'
 import { noop } from '~/utils'
-import { getSide } from '~/chess/helpers'
+import { getSide, parseCode, createTile } from '~/chess/helpers'
 
 const POSITION_DEFAULT = {
   top: 0,
@@ -63,10 +63,13 @@ function svgWrapper (WrappedComponent, staticKey, staticTurn) {
       to: POSITION_DEFAULT
     })
 
+    const { file: checkToFile, rank: checkToRank } = parseCode(checkTo)
+    const checkToTile = createTile(checkToFile, checkToRank)
+
     const isTurn = staticSide === turn
     const isCapturable = isMovable && !isTurn
     const isSelected = selectedTile === tile
-    const isCheck = checkTo === tile
+    const isCheck = checkToTile === tile
 
     const cls = cx('wrapper', {
       'is-turn': isTurn,
