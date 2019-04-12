@@ -7,13 +7,7 @@ import * as R from 'ramda'
  * @return {Array}
  */
 function increase (from, to) {
-  let list = []
-
-  for (let i = from; i < to; i++) {
-    list = [...list, i]
-  }
-
-  return list
+  return R.range(from, to)
 }
 
 export default R.curry(increase)

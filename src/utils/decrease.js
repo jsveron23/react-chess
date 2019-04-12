@@ -7,13 +7,10 @@ import * as R from 'ramda'
  * @return {Array}
  */
 function decrease (from, to) {
-  let list = []
-
-  for (let i = from; i > to; i--) {
-    list = [...list, i]
-  }
-
-  return list
+  return R.compose(
+    R.reverse,
+    R.range(to + 1)
+  )(from + 1)
 }
 
 export default R.curry(decrease)

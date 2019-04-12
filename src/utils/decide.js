@@ -8,10 +8,14 @@ import * as R from 'ramda'
  * @return {Array}
  */
 function decide (fns, args, cb) {
-  const isInvalid = fns.length !== args.length && fns.length !== 2 && args.length !== 2
+  const isInvalid = fns.length !== args.length && (fns.length !== 2 || args.length !== 2)
 
   if (isInvalid) {
     throw new Error('It is not same length!')
+  }
+
+  if (typeof cb !== 'function') {
+    cb = R.identity
   }
 
   const [a, b] = args
