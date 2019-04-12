@@ -1,6 +1,14 @@
 import * as R from 'ramda'
-import { lazy, increase, decrease } from '~/utils'
+import { decide, increase, decrease } from '~/utils'
 import { parseCode, convertAxisToTile, convertCodeToTile, convertTileToAxis } from '../helpers'
+
+const parseCodeAlt = R.applySpec({
+  tile: convertCodeToTile,
+  side: R.compose(
+    R.prop('side'),
+    parseCode
+  )
+})
 
 /**
  * Get finite movable tiles when check-state
@@ -13,13 +21,9 @@ import { parseCode, convertAxisToTile, convertCodeToTile, convertTileToAxis } fr
  * @return {String}
  */
 function getFiniteMovableTiles (piece, checkTo, checkBy, timeline, movableTiles) {
-  // TODO: kinds of utils
-  const throughIt = (a, b) => R.ifElse(lazy(a > b), decrease, increase)(a, b)
-
-  const { side: checkToSide } = parseCode(checkTo)
-  const checkToTile = convertCodeToTile(checkTo)
-  const { side: checkBySide } = parseCode(checkBy)
-  const checkByTile = convertCodeToTile(checkBy)
+  const awaitDecide = R.flip(decide([increase, decrease]))((a, b) => a < b)
+  const { tile: checkToTile, side: checkToSide } = parseCodeAlt(checkTo)
+  const { tile: checkByTile, side: checkBySide } = parseCodeAlt(checkBy)
   const shouldLimit = checkToSide !== checkBySide
 
   // double validation
@@ -34,17 +38,16 @@ function getFiniteMovableTiles (piece, checkTo, checkBy, timeline, movableTiles)
     let yList = []
 
     if (x === y) {
-      xList = throughIt(...xArgs)
-      yList = throughIt(...yArgs)
+      xList = awaitDecide(xArgs)
+      yList = awaitDecide(yArgs)
     } else {
       // TODO: Knight attck
-
       if (checkByX === checkToX) {
-        xList = R.times(() => checkByX, Math.abs(checkByY - checkToY))
-        yList = throughIt(...yArgs)
+        xList = R.times(() => checkByX, y)
+        yList = awaitDecide(yArgs)
       } else if (checkByY === checkToY) {
-        xList = throughIt(...xArgs)
-        yList = R.times(() => checkByY, Math.abs(checkByX - checkToX))
+        xList = awaitDecide(xArgs)
+        yList = R.times(() => checkByY, x)
       }
     }
 
@@ -57,7 +60,9 @@ function getFiniteMovableTiles (piece, checkTo, checkBy, timeline, movableTiles)
       if (byTo.length === 1) {
         return movableTiles
       } else {
-        // TODO: remove behind tile
+        // TODO:
+        // 1. remove behind tile
+        // 2. King should detect predictable attacked on other movable tiles
         const detectIncludes = R.flip(R.includes)
 
         return R.reject(detectIncludes(byTo), movableTiles)
