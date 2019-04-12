@@ -10,6 +10,15 @@ describe('#decide', () => {
       expect(awaitDecide((a, b) => a < b)).toEqual(3)
       expect(awaitDecide((a, b) => a > b)).toEqual(4)
       expect(awaitDecide((a, b) => a === b)).toEqual(4)
+      expect(awaitDecide([])).toEqual(3)
+    })
+
+    it('callback function is not given', () => {
+      const fns = [(a) => a + 1, (b) => b + 2]
+      const args = [2, 4]
+      const awaitDecide = decide(fns, args)
+
+      expect(awaitDecide([])).toEqual(3)
     })
 
     it('length is not same', () => {
