@@ -53,13 +53,7 @@ function mapStateToProps ({ general, ingame }) {
     }
 
     if (isExist(checkBy)) {
-      nextMovableTiles = getFiniteMovableTiles(
-        piece,
-        checkTo,
-        checkBy,
-        prevSnapshotList,
-        nextMovableTiles
-      )
+      nextMovableTiles = getFiniteMovableTiles(checkTo, checkBy, piece, nextMovableTiles)
     }
   }
 
