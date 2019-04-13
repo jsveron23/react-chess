@@ -1,8 +1,8 @@
 import { decide } from '~/utils'
 
 describe('#decide', () => {
-  describe('decide which function will use by condition then using argument to function', () => {
-    it('it will uses proper function based by callback return', () => {
+  describe('Callback returns boolean that decide which function will use which argument', () => {
+    test('2 functions, 2 args', () => {
       const fns = [(a) => a + 1, (b) => b + 2]
       const args = [2, 4]
       const awaitDecide = decide(fns, args)
@@ -10,18 +10,19 @@ describe('#decide', () => {
       expect(awaitDecide((a, b) => a < b)).toEqual(3)
       expect(awaitDecide((a, b) => a > b)).toEqual(4)
       expect(awaitDecide((a, b) => a === b)).toEqual(4)
-      expect(awaitDecide([])).toEqual(3)
     })
 
-    it('callback function is not given', () => {
+    test('callback is not given properly', () => {
       const fns = [(a) => a + 1, (b) => b + 2]
       const args = [2, 4]
       const awaitDecide = decide(fns, args)
 
       expect(awaitDecide([])).toEqual(3)
+      expect(awaitDecide(0)).toEqual(3)
+      expect(() => awaitDecide(() => {})).toThrow()
     })
 
-    it('length is not same', () => {
+    test('length is not same', () => {
       const mockFn = jest.fn
 
       expect(() => decide([mockFn()], [1, 2], mockFn())).toThrow()
