@@ -1,15 +1,15 @@
-import { isEmpty } from '~/utils'
+import isEmpty from '../isEmpty'
 
 describe('#isEmpty', () => {
-  describe('Is value empty?', () => {
-    it('Type checking: String', () => {
+  describe('Is given value empty?', () => {
+    it('string', () => {
       expect(isEmpty('')).toBeTruthy()
       expect(isEmpty('{}')).toBeFalsy()
       expect(isEmpty('[]')).toBeFalsy()
       expect(isEmpty('false')).toBeFalsy()
     })
 
-    it('Type checking: Number', () => {
+    it('number', () => {
       expect(isEmpty(-1)).toBeFalsy()
       expect(isEmpty(0)).toBeFalsy()
       expect(isEmpty(1)).toBeFalsy()
@@ -17,38 +17,38 @@ describe('#isEmpty', () => {
       expect(isEmpty(Infinity)).toBeFalsy()
     })
 
-    it('Type checking: Array', () => {
+    it('array', () => {
       expect(isEmpty([false])).toBeFalsy()
       expect(isEmpty([])).toBeTruthy()
       expect(isEmpty([{}])).toBeFalsy()
     })
 
-    it('Type checking: Object', () => {
+    it('object', () => {
       expect(isEmpty({ hello: 'world' })).toBeFalsy()
       expect(isEmpty({})).toBeTruthy()
     })
 
-    it('Type checking: Function', () => {
+    it('function', () => {
       expect(isEmpty(function () {})).toBeFalsy()
       expect(isEmpty(() => {})).toBeFalsy()
     })
 
-    it('Type checking: Symbol', () => {
+    it('symbol', () => {
       expect(isEmpty(Symbol(''))).toBeFalsy()
       expect(isEmpty(Symbol(false))).toBeFalsy()
     })
 
-    it('Type checking: undefined, null', () => {
+    it('undefined, null', () => {
       expect(isEmpty(undefined)).toBeTruthy()
       expect(isEmpty(null)).toBeTruthy()
     })
 
-    it('Multiple arguments', () => {
+    it('multiple arguments', () => {
       expect(isEmpty.and('', { 0: false }, [0], function () {})).toBeFalsy()
       expect(isEmpty.or('', { 0: false }, [0], function () {})).toBeTruthy()
     })
 
-    it('Lazy return', () => {
+    it('lazy return', () => {
       expect(isEmpty.lazy('')()).toBeTruthy()
       expect(isEmpty.lazy({ hello: 'world' })()).toBeFalsy()
     })

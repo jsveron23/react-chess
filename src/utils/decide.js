@@ -1,5 +1,6 @@
 import * as R from 'ramda'
-import isEmpty from './isEmpty'
+
+const isNotBoolean = R.complement(R.is)(Boolean)
 
 /**
  * Decide which function will use
@@ -9,23 +10,19 @@ import isEmpty from './isEmpty'
  * @return {Array}
  */
 function decide (fns, args, cb) {
-  const fnLen = fns.length
-  const argsLen = args.length
-  const isInvalid = fnLen !== argsLen && (fnLen !== 2 || argsLen !== 2)
-
-  if (isInvalid) {
+  if (fns.length !== 2 || args.length !== 2) {
     throw new Error('It is not same length!')
   }
 
   if (typeof cb !== 'function') {
-    cb = R.identity
+    throw new Error('Callback is not function!')
   }
 
   const [a, b] = args
   const bool = cb(a, b)
 
-  if (isEmpty(bool)) {
-    throw new Error('Callback is not working propery!')
+  if (isNotBoolean(bool)) {
+    throw new Error('Callback does not return boolean!')
   }
 
   const fn = bool ? fns[0] : fns[1]

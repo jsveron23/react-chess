@@ -1,28 +1,24 @@
-import { decide } from '~/utils'
+import decide from '../decide'
 
 describe('#decide', () => {
-  describe('Callback returns boolean that decide which function will use which argument', () => {
-    test('2 functions, 2 args', () => {
-      const fns = [(a) => a + 1, (b) => b + 2]
-      const args = [2, 4]
-      const awaitDecide = decide(fns, args)
+  describe('Callback returns boolean that decide which function will use one of argument', () => {
+    const fns = [(a) => a + 1, (b) => b + 2]
+    const args = [2, 4]
+    const awaitDecide = decide(fns, args)
 
+    it('2 functions, 2 args', () => {
       expect(awaitDecide((a, b) => a < b)).toEqual(3)
       expect(awaitDecide((a, b) => a > b)).toEqual(4)
       expect(awaitDecide((a, b) => a === b)).toEqual(4)
     })
 
-    test('callback is not given properly', () => {
-      const fns = [(a) => a + 1, (b) => b + 2]
-      const args = [2, 4]
-      const awaitDecide = decide(fns, args)
-
-      expect(awaitDecide([])).toEqual(3)
-      expect(awaitDecide(0)).toEqual(3)
+    it('callback is not given or not return boolean', () => {
+      expect(() => awaitDecide([])).toThrow()
+      expect(() => awaitDecide(0)).toThrow()
       expect(() => awaitDecide(() => {})).toThrow()
     })
 
-    test('length is not same', () => {
+    it('length is not same', () => {
       const mockFn = jest.fn
 
       expect(() => decide([mockFn()], [1, 2], mockFn())).toThrow()

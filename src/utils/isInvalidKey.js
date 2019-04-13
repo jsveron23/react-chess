@@ -1,16 +1,14 @@
 import * as R from 'ramda'
 import isEmpty from './isEmpty'
-import isString from './isString'
-import isNumber from './isNumber'
 
 /**
  * Is invalid key for object?
- * @param  {*}       key
+ * @param  {String|Number} key
  * @return {Boolean}
  */
 function isInvalidKey (key) {
-  const isNotString = R.complement(isString)
-  const isNotNumber = R.complement(isNumber)
+  const isNotString = R.complement(R.is)(String)
+  const isNotNumber = R.complement(R.is)(Number)
   const isInvalidKeyType = R.allPass([isNotString, isNotNumber])
 
   return R.anyPass([isInvalidKeyType, isEmpty])(key)

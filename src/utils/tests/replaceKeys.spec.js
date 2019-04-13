@@ -1,4 +1,4 @@
-import { replaceKeys } from '~/utils'
+import replaceKeys from '../replaceKeys'
 
 describe('#replaceKeys', () => {
   const original = {
@@ -7,7 +7,7 @@ describe('#replaceKeys', () => {
   }
 
   describe('Replace given keys from original keys', () => {
-    test('simple conversion', () => {
+    it('simple conversion', () => {
       expect(replaceKeys({ Tony: 'Ip Myung' }, original)).toHaveProperty('Ip Myung', 'first name')
 
       expect(replaceKeys({ Jin: 'Jinn', Tony: 'Qui Gon' }, original)).toHaveProperty(
@@ -16,13 +16,13 @@ describe('#replaceKeys', () => {
       )
     })
 
-    test('replace duplicate to one', () => {
+    it('replace duplicate to one', () => {
       expect(replaceKeys({ Tony: 'Jinn', Jin: 'Jinn' }, original)).toEqual({
         Jinn: 'family name'
       })
     })
 
-    test('given useless data', () => {
+    it('given useless data', () => {
       expect(replaceKeys({}, original)).toEqual(original)
       expect(replaceKeys([], original)).toEqual(original)
       expect(replaceKeys('', original)).toEqual(original)

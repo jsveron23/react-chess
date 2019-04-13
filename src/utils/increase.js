@@ -7,6 +7,10 @@ import * as R from 'ramda'
  * @return {Array}
  */
 function increase (from, to) {
+  if (from > to) {
+    throw new Error('from is bigger than to!')
+  }
+
   return R.range(from, to)
 }
 
