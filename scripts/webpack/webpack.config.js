@@ -65,6 +65,8 @@ function configure (env = {}) {
     },
     optimization: {
       namedModules: isDev,
+      noEmitOnErrors: true,
+      concatenateModules: true,
       nodeEnv: mode,
       splitChunks: SPLIT_CHUNKS
     },
