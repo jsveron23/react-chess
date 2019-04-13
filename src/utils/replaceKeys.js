@@ -1,12 +1,12 @@
 import * as R from 'ramda'
 
 /**
- * Convert key name (composable)
+ * Replace keys
  * @param  {Object} names
  * @param  {Object} obj
  * @return {Object}
  */
-function convertKeys (names, obj) {
+function replaceKeys (names, obj) {
   const reduceCb = (acc, key) => R.assoc(names[key] || key, obj[key])(acc)
 
   return R.compose(
@@ -15,4 +15,4 @@ function convertKeys (names, obj) {
   )(obj)
 }
 
-export default R.curry(convertKeys)
+export default R.curry(replaceKeys)
