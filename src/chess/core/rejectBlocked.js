@@ -1,10 +1,5 @@
 import * as R from 'ramda'
-import {
-  convertAxisToTile,
-  findCodeByTile,
-  detectRemainByAxis,
-  getSide
-} from '../helpers'
+import { convertAxisToTile, findCodeByTile, detectRemainByAxis, getSide } from '../helpers'
 
 /**
  * TODO: optimize
@@ -91,7 +86,7 @@ function rejectBlocked (turn, snapshot, movableByDirection) {
   const mapCb = createMapCb(turn, snapshot, movableByDirection)
 
   return R.compose(
-    R.reduce((acc, item) => [...acc, ...item], []),
+    R.unnest,
     R.map(mapCb),
     R.keys
   )(movableByDirection)

@@ -2,6 +2,7 @@ import { SIDE } from '../constants'
 
 /**
  * Get side
+ * TODO: getTurn > long words | getSide > short words
  * @param  {String} side
  * @return {String}
  */

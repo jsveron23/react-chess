@@ -22,7 +22,7 @@ describe('#findCheckCode', () => {
     }
 
     expect(findCheckCode(getFlatArgs)).toEqual({
-      checkTo: 'e1',
+      checkTo: 'wKe1',
       checkBy: 'bQa5'
     })
   })

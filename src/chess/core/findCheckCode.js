@@ -29,7 +29,7 @@ function createReduceCb (side, snapshot, checkBy) {
 
     return {
       checkBy,
-      checkTo: mt
+      checkTo: `${mtSide}${mtPiece}${mt}`
     }
   }
 }
