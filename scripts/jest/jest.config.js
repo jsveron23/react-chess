@@ -1,13 +1,9 @@
 module.exports = {
   verbose: false,
   silent: true,
-  rootDir: '..',
-  roots: [
-    '<rootDir>/src/chess',
-    '<rootDir>/src/utils',
-    '<rootDir>/tests/chess',
-    '<rootDir>/tests/utils'
-  ],
+  bail: 1,
+  rootDir: '../..',
+  roots: ['<rootDir>/src/chess', '<rootDir>/src/utils'],
   notify: true,
   notifyMode: 'failure',
   transform: {
@@ -16,6 +12,7 @@ module.exports = {
   moduleNameMapper: {
     '^~/(.*)$': '<rootDir>/src/$1'
   },
+  testMatch: ['**/tests/?(*.)+(spec|test).js'],
   snapshotSerializers: ['enzyme-to-json/serializer'],
-  setupFiles: ['<rootDir>/tests/setupTests.js']
+  setupFiles: ['<rootDir>/scripts/jest/setupTests.js']
 }
