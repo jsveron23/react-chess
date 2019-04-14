@@ -1,10 +1,12 @@
-import { getSide } from '~/chess/helpers'
+import getSide from '../getSide'
 
 describe('#getSide', () => {
-  it('get side', () => {
-    expect(getSide('w')).toEqual('white')
-    expect(getSide('b')).toEqual('black')
-    expect(getSide('white')).toEqual('w')
-    expect(getSide('black')).toEqual('b')
+  describe('Get side', () => {
+    it('from constant', () => {
+      expect(getSide('w')).toEqual('white')
+      expect(getSide('b')).toEqual('black')
+      expect(getSide('white')).toEqual('w')
+      expect(getSide('black')).toEqual('b')
+    })
   })
 })

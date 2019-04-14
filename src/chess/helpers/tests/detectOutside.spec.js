@@ -1,9 +1,11 @@
-import { detectOutside } from '~/chess/helpers'
+import detectOutside from '../detectOutside'
 
 describe('#detectOutside', () => {
-  it('detect outside of diagram', () => {
-    expect(detectOutside(1, 0)).toBeTruthy()
-    expect(detectOutside(1, 8)).toBeFalsy()
-    expect(detectOutside(2, 6)).toBeFalsy()
+  describe('Detect outside of diagram', () => {
+    it('check number', () => {
+      expect(detectOutside(1, 0)).toBeTruthy()
+      expect(detectOutside(1, 8)).toBeFalsy()
+      expect(detectOutside(2, 6)).toBeFalsy()
+    })
   })
 })

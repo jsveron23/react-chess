@@ -1,10 +1,12 @@
-import { parseTile } from '~/chess/helpers'
+import parseTile from '../parseTile'
 
 describe('#parseTile', () => {
-  it('divides a tile as single character', () => {
-    expect(parseTile('g5')).toEqual({
-      file: 'g',
-      rank: '5'
+  describe('Divides a tile as single character', () => {
+    it('split', () => {
+      expect(parseTile('g5')).toEqual({
+        file: 'g',
+        rank: '5'
+      })
     })
   })
 })

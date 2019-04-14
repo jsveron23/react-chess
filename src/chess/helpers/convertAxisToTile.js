@@ -10,14 +10,14 @@ import detectOutside from './detectOutside'
  * @return {String}
  */
 function convertAxisToTile (axis) {
+  const isOutside = detectOutside(...axis)
   const [x, y] = axis
-  const isOutside = detectOutside(x, y)
+  const file = getFile(x)
 
   return R.compose(
     pass(!isOutside),
-    R.flip(createTile)(y),
-    getFile
-  )(x)
+    createTile(file)
+  )(y)
 }
 
 export default convertAxisToTile

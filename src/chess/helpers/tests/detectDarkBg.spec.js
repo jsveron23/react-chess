@@ -1,8 +1,10 @@
-import { detectDarkBg } from '~/chess/helpers'
+import detectDarkBg from '../detectDarkBg'
 
 describe('#detectDarkBg', () => {
-  it('is dark background?', () => {
-    expect(detectDarkBg('b2')).toBeTruthy()
-    expect(detectDarkBg('d1')).toBeFalsy()
+  describe('Is dark background?', () => {
+    it('is even?', () => {
+      expect(detectDarkBg('b2')).toBeTruthy()
+      expect(detectDarkBg('d1')).toBeFalsy()
+    })
   })
 })

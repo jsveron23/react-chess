@@ -1,8 +1,12 @@
-import { replaceSnapshot } from '~/chess/helpers'
+import replaceSnapshot from '../replaceSnapshot'
 
 describe('#replaceSnapshot', () => {
-  it('replace snapshot', () => {
-    expect(replaceSnapshot('bQa1', 'a1')(['wRa1'])).toEqual(['bQa1'])
-    expect(replaceSnapshot('bQa1', '')(['wRa1'])).toEqual(['wRa1'])
+  describe('Replace code inside snapshot', () => {
+    it('code change', () => {
+      const awaitReplaceSnapshot = replaceSnapshot('bQa1')
+
+      expect(awaitReplaceSnapshot('a1')(['wRa1'])).toEqual(['bQa1'])
+      expect(awaitReplaceSnapshot('', ['wRa1'])).toEqual(['wRa1'])
+    })
   })
 })

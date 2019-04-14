@@ -1,8 +1,10 @@
-import { convertAxisToTile } from '~/chess/helpers'
+import convertAxisToTile from '../convertAxisToTile'
 
 describe('#convertAxisToTile', () => {
-  it('convert axis to tile', () => {
-    expect(convertAxisToTile([4, 3])).toEqual('d3')
-    expect(convertAxisToTile([4, -3])).toEqual('')
+  describe('Convert axis to tile', () => {
+    it('single axis -> single tile', () => {
+      expect(convertAxisToTile([4, 3])).toEqual('d3')
+      expect(convertAxisToTile([4, -3])).toEqual('')
+    })
   })
 })

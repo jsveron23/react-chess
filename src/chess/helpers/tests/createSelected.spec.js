@@ -1,7 +1,9 @@
-import { createSelected } from '~/chess/helpers'
+import createSelected from '../createSelected'
 
 describe('#createSelected', () => {
-  it('create selected', () => {
-    expect(createSelected('a7')('black')).toEqual('a7-b')
+  describe('Create selected', () => {
+    it('combine with -', () => {
+      expect(createSelected('a7')('black')).toEqual('a7-b')
+    })
   })
 })

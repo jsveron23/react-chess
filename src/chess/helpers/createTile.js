@@ -9,7 +9,7 @@ import { isEmpty } from '~/utils'
  */
 function createTile (file, rank) {
   if (isEmpty.or(file, rank)) {
-    return ''
+    throw new Error('Empty string!')
   }
 
   return `${file}${rank}`
