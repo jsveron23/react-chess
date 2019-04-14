@@ -1,4 +1,4 @@
-import { getCodeChanges } from '~/chess/core'
+import getCodeChanges from '../getCodeChanges'
 
 describe('#getCodeChanges', () => {
   describe('Get code changes after moving piece', () => {

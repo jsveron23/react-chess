@@ -1,8 +1,10 @@
-import { getMovableAxis } from '~/chess/core'
+import getMovableAxis from '../getMovableAxis'
 
 describe('#getMovableAxis', () => {
-  it('get movable axis', () => {
-    expect(getMovableAxis('a2')('white')('P')).toEqual([[1, 3]])
-    expect(getMovableAxis('b7', 'black')('P')).toEqual([[2, 6]])
+  describe('Get movable axis', () => {
+    it('axis list', () => {
+      expect(getMovableAxis('a2')('white')('P')).toEqual([[1, 3]])
+      expect(getMovableAxis('b7', 'black')('P')).toEqual([[2, 6]])
+    })
   })
 })

@@ -1,14 +1,14 @@
-import { appendSpecialAxis } from '~/chess/core'
-
-const SPECIALS = {
-  K: ['castling'],
-  N: ['jumpover'],
-  P: ['doubleStep', 'enPassant', 'promotion']
-}
+import appendSpecialAxis from '../appendSpecialAxis'
 
 // TODO: enhance (En Passant)
 describe('#appendSpecialAxis', () => {
-  describe('append special axis', () => {
+  describe('Append special axis', () => {
+    const SPECIALS = {
+      K: ['castling'],
+      N: ['jumpover'],
+      P: ['doubleStep', 'enPassant', 'promotion']
+    }
+
     it('doubleStep', () => {
       // prettier-ignore
       const timeline = [
@@ -23,9 +23,10 @@ describe('#appendSpecialAxis', () => {
       const specialP = SPECIALS[pieceP]
       const movableP = [[1, 3]]
 
-      expect(
-        appendSpecialAxis('w', specialP, 'a2', '', timeline, movableP)
-      ).toEqual([[1, 3], [1, 4]])
+      expect(appendSpecialAxis('w', specialP, 'a2', '', timeline, movableP)).toEqual([
+        [1, 3],
+        [1, 4]
+      ])
     })
 
     it('doubleStep: all blocked', () => {
@@ -42,9 +43,7 @@ describe('#appendSpecialAxis', () => {
       const specialP = SPECIALS[pieceP]
       const movableP = [[1, 3]]
 
-      expect(
-        appendSpecialAxis('w', specialP, 'a2', '', timeline, movableP)
-      ).toEqual([])
+      expect(appendSpecialAxis('w', specialP, 'a2', '', timeline, movableP)).toEqual([])
     })
 
     it('doubleStep: 1 tile is blocked', () => {
@@ -61,9 +60,7 @@ describe('#appendSpecialAxis', () => {
       const specialP = SPECIALS[pieceP]
       const movableP = [[1, 3]]
 
-      expect(
-        appendSpecialAxis('w', specialP, 'a2', '', timeline, movableP)
-      ).toEqual([[1, 3]])
+      expect(appendSpecialAxis('w', specialP, 'a2', '', timeline, movableP)).toEqual([[1, 3]])
     })
 
     it('doubleStep: not => case 1', () => {
@@ -80,9 +77,7 @@ describe('#appendSpecialAxis', () => {
       const specialP = SPECIALS[pieceP]
       const movableP = [[1, 4]]
 
-      expect(
-        appendSpecialAxis('w', specialP, 'a3', '', timeline, movableP)
-      ).toEqual([[1, 4]])
+      expect(appendSpecialAxis('w', specialP, 'a3', '', timeline, movableP)).toEqual([[1, 4]])
     })
 
     it('doubleStep: not => case 2', () => {
@@ -99,9 +94,7 @@ describe('#appendSpecialAxis', () => {
       const specialP = SPECIALS[pieceP]
       const movableP = [[1, 4]]
 
-      expect(
-        appendSpecialAxis('w', specialP, 'a3', '', timeline, movableP)
-      ).toEqual([])
+      expect(appendSpecialAxis('w', specialP, 'a3', '', timeline, movableP)).toEqual([])
     })
 
     it('enPassant: capture', () => {
@@ -124,12 +117,12 @@ describe('#appendSpecialAxis', () => {
       const specialP = SPECIALS[pieceP]
       const movableP = [[1, 5]]
 
-      expect(
-        appendSpecialAxis('w', specialP, 'a4', '', timeline, movableP)
-      ).toEqual(expect.arrayContaining([[1, 5]]))
-      expect(
-        appendSpecialAxis('w', specialP, 'a4', '', timeline, movableP)
-      ).toEqual(expect.arrayContaining([[2, 5]]))
+      expect(appendSpecialAxis('w', specialP, 'a4', '', timeline, movableP)).toEqual(
+        expect.arrayContaining([[1, 5]])
+      )
+      expect(appendSpecialAxis('w', specialP, 'a4', '', timeline, movableP)).toEqual(
+        expect.arrayContaining([[2, 5]])
+      )
     })
 
     it('enPassant: with doubleStep', () => {
@@ -146,15 +139,15 @@ describe('#appendSpecialAxis', () => {
       const specialP = SPECIALS[pieceP]
       const movableP = [[4, 3]]
 
-      expect(
-        appendSpecialAxis('w', specialP, 'd2', '', timeline, movableP)
-      ).toEqual(expect.arrayContaining([[4, 3]]))
-      expect(
-        appendSpecialAxis('w', specialP, 'd2', '', timeline, movableP)
-      ).toEqual(expect.arrayContaining([[4, 4]]))
-      expect(
-        appendSpecialAxis('w', specialP, 'd2', '', timeline, movableP)
-      ).toEqual(expect.arrayContaining([[5, 3]]))
+      expect(appendSpecialAxis('w', specialP, 'd2', '', timeline, movableP)).toEqual(
+        expect.arrayContaining([[4, 3]])
+      )
+      expect(appendSpecialAxis('w', specialP, 'd2', '', timeline, movableP)).toEqual(
+        expect.arrayContaining([[4, 4]])
+      )
+      expect(appendSpecialAxis('w', specialP, 'd2', '', timeline, movableP)).toEqual(
+        expect.arrayContaining([[5, 3]])
+      )
     })
 
     it('castling: white - queen side', () => {
@@ -170,23 +163,14 @@ describe('#appendSpecialAxis', () => {
 
       const pieceK = 'K'
       const specialK = SPECIALS[pieceK]
-      const movableK = [
-        [5, 0],
-        [5, 2],
-        [4, 1],
-        [6, 1],
-        [4, 0],
-        [4, 2],
-        [6, 0],
-        [6, 2]
-      ]
+      const movableK = [[5, 0], [5, 2], [4, 1], [6, 1], [4, 0], [4, 2], [6, 0], [6, 2]]
 
-      expect(
-        appendSpecialAxis('w', specialK, 'e1', '', timeline, movableK)
-      ).toEqual(expect.arrayContaining([[4, 1]]))
-      expect(
-        appendSpecialAxis('w', specialK, 'e1', '', timeline, movableK)
-      ).toEqual(expect.arrayContaining([[3, 1]]))
+      expect(appendSpecialAxis('w', specialK, 'e1', '', timeline, movableK)).toEqual(
+        expect.arrayContaining([[4, 1]])
+      )
+      expect(appendSpecialAxis('w', specialK, 'e1', '', timeline, movableK)).toEqual(
+        expect.arrayContaining([[3, 1]])
+      )
     })
 
     it('castling: white - king side', () => {
@@ -202,23 +186,14 @@ describe('#appendSpecialAxis', () => {
 
       const pieceK = 'K'
       const specialK = SPECIALS[pieceK]
-      const movableK = [
-        [5, 0],
-        [5, 2],
-        [4, 1],
-        [6, 1],
-        [4, 0],
-        [4, 2],
-        [6, 0],
-        [6, 2]
-      ]
+      const movableK = [[5, 0], [5, 2], [4, 1], [6, 1], [4, 0], [4, 2], [6, 0], [6, 2]]
 
-      expect(
-        appendSpecialAxis('w', specialK, 'e1', '', timeline, movableK)
-      ).toEqual(expect.arrayContaining([[6, 1]]))
-      expect(
-        appendSpecialAxis('w', specialK, 'e1', '', timeline, movableK)
-      ).toEqual(expect.arrayContaining([[7, 1]]))
+      expect(appendSpecialAxis('w', specialK, 'e1', '', timeline, movableK)).toEqual(
+        expect.arrayContaining([[6, 1]])
+      )
+      expect(appendSpecialAxis('w', specialK, 'e1', '', timeline, movableK)).toEqual(
+        expect.arrayContaining([[7, 1]])
+      )
     })
 
     it('castling: no castling', () => {
@@ -234,20 +209,9 @@ describe('#appendSpecialAxis', () => {
 
       const pieceK = 'K'
       const specialK = SPECIALS[pieceK]
-      const movableK = [
-        [5, 0],
-        [5, 2],
-        [4, 1],
-        [6, 1],
-        [4, 0],
-        [4, 2],
-        [6, 0],
-        [6, 2]
-      ]
+      const movableK = [[5, 0], [5, 2], [4, 1], [6, 1], [4, 0], [4, 2], [6, 0], [6, 2]]
 
-      expect(
-        appendSpecialAxis('w', specialK, 'e1', '', timeline, movableK)
-      ).toEqual(movableK)
+      expect(appendSpecialAxis('w', specialK, 'e1', '', timeline, movableK)).toEqual(movableK)
     })
   })
 })

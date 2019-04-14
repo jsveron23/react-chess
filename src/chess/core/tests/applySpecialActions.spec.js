@@ -1,14 +1,14 @@
-import { applySpecialActions } from '~/chess/core'
-
-const SPECIALS = {
-  K: ['castling'],
-  N: ['jumpover'],
-  P: ['doubleStep', 'enPassant', 'promotion']
-}
+import applySpecialActions from '../applySpecialActions'
 
 describe('#applySpecialActions', () => {
-  describe('apply special actions after moving to tile', () => {
+  describe('Apply special actions after moving to tile', () => {
     it('promotion', () => {
+      const SPECIALS = {
+        K: ['castling'],
+        N: ['jumpover'],
+        P: ['doubleStep', 'enPassant', 'promotion']
+      }
+
       const pieceP = 'P'
       const specialP = SPECIALS[pieceP]
 
@@ -30,9 +30,7 @@ describe('#applySpecialActions', () => {
         'wRa1', 'wNb1', 'wBc1', 'wQd1', 'wKe1', 'wBf1', 'wNg1', 'wRh1'
       ]
 
-      expect(applySpecialActions('w', specialP, 'a8', timeline)).toEqual(
-        nextSnapshot
-      )
+      expect(applySpecialActions('w', specialP, 'a8', timeline)).toEqual(nextSnapshot)
     })
   })
 })

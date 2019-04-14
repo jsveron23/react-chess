@@ -1,4 +1,4 @@
-import { createNotation } from '~/chess/core'
+import createNotation from '../createNotation'
 
 // prettier-ignore
 // const snapshotListWrong = [
