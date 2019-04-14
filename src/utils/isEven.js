@@ -1,11 +1,11 @@
 /**
- * Is even?
+ * Is even number?
  * @param  {Number}  num
  * @return {Boolean}
  */
 function isEven (num) {
   if (typeof num !== 'number') {
-    return false
+    throw new Error('This is not number!')
   }
 
   return num % 2 === 0

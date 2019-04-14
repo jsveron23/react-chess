@@ -2,7 +2,7 @@ import * as R from 'ramda'
 import detectRemainByAxis from './detectRemainByAxis'
 
 /**
- * Detect pice there at index?
+ * Detect piece there?
  * @param  {Array}   snapshot
  * @param  {Array}   movableAxis
  * @param  {Number}  idx

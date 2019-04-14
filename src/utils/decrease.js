@@ -7,6 +7,10 @@ import * as R from 'ramda'
  * @return {Array}
  */
 function decrease (from, to) {
+  if (from < to) {
+    throw new Error('to is bigger than from!')
+  }
+
   return R.compose(
     R.reverse,
     R.range(to + 1)
