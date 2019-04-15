@@ -1,5 +1,5 @@
+import * as R from 'ramda'
 import parseCode from './parseCode'
-import createTile from './createTile'
 
 /**
  * Convert code to tile
@@ -11,9 +11,10 @@ function convertCodeToTile (code) {
     throw new Error('invalid code!')
   }
 
-  const { file, rank } = parseCode(code)
-
-  return createTile(file, rank)
+  return R.compose(
+    R.prop('tile'),
+    parseCode
+  )(code)
 }
 
 export default convertCodeToTile

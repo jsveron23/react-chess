@@ -7,7 +7,8 @@ describe('#parseCode', () => {
         piece: 'R',
         side: 'b',
         file: 'a',
-        rank: '8'
+        rank: '8',
+        tile: 'a8'
       })
     })
   })
