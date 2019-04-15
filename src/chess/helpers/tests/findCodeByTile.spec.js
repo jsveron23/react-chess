@@ -1,7 +1,7 @@
 import findCodeByTile from '../findCodeByTile'
 
 describe('#findCodeByTile', () => {
-  describe('Dind a code by tile', () => {
+  describe('Find a code by tile', () => {
     it('return parsed code', () => {
       // prettier-ignore
       const snapshot = [

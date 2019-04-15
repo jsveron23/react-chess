@@ -20,7 +20,7 @@ function createReduceCb (snapshotList) {
 
     if (isExist(prevSnapshot)) {
       const prevLen = prevSnapshot.length
-      const { side, piece, file, rank } = R.compose(
+      const { side, piece, tile } = R.compose(
         parseCode,
         diffSnapshot(snapshot)
       )(prevSnapshot)
@@ -33,7 +33,6 @@ function createReduceCb (snapshotList) {
         throw new Error('Something wrong, please investigate this!')
       }
 
-      const tile = `${file}${rank}`
       const isPawn = piece === 'P' && !isCaptured
       const capturedSymbol = isCaptured ? ' x ' : ''
       const notation = `${isPawn ? '' : piece}${capturedSymbol}${tile}`

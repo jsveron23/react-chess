@@ -1,20 +1,10 @@
 import * as R from 'ramda'
 import { decide, increase, decrease } from '~/utils'
-import { parseCode, convertAxisToTile, convertCodeToTile, convertTileToAxis } from '../helpers'
-
-const parseCodeAlt = R.applySpec({
-  tile: convertCodeToTile,
-  side: R.compose(
-    R.prop('side'),
-    parseCode
-  )
-})
+import { parseCode, convertAxisToTile, convertTileToAxis } from '../helpers'
 
 /**
  * Get finite movable tiles when check-state
- * TODO:
- * 1. optimize
- * 2. actually, it doesnt any validate for movableTiles
+ * TODO: optimize
  * @param  {String} checkTo
  * @param  {String} checkBy
  * @param  {String} piece
@@ -22,10 +12,12 @@ const parseCodeAlt = R.applySpec({
  * @return {String}
  */
 function getFiniteMovableTiles (checkTo, checkBy, piece, movableTiles) {
-  console.log(movableTiles)
-  const awaitDecide = R.flip(decide([increase, decrease]))((a, b) => a < b)
-  const { tile: checkToTile, side: checkToSide } = parseCodeAlt(checkTo)
-  const { tile: checkByTile, side: checkBySide } = parseCodeAlt(checkBy)
+  // true -> increase, false -> decrease
+  const condCb = (a, b) => a < b
+  const awaitDecide = R.flip(decide([increase, decrease]))(condCb)
+
+  const { tile: checkToTile, side: checkToSide } = parseCode(checkTo)
+  const { tile: checkByTile, side: checkBySide } = parseCode(checkBy)
   const shouldLimit = checkToSide !== checkBySide
 
   // double validation
@@ -39,28 +31,35 @@ function getFiniteMovableTiles (checkTo, checkBy, piece, movableTiles) {
     let meta = []
     let xList = []
     let yList = []
+    let byTo = []
 
-    // TODO: Knight attck
-    if (x === y) {
-      meta = ['diagonal']
-      xList = awaitDecide(xArgs)
-      yList = awaitDecide(yArgs)
+    if ((x === 1 && y === 2) || (x === 2 && y === 1)) {
+      meta = ['jumpover']
+
+      byTo = [checkByTile]
     } else {
-      if (checkByX === checkToX) {
-        meta = ['straight']
-        xList = R.times(() => checkByX, y)
-        yList = awaitDecide(yArgs)
-      } else if (checkByY === checkToY) {
-        meta = ['straight']
-        xList = awaitDecide(xArgs)
-        yList = R.times(() => checkByY, x)
-      }
-    }
+      if (x === y) {
+        meta = ['diagonal']
 
-    const byTo = R.compose(
-      R.map(convertAxisToTile),
-      R.zip
-    )(xList, yList)
+        xList = awaitDecide(xArgs)
+        yList = awaitDecide(yArgs)
+      } else {
+        meta = ['straight']
+
+        if (checkByX === checkToX) {
+          xList = R.times(() => checkByX, y)
+          yList = awaitDecide(yArgs)
+        } else if (checkByY === checkToY) {
+          xList = awaitDecide(xArgs)
+          yList = R.times(() => checkByY, x)
+        }
+      }
+
+      byTo = R.compose(
+        R.map(convertAxisToTile),
+        R.zip
+      )(xList, yList)
+    }
 
     if (piece === 'K') {
       if (byTo.length === 1) {
@@ -89,33 +88,13 @@ function getFiniteMovableTiles (checkTo, checkBy, piece, movableTiles) {
         }
 
         case 'diagonal': {
-          let rejectAxis = []
-
-          if (checkByX < checkToX && checkByY < checkToY) {
-            // 'by(left down), to(right up)'
-            rejectAxis = [checkToX + 1, checkToY + 1]
-          } else if (checkByX > checkToX && checkByY < checkToY) {
-            // by(right down), to(left up)
-            rejectAxis = [checkToX - 1, checkToY + 1]
-          } else if (checkByX > checkToX && checkByY > checkToY) {
-            // 'by(right up), to(left down)'
-            rejectAxis = [checkToX - 1, checkToY - 1]
-          } else if (checkByX < checkToX && checkByY > checkToY) {
-            // 'by(left up), to(right down)'
-            rejectAxis = [checkToX + 1, checkToY - 1]
-          }
-
-          const rejectTile = convertAxisToTile(rejectAxis)
+          const diaX = checkByX < checkToX ? checkToX + 1 : checkToY - 1
+          const diaY = checkByY < checkToY ? checkToY + 1 : checkToY - 1
+          const rejectTile = convertAxisToTile([diaX, diaY])
 
           return R.compose(
             getKingMovableTiles,
-            R.reduce((acc, tile) => {
-              if (rejectTile === tile) {
-                return acc
-              }
-
-              return [...acc, tile]
-            }, [])
+            R.reduce((acc, tile) => (rejectTile === tile ? acc : [...acc, tile]), [])
           )(movableTiles)
         }
 
@@ -125,11 +104,7 @@ function getFiniteMovableTiles (checkTo, checkBy, piece, movableTiles) {
       }
     }
 
-    console.log('by: ', [checkByX, checkByY])
-    console.log('to: ', [checkToX, checkToY])
-    console.log('byTo: ', byTo)
-
-    return R.intersection(movableTiles)(byTo)
+    return R.intersection(movableTiles, byTo)
   }
 }
 

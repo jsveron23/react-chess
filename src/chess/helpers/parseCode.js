@@ -1,4 +1,5 @@
-import { splitTo } from '~/utils'
+import { isExist } from '~/utils'
+import createTile from './createTile'
 
 /**
  * Parse a code of snapshot
@@ -6,7 +7,12 @@ import { splitTo } from '~/utils'
  * @return {Object}
  */
 function parseCode (code) {
-  return splitTo('', ['side', 'piece', 'file', 'rank'], code)
+  const [side, piece, file, rank] = code.split('')
+  const tile = createTile(file, rank)
+  const parsed = { side, piece, file, rank, tile }
+  const isValid = isExist.and(side, piece, file, rank, tile)
+
+  return isValid ? parsed : {}
 }
 
 export default parseCode
