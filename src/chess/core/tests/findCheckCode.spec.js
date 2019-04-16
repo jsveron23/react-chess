@@ -17,8 +17,7 @@ describe('#findCheckCode', () => {
           turn: 'white',
           side: 'b',
           piece: 'Q',
-          file: 'a',
-          rank: '5'
+          tile: 'a5'
         }
       }
 

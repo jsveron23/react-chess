@@ -1,12 +1,11 @@
 import * as R from 'ramda'
 import { isEmpty } from '~/utils'
 import {
+  findCode,
   parseCode,
   diffSnapshot,
   getMovement,
-  findCode,
   convertAxisToTile,
-  convertCodeToTile,
   convertTileToAxis
 } from '../helpers'
 
@@ -23,7 +22,8 @@ function getCodeChanges (snapshot, prevSnapshot) {
   if (snapshot.length !== prevSnapshot.length) {
     const { x: nextX, y: nextY } = R.compose(
       convertTileToAxis,
-      convertCodeToTile
+      R.prop('tile'),
+      parseCode
     )(nextCode)
 
     const { side, piece } = parseCode(nextCode)

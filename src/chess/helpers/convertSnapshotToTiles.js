@@ -1,4 +1,5 @@
-import convertCodeToTile from './convertCodeToTile'
+import * as R from 'ramda'
+import parseCode from './parseCode'
 
 /**
  * Convert code inside snapshot into tiles
@@ -6,7 +7,12 @@ import convertCodeToTile from './convertCodeToTile'
  * @return {Array}
  */
 function convertSnapshotToTiles (snapshot) {
-  return snapshot.map(convertCodeToTile)
+  const mapCb = R.compose(
+    R.prop('tile'),
+    parseCode
+  )
+
+  return snapshot.map(mapCb)
 }
 
 export default convertSnapshotToTiles
