@@ -2,7 +2,7 @@ import * as R from 'ramda'
 import { lazy, merge } from '~/utils'
 import getMovableAxis from './getMovableAxis'
 import getNextMovable from './getNextMovable'
-import { getSpecial, createTile, findCodeByTile } from '../helpers'
+import { getSpecial, findCodeByTile } from '../helpers'
 
 /**
  * @param  {String}   side
@@ -40,8 +40,7 @@ function createReduceCb (side, snapshot, checkBy) {
  * @return {String}
  */
 function findCheckCode (getFlatArgs) {
-  const { turn, snapshot, side, piece, file, rank } = getFlatArgs()
-  const tile = createTile(file, rank)
+  const { turn, snapshot, side, piece, tile } = getFlatArgs()
   const checkCode = `${side}${piece}${tile}`
   const reduceCb = createReduceCb(side, snapshot, checkCode)
   const initial = { side, tile }

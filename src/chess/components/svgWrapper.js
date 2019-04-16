@@ -4,7 +4,7 @@ import { useSpring, animated } from 'react-spring'
 import cx from 'classnames'
 import * as R from 'ramda'
 import { noop } from '~/utils'
-import { getSide, parseCode, createTile } from '~/chess/helpers'
+import { getSide, parseCode } from '~/chess/helpers'
 
 const POSITION_DEFAULT = {
   top: 0,
@@ -14,7 +14,6 @@ const POSITION_DEFAULT = {
 /**
  * Higher order component for Chess piece
  * - Chess pieces from svg loader
- * - that is not defining prop types, events and life cycle methods
  * @see getPiece.js
  * @param  {Component} WrappedComponent svg-react-loader
  * @param  {String}    staticKey
@@ -63,14 +62,14 @@ function svgWrapper (WrappedComponent, staticKey, staticTurn) {
       to: POSITION_DEFAULT
     })
 
-    const { file: checkToFile, rank: checkToRank } = parseCode(checkTo)
-    const checkToTile = createTile(checkToFile, checkToRank)
-
+    const checkToTile = R.compose(
+      R.prop('tile'),
+      parseCode
+    )(checkTo)
     const isTurn = staticSide === turn
     const isCapturable = isMovable && !isTurn
     const isSelected = selectedTile === tile
     const isCheck = checkToTile === tile
-
     const cls = cx('wrapper', {
       'is-turn': isTurn,
       'is-capturable': isCapturable,

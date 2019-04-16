@@ -9,6 +9,15 @@ import {
   convertRankToY
 } from '../../helpers'
 
+const getAxisAfterDiff = (aSnapshot, bSnapshot) => {
+  return R.compose(
+    convertTileToAxis,
+    R.prop('tile'),
+    parseCode,
+    diffSnapshot(aSnapshot)
+  )(bSnapshot)
+}
+
 /**
  * @TODO: optimize
  * @param  {String} side
@@ -21,21 +30,11 @@ function _applyEnPassant (side, tile, timeline) {
   const { x, y } = convertTileToAxis(tile)
   const diagonalRightAxis = side === 'w' ? [x + 1, y + 1] : [x - 1, y - 1]
   const diagonalLeftAxis = side === 'w' ? [x - 1, y + 1] : [x + 1, y - 1]
-  let additinalAxis = []
+  let additionalAxis = []
 
   if (isExist(prevSnapshot)) {
-    const { file: ss1File, rank: ss1Rank } = R.compose(
-      parseCode,
-      diffSnapshot(snapshot)
-    )(prevSnapshot)
-
-    const { file: ss2File, rank: ss2Rank } = R.compose(
-      parseCode,
-      diffSnapshot(prevSnapshot)
-    )(snapshot)
-
-    const { x: ss1X, y: ss1Y } = convertTileToAxis(`${ss1File}${ss1Rank}`)
-    const { x: ss2X, y: ss2Y } = convertTileToAxis(`${ss2File}${ss2Rank}`)
+    const { x: ss1X, y: ss1Y } = getAxisAfterDiff(snapshot, prevSnapshot)
+    const { x: ss2X, y: ss2Y } = getAxisAfterDiff(prevSnapshot, snapshot)
     const addDSY = side === 'w' ? -2 : 2
     const isDoubleStepped = ss1Y === ss2Y + addDSY
     const isSameRank = y === ss1Y && Math.abs(x - ss2X) === 1
@@ -43,7 +42,7 @@ function _applyEnPassant (side, tile, timeline) {
     if (isDoubleStepped && isSameRank) {
       const addAxisY = side === 'w' ? 1 : -1
 
-      additinalAxis = [ss1X, ss1Y + addAxisY]
+      additionalAxis = [ss1X, ss1Y + addAxisY]
     }
   }
 
@@ -52,7 +51,7 @@ function _applyEnPassant (side, tile, timeline) {
   const leftTile = findCapturableTile(diagonalLeftAxis)
 
   return R.uniq([
-    additinalAxis,
+    additionalAxis,
     ...[isExist(rightTile) ? diagonalRightAxis : []],
     ...[isExist(leftTile) ? diagonalLeftAxis : []]
   ])
@@ -60,8 +59,8 @@ function _applyEnPassant (side, tile, timeline) {
 
 /**
  * @TODO: optimize
- * @param  {string} side
- * @param  {string} tile
+ * @param  {String} side
+ * @param  {String} tile
  * @param  {Array}  timeline
  * @return {string}
  */

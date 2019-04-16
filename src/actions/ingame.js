@@ -1,12 +1,7 @@
 import * as R from 'ramda'
 import * as types from '~/actions'
 import { OPPONENT } from '~/chess/constants'
-import {
-  getNextMovable,
-  getNextSnapshot,
-  findCheckCode,
-  applySpecialActions
-} from '~/chess/core'
+import { getNextMovable, getNextSnapshot, findCheckCode, applySpecialActions } from '~/chess/core'
 import {
   createTimeline,
   getSpecial,
@@ -15,8 +10,7 @@ import {
   createSelected,
   getPrevSnapshotList,
   diffSnapshot,
-  parseCode,
-  createTile
+  parseCode
 } from '~/chess/helpers'
 import { isEmpty, lazy, merge } from '~/utils'
 
@@ -146,17 +140,12 @@ export function setNextSnapshot (tile) {
   }
 }
 
-export function setNextCapturedSnapshot ({
-  capturedTile,
-  selectedTile,
-  nextCode
-}) {
+export function setNextCapturedSnapshot ({ capturedTile, selectedTile, nextCode }) {
   return (dispatch, getState) => {
     const { ingame } = getState()
     const { present, past } = ingame
     const { snapshot } = present
-    const { piece, side, file, rank } = parseCode(nextCode)
-    const tile = createTile(file, rank)
+    const { piece, side, tile } = parseCode(nextCode)
     const special = getSpecial(piece)
 
     const getSpecialActionsFn = R.compose(

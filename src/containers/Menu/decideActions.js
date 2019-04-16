@@ -1,3 +1,4 @@
+import * as R from 'ramda'
 import { ActionCreators } from 'redux-undo'
 import { toggleMatchStatus } from '~/actions/general'
 import { restartGame } from '~/actions/ingame'
@@ -25,11 +26,7 @@ function mainItems (name) {
         return []
       }
 
-      return [
-        restartGame(/* TODO: save */),
-        ActionCreators.clearHistory(),
-        toggleMatchStatus()
-      ]
+      return [restartGame(/* TODO: save */), ActionCreators.clearHistory(), toggleMatchStatus()]
     }
 
     case HUMAN_VS_CPU:
@@ -52,9 +49,5 @@ function gameItems (name) {
 }
 
 export default function decideActions (name) {
-  if (MAIN_ITEMS.includes(name)) {
-    return mainItems(name)
-  } else {
-    return gameItems(name)
-  }
+  return R.ifElse(R.flip(R.includes)(MAIN_ITEMS), mainItems, gameItems)(name)
 }
