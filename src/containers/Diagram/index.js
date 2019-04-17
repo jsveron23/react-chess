@@ -3,8 +3,15 @@ import memoize from 'memoize-one'
 import * as R from 'ramda'
 import { Diagram } from '~/components'
 import { setNextSnapshot, setNextMovableAxis, setNextCapturedSnapshot } from '~/actions/ingame'
-import { getNextMovable, getFiniteMovableTiles, mesurePosition } from '~/chess/core'
-import { createTimeline, getSpecial, parseSelected, getPrevSnapshotList } from '~/chess/helpers'
+import { getNextMovable, getFiniteMovableTiles, mesurePosition, getMovableAxis } from '~/chess/core'
+import {
+  createTimeline,
+  getSpecial,
+  parseSelected,
+  getPrevSnapshotList,
+  getOneSidedCodeList,
+  parseCode
+} from '~/chess/helpers'
 import { RANKS, FILES } from '~/chess/constants'
 import { lazy, isExist, isEmpty } from '~/utils'
 
@@ -45,7 +52,42 @@ function mapStateToProps ({ general, ingame }) {
     }
 
     if (isExist(checkBy)) {
-      nextMovableTiles = getFiniteMovableTiles(checkTo, checkBy, piece, nextMovableTiles)
+      // TODO: optimize
+      const awaitGetFiniteMovableTiles = getFiniteMovableTiles(checkTo, checkBy)
+      const teammate = getOneSidedCodeList(side, snapshot)
+      const movableTilesList = teammate.reduce((acc, code) => {
+        const parsedCode = parseCode(code)
+        const movableTiles = R.compose(
+          awaitGetFiniteMovableTiles(parsedCode.piece),
+          memoizeGetNextMovable
+        )({
+          ...present,
+          movableAxis: getMovableAxis(parsedCode.tile, turn, parsedCode.piece),
+          timeline,
+          side,
+          special: getSpecial(parsedCode.piece),
+          tile: parsedCode.tile
+        })
+
+        // console.log(`Debug - ${parsedCode.piece}${parsedCode.tile}`, movableTiles);
+
+        if (isEmpty(movableTiles)) {
+          return acc
+        }
+
+        return [...acc, movableTiles]
+      }, [])
+
+      // TODO: code works but only King return movable tiles not properly
+      console.log(
+        'Checkmate!!',
+        R.compose(
+          isEmpty,
+          R.flatten
+        )(movableTilesList)
+      )
+
+      nextMovableTiles = awaitGetFiniteMovableTiles(piece, nextMovableTiles)
     }
   }
 
