@@ -35,7 +35,7 @@ describe('#getOneSidedCodeList', () => {
         'bPa7', 'bPb7', 'bPc5', 'bPd7', 'bPe7', 'bPf7', 'bPg7', 'bPh7'
       ]
 
-      expect(getOneSidedCodeList('w', snapshot)).toEqual(codeList)
+      expect(getOneSidedCodeList('b', snapshot)).toEqual(codeList)
     })
   })
 })
