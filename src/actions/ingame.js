@@ -2,15 +2,15 @@ import * as R from 'ramda'
 import * as types from '~/actions'
 import { getNextMovable, getNextSnapshot, findCheckCode, applySpecialActions } from '~/chess/core'
 import {
-  createTimeline,
   getSpecial,
-  parseSelected,
-  replaceSnapshot,
-  createSelected,
+  getOpponentTurn,
   getPrevSnapshotList,
-  diffSnapshot,
+  createCode,
+  createTimeline,
+  findCodeByTile,
   parseCode,
-  getOpponentTurn
+  replaceSnapshot,
+  diffSnapshot
 } from '~/chess/helpers'
 import { isEmpty, lazy, merge } from '~/utils'
 
@@ -21,10 +21,10 @@ export function setTs (ts = +new Date()) {
   }
 }
 
-export function setSelected (piece = '') {
+export function setSelected (code = '') {
   return {
     type: types.SET_SELECTED,
-    payload: piece
+    payload: code
   }
 }
 
@@ -105,8 +105,9 @@ export function setNextMovableAxis (tile) {
   return (dispatch, getState) => {
     const { ingame } = getState()
     const { present } = ingame
-    const { turn, snapshot } = present
-    const nextSelected = createSelected(tile, turn)
+    const { snapshot } = present
+    const { side, piece, file, rank } = findCodeByTile(snapshot, tile)
+    const nextSelected = createCode(side, piece, file, rank)
 
     const nextMovableAxis = R.compose(
       getNextMovable('axis'),
@@ -123,7 +124,7 @@ export function setNextSnapshot (tile) {
     const { ingame } = getState()
     const { present, past } = ingame
     const { selected, snapshot } = present
-    const { piece, side } = parseSelected(snapshot, selected)
+    const { piece, side } = parseCode(selected)
     const special = getSpecial(piece)
 
     const getSpecialActionsFn = R.compose(

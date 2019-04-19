@@ -4,7 +4,7 @@ import * as R from 'ramda'
 import { Diagram } from '~/components'
 import { setNextSnapshot, setNextMovableAxis, setNextCapturedSnapshot } from '~/actions/ingame'
 import { getNextMovable, mesurePosition, getMovableTilesGroup } from '~/chess/core'
-import { createTimeline, getSpecial, parseSelected, getPrevSnapshotList } from '~/chess/helpers'
+import { createTimeline, getSpecial, parseCode, getPrevSnapshotList } from '~/chess/helpers'
 import { RANKS, FILES } from '~/chess/constants'
 import { lazy, isExist, isEmpty } from '~/utils'
 
@@ -22,7 +22,7 @@ function mapStateToProps ({ general, ingame }) {
   const { present, past } = ingame
   const { turn, snapshot, selected, checkTo, checkBy } = present
   const timeline = createTimeline(snapshot, past)
-  const { piece, side, code, tile: selectedTile } = parseSelected(snapshot, selected)
+  const { piece, side, code, tile: selectedTile } = parseCode(selected)
   const special = getSpecial(piece)
   let nextMovableTiles = memoizeGetNextMovable({
     ...present,
