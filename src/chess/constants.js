@@ -34,6 +34,17 @@ export const OPPONENT = {
 }
 
 /**
+ * Turn
+ * @type {Object}
+ */
+export const TURN = {
+  white: 'white',
+  black: 'black',
+  w: 'white',
+  b: 'black'
+}
+
+/**
  * Side
  * @type {Object}
  */

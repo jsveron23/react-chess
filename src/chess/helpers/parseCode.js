@@ -9,7 +9,7 @@ import createTile from './createTile'
 function parseCode (code) {
   const [side, piece, file, rank] = code.split('')
   const tile = createTile(file, rank)
-  const parsed = { side, piece, file, rank, tile }
+  const parsed = { side, piece, file, rank, tile, code }
   const isValid = isExist.and(side, piece, file, rank, tile)
 
   return isValid ? parsed : {}

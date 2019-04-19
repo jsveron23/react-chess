@@ -3,15 +3,8 @@ import memoize from 'memoize-one'
 import * as R from 'ramda'
 import { Diagram } from '~/components'
 import { setNextSnapshot, setNextMovableAxis, setNextCapturedSnapshot } from '~/actions/ingame'
-import { getNextMovable, getFiniteMovableTiles, mesurePosition, getMovableAxis } from '~/chess/core'
-import {
-  createTimeline,
-  getSpecial,
-  parseSelected,
-  getPrevSnapshotList,
-  getOneSidedCodeList,
-  parseCode
-} from '~/chess/helpers'
+import { getNextMovable, mesurePosition, getMovableTilesGroup } from '~/chess/core'
+import { createTimeline, getSpecial, parseSelected, getPrevSnapshotList } from '~/chess/helpers'
 import { RANKS, FILES } from '~/chess/constants'
 import { lazy, isExist, isEmpty } from '~/utils'
 
@@ -29,7 +22,7 @@ function mapStateToProps ({ general, ingame }) {
   const { present, past } = ingame
   const { turn, snapshot, selected, checkTo, checkBy } = present
   const timeline = createTimeline(snapshot, past)
-  const { piece, side, tile: selectedTile } = parseSelected(snapshot, selected)
+  const { piece, side, code, tile: selectedTile } = parseSelected(snapshot, selected)
   const special = getSpecial(piece)
   let nextMovableTiles = memoizeGetNextMovable({
     ...present,
@@ -52,42 +45,11 @@ function mapStateToProps ({ general, ingame }) {
     }
 
     if (isExist(checkBy)) {
-      // TODO: optimize
-      const awaitGetFiniteMovableTiles = getFiniteMovableTiles(checkTo, checkBy)
-      const teammate = getOneSidedCodeList(side, snapshot)
-      const movableTilesList = teammate.reduce((acc, code) => {
-        const parsedCode = parseCode(code)
-        const movableTiles = R.compose(
-          awaitGetFiniteMovableTiles(parsedCode.piece),
-          memoizeGetNextMovable
-        )({
-          ...present,
-          movableAxis: getMovableAxis(parsedCode.tile, turn, parsedCode.piece),
-          timeline,
-          side,
-          special: getSpecial(parsedCode.piece),
-          tile: parsedCode.tile
-        })
+      const movableTilesGroup = getMovableTilesGroup(turn, checkTo, checkBy, timeline)
 
-        // console.log(`Debug - ${parsedCode.piece}${parsedCode.tile}`, movableTiles);
+      console.log(Object.keys(movableTilesGroup).every((key) => isEmpty(movableTilesGroup[key])))
 
-        if (isEmpty(movableTiles)) {
-          return acc
-        }
-
-        return [...acc, movableTiles]
-      }, [])
-
-      // TODO: code works but only King return movable tiles not properly
-      console.log(
-        'Checkmate!!',
-        R.compose(
-          isEmpty,
-          R.flatten
-        )(movableTilesList)
-      )
-
-      nextMovableTiles = awaitGetFiniteMovableTiles(piece, nextMovableTiles)
+      nextMovableTiles = movableTilesGroup[code]
     }
   }
 

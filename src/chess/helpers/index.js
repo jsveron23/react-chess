@@ -1,5 +1,6 @@
 export { default as getMovement } from './getMovement'
 export { default as getSpecial } from './getSpecial'
+export { default as getTurn } from './getTurn'
 export { default as getSide } from './getSide'
 export { default as getFile } from './getFile'
 export { default as getPrevSnapshotList } from './getPrevSnapshotList'
