@@ -1,17 +1,20 @@
+import * as R from 'ramda'
 import { applyMiddleware } from 'redux'
 import { composeWithDevTools } from 'redux-devtools-extension'
 
+/**
+ * @param  {String}   env
+ * @return {Function}
+ */
 function createComposeMiddleware (env) {
-  return (...middlewares) => {
-    const composedMiddleware = applyMiddleware(...middlewares)
+  const devToolsWapper = env !== 'production' ? composeWithDevTools : R.identity
 
-    return env !== 'production'
-      ? composeWithDevTools(composedMiddleware)
-      : composedMiddleware
-  }
+  return R.compose(
+    devToolsWapper,
+    applyMiddleware
+  )
 }
 
 const composeMiddleware = createComposeMiddleware(process.env.NODE_ENV)
-composeMiddleware.withEnv = createComposeMiddleware
 
 export default composeMiddleware
