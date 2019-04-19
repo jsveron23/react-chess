@@ -2,7 +2,7 @@ import * as R from 'ramda'
 import { isEmpty } from '~/utils'
 
 /**
- * Create tile
+ * Create a tile
  * @param  {String} file
  * @param  {String} rank
  * @return {String}

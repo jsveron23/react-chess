@@ -3,7 +3,6 @@ import getSide from './getSide'
 
 /**
  * Create selected
- * TODO: change to snapshot code
  * @param  {String} tile
  * @param  {String} turn
  * @return {String}

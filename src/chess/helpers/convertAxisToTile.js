@@ -1,8 +1,9 @@
 import * as R from 'ramda'
-import { pass } from '~/utils'
 import getFile from './getFile'
 import createTile from './createTile'
 import detectOutside from './detectOutside'
+
+const flippedCreateTile = R.flip(createTile)
 
 /**
  * Convert axis to tile
@@ -10,14 +11,17 @@ import detectOutside from './detectOutside'
  * @return {String}
  */
 function convertAxisToTile (axis) {
-  const isOutside = detectOutside(...axis)
   const [x, y] = axis
-  const file = getFile(x)
+  const isOutside = detectOutside(x, y)
+
+  if (isOutside) {
+    return ''
+  }
 
   return R.compose(
-    pass(!isOutside),
-    createTile(file)
-  )(y)
+    flippedCreateTile(y),
+    getFile
+  )(x)
 }
 
 export default convertAxisToTile

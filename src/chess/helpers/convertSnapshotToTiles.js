@@ -7,12 +7,12 @@ import parseCode from './parseCode'
  * @return {Array}
  */
 function convertSnapshotToTiles (snapshot) {
-  const mapCb = R.compose(
-    R.prop('tile'),
-    parseCode
+  return snapshot.map(
+    R.compose(
+      R.prop('tile'),
+      parseCode
+    )
   )
-
-  return snapshot.map(mapCb)
 }
 
 export default convertSnapshotToTiles

@@ -1,5 +1,6 @@
 import * as R from 'ramda'
 import detectCodeRemoved from './detectCodeRemoved'
+
 /**
  * Detect is piece moved?
  * @param  {Array}   timeline
@@ -7,9 +8,9 @@ import detectCodeRemoved from './detectCodeRemoved'
  * @return {Boolean}
  */
 function detectMoved (timeline, searchTxt) {
-  const awaitDetectCodeRemoved = detectCodeRemoved(searchTxt)
+  const someCb = detectCodeRemoved(searchTxt)
 
-  return timeline.some(awaitDetectCodeRemoved)
+  return timeline.some(someCb)
 }
 
 export default R.curry(detectMoved)
