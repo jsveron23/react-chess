@@ -1,6 +1,5 @@
 import * as R from 'ramda'
 import * as types from '~/actions'
-import { OPPONENT } from '~/chess/constants'
 import { getNextMovable, getNextSnapshot, findCheckCode, applySpecialActions } from '~/chess/core'
 import {
   createTimeline,
@@ -10,7 +9,8 @@ import {
   createSelected,
   getPrevSnapshotList,
   diffSnapshot,
-  parseCode
+  parseCode,
+  getOpponentTurn
 } from '~/chess/helpers'
 import { isEmpty, lazy, merge } from '~/utils'
 
@@ -38,11 +38,11 @@ export function setMovableAxis (movable = []) {
 export function toggleTurn () {
   return (dispatch, getState) => {
     const { ingame } = getState()
-    const { turn } = ingame.present
+    const { present } = ingame
 
     dispatch({
       type: types.TOGGLE_TURN,
-      payload: OPPONENT[turn]
+      payload: getOpponentTurn(present.turn)
     })
   }
 }
