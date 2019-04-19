@@ -1,7 +1,7 @@
-import { trace } from '~/utils'
+import trace from '../trace'
 
-describe('#trace', () => {
-  describe('Display value on `console.log` while doing compose functions', () => {
+describe('#trace (compose)', () => {
+  describe('Display value by `console.log` while doing compose functions', () => {
     it('only passing value', () => {
       const v1 = {}
       const v2 = function () {}

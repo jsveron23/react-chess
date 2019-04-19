@@ -3,7 +3,7 @@ import * as R from 'ramda'
 const isNotBoolean = R.complement(R.is)(Boolean)
 
 /**
- * Decide which function will use
+ * Decide which function will use (only 2 options is allowed to use)
  * @param  {Array}    fns
  * @param  {Array}    args
  * @param  {Function} cb
@@ -22,7 +22,7 @@ function decide (fns, args, cb) {
   const bool = cb(a, b)
 
   if (isNotBoolean(bool)) {
-    throw new Error('Callback does not return boolean!')
+    throw new Error('Callback did not return boolean!')
   }
 
   const fn = bool ? fns[0] : fns[1]

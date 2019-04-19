@@ -1,7 +1,7 @@
 import isEmpty from '../isEmpty'
 
 describe('#isEmpty', () => {
-  describe('Is given value empty?', () => {
+  describe('Detection of empty and not assigned value', () => {
     it('string', () => {
       expect(isEmpty('')).toBeTruthy()
       expect(isEmpty('{}')).toBeFalsy()

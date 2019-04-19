@@ -1,24 +1,33 @@
 import decide from '../decide'
 
-describe('#decide', () => {
-  describe('Callback returns boolean that decide which function will use one of argument', () => {
-    const fns = [(a) => a + 1, (b) => b + 2]
+describe('#decide (compose)', () => {
+  describe('Callback returns boolean that decide which function will use', () => {
+    const add = (a, b) => a + b
+    const minus = (a, b) => a - b
+
+    const fns = [add, minus]
     const args = [2, 4]
+
     const awaitDecide = decide(fns, args)
 
-    it('2 functions, 2 args', () => {
-      expect(awaitDecide((a, b) => a < b)).toEqual(3)
-      expect(awaitDecide((a, b) => a > b)).toEqual(4)
-      expect(awaitDecide((a, b) => a === b)).toEqual(4)
+    it('if callback return true', () => {
+      expect(awaitDecide((a, b) => a < b)).toEqual(add(...args))
     })
 
-    it('callback is not given or not return boolean', () => {
+    it('if callback return false ', () => {
+      expect(awaitDecide((a, b) => a > b)).toEqual(minus(...args))
+    })
+
+    it('invalid callback', () => {
       expect(() => awaitDecide([])).toThrow()
       expect(() => awaitDecide(0)).toThrow()
+    })
+
+    it('callback return not boolean type', () => {
       expect(() => awaitDecide(() => {})).toThrow()
     })
 
-    it('length is not same', () => {
+    it('not same length', () => {
       const mockFn = jest.fn
 
       expect(() => decide([mockFn()], [1, 2], mockFn())).toThrow()

@@ -10,7 +10,7 @@ function createRegExp (str) {
 }
 
 /**
- * Create regular expression with options
+ * With options
  * @param  {String} options
  * @param  {String} str
  * @return {RegExp}
