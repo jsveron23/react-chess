@@ -6,9 +6,6 @@
   "private": true,
   "scripts": {
     "test": "jest --config ./scripts/jest/jest.config.js --detectOpenHandles",
-    "test:core": "npm test -- ./src/chess/core/tests",
-    "test:helpers": "npm test -- ./src/chess/helpers/tests",
-    "test:utils": "npm test -- ./src/utils/tests",
     "coverage": "npm test -- --coverage --coverageReporters=text-lcov",
     "coveralls": "npm run coverage | coveralls",
     "lint": "eslint src",
