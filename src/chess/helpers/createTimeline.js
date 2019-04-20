@@ -1,5 +1,5 @@
 import * as R from 'ramda'
-import getPrevSnapshotList from './getPrevSnapshotList'
+import getPrevSnapshots from './getPrevSnapshots'
 
 /**
  * Create timeline (snapshot list)
@@ -8,9 +8,10 @@ import getPrevSnapshotList from './getPrevSnapshotList'
  * @return {Array}
  */
 function createTimeline (snapshot, past) {
-  const prevSnapshotList = getPrevSnapshotList(past)
-
-  return [snapshot, ...prevSnapshotList]
+  return R.compose(
+    R.concat([snapshot]),
+    getPrevSnapshots
+  )(past)
 }
 
 export default R.curry(createTimeline)

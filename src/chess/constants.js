@@ -34,14 +34,25 @@ export const OPPONENT = {
 }
 
 /**
+ * Turn
+ * @type {Object}
+ */
+export const TURN = {
+  white: 'white',
+  black: 'black',
+  w: 'white',
+  b: 'black'
+}
+
+/**
  * Side
  * @type {Object}
  */
 export const SIDE = {
   white: 'w',
   black: 'b',
-  w: 'white',
-  b: 'black'
+  w: 'w',
+  b: 'b'
 }
 
 /**

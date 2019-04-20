@@ -1,18 +1,22 @@
 import * as R from 'ramda'
 import * as types from '~/actions'
-import { OPPONENT } from '~/chess/constants'
-import { getNextMovable, getNextSnapshot, findCheckCode, applySpecialActions } from '~/chess/core'
 import {
-  createTimeline,
+  getNextMovable,
+  getNextSnapshot,
+  findCheckCode,
+  applySpecialActions
+} from '~/chess/core'
+import {
   getSpecial,
-  parseSelected,
+  getOpponentTurn,
+  getPrevSnapshots,
+  createTimeline,
+  findCodeByTile,
+  parseCode,
   replaceSnapshot,
-  createSelected,
-  getPrevSnapshotList,
-  diffSnapshot,
-  parseCode
+  diffSnapshot
 } from '~/chess/helpers'
-import { isEmpty, lazy, merge } from '~/utils'
+import { isEmpty, lazy, merge, createTxt } from '~/utils'
 
 export function setTs (ts = +new Date()) {
   return {
@@ -21,10 +25,10 @@ export function setTs (ts = +new Date()) {
   }
 }
 
-export function setSelected (piece = '') {
+export function setSelected (code = '') {
   return {
     type: types.SET_SELECTED,
-    payload: piece
+    payload: code
   }
 }
 
@@ -38,11 +42,11 @@ export function setMovableAxis (movable = []) {
 export function toggleTurn () {
   return (dispatch, getState) => {
     const { ingame } = getState()
-    const { turn } = ingame.present
+    const { present } = ingame
 
     dispatch({
       type: types.TOGGLE_TURN,
-      payload: OPPONENT[turn]
+      payload: getOpponentTurn(present.turn)
     })
   }
 }
@@ -93,7 +97,7 @@ export function setNext (snapshot) {
       parseCode,
       diffSnapshot(snapshot),
       R.prop(0),
-      getPrevSnapshotList
+      getPrevSnapshots
     )(past)
 
     dispatch(setCheckTo(checkTo))
@@ -105,8 +109,9 @@ export function setNextMovableAxis (tile) {
   return (dispatch, getState) => {
     const { ingame } = getState()
     const { present } = ingame
-    const { turn, snapshot } = present
-    const nextSelected = createSelected(tile, turn)
+    const { snapshot } = present
+    const { side, piece } = findCodeByTile(snapshot, tile)
+    const nextSelected = createTxt(side, piece, tile)
 
     const nextMovableAxis = R.compose(
       getNextMovable('axis'),
@@ -123,7 +128,7 @@ export function setNextSnapshot (tile) {
     const { ingame } = getState()
     const { present, past } = ingame
     const { selected, snapshot } = present
-    const { piece, side } = parseSelected(snapshot, selected)
+    const { piece, side } = parseCode(selected)
     const special = getSpecial(piece)
 
     const getSpecialActionsFn = R.compose(

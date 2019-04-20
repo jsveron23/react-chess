@@ -26,7 +26,11 @@ function mainItems (name) {
         return []
       }
 
-      return [restartGame(/* TODO: save */), ActionCreators.clearHistory(), toggleMatchStatus()]
+      return [
+        restartGame(/* TODO: save */),
+        ActionCreators.clearHistory(),
+        toggleMatchStatus()
+      ]
     }
 
     case HUMAN_VS_CPU:

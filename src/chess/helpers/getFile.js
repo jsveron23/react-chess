@@ -1,3 +1,4 @@
+import * as R from 'ramda'
 import { FILES } from '../constants'
 
 /**
@@ -6,7 +7,7 @@ import { FILES } from '../constants'
  * @return {String}
  */
 function getFile (fileNum) {
-  return FILES[fileNum - 1]
+  return R.defaultTo('', FILES[fileNum - 1])
 }
 
 export default getFile

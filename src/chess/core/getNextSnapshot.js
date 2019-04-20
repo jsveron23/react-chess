@@ -1,22 +1,19 @@
 import * as R from 'ramda'
-import { parseCode, parseSelected, createTile } from '../helpers'
+import { createTxt } from '~/utils'
+import { parseCode } from '../helpers'
 
 /**
  * Get next snapshot
- * @param  {String} selected
- * @param  {String} tile
- * @param  {Array}  snapshot
+ * @param  {String} selected prev
+ * @param  {String} tile     next
+ * @param  {Array}  snapshot prev
  * @return {Array}
  */
 function getNextSnapshot (selected, tile, snapshot) {
-  const { file, rank } = parseSelected(snapshot, selected)
-  const selectedTile = createTile(file, rank)
+  const { side, piece } = parseCode(selected)
   const mapCb = R.ifElse(
-    R.includes(selectedTile),
-    R.compose(
-      ({ side, piece }) => `${side}${piece}${tile}`,
-      parseCode
-    ),
+    R.equals(selected),
+    () => createTxt(side, piece, tile),
     R.identity
   )
 

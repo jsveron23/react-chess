@@ -1,6 +1,6 @@
 import * as R from 'ramda'
 import { isExist } from '~/utils'
-import { parseCode, getSide, diffSnapshot } from '../helpers'
+import { parseCode, getTurn, diffSnapshot } from '../helpers'
 
 /**
  * @param  {Array}    snapshotList
@@ -36,12 +36,12 @@ function createReduceCb (snapshotList) {
       const isPawn = piece === 'P' && !isCaptured
       const capturedSymbol = isCaptured ? ' x ' : ''
       const notation = `${isPawn ? '' : piece}${capturedSymbol}${tile}`
-      const sideAsKey = getSide(side)
+      const turnAsKey = getTurn(side)
 
       return [
         ...acc,
         {
-          [sideAsKey]: notation
+          [turnAsKey]: notation
         }
       ]
     }

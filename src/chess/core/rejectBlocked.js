@@ -1,26 +1,25 @@
 import * as R from 'ramda'
-import { convertAxisToTile, findCodeByTile, detectRemainByAxis, getSide } from '../helpers'
+import {
+  convertAxisToTile,
+  findCodeByTile,
+  detectRemainByAxis,
+  getTurn
+} from '../helpers'
 
 /**
- * TODO: optimize
- * NOTE: not work if 1 length of Array
- * @param  {String}   turn
- * @param  {Array}    snapshot
- * @param  {Object}   movableByDirection
- * @return {Function}
+ * Get rid of blocked path
+ * @param  {String} turn
+ * @param  {Array}  snapshot
+ * @param  {Object} movableByDirection
+ * @return {Array}
  */
-function createMapCb (turn, snapshot, movableByDirection) {
+function rejectBlocked (turn, snapshot, movableByDirection) {
   const detectBlock = detectRemainByAxis(snapshot)
   const parseCodeByTile = findCodeByTile(snapshot)
 
-  /**
-   * @callback
-   * @param  {String} directionKey
-   * @return {Array}
-   */
-  return (directionKey) => {
-    // axis direction (veritical, horizontal, diagonal)
-    const axisList = movableByDirection[directionKey]
+  const mapCb = (directionKey) => {
+    // get direction of movement
+    const movement = movableByDirection[directionKey]
 
     // first enemy on a direction
     let firstContactEnemy = false
@@ -29,11 +28,11 @@ function createMapCb (turn, snapshot, movableByDirection) {
     let prevX
     let prevY
 
-    return axisList.reduce((acc, axis) => {
+    return movement.reduce((acc, axis) => {
       const isBlocked = detectBlock(axis)
       const isTeamMate = R.compose(
         R.equals(turn),
-        getSide,
+        getTurn,
         R.prop('side'),
         parseCodeByTile,
         convertAxisToTile
@@ -73,17 +72,6 @@ function createMapCb (turn, snapshot, movableByDirection) {
       return [...acc, axis]
     }, [])
   }
-}
-
-/**
- * Get rid of blocked path
- * @param  {String} turn
- * @param  {Array}  snapshot
- * @param  {Object} movableByDirection
- * @return {Array}
- */
-function rejectBlocked (turn, snapshot, movableByDirection) {
-  const mapCb = createMapCb(turn, snapshot, movableByDirection)
 
   return R.compose(
     R.unnest,

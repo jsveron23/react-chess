@@ -7,7 +7,7 @@ describe('#convertFileToX', () => {
       expect(convertFileToX('d')).toEqual(4)
     })
 
-    it('given invalid file', () => {
+    it('invalid file', () => {
       expect(convertFileToX('z')).toEqual(-1)
     })
   })

@@ -1,4 +1,5 @@
 import * as R from 'ramda'
+import { createTxt } from '~/utils'
 import {
   BlackBishop,
   BlackKing,
@@ -31,7 +32,7 @@ const PIECE_MAP = {
 }
 
 function getPiece (side, piece) {
-  const pieceKey = `${side}${piece}`
+  const pieceKey = createTxt(side, piece)
 
   return PIECE_MAP[pieceKey]
 }

@@ -1,12 +1,12 @@
 import parseTile from '../parseTile'
 
 describe('#parseTile', () => {
-  describe('Divides a tile as single character', () => {
-    it('split', () => {
-      expect(parseTile('g5')).toEqual({
-        file: 'g',
-        rank: '5'
-      })
+  describe('Split a tile', () => {
+    it('normal use case', () => {
+      const parsedTile = parseTile('g5')
+
+      expect(parsedTile).toHaveProperty('file', 'g')
+      expect(parsedTile).toHaveProperty('rank', '5')
     })
   })
 })

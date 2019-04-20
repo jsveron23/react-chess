@@ -7,6 +7,7 @@ import * as R from 'ramda'
  * @return {Object}
  */
 function merge (a, b) {
+  // only allow 2 arguments
   return R.mergeWith(R.identity)(a, b)
 }
 

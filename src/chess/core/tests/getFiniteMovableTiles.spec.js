@@ -16,7 +16,13 @@ describe('#getFiniteMovableTiles', () => {
       })
 
       it('King', () => {
-        expect(awaitFn('K', ['e7', 'd8', 'f8', 'd7', 'f7'])).toEqual(['e7', 'd8', 'f8', 'd7', 'f7'])
+        expect(awaitFn('K', ['e7', 'd8', 'f8', 'd7', 'f7'])).toEqual([
+          'e7',
+          'd8',
+          'f8',
+          'd7',
+          'f7'
+        ])
       })
     })
 
@@ -116,7 +122,12 @@ describe('#getFiniteMovableTiles', () => {
         })
 
         it('King', () => {
-          expect(awaitFn('K', ['e2', 'd1', 'f1', 'd2', 'f2'])).toEqual(['e2', 'd1', 'f1', 'f2'])
+          expect(awaitFn('K', ['e2', 'd1', 'f1', 'd2', 'f2'])).toEqual([
+            'e2',
+            'd1',
+            'f1',
+            'f2'
+          ])
         })
       })
 
@@ -157,7 +168,12 @@ describe('#getFiniteMovableTiles', () => {
         })
 
         it('King', () => {
-          expect(awaitFn('K', ['e7', 'd8', 'f8', 'd7', 'f7'])).toEqual(['e7', 'd8', 'f8', 'f7'])
+          expect(awaitFn('K', ['e7', 'd8', 'f8', 'd7', 'f7'])).toEqual([
+            'e7',
+            'd8',
+            'f8',
+            'f7'
+          ])
         })
       })
 
@@ -176,7 +192,12 @@ describe('#getFiniteMovableTiles', () => {
         })
 
         it('King', () => {
-          expect(awaitFn('K', ['e7', 'd8', 'f8', 'd7', 'f7'])).toEqual(['e7', 'd8', 'f8', 'd7'])
+          expect(awaitFn('K', ['e7', 'd8', 'f8', 'd7', 'f7'])).toEqual([
+            'e7',
+            'd8',
+            'f8',
+            'd7'
+          ])
         })
       })
     })

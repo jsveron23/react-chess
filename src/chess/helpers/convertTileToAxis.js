@@ -1,3 +1,4 @@
+import * as R from 'ramda'
 import parseTile from './parseTile'
 import convertFileToX from './convertFileToX'
 import convertRankToY from './convertRankToY'
@@ -8,11 +9,15 @@ import convertRankToY from './convertRankToY'
  * @return {Object}
  */
 function convertTileToAxis (tile) {
-  const { file, rank } = parseTile(tile)
-  const x = convertFileToX(file)
-  const y = convertRankToY(rank)
-
-  return { x, y }
+  return R.compose(
+    ({ file, rank }) => {
+      return {
+        x: convertFileToX(file),
+        y: convertRankToY(rank)
+      }
+    },
+    parseTile
+  )(tile)
 }
 
 export default convertTileToAxis

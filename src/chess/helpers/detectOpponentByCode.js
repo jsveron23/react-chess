@@ -2,6 +2,8 @@ import * as R from 'ramda'
 import { isEmpty } from '~/utils'
 import parseCode from './parseCode'
 
+const isNotEquals = R.complement(R.equals)
+
 /**
  * Detect opponent
  * @param  {String}  side
@@ -9,8 +11,6 @@ import parseCode from './parseCode'
  * @return {Boolean}
  */
 function detectOpponentByCode (side, code) {
-  const isNotEquals = R.complement(R.equals)
-
   if (isEmpty(code)) {
     return false
   }

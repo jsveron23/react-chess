@@ -12,8 +12,7 @@ Programs must be written for people to read, and only incidentally for machines 
 # Following
 
 - Functional programming
-- SMACSS
-- Test driven development
+- CSS Module (SMACSS, PostCSS)
 
 ## Demo
 

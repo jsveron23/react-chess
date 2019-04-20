@@ -1,3 +1,4 @@
+import * as R from 'ramda'
 import { SPECIALS } from '../constants'
 
 /**
@@ -6,7 +7,7 @@ import { SPECIALS } from '../constants'
  * @return {Array}
  */
 function getSpecial (piece) {
-  return SPECIALS[piece] || []
+  return R.defaultTo([], SPECIALS[piece])
 }
 
 export default getSpecial

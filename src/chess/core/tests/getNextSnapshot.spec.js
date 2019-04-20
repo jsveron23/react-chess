@@ -19,7 +19,7 @@ describe('#getNextSnapshot', () => {
         'wRa1', 'wNb1', 'wBc1', 'wQd1', 'wKe1', 'wBf1', 'wNg1', 'wRh1'
       ]
 
-      expect(getNextSnapshot('a2-w')('a3')(prevSnapshot)).toEqual(nextSnapshot)
+      expect(getNextSnapshot('wPa2')('a3')(prevSnapshot)).toEqual(nextSnapshot)
     })
   })
 })

@@ -1,15 +1,15 @@
 import * as R from 'ramda'
 
 /**
- * Get previous snapshot list
+ * Get previous snapshots
  * @param  {Array} past
  * @return {Array}
  */
-function getPrevSnapshotList (past) {
+function getPrevSnapshots (past) {
   return R.compose(
     R.pluck('snapshot'),
     R.reverse
   )(past)
 }
 
-export default getPrevSnapshotList
+export default getPrevSnapshots

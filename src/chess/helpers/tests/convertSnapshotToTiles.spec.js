@@ -1,8 +1,8 @@
 import convertSnapshotToTiles from '../convertSnapshotToTiles'
 
 describe('#convertSnapshotToTiles', () => {
-  describe('Convert snapshot to tiles', () => {
-    it('multiple code -> multiple tiles', () => {
+  describe('Replace code in snapshot to tiles', () => {
+    it('normal use case', () => {
       // prettier-ignore
       const snapshot = [
         'bRa8', 'bNb8', 'bBc8', 'bQd8', 'bKe8', 'bBf8', 'bNg8', 'bRh8',

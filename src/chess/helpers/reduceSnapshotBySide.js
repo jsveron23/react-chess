@@ -2,21 +2,21 @@ import * as R from 'ramda'
 import parseCode from './parseCode'
 
 /**
- * Get remain their side code list only
+ * Remain given side code of snapshot
  * @param  {String} side
  * @param  {Array}  snapshot
  * @return {Array}
  */
-function getOneSidedCodeList (side, snapshot) {
+function reduceSnapshotBySide (side, snapshot) {
   return snapshot.reduce((acc, code) => {
     const parsedCode = parseCode(code)
 
-    if (parsedCode.side === side) {
-      return [...acc, code]
+    if (parsedCode.side !== side) {
+      return acc
     }
 
-    return acc
+    return [...acc, code]
   }, [])
 }
 
-export default R.curry(getOneSidedCodeList)
+export default R.curry(reduceSnapshotBySide)
