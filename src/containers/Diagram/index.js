@@ -4,7 +4,7 @@ import * as R from 'ramda'
 import { Diagram } from '~/components'
 import { setNextSnapshot, setNextMovableAxis, setNextCapturedSnapshot } from '~/actions/ingame'
 import { getNextMovable, mesurePosition, getMovableTilesGroup } from '~/chess/core'
-import { createTimeline, getSpecial, parseCode, getPrevSnapshotList } from '~/chess/helpers'
+import { createTimeline, getSpecial, parseCode, getPrevSnapshots } from '~/chess/helpers'
 import { RANKS, FILES } from '~/chess/constants'
 import { lazy, isExist, isEmpty } from '~/utils'
 
@@ -36,7 +36,7 @@ function mapStateToProps ({ general, ingame }) {
 
   // for animation
   if (isExist(past)) {
-    const prevSnapshotList = getPrevSnapshotList(past)
+    const prevSnapshotList = getPrevSnapshots(past)
     const [prevSnapshot] = prevSnapshotList
 
     if (isEmpty(nextMovableTiles)) {

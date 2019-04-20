@@ -9,7 +9,7 @@ import * as R from 'ramda'
 function diffSnapshot (aSnapshot, bSnapshot) {
   return R.compose(
     R.defaultTo(''),
-    R.prop(0),
+    R.nth(0),
     R.difference(aSnapshot)
   )(bSnapshot)
 }

@@ -3,7 +3,7 @@ import { lazy } from '~/utils'
 import getFiniteMovableTiles from './getFiniteMovableTiles'
 import getNextMovable from './getNextMovable'
 import getMovableAxis from './getMovableAxis'
-import { getSide, getOneSidedCodeList, parseCode, getSpecial } from '../helpers'
+import { getSide, reduceSnapshotBySide, parseCode, getSpecial } from '../helpers'
 
 function createReduceCb ({ checkTo, checkBy, turn, side, timeline }) {
   const awaitGetFiniteMovableTiles = getFiniteMovableTiles(checkTo, checkBy)
@@ -48,8 +48,8 @@ function getFiniteMovableTilesGroup (turn, checkTo, checkBy, timeline) {
 
   return R.compose(
     R.reduce(reduceCb, {}),
-    getOneSidedCodeList(side),
-    R.prop(0)
+    reduceSnapshotBySide(side),
+    R.nth(0)
   )(timeline)
 }
 

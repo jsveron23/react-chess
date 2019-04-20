@@ -1,8 +1,8 @@
-import getPrevSnapshotList from '../getPrevSnapshotList'
+import getPrevSnapshots from '../getPrevSnapshots'
 
-describe('#getPrevSnapshotList', () => {
+describe('#getPrevSnapshots', () => {
   describe('Get previous snapshot list', () => {
-    it('from past', () => {
+    it('normal use case', () => {
       // prettier-ignore
       const snapshot = [
         'bRa8', 'bNb8', 'bBc8', 'bQa5', 'bKe8', 'bBf8', 'bNg8', 'bRh8',
@@ -11,7 +11,7 @@ describe('#getPrevSnapshotList', () => {
         'wRa1', 'wNb1', 'wBe3', 'wQd1', 'wKe1', 'wBf1', 'wNg1', 'wRh1'
       ]
 
-      expect(getPrevSnapshotList([{ snapshot }])).toEqual([snapshot])
+      expect(getPrevSnapshots([{ snapshot }])).toEqual([snapshot])
     })
   })
 })

@@ -1,5 +1,5 @@
 import * as R from 'ramda'
-import { isEmpty } from '~/utils'
+import { isEmpty, createTxt } from '~/utils'
 import {
   findCode,
   parseCode,
@@ -43,11 +43,16 @@ function getCodeChanges (snapshot, prevSnapshot) {
     })
 
     const prevTile = R.compose(
-      R.find((tile) => findCode(prevSnapshot, `${side}${piece}${tile}`)),
+      R.find((tile) =>
+        R.compose(
+          findCode(prevSnapshot),
+          createTxt
+        )(side, piece, tile)
+      ),
       R.reject(isEmpty)
     )(prevMovableTiles)
 
-    prevCode = `${side}${piece}${prevTile}`
+    prevCode = createTxt(side, piece, prevTile)
   }
 
   return { nextCode, prevCode }

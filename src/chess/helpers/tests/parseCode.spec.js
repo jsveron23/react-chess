@@ -3,14 +3,14 @@ import parseCode from '../parseCode'
 describe('#parseCode', () => {
   describe('Divides a code as single character', () => {
     it('split', () => {
-      expect(parseCode('bRa8')).toEqual({
-        piece: 'R',
-        side: 'b',
-        file: 'a',
-        rank: '8',
-        tile: 'a8',
-        code: 'bRa8'
-      })
+      const parsedCode = parseCode('bRa8')
+
+      expect(parsedCode).toHaveProperty('piece', 'R')
+      expect(parsedCode).toHaveProperty('side', 'b')
+      expect(parsedCode).toHaveProperty('file', 'a')
+      expect(parsedCode).toHaveProperty('rank', '8')
+      expect(parsedCode).toHaveProperty('tile', 'a8')
+      expect(parsedCode).toHaveProperty('code', 'bRa8')
     })
   })
 })

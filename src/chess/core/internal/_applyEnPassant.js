@@ -1,5 +1,5 @@
 import * as R from 'ramda'
-import { isExist } from '~/utils'
+import { isExist, createTxt } from '~/utils'
 import {
   findCodeByAxis,
   convertTileToAxis,
@@ -74,7 +74,8 @@ function _changeSnapshot (side, tile, timeline) {
   const isEnPassant = file !== beforeMovedFile
 
   if (isEnPassant) {
-    const capturedTile = `${file}${y + (side === 'w' ? -1 : 1)}`
+    const nextRank = y + (side === 'w' ? -1 : 1)
+    const capturedTile = createTxt(file, nextRank)
 
     return capturedTile
   }

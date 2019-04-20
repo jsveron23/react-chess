@@ -1,5 +1,4 @@
 import * as R from 'ramda'
-import { lazy } from '~/utils'
 
 const parseInt10 = (v) => parseInt(v, 10)
 
@@ -9,10 +8,8 @@ const parseInt10 = (v) => parseInt(v, 10)
  * @return {Number}
  */
 function convertRankToY (rank) {
-  const detectInvalidY = R.anyPass([R.gte(0), R.lt(8)])
-
   return R.compose(
-    R.ifElse(detectInvalidY, lazy(-1), R.identity),
+    R.unless(R.allPass([R.lt(0), R.gte(8)]), () => -1),
     parseInt10
   )(rank)
 }

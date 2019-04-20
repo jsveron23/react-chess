@@ -1,13 +1,13 @@
+import * as R from 'ramda'
 import { SIDE } from '../constants'
 
 /**
- * Get side
- * TODO: getTurn > long words | getSide > short words
- * @param  {String} side
+ * Get side (full name -> short name)
+ * @param  {String} turn
  * @return {String}
  */
-function getSide (side) {
-  return SIDE[side]
+function getSide (turn) {
+  return R.defaultTo('', SIDE[turn])
 }
 
 export default getSide

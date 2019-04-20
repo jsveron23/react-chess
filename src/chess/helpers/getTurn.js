@@ -1,3 +1,4 @@
+import * as R from 'ramda'
 import { TURN } from '../constants'
 
 /**
@@ -6,7 +7,7 @@ import { TURN } from '../constants'
  * @return {String}
  */
 function getTurn (side) {
-  return TURN[side]
+  return R.defaultTo('', TURN[side])
 }
 
 export default getTurn

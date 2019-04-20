@@ -4,15 +4,14 @@ import { getNextMovable, getNextSnapshot, findCheckCode, applySpecialActions } f
 import {
   getSpecial,
   getOpponentTurn,
-  getPrevSnapshotList,
-  createCode,
+  getPrevSnapshots,
   createTimeline,
   findCodeByTile,
   parseCode,
   replaceSnapshot,
   diffSnapshot
 } from '~/chess/helpers'
-import { isEmpty, lazy, merge } from '~/utils'
+import { isEmpty, lazy, merge, createTxt } from '~/utils'
 
 export function setTs (ts = +new Date()) {
   return {
@@ -93,7 +92,7 @@ export function setNext (snapshot) {
       parseCode,
       diffSnapshot(snapshot),
       R.prop(0),
-      getPrevSnapshotList
+      getPrevSnapshots
     )(past)
 
     dispatch(setCheckTo(checkTo))
@@ -106,8 +105,8 @@ export function setNextMovableAxis (tile) {
     const { ingame } = getState()
     const { present } = ingame
     const { snapshot } = present
-    const { side, piece, file, rank } = findCodeByTile(snapshot, tile)
-    const nextSelected = createCode(side, piece, file, rank)
+    const { side, piece } = findCodeByTile(snapshot, tile)
+    const nextSelected = createTxt(side, piece, tile)
 
     const nextMovableAxis = R.compose(
       getNextMovable('axis'),

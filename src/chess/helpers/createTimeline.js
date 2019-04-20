@@ -1,5 +1,5 @@
 import * as R from 'ramda'
-import getPrevSnapshotList from './getPrevSnapshotList'
+import getPrevSnapshots from './getPrevSnapshots'
 
 /**
  * Create timeline (snapshot list)
@@ -10,7 +10,7 @@ import getPrevSnapshotList from './getPrevSnapshotList'
 function createTimeline (snapshot, past) {
   return R.compose(
     R.concat([snapshot]),
-    getPrevSnapshotList
+    getPrevSnapshots
   )(past)
 }
 

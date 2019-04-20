@@ -1,5 +1,7 @@
 import * as R from 'ramda'
-import { isEmpty } from '~/utils'
+import { isEmpty, lazy } from '~/utils'
+
+const notIncludes = R.complement(R.includes)
 
 /**
  * Replace code of snapshot
@@ -13,13 +15,9 @@ function replaceSnapshot (replace, token, snapshot) {
     return snapshot
   }
 
-  return snapshot.map((code) => {
-    if (code.includes(token)) {
-      return replace
-    }
+  const mapCb = R.unless(notIncludes(token), lazy(replace))
 
-    return code
-  })
+  return snapshot.map(mapCb)
 }
 
 export default R.curry(replaceSnapshot)

@@ -1,5 +1,5 @@
 import * as R from 'ramda'
-import { pass } from '~/utils'
+import { pass, createTxt } from '~/utils'
 
 const PROMOTION = 'promotion'
 const PROMOTION_TILES = {
@@ -15,8 +15,10 @@ const PROMOTION_TILES = {
  * @return {Array}
  */
 function _applyPromotion (side, tile, special) {
+  const promotionCode = createTxt(side, 'Q', tile)
+
   return R.compose(
-    R.flip(pass)(`${side}Q${tile}`),
+    R.flip(pass)(promotionCode),
     R.and(special.includes(PROMOTION)),
     R.includes(tile)
   )(PROMOTION_TILES[side])

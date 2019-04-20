@@ -11,7 +11,7 @@ import detectRemainByAxis from './detectRemainByAxis'
 function detectBlockedAt (snapshot, movableAxis, idx) {
   return R.compose(
     detectRemainByAxis(snapshot),
-    R.prop(idx)
+    R.nth(idx)
   )(movableAxis)
 }
 

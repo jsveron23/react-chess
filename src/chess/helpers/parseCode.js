@@ -1,5 +1,4 @@
-import { isExist } from '~/utils'
-import createTile from './createTile'
+import { isEmpty, createTxt } from '~/utils'
 
 /**
  * Parse a code of snapshot
@@ -7,12 +6,15 @@ import createTile from './createTile'
  * @return {Object}
  */
 function parseCode (code) {
-  const [side, piece, file, rank] = code.split('')
-  const tile = createTile(file, rank)
-  const parsed = { side, piece, file, rank, tile, code }
-  const isValid = isExist.and(side, piece, file, rank, tile)
+  if (isEmpty(code)) {
+    return {}
+  }
 
-  return isValid ? parsed : {}
+  const splittedCode = code.split('')
+  const [side, piece, file, rank] = splittedCode
+  const tile = createTxt(file, rank)
+
+  return { side, piece, file, rank, tile, code }
 }
 
 export default parseCode

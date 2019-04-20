@@ -1,3 +1,4 @@
+import * as R from 'ramda'
 import { MOVEMENTS } from '../constants'
 
 /**
@@ -6,7 +7,7 @@ import { MOVEMENTS } from '../constants'
  * @return {Array}
  */
 function getMovement (piece) {
-  return MOVEMENTS[piece]
+  return R.defaultTo([], MOVEMENTS[piece])
 }
 
 export default getMovement

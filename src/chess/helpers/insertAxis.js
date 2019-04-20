@@ -1,6 +1,14 @@
 import * as R from 'ramda'
 import convertTileToAxis from './convertTileToAxis'
 
+const isNot = R.complement(R.is)
+
+const detectInvalidInitial = (initial) =>
+  R.compose(
+    isNot(Array),
+    R.nth(0)
+  )(initial)
+
 /**
  * Insert into axis list that after converted tiles
  * @param  {Array} initial
@@ -8,9 +16,9 @@ import convertTileToAxis from './convertTileToAxis'
  * @return {Array}
  */
 function insertAxis (initial, tiles) {
-  const [axis] = initial
+  const isInvalid = detectInvalidInitial(initial)
 
-  if (!Array.isArray(axis)) {
+  if (isInvalid) {
     initial = []
   }
 

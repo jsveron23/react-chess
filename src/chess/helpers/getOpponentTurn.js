@@ -1,3 +1,4 @@
+import * as R from 'ramda'
 import { OPPONENT } from '../constants'
 
 /**
@@ -6,7 +7,7 @@ import { OPPONENT } from '../constants'
  * @return {String}
  */
 function getOpponentTurn (turn) {
-  return OPPONENT[turn]
+  return R.defaultTo('', OPPONENT[turn])
 }
 
 export default getOpponentTurn
