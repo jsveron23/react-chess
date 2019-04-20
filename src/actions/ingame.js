@@ -1,6 +1,11 @@
 import * as R from 'ramda'
 import * as types from '~/actions'
-import { getNextMovable, getNextSnapshot, findCheckCode, applySpecialActions } from '~/chess/core'
+import {
+  getNextMovable,
+  getNextSnapshot,
+  findCheckCode,
+  applySpecialActions
+} from '~/chess/core'
 import {
   getSpecial,
   getOpponentTurn,

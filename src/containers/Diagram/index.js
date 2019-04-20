@@ -2,7 +2,11 @@ import { connect } from 'react-redux'
 import memoize from 'memoize-one'
 import * as R from 'ramda'
 import { Diagram } from '~/components'
-import { setNextSnapshot, setNextMovableAxis, setNextCapturedSnapshot } from '~/actions/ingame'
+import {
+  setNextSnapshot,
+  setNextMovableAxis,
+  setNextCapturedSnapshot
+} from '~/actions/ingame'
 import { getNextMovable, mesurePosition, getMovableTilesGroup } from '~/chess/core'
 import { createTimeline, getSpecial, parseCode, getPrevSnapshots } from '~/chess/helpers'
 import { RANKS, FILES } from '~/chess/constants'
@@ -47,7 +51,9 @@ function mapStateToProps ({ general, ingame }) {
     if (isExist(checkBy)) {
       const movableTilesGroup = getMovableTilesGroup(turn, checkTo, checkBy, timeline)
 
-      console.log(Object.keys(movableTilesGroup).every((key) => isEmpty(movableTilesGroup[key])))
+      console.log(
+        Object.keys(movableTilesGroup).every((key) => isEmpty(movableTilesGroup[key]))
+      )
 
       nextMovableTiles = movableTilesGroup[code]
     }

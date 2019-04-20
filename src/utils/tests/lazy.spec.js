@@ -12,7 +12,9 @@ describe('#lazy (compose)', () => {
       const simpleAppend = (v) => `hello-${v}`
 
       expect(lazy.withAction(simplePrepend)('hello')()).toEqual('hello-world')
-      expect(lazy.withAction(simpleAppend, 'world')('ignore this!')).toEqual('hello-world')
+      expect(lazy.withAction(simpleAppend, 'world')('ignore this!')).toEqual(
+        'hello-world'
+      )
     })
   })
 })

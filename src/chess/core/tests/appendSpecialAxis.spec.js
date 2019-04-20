@@ -60,7 +60,9 @@ describe('#appendSpecialAxis', () => {
       const specialP = SPECIALS[pieceP]
       const movableP = [[1, 3]]
 
-      expect(appendSpecialAxis('w', specialP, 'a2', '', timeline, movableP)).toEqual([[1, 3]])
+      expect(appendSpecialAxis('w', specialP, 'a2', '', timeline, movableP)).toEqual([
+        [1, 3]
+      ])
     })
 
     it('doubleStep: not => case 1', () => {
@@ -77,7 +79,9 @@ describe('#appendSpecialAxis', () => {
       const specialP = SPECIALS[pieceP]
       const movableP = [[1, 4]]
 
-      expect(appendSpecialAxis('w', specialP, 'a3', '', timeline, movableP)).toEqual([[1, 4]])
+      expect(appendSpecialAxis('w', specialP, 'a3', '', timeline, movableP)).toEqual([
+        [1, 4]
+      ])
     })
 
     it('doubleStep: not => case 2', () => {
@@ -211,7 +215,9 @@ describe('#appendSpecialAxis', () => {
       const specialK = SPECIALS[pieceK]
       const movableK = [[5, 0], [5, 2], [4, 1], [6, 1], [4, 0], [4, 2], [6, 0], [6, 2]]
 
-      expect(appendSpecialAxis('w', specialK, 'e1', '', timeline, movableK)).toEqual(movableK)
+      expect(appendSpecialAxis('w', specialK, 'e1', '', timeline, movableK)).toEqual(
+        movableK
+      )
     })
   })
 })

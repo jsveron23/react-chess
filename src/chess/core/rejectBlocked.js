@@ -1,5 +1,10 @@
 import * as R from 'ramda'
-import { convertAxisToTile, findCodeByTile, detectRemainByAxis, getSide } from '../helpers'
+import {
+  convertAxisToTile,
+  findCodeByTile,
+  detectRemainByAxis,
+  getSide
+} from '../helpers'
 
 /**
  * TODO: optimize
