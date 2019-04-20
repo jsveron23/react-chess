@@ -3,7 +3,7 @@ import {
   convertAxisToTile,
   findCodeByTile,
   detectRemainByAxis,
-  getSide
+  getTurn
 } from '../helpers'
 
 /**
@@ -38,7 +38,7 @@ function createMapCb (turn, snapshot, movableByDirection) {
       const isBlocked = detectBlock(axis)
       const isTeamMate = R.compose(
         R.equals(turn),
-        getSide,
+        getTurn,
         R.prop('side'),
         parseCodeByTile,
         convertAxisToTile

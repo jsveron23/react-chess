@@ -51,8 +51,8 @@ export const TURN = {
 export const SIDE = {
   white: 'w',
   black: 'b',
-  w: 'white',
-  b: 'black'
+  w: 'w',
+  b: 'b'
 }
 
 /**
