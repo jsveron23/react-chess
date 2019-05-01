@@ -15,7 +15,7 @@
     "bundle:prod": "webpack --config ./scripts/webpack/webpack.config.js --env.production --display-error-details",
     "build": "npm run bundle:prod",
     "start": "npm run bundle:dev",
-    "deploy": "./scripts/gh-pages/deploy.sh",
+    "deploy": "./scripts/github/gh-pages.js",
     "update": "npm-check -u",
     "sync:master": "git reset --hard origin/master"
   },
