@@ -1,13 +1,13 @@
 const R = require('ramda')
 const colors = require('colors') // eslint-disable-line
 
+const lazy = R.thunkify(R.identity)
+
 /**
  * @param  {Object}   loaders
  * @return {Function}
  */
-function createReduceCb (loaders) {
-  const lazy = R.thunkify(R.identity)
-
+module.exports = function createReduceCb (loaders) {
   /**
    * @callback
    * @param  {Array}  acc
@@ -24,23 +24,4 @@ function createReduceCb (loaders) {
       R.prop(loaderName)
     )(loaders)
   }
-}
-
-/**
- * Get loaders
- * @param  {Object}   loaders
- * @return {Function}
- */
-function get (loaders) {
-  const reduceCb = createReduceCb(loaders)
-
-  /**
-   * @param  {...String} [...types]
-   * @return {Array}
-   */
-  return (...types) => types.reduce(reduceCb, [])
-}
-
-module.exports = {
-  get
 }

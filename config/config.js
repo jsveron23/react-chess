@@ -3,22 +3,15 @@ const webpack = require('webpack')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
 const MiniCssExtractPlugin = require('mini-css-extract-plugin')
 const TerserPlugin = require('terser-webpack-plugin')
-const Path = require('./lib/path')
-const createRe = require('./lib/createRe')
-
-/**
- * Generic
- */
+const Path = require('./helpers/path')
 
 const PORT = process.env.PORT || 3000
 
-const DEVTOOL = 'eval'
-
-const DEVTOOL_PROD = 'source-map'
-
-const TARGET = 'web'
-
-const ALIAS = {
+exports.PORT = PORT
+exports.DEVTOOL = 'eval'
+exports.DEVTOOL_PROD = 'source-map'
+exports.TARGET = 'web'
+exports.ALIAS = {
   'react-dom': '@hot-loader/react-dom',
   '~': Path.resolve('src')
 }
@@ -27,29 +20,7 @@ const ALIAS = {
  * Optimization
  */
 
-const NO_PARSE = R.compose(
-  createRe,
-  R.join('|'),
-  R.concat([
-    'rimraf',
-    'prettier',
-    'prettier-eslint',
-    'enzyme',
-    'enzyme-adapter-react-16',
-    'enzyme-to-json',
-    'jest',
-    'coveralls'
-  ])
-)([
-  'eslint-config-standard',
-  'eslint-plugin-import',
-  'eslint-plugin-node',
-  'eslint-plugin-promise',
-  'eslint-plugin-react',
-  'eslint-plugin-standard'
-])
-
-const VENDOR = [
+exports.VENDOR = [
   'react',
   'react-dom',
   'prop-types',
@@ -63,7 +34,31 @@ const VENDOR = [
   'scu-inspector'
 ]
 
-const MINIMIZER = [
+const LINT = [
+  'prettier',
+  'prettier-eslint',
+  'eslint-config-standard',
+  'eslint-plugin-import',
+  'eslint-plugin-node',
+  'eslint-plugin-promise',
+  'eslint-plugin-react',
+  'eslint-plugin-standard'
+]
+
+exports.NO_PARSE = R.compose(
+  (txt) => new RegExp(txt),
+  R.join('|'),
+  R.concat([
+    'rimraf',
+    'enzyme',
+    'enzyme-adapter-react-16',
+    'enzyme-to-json',
+    'jest',
+    'coveralls'
+  ])
+)(LINT)
+
+exports.MINIMIZER = [
   new TerserPlugin({
     chunkFilter: (chunk) => {
       if (chunk.name === 'vendor') {
@@ -81,7 +76,7 @@ const MINIMIZER = [
   })
 ]
 
-const SPLIT_CHUNKS = {
+exports.SPLIT_CHUNKS = {
   cacheGroups: {
     commons: {
       test: /[\\/]node_modules[\\/]/,
@@ -97,7 +92,7 @@ const SPLIT_CHUNKS = {
  * Development server
  */
 
-const DEV_SERVER = {
+exports.DEV_SERVER = {
   hot: true,
   host: '0.0.0.0',
   port: PORT,
@@ -110,7 +105,7 @@ const DEV_SERVER = {
  * Loaders
  */
 
-const LOADERS = {
+exports.LOADERS = {
   eslint: {
     test: /\.js$/,
     include: [Path.resolve('src')],
@@ -143,7 +138,7 @@ const LOADERS = {
     loader: 'postcss-loader',
     options: {
       config: {
-        path: `${Path.webpack}/postcss/postcss.config.js`
+        path: `${Path.resolve('config', 'postcss')}/postcss.config.js`
       }
     }
   },
@@ -187,30 +182,12 @@ const DEFAULT_PLUGINS = [
   })
 ]
 
-const DEV_PLUGINS = R.concat(DEFAULT_PLUGINS, [new webpack.HotModuleReplacementPlugin()])
+exports.DEV_PLUGINS = R.concat(DEFAULT_PLUGINS, [
+  new webpack.HotModuleReplacementPlugin()
+])
 
-const PROD_PLUGINS = R.concat(DEFAULT_PLUGINS, [
+exports.PROD_PLUGINS = R.concat(DEFAULT_PLUGINS, [
   new MiniCssExtractPlugin({
     filename: '[name].[hash].css'
   })
 ])
-
-/**
- * @exports
- */
-
-module.exports = {
-  PORT,
-  NO_PARSE,
-  VENDOR,
-  DEV_SERVER,
-  ALIAS,
-  DEVTOOL,
-  DEVTOOL_PROD,
-  TARGET,
-  MINIMIZER,
-  SPLIT_CHUNKS,
-  LOADERS,
-  DEV_PLUGINS,
-  PROD_PLUGINS
-}
