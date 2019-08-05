@@ -1,7 +1,6 @@
 const MiniCssExtractPlugin = require('mini-css-extract-plugin')
-const Path = require('./lib/path')
-const Loaders = require('./lib/loaders')
-const Plugins = require('./lib/plugins')
+const Path = require('../helpers/path')
+const Loaders = require('../helpers/loaders')
 const {
   PORT,
   ALIAS,
@@ -15,12 +14,9 @@ const {
   LOADERS,
   DEV_PLUGINS,
   PROD_PLUGINS
-} = require('./config')
+} = require('../config')
 
-// prepare
 const getLoaders = Loaders.get(LOADERS)
-const getPlugins = Plugins.get(DEV_PLUGINS, PROD_PLUGINS)
-
 const entryApp = {
   development: [
     `webpack-dev-server/client?http://localhost:${PORT}`,
@@ -34,9 +30,10 @@ const entryApp = {
  * @param  {Object?} [env={}]
  * @return {Object}
  */
-function configure (env = {}) {
+module.exports = function configure (env = {}) {
   const mode = env.production ? 'production' : 'development'
   const isDev = mode === 'development'
+  const entry = entryApp[mode]
 
   /**
    * Config
@@ -54,9 +51,9 @@ function configure (env = {}) {
       alias: ALIAS
     },
     devtool: isDev ? DEVTOOL : DEVTOOL_PROD,
-    plugins: getPlugins(mode),
+    plugins: isDev ? DEV_PLUGINS : PROD_PLUGINS,
     entry: {
-      app: [...entryApp[mode], '@babel/polyfill', './index'],
+      app: [...entry, '@babel/polyfill', './index'],
       vendor: VENDOR
     },
     output: {
@@ -93,5 +90,3 @@ function configure (env = {}) {
 
   return config
 }
-
-module.exports = configure

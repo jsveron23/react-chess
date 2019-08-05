@@ -14,5 +14,5 @@ module.exports = {
   },
   testMatch: ['**/tests/?(*.)+(spec|test).js'],
   snapshotSerializers: ['enzyme-to-json/serializer'],
-  setupFiles: ['<rootDir>/scripts/jest/setupTests.js']
+  setupFiles: ['<rootDir>/config/jest/setupTests.js']
 }
