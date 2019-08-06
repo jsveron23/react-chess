@@ -1,5 +1,5 @@
 const R = require('ramda')
-const colors = require('colors') // eslint-disable-line
+const chalk = require('chalk')
 
 const lazy = R.thunkify(R.identity)
 
@@ -17,7 +17,7 @@ module.exports = function createReduceCb (loaders) {
   return (acc, loaderName) => {
     return R.compose(
       R.ifElse(R.isNil, lazy(acc), (loader) => {
-        console.log(`# [${loaderName}-loader] is loaded!`.underline.green)
+        console.log(chalk.green.underline(`# [${loaderName}-loader] is loaded!`))
 
         return [...acc, loader]
       }),

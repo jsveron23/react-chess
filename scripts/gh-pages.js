@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 
-const colors = require('colors') // eslint-disable-line
+const chalk = require('chalk')
 const { spawnSync } = require('child_process')
 
 const BRANCH = 'gh-pages'
@@ -8,7 +8,7 @@ const DIST = 'public'
 const COMMIT = 'Deploy to Github'
 
 function execute (step, cmd, args, prevSpsc) {
-  console.log(`STEP: ${step}`.blue)
+  console.log(chalk.blue(`STEP: ${step}`))
 
   const options = prevSpsc
     ? {
