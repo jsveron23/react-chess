@@ -1,5 +1,5 @@
 import * as R from 'ramda'
-import { createRegExp } from '~/utils'
+import { strToRegExp } from '~/utils'
 import convertSnapshotToTiles from './convertSnapshotToTiles'
 
 /**
@@ -9,7 +9,7 @@ import convertSnapshotToTiles from './convertSnapshotToTiles'
  */
 function createSnapshotRe (snapshot) {
   return R.compose(
-    createRegExp,
+    strToRegExp,
     R.join('|'),
     convertSnapshotToTiles
   )(snapshot)

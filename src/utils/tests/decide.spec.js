@@ -1,7 +1,7 @@
 import decide from '../decide'
 
-describe('#decide (compose)', () => {
-  describe('Callback returns boolean that decide which function will use', () => {
+describe('#decide', () => {
+  it('Callback returns boolean that decide which function will use', () => {
     const add = (a, b) => a + b
     const minus = (a, b) => a - b
 
@@ -10,28 +10,12 @@ describe('#decide (compose)', () => {
 
     const awaitDecide = decide(fns, args)
 
-    it('if callback return true', () => {
-      expect(awaitDecide((a, b) => a < b)).toEqual(add(...args))
-    })
-
-    it('if callback return false ', () => {
-      expect(awaitDecide((a, b) => a > b)).toEqual(minus(...args))
-    })
-
-    it('invalid callback', () => {
-      expect(() => awaitDecide([])).toThrow()
-      expect(() => awaitDecide(0)).toThrow()
-    })
-
-    it('callback return not boolean type', () => {
-      expect(() => awaitDecide(() => {})).toThrow()
-    })
-
-    it('not same length', () => {
-      const mockFn = jest.fn
-
-      expect(() => decide([mockFn()], [1, 2], mockFn())).toThrow()
-      expect(() => decide([mockFn(), mockFn()], [2], mockFn())).toThrow()
-    })
+    expect(awaitDecide((a, b) => a < b)).toEqual(add(...args))
+    expect(awaitDecide((a, b) => a > b)).toEqual(minus(...args))
+    expect(() => awaitDecide([])).toThrow()
+    expect(() => awaitDecide(0)).toThrow()
+    expect(() => awaitDecide(() => {})).toThrow()
+    expect(() => decide([jest.fn()], [1, 2], jest.fn())).toThrow()
+    expect(() => decide([jest.fn(), jest.fn()], [2], jest.fn())).toThrow()
   })
 })

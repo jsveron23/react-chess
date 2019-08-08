@@ -3,7 +3,7 @@ import * as R from 'ramda'
 const isNotBoolean = R.complement(R.is)(Boolean)
 
 /**
- * Pass empty string unless true; useful when combining with `R.defaultTo` function
+ * Pass value if true, otherwise empty string
  * @param  {Boolean} is
  * @param  {*}       v
  * @return {*}

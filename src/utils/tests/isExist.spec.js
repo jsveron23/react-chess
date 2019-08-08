@@ -1,7 +1,7 @@
 import isExist from '../isExist'
 
 describe('#isExist', () => {
-  describe('Detection of not empty and assigned value', () => {
+  describe('Is value exist?', () => {
     it('string', () => {
       expect(isExist('')).toBeFalsy()
       expect(isExist('{}')).toBeTruthy()
