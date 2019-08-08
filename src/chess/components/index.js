@@ -1,27 +1,12 @@
-import BlackBishop from './svg/black_bishop.svg'
-import BlackKing from './svg/black_king.svg'
-import BlackKnight from './svg/black_knight.svg'
-import BlackPawn from './svg/black_pawn.svg'
-import BlackQueen from './svg/black_queen.svg'
-import BlackRook from './svg/black_rook.svg'
-import WhiteBishop from './svg/white_bishop.svg'
-import WhiteKing from './svg/white_king.svg'
-import WhiteKnight from './svg/white_knight.svg'
-import WhitePawn from './svg/white_pawn.svg'
-import WhiteQueen from './svg/white_queen.svg'
-import WhiteRook from './svg/white_rook.svg'
-
-export {
-  BlackBishop,
-  BlackKing,
-  BlackKnight,
-  BlackPawn,
-  BlackQueen,
-  BlackRook,
-  WhiteBishop,
-  WhiteKing,
-  WhiteKnight,
-  WhitePawn,
-  WhiteQueen,
-  WhiteRook
-}
+export { default as BlackBishop } from './svg/black_bishop.svg'
+export { default as BlackKing } from './svg/black_king.svg'
+export { default as BlackKnight } from './svg/black_knight.svg'
+export { default as BlackPawn } from './svg/black_pawn.svg'
+export { default as BlackQueen } from './svg/black_queen.svg'
+export { default as BlackRook } from './svg/black_rook.svg'
+export { default as WhiteBishop } from './svg/white_bishop.svg'
+export { default as WhiteKing } from './svg/white_king.svg'
+export { default as WhiteKnight } from './svg/white_knight.svg'
+export { default as WhitePawn } from './svg/white_pawn.svg'
+export { default as WhiteQueen } from './svg/white_queen.svg'
+export { default as WhiteRook } from './svg/white_rook.svg'
