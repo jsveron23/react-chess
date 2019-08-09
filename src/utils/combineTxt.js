@@ -1,11 +1,11 @@
 import { isEmpty } from '~/utils'
 
 /**
- * Create text
+ * Combine text
  * @param  {...String} [...args]
  * @return {String}
  */
-function createTxt (...args) {
+function combineTxt (...args) {
   if (isEmpty.or(...args)) {
     return ''
   }
@@ -13,4 +13,4 @@ function createTxt (...args) {
   return ''.concat(...args)
 }
 
-export default createTxt
+export default combineTxt

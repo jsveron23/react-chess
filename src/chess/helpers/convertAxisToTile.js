@@ -1,4 +1,4 @@
-import { createTxt } from '~/utils'
+import { combineTxt } from '~/utils'
 import getFile from './getFile'
 import detectOutside from './detectOutside'
 
@@ -17,7 +17,7 @@ function convertAxisToTile (axis) {
 
   const file = getFile(x)
 
-  return createTxt(file, y)
+  return combineTxt(file, y)
 }
 
 export default convertAxisToTile

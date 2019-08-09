@@ -1,5 +1,5 @@
 import * as R from 'ramda'
-import { createTxt } from '~/utils'
+import { combineTxt } from '~/utils'
 import { parseCode } from '../helpers'
 
 /**
@@ -13,7 +13,7 @@ function getNextSnapshot (selected, tile, snapshot) {
   const { side, piece } = parseCode(selected)
   const mapCb = R.ifElse(
     R.equals(selected),
-    () => createTxt(side, piece, tile),
+    () => combineTxt(side, piece, tile),
     R.identity
   )
 

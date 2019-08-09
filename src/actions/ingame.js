@@ -16,7 +16,7 @@ import {
   replaceSnapshot,
   diffSnapshot
 } from '~/chess/helpers'
-import { isEmpty, lazy, merge, createTxt } from '~/utils'
+import { isEmpty, lazy, merge, combineTxt } from '~/utils'
 
 export function setTs (ts = +new Date()) {
   return {
@@ -111,7 +111,7 @@ export function setNextMovableAxis (tile) {
     const { present } = ingame
     const { snapshot } = present
     const { side, piece } = findCodeByTile(snapshot, tile)
-    const nextSelected = createTxt(side, piece, tile)
+    const nextSelected = combineTxt(side, piece, tile)
 
     const nextMovableAxis = R.compose(
       getNextMovable('axis'),
