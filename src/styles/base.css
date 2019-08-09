@@ -4,15 +4,9 @@
   box-sizing: border-box;
 }
 
-body,
-html {
-  overflow: hidden;
-}
-
 body {
   font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
   height: 100%;
-  overflow: auto;
 
   -webkit-font-smoothing: antialiased;
 }
