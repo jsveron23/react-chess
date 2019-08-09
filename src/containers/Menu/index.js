@@ -16,12 +16,12 @@ function mapStateToProps ({ general }) {
 }
 
 function mapDispatchToProps (dispatch) {
-  const onClick = R.compose(
-    R.map(dispatch),
-    decideActions
-  )
-
-  return { onClick }
+  return {
+    onClick: R.compose(
+      R.map(dispatch),
+      decideActions
+    )
+  }
 }
 
 const MenuContainer = connect(

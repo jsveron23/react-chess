@@ -1,25 +1,15 @@
 import { connect } from 'react-redux'
-import memoize from 'memoize-one'
-import * as R from 'ramda'
 import { Diagram } from '~/components'
 import {
   setNextSnapshot,
   setNextMovableAxis,
   setNextCapturedSnapshot
 } from '~/actions/ingame'
-import { getNextMovable, mesurePosition, getMovableTilesGroup } from '~/chess/core'
+import { mesurePosition, getMovableTilesGroup } from '~/chess/core'
 import { createTimeline, getSpecial, parseCode, getPrevSnapshots } from '~/chess/helpers'
 import { RANKS, FILES } from '~/chess/constants'
-import { lazy, isExist, isEmpty } from '~/utils'
-
-// no extra rendering when clicking same Chess piece
-const memoizeGetNextMovable = memoize(
-  R.compose(
-    getNextMovable('tiles'),
-    lazy
-  ),
-  R.equals
-)
+import { isExist, isEmpty } from '~/utils'
+import getMovable from './getMovable'
 
 function mapStateToProps ({ general, ingame }) {
   const { isDoingMatch } = general
@@ -28,7 +18,7 @@ function mapStateToProps ({ general, ingame }) {
   const timeline = createTimeline(snapshot, past)
   const { piece, side, code, tile: selectedTile } = parseCode(selected)
   const special = getSpecial(piece)
-  let nextMovableTiles = memoizeGetNextMovable({
+  let nextMovableTiles = getMovable({
     ...present,
     timeline,
     special,
@@ -51,9 +41,9 @@ function mapStateToProps ({ general, ingame }) {
     if (isExist(checkBy)) {
       const movableTilesGroup = getMovableTilesGroup(turn, checkTo, checkBy, timeline)
 
-      console.log(
-        Object.keys(movableTilesGroup).every((key) => isEmpty(movableTilesGroup[key]))
-      )
+      // console.log(
+      //   Object.keys(movableTilesGroup).every((key) => isEmpty(movableTilesGroup[key]))
+      // )
 
       nextMovableTiles = movableTilesGroup[code]
     }
