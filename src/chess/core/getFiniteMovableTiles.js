@@ -1,5 +1,5 @@
 import * as R from 'ramda'
-import { decide, increase, decrease } from '~/utils'
+import { either, increase, decrease } from '~/utils'
 import { parseCode, convertAxisToTile, convertTileToAxis } from '../helpers'
 
 /**
@@ -14,7 +14,7 @@ import { parseCode, convertAxisToTile, convertTileToAxis } from '../helpers'
 function getFiniteMovableTiles (checkTo, checkBy, piece, movableTiles) {
   // true -> increase, false -> decrease
   const condCb = (a, b) => a < b
-  const awaitDecide = R.flip(decide([increase, decrease]))(condCb)
+  const awaitEither = R.flip(either([increase, decrease]))(condCb)
 
   const { tile: checkToTile, side: checkToSide } = parseCode(checkTo)
   const { tile: checkByTile, side: checkBySide } = parseCode(checkBy)
@@ -41,16 +41,16 @@ function getFiniteMovableTiles (checkTo, checkBy, piece, movableTiles) {
       if (x === y) {
         meta = ['diagonal']
 
-        xList = awaitDecide(xArgs)
-        yList = awaitDecide(yArgs)
+        xList = awaitEither(xArgs)
+        yList = awaitEither(yArgs)
       } else {
         meta = ['straight']
 
         if (checkByX === checkToX) {
           xList = R.times(() => checkByX, y)
-          yList = awaitDecide(yArgs)
+          yList = awaitEither(yArgs)
         } else if (checkByY === checkToY) {
-          xList = awaitDecide(xArgs)
+          xList = awaitEither(xArgs)
           yList = R.times(() => checkByY, x)
         }
       }

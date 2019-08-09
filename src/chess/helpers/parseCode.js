@@ -1,4 +1,4 @@
-import { isEmpty, createTxt } from '~/utils'
+import { isEmpty, combineTxt } from '~/utils'
 
 /**
  * Parse a code of snapshot
@@ -12,7 +12,7 @@ function parseCode (code) {
 
   const splittedCode = code.split('')
   const [side, piece, file, rank] = splittedCode
-  const tile = createTxt(file, rank)
+  const tile = combineTxt(file, rank)
 
   return { side, piece, file, rank, tile, code }
 }

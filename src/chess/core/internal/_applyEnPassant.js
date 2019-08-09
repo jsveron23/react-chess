@@ -1,5 +1,5 @@
 import * as R from 'ramda'
-import { isExist, createTxt } from '~/utils'
+import { isExist, combineTxt } from '~/utils'
 import {
   findCodeByAxis,
   convertTileToAxis,
@@ -75,7 +75,7 @@ function _changeSnapshot (side, tile, timeline) {
 
   if (isEnPassant) {
     const nextRank = y + (side === 'w' ? -1 : 1)
-    const capturedTile = createTxt(file, nextRank)
+    const capturedTile = combineTxt(file, nextRank)
 
     return capturedTile
   }

@@ -5,7 +5,7 @@ import memoize from 'memoize-one'
 import { File } from '~/components'
 import getPiece from '~/chess/getPiece'
 import { findCodeByTile } from '~/chess/helpers'
-import { noop, createTxt } from '~/utils'
+import { noop, combineTxt } from '~/utils'
 import css from './Rank.css'
 import useMeasure from './useMeasure'
 
@@ -35,7 +35,7 @@ const Rank = (props) => {
   return (
     <div className={cls} data-rank={rankName}>
       {files.map((fileName) => {
-        const tile = createTxt(fileName, rankName)
+        const tile = combineTxt(fileName, rankName)
         const { side, piece } = findCodeByTile(snapshot, tile)
         const animate = getPosition(width)
 
