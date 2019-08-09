@@ -27,10 +27,6 @@ function createReduceCb (snapshotList) {
       const isCaptured = len + 1 === prevLen
 
       if (Math.abs(prevLen - len) > 1) {
-        // TODO it happens capture piece after captured (2 times captured)
-        // eslint-disable-next-line
-        debugger
-
         throw new Error('Something wrong, please investigate this!')
       }
 
