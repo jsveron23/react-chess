@@ -48,8 +48,6 @@ const File = React.forwardRef(function File (props, ref) {
     )
   )
 
-  const cls = cx(css.file, { 'is-dark': isDark })
-
   function handleClick (evt) {
     evt.preventDefault()
 
@@ -61,7 +59,12 @@ const File = React.forwardRef(function File (props, ref) {
   }
 
   return (
-    <div ref={ref} className={cls} data-file={fileName} onClick={handleClick}>
+    <div
+      ref={ref}
+      className={cx(css.file, { 'is-dark': isDark })}
+      data-file={fileName}
+      onClick={handleClick}
+    >
       {getElement(children)}
     </div>
   )

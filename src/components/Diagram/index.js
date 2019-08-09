@@ -22,12 +22,12 @@ const Diagram = (props) => {
     setNextSnapshot
   } = props
 
-  const cls = cx(css.diagram, {
-    'is-hidden': !isDoingMatch
-  })
-
   return (
-    <div className={cls}>
+    <div
+      className={cx(css.diagram, {
+        'is-hidden': !isDoingMatch
+      })}
+    >
       {ranks.map((rankName) => {
         return (
           <Rank
