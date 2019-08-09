@@ -1,15 +1,12 @@
 import React, { createRef } from 'react'
 import PropTypes from 'prop-types'
 import cx from 'classnames'
-import memoize from 'memoize-one'
 import { File } from '~/components'
-import getPiece from '~/chess/getPiece'
 import { findCodeByTile } from '~/chess/helpers'
 import { noop, combineTxt } from '~/utils'
 import css from './Rank.css'
 import useMeasure from './useMeasure'
-
-const memoizeGetPiece = memoize(getPiece)
+import getPiece from './getPiece'
 
 const Rank = (props) => {
   const {
@@ -55,7 +52,7 @@ const Rank = (props) => {
             setNextMovableAxis={setNextMovableAxis}
             setNextSnapshot={setNextSnapshot}
           >
-            {memoizeGetPiece(side, piece)}
+            {getPiece(side, piece)}
           </File>
         )
       })}

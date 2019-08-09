@@ -6,19 +6,14 @@ import { noop } from '~/utils'
 import css from './Menu.css'
 
 const Menu = ({ isDoingMatch, items, disabledItems, onClick }) => {
-  const cls = cx(css.menu, {
-    [css.menuIngame]: isDoingMatch
-  })
-  const innerCls = cx({ 'is-doing-match': isDoingMatch })
-
   return (
-    <ul className={cls}>
+    <ul className={cx(css.menu, { [css.menuIngame]: isDoingMatch })}>
       {items.map((name) => {
         if (disabledItems.includes(name)) {
           return null
         }
 
-        const handleClick = function handleClick (evt) {
+        function handleClick (evt) {
           evt.preventDefault()
 
           onClick(name)
@@ -26,7 +21,10 @@ const Menu = ({ isDoingMatch, items, disabledItems, onClick }) => {
 
         return (
           <li key={name} className={css.menuItem}>
-            <Button className={innerCls} onClick={handleClick}>
+            <Button
+              className={cx({ 'is-doing-match': isDoingMatch })}
+              onClick={handleClick}
+            >
               {name}
             </Button>
           </li>

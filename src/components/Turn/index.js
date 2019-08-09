@@ -4,12 +4,8 @@ import cx from 'classnames'
 import css from './Turn.css'
 
 const Turn = ({ isDoingMatch, turn }) => {
-  const cls = cx(css.turn, {
-    'is-hidden': !isDoingMatch
-  })
-
   return (
-    <div className={cls}>
+    <div className={cx(css.turn, { 'is-hidden': !isDoingMatch })}>
       <div className={cx(css.turnFloat, `is-${turn}`)}>{turn}</div>
     </div>
   )

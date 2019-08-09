@@ -11,12 +11,9 @@ const ScoreSheet = ({ isDoingMatch, sheet }) => {
   })
 
   const len = sheet.length
-  const cls = cx(css.sheet, {
-    'is-doing-match': isDoingMatch
-  })
 
   return (
-    <ul ref={sheetRef} className={cls}>
+    <ul ref={sheetRef} className={cx(css.sheet, { 'is-doing-match': isDoingMatch })}>
       {sheet.map((item, idx) => {
         const { white, black } = item
         const key = `${idx}-${white}-${black}`
