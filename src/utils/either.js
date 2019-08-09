@@ -9,7 +9,7 @@ const isNotBoolean = R.complement(R.is)(Boolean)
  * @param  {Function} cb
  * @return {Array}
  */
-function decide (fns, args, cb) {
+function either (fns, args, cb) {
   if (fns.length !== 2 || args.length !== 2) {
     throw new Error('It is not same length!')
   }
@@ -30,4 +30,4 @@ function decide (fns, args, cb) {
   return fn(a, b)
 }
 
-export default R.curry(decide)
+export default R.curry(either)
