@@ -127,10 +127,11 @@ exports.LOADERS = {
     loader: 'css-loader',
     options: {
       sourceMap: true,
-      modules: true,
+      modules: {
+        localIdentName: '[local]--[hash:base64:5]'
+      },
       importLoaders: 1,
-      localIdentName: '[local]--[hash:base64:5]',
-      camelCase: 'only'
+      localsConvention: 'camelCaseOnly'
     }
   },
 

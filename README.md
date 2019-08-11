@@ -7,7 +7,7 @@ Programs must be written for people to read, and only incidentally for machines 
 # React Chess
 
 - Roadmap: [Milestones](https://github.com/jsveron23/react-chess/milestones)
-- Plan to wrap with `Electron` or `React Native`
+- Plan to wrap with `Electron`
 
 # Following
 
@@ -18,7 +18,7 @@ Programs must be written for people to read, and only incidentally for machines 
 
 [WIP] https://react-chess.app
 
-## Installation & Start
+## Installation & Start (Local)
 
 ```bash
 npm install
