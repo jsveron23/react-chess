@@ -1,5 +1,5 @@
 import * as R from 'ramda'
-import { isEmpty, combineTxt } from '~/utils'
+import { isEmpty, merge } from '~/utils'
 import {
   findCode,
   parseCode,
@@ -46,13 +46,13 @@ function getCodeChanges (snapshot, prevSnapshot) {
       R.find((tile) =>
         R.compose(
           findCode(prevSnapshot),
-          combineTxt
+          merge.txt
         )(side, piece, tile)
       ),
       R.reject(isEmpty)
     )(prevMovableTiles)
 
-    prevCode = combineTxt(side, piece, prevTile)
+    prevCode = merge.txt(side, piece, prevTile)
   }
 
   return { nextCode, prevCode }
