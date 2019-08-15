@@ -8,7 +8,7 @@ import {
 import { mesurePosition, getMovableTilesGroup } from '~/chess/core'
 import { createTimeline, getSpecial, parseCode, getPrevSnapshots } from '~/chess/helpers'
 import { RANKS, FILES } from '~/chess/constants'
-import { isExist, isEmpty } from '~/utils'
+import { isExist, isEmpty, merge } from '~/utils'
 import getMovable from './getMovable'
 
 function mapStateToProps ({ general, ingame }) {
@@ -58,7 +58,7 @@ function mapStateToProps ({ general, ingame }) {
     isDoingMatch,
     ranks: RANKS,
     files: FILES,
-    selectedKey: `${side}${piece}`,
+    selectedKey: merge.txt(side, piece),
     movableTiles: nextMovableTiles
   }
 }

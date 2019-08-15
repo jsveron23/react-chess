@@ -1,6 +1,7 @@
 import React, { useRef, useEffect, memo } from 'react'
 import PropTypes from 'prop-types'
 import cx from 'classnames'
+import { merge } from '~/utils'
 import css from './ScoreSheet.css'
 
 const ScoreSheet = ({ isDoingMatch, sheet }) => {
@@ -16,7 +17,7 @@ const ScoreSheet = ({ isDoingMatch, sheet }) => {
     <ul ref={sheetRef} className={cx(css.sheet, { 'is-doing-match': isDoingMatch })}>
       {sheet.map((item, idx) => {
         const { white, black } = item
-        const key = `${idx}-${white}-${black}`
+        const key = merge.txt(idx, '-', white, '-', black)
 
         return (
           <li key={key} className="l-flex-row">

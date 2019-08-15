@@ -1,14 +1,16 @@
 import * as R from 'ramda'
+import _mergeObj from './internal/_mergeObj'
+import _mergeTxt from './internal/_mergeTxt'
 
 /**
  * Simple merge
- * @param  {Object} a
- * @param  {Object} b
+ * @param  {...Object} [...args]
  * @return {Object}
  */
-function merge (a, b) {
-  // only allow 2 arguments
-  return R.mergeWith(R.identity)(a, b)
+function merge (...args) {
+  return R.curry(_mergeObj).apply(null, args)
 }
 
-export default R.curry(merge)
+merge.txt = R.curry(_mergeTxt)
+
+export default merge

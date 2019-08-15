@@ -1,5 +1,5 @@
 import * as R from 'ramda'
-import { lazy, merge, combineTxt } from '~/utils'
+import { lazy, merge } from '~/utils'
 import getMovableAxis from './getMovableAxis'
 import getNextMovable from './getNextMovable'
 import { getSpecial, findCodeByTile } from '../helpers'
@@ -29,7 +29,7 @@ function createReduceCb (side, snapshot, checkBy) {
 
     return {
       checkBy,
-      checkTo: combineTxt(mtSide, mtPiece, mt)
+      checkTo: merge.txt(mtSide, mtPiece, mt)
     }
   }
 }
@@ -41,7 +41,7 @@ function createReduceCb (side, snapshot, checkBy) {
  */
 function findCheckCode (getFlatArgs) {
   const { turn, snapshot, side, piece, tile } = getFlatArgs()
-  const checkCode = combineTxt(side, piece, tile)
+  const checkCode = merge.txt(side, piece, tile)
   const reduceCb = createReduceCb(side, snapshot, checkCode)
   const initial = { side, tile }
 

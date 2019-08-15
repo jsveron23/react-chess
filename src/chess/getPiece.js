@@ -1,5 +1,5 @@
 import * as R from 'ramda'
-import { combineTxt } from '~/utils'
+import { merge } from '~/utils'
 import {
   BlackBishop,
   BlackKing,
@@ -32,7 +32,7 @@ const PIECE_MAP = {
 }
 
 function getPiece (side, piece) {
-  const pieceKey = combineTxt(side, piece)
+  const pieceKey = merge.txt(side, piece)
 
   return PIECE_MAP[pieceKey]
 }

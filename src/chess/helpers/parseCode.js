@@ -1,4 +1,4 @@
-import { isEmpty, combineTxt } from '~/utils'
+import { isEmpty, merge } from '~/utils'
 
 /**
  * Parse a code of snapshot
@@ -12,7 +12,7 @@ function parseCode (code) {
 
   const splittedCode = code.split('')
   const [side, piece, file, rank] = splittedCode
-  const tile = combineTxt(file, rank)
+  const tile = merge.txt(file, rank)
 
   return { side, piece, file, rank, tile, code }
 }

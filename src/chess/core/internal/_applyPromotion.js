@@ -1,5 +1,5 @@
 import * as R from 'ramda'
-import { pass, combineTxt } from '~/utils'
+import { pass, merge } from '~/utils'
 
 const PROMOTION = 'promotion'
 const PROMOTION_TILES = {
@@ -15,7 +15,7 @@ const PROMOTION_TILES = {
  * @return {Array}
  */
 function _applyPromotion (side, tile, special) {
-  const promotionCode = combineTxt(side, 'Q', tile)
+  const promotionCode = merge.txt(side, 'Q', tile)
 
   return R.compose(
     R.flip(pass)(promotionCode),

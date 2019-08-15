@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 import cx from 'classnames'
 import { File } from '~/components'
 import { findCodeByTile } from '~/chess/helpers'
-import { noop, combineTxt } from '~/utils'
+import { noop, merge } from '~/utils'
 import css from './Rank.css'
 import useMeasure from './useMeasure'
 import getPiece from './getPiece'
@@ -32,7 +32,7 @@ const Rank = (props) => {
   return (
     <div className={cls} data-rank={rankName}>
       {files.map((fileName) => {
-        const tile = combineTxt(fileName, rankName)
+        const tile = merge.txt(fileName, rankName)
         const { side, piece } = findCodeByTile(snapshot, tile)
         const animate = getPosition(width)
 
