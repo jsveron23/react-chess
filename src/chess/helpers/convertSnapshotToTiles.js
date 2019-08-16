@@ -1,4 +1,3 @@
-import * as R from 'ramda'
 import parseCode from './parseCode'
 
 /**
@@ -7,12 +6,11 @@ import parseCode from './parseCode'
  * @return {Array}
  */
 function convertSnapshotToTiles (snapshot) {
-  return snapshot.map(
-    R.compose(
-      R.prop('tile'),
-      parseCode
-    )
-  )
+  return snapshot.map((code) => {
+    const { tile } = parseCode(code)
+
+    return tile
+  })
 }
 
 export default convertSnapshotToTiles

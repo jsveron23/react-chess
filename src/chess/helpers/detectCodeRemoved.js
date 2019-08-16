@@ -3,7 +3,7 @@ import { isEmpty } from '~/utils'
 import findCode from './findCode'
 
 /**
- * Detect code of snapshot removed
+ * Detect whether code removed from snapshot
  * @param  {String}  code
  * @param  {Array}   snapshot
  * @return {Boolean}

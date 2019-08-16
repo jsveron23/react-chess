@@ -1,7 +1,7 @@
 import * as R from 'ramda'
 
 /**
- * Get previous snapshots
+ * Get previous snapshots only from past object
  * @param  {Array} past
  * @return {Array}
  */

@@ -7,7 +7,10 @@ import { SPECIALS } from '../constants'
  * @return {Array}
  */
 function getSpecial (piece) {
-  return R.defaultTo([], SPECIALS[piece])
+  return R.compose(
+    R.defaultTo([]),
+    R.prop(piece)
+  )(SPECIALS)
 }
 
 export default getSpecial
