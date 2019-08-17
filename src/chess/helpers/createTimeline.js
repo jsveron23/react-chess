@@ -8,10 +8,10 @@ import getPrevSnapshots from './getPrevSnapshots'
  * @return {Array}
  */
 function createTimeline (snapshot, past) {
-  return R.compose(
-    R.concat([snapshot]),
-    getPrevSnapshots
-  )(past)
+  const prevSnapshots = getPrevSnapshots(past)
+  const currSnapshot = [...snapshot]
+
+  return [currSnapshot, ...prevSnapshots]
 }
 
 export default R.curry(createTimeline)

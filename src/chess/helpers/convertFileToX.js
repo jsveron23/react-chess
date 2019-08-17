@@ -1,8 +1,6 @@
 import * as R from 'ramda'
 import { FILES } from '../constants'
 
-const flippedIndexOf = R.flip(R.indexOf)
-
 /**
  * Convert file to x
  * @param  {String} file
@@ -11,8 +9,8 @@ const flippedIndexOf = R.flip(R.indexOf)
 function convertFileToX (file) {
   return R.compose(
     R.unless(R.equals(-1), R.add(1)),
-    flippedIndexOf(FILES)
-  )(file)
+    R.indexOf(file)
+  )(FILES)
 }
 
 export default convertFileToX

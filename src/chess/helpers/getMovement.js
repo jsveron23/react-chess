@@ -7,7 +7,10 @@ import { MOVEMENTS } from '../constants'
  * @return {Array}
  */
 function getMovement (piece) {
-  return R.defaultTo([], MOVEMENTS[piece])
+  return R.compose(
+    R.defaultTo([]),
+    R.prop(piece)
+  )(MOVEMENTS)
 }
 
 export default getMovement

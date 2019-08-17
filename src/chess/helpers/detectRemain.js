@@ -1,8 +1,6 @@
 import * as R from 'ramda'
 import convertSnapshotToTiles from './convertSnapshotToTiles'
 
-const flippedIncludes = R.flip(R.includes)
-
 /**
  * Detect remain tiles on snapshot
  * @param  {Array}   snapshot
@@ -10,10 +8,10 @@ const flippedIncludes = R.flip(R.includes)
  * @return {Boolean}
  */
 function detectRemain (snapshot, tiles) {
-  const tilesFromSnapshot = convertSnapshotToTiles(snapshot)
-  const includesTiles = flippedIncludes(tiles)
-
-  return tilesFromSnapshot.some(includesTiles)
+  return R.compose(
+    R.any((tile) => tiles.includes(tile)),
+    convertSnapshotToTiles
+  )(snapshot)
 }
 
 export default R.curry(detectRemain)

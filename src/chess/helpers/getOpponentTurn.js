@@ -7,7 +7,10 @@ import { OPPONENT } from '../constants'
  * @return {String}
  */
 function getOpponentTurn (turn) {
-  return R.defaultTo('', OPPONENT[turn])
+  return R.compose(
+    R.defaultTo(''),
+    R.prop(turn)
+  )(OPPONENT)
 }
 
 export default getOpponentTurn

@@ -7,7 +7,10 @@ import { FILES } from '../constants'
  * @return {String}
  */
 function getFile (fileNum) {
-  return R.defaultTo('', FILES[fileNum - 1])
+  return R.compose(
+    R.defaultTo(''),
+    R.prop(fileNum - 1)
+  )(FILES)
 }
 
 export default getFile

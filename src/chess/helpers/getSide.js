@@ -7,7 +7,10 @@ import { SIDE } from '../constants'
  * @return {String}
  */
 function getSide (turn) {
-  return R.defaultTo('', SIDE[turn])
+  return R.compose(
+    R.defaultTo(''),
+    R.prop(turn)
+  )(SIDE)
 }
 
 export default getSide
