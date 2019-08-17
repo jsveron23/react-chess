@@ -1,11 +1,6 @@
 import * as R from 'ramda'
 import getCodeChanges from './getCodeChanges'
-import { parseCode, convertTileToAxis } from '../helpers'
-
-const convertCodeToTile = R.compose(
-  R.prop('tile'),
-  parseCode
-)
+import { convertCodeToTile, convertTileToAxis } from '../helpers'
 
 /**
  * Mesure position to be animated
@@ -16,9 +11,11 @@ const convertCodeToTile = R.compose(
  */
 function mesurePosition (snapshot, prevSnapshot, width) {
   const { nextCode, prevCode } = getCodeChanges(snapshot, prevSnapshot)
+
   const nextTile = convertCodeToTile(nextCode)
-  const prevTile = convertCodeToTile(prevCode)
   const { x: nextX, y: nextY } = convertTileToAxis(nextTile)
+
+  const prevTile = convertCodeToTile(prevCode)
   const { x: prevX, y: prevY } = convertTileToAxis(prevTile)
 
   return {
