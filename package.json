@@ -79,5 +79,8 @@
     "redux-thunk": "^2.4.1",
     "ui-box": "^5.0.0",
     "use-redux-form": "^1.1.2"
-  }
+  },
+  "workspaces": [
+    "packages/chess"
+  ]
 }
