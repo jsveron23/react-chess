@@ -94,7 +94,7 @@ class Chess {
     ]
   };
 
-  static Specials = {
+  static Special = {
     K: ['castling'],
     N: ['jumpover'],
     P: ['double-step', 'en-passant', 'promotion'],

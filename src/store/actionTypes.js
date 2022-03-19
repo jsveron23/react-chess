@@ -1,0 +1,3 @@
+export const CHANGE_IS_OPENING = 'CHANGE_IS_OPENING';
+export const TOGGLE_TURN = 'TOGGLE_TURN';
+export const UPDATE_SNAPSHOT = 'UPDATE_SNAPSHOT';
