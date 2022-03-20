@@ -1,6 +1,4 @@
-import Chess from './Chess';
-
-export default Chess;
+export * from './chess';
 export { default as BlackBishop } from './pieces/black_bishop.svg';
 export { default as BlackKing } from './pieces/black_king.svg';
 export { default as BlackKnight } from './pieces/black_knight.svg';

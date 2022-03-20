@@ -1,0 +1,38 @@
+*,
+*:after,
+*:before {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  height: 100%;
+  /* overflow-y: hidden;
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+  overflow-x: scroll;
+
+  &::-webkit-scrollbar {
+    display: none;
+  } */
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto,
+    'Helvetica Neue', Helvetica, Arial, sans-serif;
+  padding: 0;
+  margin: 0;
+  -webkit-font-smoothing: antialiased;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+#root {
+  /* max-width: 1600px;
+  min-width: 1600px; */
+  width: 100%;
+  border-right: 1px solid #ddd;
+}

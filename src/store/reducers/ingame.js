@@ -1,9 +1,9 @@
-import Chess from 'chess/es';
+import { Turn, Snapshot } from 'chess/es';
 import { TOGGLE_TURN, UPDATE_SNAPSHOT } from '../actionTypes';
 
 const initialState = {
-  turn: Chess.Turn,
-  snapshot: Chess.Movement,
+  turn: Turn,
+  snapshot: Snapshot,
 };
 
 function reducer(state = initialState, action) {

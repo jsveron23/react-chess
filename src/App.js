@@ -1,7 +1,9 @@
 import React from 'react';
+import { Main } from '~/components';
+import '~/styles/app.css';
 
 function App() {
-  return <div>Hello World</div>;
+  return <Main />;
 }
 
 export default App;
