@@ -2,7 +2,7 @@
  * Rows
  * @type {Array}
  */
-export const Rank = ['8', '7', '6', '5', '4', '3', '2', '1'];
+export const Rank = [8, 7, 6, 5, 4, 3, 2, 1];
 
 /**
  * Columns

@@ -1,11 +1,11 @@
 import React, { memo } from 'react';
-// import PropTypes from 'prop-types';
+import PropTypes from 'prop-types';
 import Box from 'ui-box';
-import Logo from '~/assets/Logo.svg';
+import Logo from '~/assets/logo.svg';
 import Flex from './Flex';
 import Button from './Button';
 
-const Main = () => {
+const Main = ({ children }) => {
   const width = window.innerHeight;
   const minMaxWidth = window.innerHeight + 300;
 
@@ -16,10 +16,16 @@ const Main = () => {
       minWidth={minMaxWidth}
       maxWidth={minMaxWidth}
     >
-      <Box flexBasis={width}>Diagram</Box>
-      <Box flex="1" backgroundColor="#eaeaea">
+      <Box flexBasis={width}>{children}</Box>
+
+      <Box
+        flex="1"
+        backgroundColor="#e1e1e1"
+        borderLeft="1px solid #cacaca"
+        borderRight="1px solid #cacaca"
+      >
         <Flex flexDirection="column">
-          <Box is="h1" textAlign="center">
+          <Box is="h1" textAlign="center" marginTop={30}>
             React-Chess
           </Box>
           <Flex is="figure" justifyContent="center">
@@ -27,7 +33,7 @@ const Main = () => {
           </Flex>
         </Flex>
 
-        <Box padding={20}>
+        <Box padding={20} marginTop={20}>
           <Flex flexDirection="column" gap={10} alignItems="center">
             <Button>1 vs 1</Button>
             <Button disabled>1 vs CPU</Button>
@@ -44,6 +50,8 @@ const Main = () => {
   );
 };
 
-Main.propTypes = {};
+Main.propTypes = {
+  children: PropTypes.node.isRequired,
+};
 
 export default memo(Main);

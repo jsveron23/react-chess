@@ -1,9 +1,13 @@
 import React from 'react';
-import { Main } from '~/components';
+import { Main, Diagram } from '~/components';
 import '~/styles/app.css';
 
 function App() {
-  return <Main />;
+  return (
+    <Main>
+      <Diagram />
+    </Main>
+  );
 }
 
 export default App;
