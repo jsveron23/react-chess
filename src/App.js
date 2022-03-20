@@ -1,9 +1,16 @@
 import React from 'react';
 import Box from 'ui-box';
-import { DiagramContainer } from '~/containers';
-import { Flex, FlexRow, FlexCol, Button } from '~/components';
+import { MenuContainer, DiagramContainer } from '~/containers';
+import { Flex, FlexRow, FlexCol } from '~/components';
 import Logo from '~/assets/logo.svg';
 import '~/styles/app.css';
+
+/**
+ * TODO
+ * 1. Load game
+ * 2. Check localstorage for checking save file
+ * 3. If not, automatically get started 1 vs 1
+ */
 
 function App() {
   const width = window.innerHeight;
@@ -32,14 +39,7 @@ function App() {
         </FlexCol>
 
         <Box padding={20} marginTop={20}>
-          <FlexCol gap={10} alignItems="center">
-            <Button>1 vs 1</Button>
-            <Button disabled>1 vs CPU</Button>
-            <Button disabled>Import</Button>
-            <Button disabled>Export</Button>
-            <Button disabled>Observe</Button>
-            <Button disabled>Online</Button>
-          </FlexCol>
+          <MenuContainer />
         </Box>
 
         <Box>Sheet</Box>
