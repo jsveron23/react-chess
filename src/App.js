@@ -1,11 +1,12 @@
 import React from 'react';
-import { Main, Diagram } from '~/components';
+import DiagramContainer from '~/containers/DiagramContainer';
+import { Main } from '~/components';
 import '~/styles/app.css';
 
 function App() {
   return (
     <Main>
-      <Diagram />
+      <DiagramContainer />
     </Main>
   );
 }

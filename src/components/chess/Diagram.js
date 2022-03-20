@@ -12,7 +12,7 @@ const Diagram = ({ snapshot }) => {
 };
 
 Diagram.propTypes = {
-  snapshot: PropTypes.arrayOf().isRequired,
+  snapshot: PropTypes.arrayOf(PropTypes.string).isRequired,
 };
 
 export default Diagram;

@@ -15,7 +15,7 @@ const Rank = ({ snapshot }) => {
 };
 
 Rank.propTypes = {
-  snapshot: PropTypes.arrayOf.isRequired,
+  snapshot: PropTypes.arrayOf(PropTypes.string).isRequired,
 };
 
 export default Rank;
