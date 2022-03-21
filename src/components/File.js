@@ -18,17 +18,31 @@ const File = ({ rankName, snapshot }) => {
     [snapshot]
   );
 
+  const handleClick = useCallback(
+    (code) => () => {
+      /**
+       * TODO
+       * 1. remove previous border
+       * 2. active border
+       */
+      if (code) {
+        console.log(code);
+      }
+    },
+    []
+  );
+
   return Files.map((fileName) => {
     const isDark = IsSumEven({ rankName, fileName });
     const bg = isDark ? '#eaeaea' : '#fff';
     const tileName = `${fileName}${rankName}`;
-    const Piece = compose(
-      getPiece,
+    const pKey = compose(
       prop('pKey'),
       parseCode,
       defaultTo(''),
       extractCode
     )(tileName);
+    const Piece = getPiece(pKey);
 
     return (
       <Box
@@ -36,8 +50,10 @@ const File = ({ rankName, snapshot }) => {
         flex="1"
         data-rank={rankName}
         data-file={fileName}
+        data-tile={tileName}
         backgroundColor={bg}
         position="relative"
+        onClick={handleClick(pKey ? `${pKey}${tileName}` : '')}
       >
         <Box position="absolute" padding={5} color="#ccc">
           {tileName}

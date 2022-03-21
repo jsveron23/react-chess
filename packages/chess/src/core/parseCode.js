@@ -3,7 +3,7 @@ export default function parseCode(code) {
 
   return {
     // for getPiece function
-    pKey: `${side}${piece}`,
+    pKey: side ? `${side}${piece}` : '',
 
     tileName: `${fileName}${rankName}`,
     side,
