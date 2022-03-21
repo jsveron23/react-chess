@@ -1,34 +1,34 @@
-import React from 'react';
+import React, { useCallback } from 'react';
 import PropTypes from 'prop-types';
+import { compose, prop, equals, defaultTo } from 'ramda';
 import Box from 'ui-box';
-import { Rank as Ranks, File as Files, getPiece } from 'chess/es';
-
-// TODO move
-function checkDarkBg({ rankName, fileName }) {
-  const rankIdx = Math.abs(Ranks.indexOf(rankName) - 8);
-  const fileIdx = Files.indexOf(fileName) + 1;
-
-  return (rankIdx + fileIdx) % 2 === 0;
-}
+import { File as Files, getPiece, IsSumEven, parseCode } from 'chess/es';
 
 const File = ({ rankName, snapshot }) => {
-  const extractTileName = ({ fileName, rankName }) => {
-    return snapshot.find((code) => {
-      const [, , ...tileName] = code.split('');
+  const extractCode = useCallback(
+    (tileName) => {
+      const matchTilename = compose(
+        equals(tileName),
+        prop('tileName'),
+        parseCode
+      );
 
-      return tileName.join('') === `${fileName}${rankName}`;
-    });
-  };
+      return snapshot.find(matchTilename);
+    },
+    [snapshot]
+  );
 
   return Files.map((fileName) => {
-    const isDark = checkDarkBg({ rankName, fileName });
+    const isDark = IsSumEven({ rankName, fileName });
     const bg = isDark ? '#eaeaea' : '#fff';
-    const [side, piece] = extractTileName({ fileName, rankName }) || [];
-    let Piece;
-
-    if (side) {
-      Piece = getPiece(`${side}${piece}`);
-    }
+    const tileName = `${fileName}${rankName}`;
+    const Piece = compose(
+      getPiece,
+      prop('pKey'),
+      parseCode,
+      defaultTo(''),
+      extractCode
+    )(tileName);
 
     return (
       <Box
@@ -39,11 +39,9 @@ const File = ({ rankName, snapshot }) => {
         backgroundColor={bg}
         position="relative"
       >
-        <Box
-          position="absolute"
-          padding={5}
-          color="#ccc"
-        >{`${fileName}${rankName}`}</Box>
+        <Box position="absolute" padding={5} color="#ccc">
+          {tileName}
+        </Box>
 
         {Piece && (
           <Box

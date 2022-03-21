@@ -30,6 +30,8 @@ export function getPiece(key) {
   return map[key];
 }
 
+export { default as IsSumEven } from './core/IsSumEven';
+export { default as parseCode } from './core/parseCode';
 export * from './chess';
 export {
   BlackBishop,
