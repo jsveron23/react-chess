@@ -1,7 +1,6 @@
 import React from 'react';
 // import PropTypes from 'prop-types';
-import FlexCol from '../layout/FlexCol';
-import Button from '../layout/Button';
+import { FlexCol, Button } from 'ui/es';
 
 const Menu = () => {
   return (

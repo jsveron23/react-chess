@@ -81,6 +81,7 @@
     "use-redux-form": "^1.1.2"
   },
   "workspaces": [
-    "packages/chess"
+    "packages/chess",
+    "packages/ui"
   ]
 }

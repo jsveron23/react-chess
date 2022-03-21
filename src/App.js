@@ -1,7 +1,7 @@
 import React from 'react';
 import Box from 'ui-box';
+import { Flex, FlexRow, FlexCol } from 'ui/es';
 import { MenuContainer, DiagramContainer } from '~/containers';
-import { Flex, FlexRow, FlexCol } from '~/components';
 import Logo from '~/assets/logo.svg';
 import '~/styles/app.css';
 
