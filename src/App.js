@@ -1,7 +1,11 @@
 import React from 'react';
 import Box from 'ui-box';
-import { Flex, FlexRow, FlexCol, Button } from 'ui/es';
-import { MenuContainer, DiagramContainer } from '~/containers';
+import { Flex, FlexRow, FlexCol } from 'ui/es';
+import {
+  MenuContainer,
+  OverlayContainer,
+  DiagramContainer,
+} from '~/containers';
 import Logo from '~/assets/logo.svg';
 import '~/styles/app.css';
 
@@ -19,25 +23,7 @@ function App() {
   return (
     <FlexRow height="100vh" minWidth={minMaxWidth} maxWidth={minMaxWidth}>
       <Box flexBasis={width} position="relative">
-        <Box
-          position="absolute"
-          backgroundColor="rgba(200, 200, 200, .8)"
-          width="100%"
-          height="100%"
-          zIndex="1"
-        >
-          <Flex justifyContent="center" alignItems="center" height="100%">
-            <FlexCol
-              gap={20}
-              backgroundColor="#eaeaea"
-              padding={40}
-              borderRadius={6}
-            >
-              <Box is="strong">Welcome to React-Chess</Box>
-              <Button disabled>Resume</Button>
-            </FlexCol>
-          </Flex>
-        </Box>
+        <OverlayContainer />
         <DiagramContainer />
       </Box>
 
