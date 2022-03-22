@@ -1,9 +1,13 @@
 import React from 'react';
-// import PropTypes from 'prop-types';
+import PropTypes from 'prop-types';
 import Box from 'ui-box';
 import { Flex, FlexCol, Button } from 'ui/es';
 
-const Overlay = () => {
+const Overlay = ({ matchType }) => {
+  if (matchType) {
+    return '';
+  }
+
   return (
     <Box
       position="absolute"
@@ -27,6 +31,12 @@ const Overlay = () => {
   );
 };
 
-Overlay.propTypes = {};
+Overlay.propTypes = {
+  matchType: PropTypes.string,
+};
+
+Overlay.defaultProps = {
+  matchType: '',
+};
 
 export default Overlay;

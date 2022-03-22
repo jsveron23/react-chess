@@ -1,2 +1,3 @@
+export const UPDATE_MATCH_TYPE = 'UPDATE_MATCH_TYPE';
 export const TOGGLE_TURN = 'TOGGLE_TURN';
 export const UPDATE_SNAPSHOT = 'UPDATE_SNAPSHOT';

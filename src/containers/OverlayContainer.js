@@ -1,8 +1,8 @@
 import { connect } from 'react-redux';
 import { Overlay } from '~/components';
 
-function mapStateToProps() {
-  return {};
+function mapStateToProps({ general: { matchType } }) {
+  return { matchType };
 }
 
 const OverlayContainer = connect(mapStateToProps)(Overlay);
