@@ -3,8 +3,10 @@ import PropTypes from 'prop-types';
 import { compose, prop, equals, defaultTo } from 'ramda';
 import Box from 'ui-box';
 import { File as Files, getPiece, IsSumEven, parseCode } from 'chess/es';
+import useTheme from '~/styles/useTheme';
 
 const File = ({ rankName, snapshot }) => {
+  const { tile } = useTheme();
   const extractCode = useCallback(
     (tileName) => {
       const matchTilename = compose(
@@ -33,8 +35,9 @@ const File = ({ rankName, snapshot }) => {
   );
 
   return Files.map((fileName) => {
+    // TODO rename IsDark
     const isDark = IsSumEven({ rankName, fileName });
-    const bg = isDark ? '#eaeaea' : '#fff';
+    const bg = isDark ? tile.dark : tile.light;
     const tileName = `${fileName}${rankName}`;
     const pKey = compose(
       prop('pKey'),
@@ -55,7 +58,7 @@ const File = ({ rankName, snapshot }) => {
         position="relative"
         onClick={handleClick(pKey ? `${pKey}${tileName}` : '')}
       >
-        <Box position="absolute" padding={5} color="#ccc">
+        <Box position="absolute" padding={5} color={tile.text}>
           {tileName}
         </Box>
 

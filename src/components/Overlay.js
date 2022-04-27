@@ -2,8 +2,11 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import Box from 'ui-box';
 import { Flex, FlexCol, Button } from 'ui/es';
+import useTheme from '~/styles/useTheme';
 
 const Overlay = ({ matchType }) => {
+  const { overlay, borderRadius } = useTheme();
+
   if (matchType) {
     return '';
   }
@@ -11,7 +14,7 @@ const Overlay = ({ matchType }) => {
   return (
     <Box
       position="absolute"
-      backgroundColor="rgba(200, 200, 200, .8)"
+      backgroundColor={overlay.bg}
       width="100%"
       height="100%"
       zIndex="1"
@@ -19,9 +22,9 @@ const Overlay = ({ matchType }) => {
       <Flex justifyContent="center" alignItems="center" height="100%">
         <FlexCol
           gap={20}
-          backgroundColor="#eaeaea"
+          backgroundColor={overlay.modal.bg}
           padding={40}
-          borderRadius={6}
+          borderRadius={borderRadius}
         >
           <Box is="strong">Welcome to React-Chess</Box>
           <Button disabled>Resume</Button>

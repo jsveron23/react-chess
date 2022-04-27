@@ -7,6 +7,7 @@ import {
   DiagramContainer,
 } from '~/containers';
 import Logo from '~/assets/logo.svg';
+import useTheme from '~/styles/useTheme';
 import '~/styles/app.css';
 
 /**
@@ -20,6 +21,8 @@ function App() {
   const width = window.innerHeight;
   const minMaxWidth = width + 300;
 
+  const { sidebar, border } = useTheme();
+
   return (
     <FlexRow height="100vh" minWidth={minMaxWidth} maxWidth={minMaxWidth}>
       <Box flexBasis={width} position="relative">
@@ -29,9 +32,9 @@ function App() {
 
       <Box
         flex="1"
-        backgroundColor="#e1e1e1"
-        borderLeft="1px solid #cacaca"
-        borderRight="1px solid #cacaca"
+        backgroundColor={sidebar.bg}
+        borderLeft={border}
+        borderRight={border}
       >
         <FlexCol>
           <Box is="h1" textAlign="center" marginTop={30}>

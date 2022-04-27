@@ -23,6 +23,9 @@ module.exports = {
     },
   },
   settings: {
+    react: {
+      version: 'detect',
+    },
     'import/resolver': {
       webpack: {
         config: `${__dirname}/webpack.config.js`,
