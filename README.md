@@ -17,6 +17,10 @@ npm start
 
 open browser, http://localhost:3000
 
+## Components
+
+App component > Section components > Container components > Chess components
+
 ## License
 
 MIT

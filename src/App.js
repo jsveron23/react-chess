@@ -1,13 +1,11 @@
 import React from 'react';
-import Box from 'ui-box';
-import { Flex, FlexRow, FlexCol } from 'ui/es';
 import {
-  MenuContainer,
-  OverlayContainer,
-  DiagramContainer,
-} from '~/containers';
-import Logo from '~/assets/logo.svg';
-import useTheme from '~/styles/useTheme';
+  DiagramSection,
+  LogoSection,
+  MenuSection,
+  SheetSection,
+} from '~/sections';
+import { Viewport, Sidebar } from '~/components';
 import '~/styles/app.css';
 
 /**
@@ -18,41 +16,16 @@ import '~/styles/app.css';
  */
 
 function App() {
-  const width = window.innerHeight;
-  const minMaxWidth = width + 300;
-
-  const { sidebar, border } = useTheme();
-
   return (
-    <FlexRow height="100vh" minWidth={minMaxWidth} maxWidth={minMaxWidth}>
-      <Box flexBasis={width} position="relative">
-        <OverlayContainer />
-        <DiagramContainer />
-      </Box>
+    <Viewport>
+      <DiagramSection />
 
-      <Box
-        flex="1"
-        backgroundColor={sidebar.bg}
-        borderLeft={border}
-        borderRight={border}
-      >
-        <FlexCol>
-          <Box is="h1" textAlign="center" marginTop={30}>
-            React-Chess
-          </Box>
-
-          <Flex is="figure" justifyContent="center">
-            <Logo width="100px" height="100%" />
-          </Flex>
-        </FlexCol>
-
-        <Box padding={20} marginTop={20}>
-          <MenuContainer />
-        </Box>
-
-        <Box>Sheet</Box>
-      </Box>
-    </FlexRow>
+      <Sidebar>
+        <LogoSection />
+        <MenuSection />
+        <SheetSection />
+      </Sidebar>
+    </Viewport>
   );
 }
 
