@@ -7,6 +7,7 @@ import useTheme from '~/styles/useTheme';
 
 const File = ({ rankName, snapshot }) => {
   const { tile } = useTheme();
+
   const extractCode = useCallback(
     (tileName) => {
       const matchTilename = compose(
@@ -34,17 +35,24 @@ const File = ({ rankName, snapshot }) => {
     []
   );
 
+  const getPKey = useCallback(
+    (tileName) => {
+      return compose(
+        prop('pKey'),
+        parseCode,
+        defaultTo(''),
+        extractCode
+      )(tileName);
+    },
+    [extractCode]
+  );
+
   return Files.map((fileName) => {
     // TODO rename IsDark
     const isDark = IsSumEven({ rankName, fileName });
     const bg = isDark ? tile.dark : tile.light;
     const tileName = `${fileName}${rankName}`;
-    const pKey = compose(
-      prop('pKey'),
-      parseCode,
-      defaultTo(''),
-      extractCode
-    )(tileName);
+    const pKey = getPKey(tileName);
     const Piece = getPiece(pKey);
 
     return (
