@@ -1,4 +1,3 @@
-import React from 'react';
 import Box from 'ui-box';
 import { Flex, FlexCol } from 'ui/es';
 import Logo from '~/assets/logo.svg';

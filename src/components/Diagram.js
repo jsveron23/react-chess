@@ -1,13 +1,12 @@
-import React from 'react';
 import PropTypes from 'prop-types';
-import Box from 'ui-box';
+import { FlexCol } from 'ui/es';
 import Rank from './Rank';
 
 const Diagram = ({ snapshot }) => {
   return (
-    <Box display="flex" flexDirection="column" height="100%">
+    <FlexCol height="100%">
       <Rank snapshot={snapshot} />
-    </Box>
+    </FlexCol>
   );
 };
 

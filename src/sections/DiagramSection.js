@@ -1,4 +1,3 @@
-import React from 'react';
 import Box from 'ui-box';
 import { OverlayContainer, DiagramContainer } from '~/containers';
 import useTheme from '~/styles/useTheme';

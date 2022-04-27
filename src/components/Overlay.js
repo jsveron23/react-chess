@@ -1,4 +1,3 @@
-import React from 'react';
 import PropTypes from 'prop-types';
 import Box from 'ui-box';
 import { Flex, FlexCol, Button } from 'ui/es';
