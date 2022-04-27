@@ -2,7 +2,7 @@ import React, { useCallback } from 'react';
 import PropTypes from 'prop-types';
 import { compose, prop, equals, defaultTo } from 'ramda';
 import Box from 'ui-box';
-import { File as Files, getPiece, IsSumEven, parseCode } from 'chess/es';
+import { File as Files, getPiece, detectDarkTile, parseCode } from 'chess/es';
 import useTheme from '~/styles/useTheme';
 
 const File = ({ rankName, snapshot }) => {
@@ -48,8 +48,7 @@ const File = ({ rankName, snapshot }) => {
   );
 
   return Files.map((fileName) => {
-    // TODO rename IsDark
-    const isDark = IsSumEven({ rankName, fileName });
+    const isDark = detectDarkTile({ rankName, fileName });
     const bg = isDark ? tile.dark : tile.light;
     const tileName = `${fileName}${rankName}`;
     const pKey = getPKey(tileName);

@@ -7,9 +7,10 @@ import { Rank, File } from '../chess';
  * @param  {String}  fileName
  * @return {Boolean}
  */
-export default function IsSumEven({ rankName, fileName }) {
+export default function detectDarkTile({ rankName, fileName }) {
   const rankIdx = Math.abs(Rank.indexOf(rankName) - 8);
   const fileIdx = File.indexOf(fileName) + 1;
 
-  return (rankIdx + fileIdx) % 2 === 0;
+  // => (rankIdx + fileIdx) % 2 === 0
+  return !((rankIdx + fileIdx) & 1);
 }

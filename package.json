@@ -8,9 +8,12 @@
     "lint": "eslint 'src/**/*.js'",
     "prettier": "prettier -c src/**/*.js",
     "clean": "rimraf public",
+    "watch": "watchexec -w packages npm run build:w",
     "prebuild": "npm run clean",
+    "build:w": "npm run build --ws",
     "build": "webpack --env.production --display-error-details",
-    "start": "webpack-dev-server"
+    "start": "webpack-dev-server",
+    "preinstall": "npm run build:w"
   },
   "keywords": [
     "react",
