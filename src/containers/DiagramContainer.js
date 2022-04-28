@@ -2,9 +2,11 @@ import { connect } from 'react-redux';
 import { compose, prop, defaultTo } from 'ramda';
 import { parseCode, findCode, detectDarkTile } from 'chess/es';
 import { Diagram } from '~/components';
+import { updateSelectedCode } from '~/store/actions';
 
-function mapStateToProps({ ingame: { snapshot } }) {
+function mapStateToProps({ ingame: { selectedCode, snapshot } }) {
   const props = {
+    selectedCode,
     snapshot,
 
     getTileBg(tile, fileName, rankName) {
@@ -26,6 +28,8 @@ function mapStateToProps({ ingame: { snapshot } }) {
   return props;
 }
 
-const DiagramContainer = connect(mapStateToProps)(Diagram);
+const DiagramContainer = connect(mapStateToProps, {
+  updateSelectedCode,
+})(Diagram);
 
 export default DiagramContainer;

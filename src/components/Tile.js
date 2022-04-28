@@ -1,10 +1,12 @@
 import { useCallback } from 'react';
 import PropTypes from 'prop-types';
 import { Relative, Absolute, Text } from 'ui/es';
+import { validCode } from 'chess/es';
 import useTheme from '~/styles/useTheme';
 import Piece from './Piece';
 
 const Tile = ({
+  selectedCode,
   tileName,
   fileName,
   rankName,
@@ -17,9 +19,11 @@ const Tile = ({
   const pKey = getPKey(tileName);
   const code = `${pKey}${tileName}`;
   const handleClickTile = useCallback(
-    (evt) => onClick(pKey ? code : '')(evt),
-    [pKey, code, onClick]
+    // filter empty tile
+    (evt) => validCode(code) && onClick(code)(evt),
+    [code, onClick]
   );
+  const isCodeMatched = code === selectedCode;
 
   return (
     <Relative
@@ -31,11 +35,23 @@ const Tile = ({
       backgroundColor={bg}
       onClick={handleClickTile}
     >
+      <Absolute zIndex={999} top={0} bottom={0} left={0} right={0}>
+        <Piece pKey={pKey} />
+      </Absolute>
+
       <Absolute color={tile.text}>
         <Text padding={5}>{tileName}</Text>
       </Absolute>
 
-      <Piece pKey={pKey} />
+      <Absolute
+        top={0}
+        bottom={0}
+        left={0}
+        right={0}
+        margin={1}
+        backgroundColor={isCodeMatched ? 'rgba(100, 100, 100, 0.3)' : 'auto'}
+        border={isCodeMatched ? '2px dashed #999' : 'none'}
+      />
     </Relative>
   );
 };
@@ -48,6 +64,11 @@ Tile.propTypes = {
   fileName: PropTypes.string.isRequired,
   rankName: PropTypes.oneOfType([PropTypes.string, PropTypes.number])
     .isRequired,
+  selectedCode: PropTypes.string,
+};
+
+Tile.defaultProps = {
+  selectedCode: '',
 };
 
 export default Tile;

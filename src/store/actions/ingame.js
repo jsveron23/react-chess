@@ -1,4 +1,8 @@
-import { TOGGLE_TURN, UPDATE_SNAPSHOT } from '../actionTypes';
+import {
+  TOGGLE_TURN,
+  UPDATE_SNAPSHOT,
+  UPDATE_SELECTED_CODE,
+} from '../actionTypes';
 
 export function toggleTurn(snapshot) {
   return {
@@ -11,5 +15,12 @@ export function updateSnapshot(snapshot) {
   return {
     type: UPDATE_SNAPSHOT,
     payload: snapshot,
+  };
+}
+
+export function updateSelectedCode(code) {
+  return {
+    type: UPDATE_SELECTED_CODE,
+    payload: code,
   };
 }

@@ -3,19 +3,18 @@ import PropTypes from 'prop-types';
 import { File as Files } from 'chess/es';
 import Tile from './Tile';
 
-const File = ({ rankName, getTileBg, getPKey }) => {
+const File = ({
+  selectedCode,
+  rankName,
+  getTileBg,
+  getPKey,
+  updateSelectedCode,
+}) => {
   const handleClick = useCallback(
     (code) => (/* evt */) => {
-      /**
-       * TODO
-       * 1. remove previous border
-       * 2. active border
-       */
-      if (code) {
-        console.log(code);
-      }
+      updateSelectedCode(code);
     },
-    []
+    [updateSelectedCode]
   );
 
   return Files.map((fileName) => {
@@ -24,6 +23,7 @@ const File = ({ rankName, getTileBg, getPKey }) => {
     return (
       <Tile
         key={tileName}
+        selectedCode={selectedCode}
         tileName={tileName}
         fileName={fileName}
         rankName={rankName}
@@ -38,8 +38,14 @@ const File = ({ rankName, getTileBg, getPKey }) => {
 File.propTypes = {
   getTileBg: PropTypes.func.isRequired,
   getPKey: PropTypes.func.isRequired,
+  updateSelectedCode: PropTypes.func.isRequired,
   rankName: PropTypes.oneOfType([PropTypes.string, PropTypes.number])
     .isRequired,
+  selectedCode: PropTypes.string,
+};
+
+File.defaultProps = {
+  selectedCode: '',
 };
 
 export default File;
