@@ -20,6 +20,8 @@ open browser, http://localhost:3000
 ## Components
 
 App component > Section components > Container components > Chess components
+- Diagram > Rank > File > Tile > Piece
+- Sidebar > Logo, Menu, Sheet
 
 ## License
 

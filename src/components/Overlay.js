@@ -1,6 +1,5 @@
 import PropTypes from 'prop-types';
-import Box from 'ui-box';
-import { Flex, FlexCol, Button } from 'ui/es';
+import { Absolute, FlexCol, FlexMiddle, Button, Text } from 'ui/es';
 import useTheme from '~/styles/useTheme';
 
 const Overlay = ({ matchType }) => {
@@ -11,25 +10,24 @@ const Overlay = ({ matchType }) => {
   }
 
   return (
-    <Box
-      position="absolute"
+    <Absolute
       backgroundColor={overlay.bg}
       width="100%"
       height="100%"
       zIndex="1"
     >
-      <Flex justifyContent="center" alignItems="center" height="100%">
+      <FlexMiddle height="100%">
         <FlexCol
           gap={20}
           backgroundColor={overlay.modal.bg}
           padding={40}
           borderRadius={borderRadius}
         >
-          <Box is="strong">Welcome to React-Chess</Box>
+          <Text is="strong">Welcome to React-Chess</Text>
           <Button disabled>Resume</Button>
         </FlexCol>
-      </Flex>
-    </Box>
+      </FlexMiddle>
+    </Absolute>
   );
 };
 

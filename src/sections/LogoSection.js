@@ -1,5 +1,4 @@
-import Box from 'ui-box';
-import { Flex, FlexCol } from 'ui/es';
+import { Flex, FlexCol, Text } from 'ui/es';
 import Logo from '~/assets/logo.svg';
 import useTheme from '~/styles/useTheme';
 
@@ -8,9 +7,9 @@ function LogoSection() {
 
   return (
     <FlexCol>
-      <Box is="h1" textAlign="center" marginTop={30}>
+      <Text is="h1" textAlign="center" marginTop={30}>
         React-Chess
-      </Box>
+      </Text>
 
       <Flex is="figure" justifyContent="center">
         <Logo width={logo.width} height={logo.height} />

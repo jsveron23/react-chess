@@ -32,7 +32,7 @@ module.exports = function configure(env = {}) {
       ].filter(Boolean),
     },
     resolve: {
-      symlinks: false,
+      // symlinks: false,
       alias: {
         '~': src,
       },

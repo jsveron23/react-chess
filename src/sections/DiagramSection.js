@@ -1,4 +1,4 @@
-import Box from 'ui-box';
+import { Relative } from 'ui/es';
 import { OverlayContainer, DiagramContainer } from '~/containers';
 import useTheme from '~/styles/useTheme';
 
@@ -6,10 +6,10 @@ function DiagramSection() {
   const { diagram } = useTheme();
 
   return (
-    <Box flexBasis={diagram.width} position="relative">
+    <Relative flexBasis={diagram.width}>
       <OverlayContainer />
       <DiagramContainer />
-    </Box>
+    </Relative>
   );
 }
 

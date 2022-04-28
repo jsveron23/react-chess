@@ -18,6 +18,7 @@
   },
   "peerDependencies": {
     "prop-types": "^15.8.1",
+    "ramda": "^0.28.0",
     "react": "^17.0.2",
     "react-dom": "^17.0.2"
   },
