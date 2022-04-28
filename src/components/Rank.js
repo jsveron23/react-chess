@@ -22,7 +22,7 @@ const Rank = ({ selectedCode, getTileBg, getPKey, updateSelectedCode }) => {
 Rank.propTypes = {
   getPKey: PropTypes.func.isRequired,
   updateSelectedCode: PropTypes.func.isRequired,
-  selectedCode: PropTypes.func,
+  selectedCode: PropTypes.string,
 };
 
 Rank.defaultProps = {

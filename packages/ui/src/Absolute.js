@@ -11,7 +11,11 @@ function Absolute({ children, ...props }) {
 }
 
 Absolute.propTypes = {
-  children: PropTypes.node.isRequired,
+  children: PropTypes.node,
+};
+
+Absolute.defaultProps = {
+  children: '',
 };
 
 export default memo(Absolute);

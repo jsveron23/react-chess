@@ -11,7 +11,11 @@ function Relative({ children, ...props }) {
 }
 
 Relative.propTypes = {
-  children: PropTypes.node.isRequired,
+  children: PropTypes.node,
+};
+
+Relative.defaultProps = {
+  children: '',
 };
 
 export default memo(Relative);
