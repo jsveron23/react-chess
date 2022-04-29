@@ -4,10 +4,11 @@ import { parseCode, findCode, detectDarkTile } from 'chess/es';
 import { Diagram } from '~/components';
 import { updateSelectedCode } from '~/store/actions';
 
-function mapStateToProps({ ingame: { selectedCode, snapshot } }) {
+function mapStateToProps({ ingame: { selectedCode, movableTiles, snapshot } }) {
   const props = {
     selectedCode,
     snapshot,
+    movableTiles,
 
     getTileBg(tile, fileName, rankName) {
       const isDark = detectDarkTile({ rankName, fileName });

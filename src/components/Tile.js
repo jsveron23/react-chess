@@ -10,6 +10,7 @@ const Tile = ({
   tileName,
   fileName,
   rankName,
+  movableTiles,
   onClick,
   getTileBg,
   getPKey,
@@ -23,7 +24,7 @@ const Tile = ({
     (evt) => validCode(code) && onClick(code)(evt),
     [code, onClick]
   );
-  const isCodeMatched = code === selectedCode;
+  const isCodeMatched = [selectedCode, ...movableTiles].includes(code);
 
   return (
     <Relative
@@ -64,11 +65,13 @@ Tile.propTypes = {
   fileName: PropTypes.string.isRequired,
   rankName: PropTypes.oneOfType([PropTypes.string, PropTypes.number])
     .isRequired,
+  movableTiles: PropTypes.arrayOf(PropTypes.string),
   selectedCode: PropTypes.string,
 };
 
 Tile.defaultProps = {
   selectedCode: '',
+  movableTiles: [],
 };
 
 export default Tile;

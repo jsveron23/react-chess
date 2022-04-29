@@ -29,20 +29,17 @@ export const Opponent = {
   b: 'white',
 };
 
+export const Vertical = 'Vertical';
+export const Horizontal = 'Horizontal';
+export const Diagonal = 'Diagonal';
+export const Jumpover = 'Jumpover';
+
 // prettier-ignore
 export const Movement = {
-  /**
-  * King
-  * @type {Array}
-  */
   K: [
     [0, -1], [0, 1], [-1, 0], [1, 0], [-1, -1], [-1, 1], [1, -1], [1, 1]
   ],
 
-  /**
-   * Bishop
-   * @type {Array}
-   */
   B: [
     [1, 1], [2, 2], [3, 3], [4, 4], [5, 5], [6, 6], [7, 7],
     [-1, 1], [-2, 2], [-3, 3], [-4, 4], [-5, 5], [-6, 6], [-7, 7],
@@ -50,26 +47,14 @@ export const Movement = {
     [-1, -1], [-2, -2], [-3, -3], [-4, -4], [-5, -5], [-6, -6], [-7, -7]
   ],
 
-  /**
-   * Knight
-   * @type {Array}
-   */
   N: [
     [-1, -2], [-1, 2], [1, -2], [1, 2], [-2, -1], [-2, 1], [2, -1], [2, 1]
   ],
 
-  /**
-   * Pawn
-   * @type {Array}
-   */
   P: [
     [0, 1]
   ],
 
-  /**
-   * Queen
-   * @type {Array}
-   */
   Q: [
     [0, 1], [0, 2], [0, 3], [0, 4], [0, 5], [0, 6], [0, 7],
     [0, -1], [0, -2], [0, -3], [0, -4], [0, -5], [0, -6], [0, -7],
@@ -81,10 +66,6 @@ export const Movement = {
     [-1, -1], [-2, -2], [-3, -3], [-4, -4], [-5, -5], [-6, -6], [-7, -7]
   ],
 
-  /**
-   * Rook
-   * @type {Array}
-   */
   R: [
     [0, 1], [0, 2], [0, 3], [0, 4], [0, 5], [0, 6], [0, 7],
     [0, -1], [0, -2], [0, -3], [0, -4], [0, -5], [0, -6], [0, -7],
@@ -95,7 +76,7 @@ export const Movement = {
 
 export const Special = {
   K: ['castling'],
-  N: ['jumpover'],
+  // N: ['jumpover'],
   P: ['double-step', 'en-passant', 'promotion'],
 };
 

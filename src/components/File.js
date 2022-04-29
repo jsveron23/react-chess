@@ -9,6 +9,7 @@ const File = ({
   getTileBg,
   getPKey,
   updateSelectedCode,
+  movableTiles,
 }) => {
   const handleClick = useCallback(
     (code) => (/* evt */) => {
@@ -27,6 +28,7 @@ const File = ({
         tileName={tileName}
         fileName={fileName}
         rankName={rankName}
+        movableTiles={movableTiles}
         onClick={handleClick}
         getTileBg={getTileBg}
         getPKey={getPKey}
@@ -41,11 +43,13 @@ File.propTypes = {
   updateSelectedCode: PropTypes.func.isRequired,
   rankName: PropTypes.oneOfType([PropTypes.string, PropTypes.number])
     .isRequired,
+  movableTiles: PropTypes.arrayOf(PropTypes.string),
   selectedCode: PropTypes.string,
 };
 
 File.defaultProps = {
   selectedCode: '',
+  movableTiles: [],
 };
 
 export default File;

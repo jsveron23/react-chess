@@ -3,11 +3,13 @@ import {
   TOGGLE_TURN,
   UPDATE_SNAPSHOT,
   UPDATE_SELECTED_CODE,
+  COMPUTE_MOVABLE_TILES,
 } from '../actionTypes';
 
 const initialState = {
-  turn: Turn,
+  turn: Turn.w,
   selectedCode: '',
+  movableTiles: [],
   snapshot: Snapshot,
 };
 
@@ -33,6 +35,13 @@ function reducer(state = initialState, action) {
       return {
         ...state,
         selectedCode: payload,
+      };
+    }
+
+    case COMPUTE_MOVABLE_TILES: {
+      return {
+        ...state,
+        movableTiles: payload,
       };
     }
 
