@@ -1,3 +1,4 @@
+import { memo } from 'react';
 import { Relative } from 'ui/es';
 import { OverlayContainer, DiagramContainer } from '~/containers';
 import useTheme from '~/styles/useTheme';
@@ -13,4 +14,4 @@ function DiagramSection() {
   );
 }
 
-export default DiagramSection;
+export default memo(DiagramSection);

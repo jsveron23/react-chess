@@ -1,3 +1,4 @@
+import { memo } from 'react';
 import Box from 'ui-box';
 import { MenuContainer } from '~/containers';
 
@@ -9,4 +10,4 @@ function MenuSection() {
   );
 }
 
-export default MenuSection;
+export default memo(MenuSection);

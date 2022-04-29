@@ -1,3 +1,4 @@
+import { memo } from 'react';
 import PropTypes from 'prop-types';
 import { Flex } from 'ui/es';
 import { getPiece } from 'chess/es';
@@ -20,4 +21,4 @@ Piece.propTypes = {
   pKey: PropTypes.string.isRequired,
 };
 
-export default Piece;
+export default memo(Piece);

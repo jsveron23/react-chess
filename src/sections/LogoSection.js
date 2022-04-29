@@ -1,3 +1,4 @@
+import { memo } from 'react';
 import { Flex, FlexCol, Text } from 'ui/es';
 import Logo from '~/assets/logo.svg';
 import useTheme from '~/styles/useTheme';
@@ -18,4 +19,4 @@ function LogoSection() {
   );
 }
 
-export default LogoSection;
+export default memo(LogoSection);

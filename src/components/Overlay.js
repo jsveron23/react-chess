@@ -1,3 +1,4 @@
+import { memo } from 'react';
 import PropTypes from 'prop-types';
 import { Absolute, FlexCol, FlexMiddle, Button, Text } from 'ui/es';
 import useTheme from '~/styles/useTheme';
@@ -39,4 +40,4 @@ Overlay.defaultProps = {
   matchType: '',
 };
 
-export default Overlay;
+export default memo(Overlay);
