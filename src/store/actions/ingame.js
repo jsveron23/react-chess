@@ -1,16 +1,35 @@
-import { compose } from 'ramda';
-import { detectTurn, computeMovableTiles, computeBlockedTiles } from 'chess/es';
+import { compose, reject, equals } from 'ramda';
 import {
-  TOGGLE_TURN,
+  detectTurn,
+  parseCode,
+  computeMovableTiles,
+  computeBlockedTiles,
+} from 'chess/es';
+import {
+  // TOGGLE_TURN,
   UPDATE_SNAPSHOT,
   UPDATE_SELECTED_CODE,
-  COMPUTE_MOVABLE_TILES,
+  REMOVE_SELECTED_CODE,
+  UPDATE_MOVABLE_TILES,
+  REMOVE_MOVABLE_TILES,
 } from '../actionTypes';
 
-export function toggleTurn(snapshot) {
+// export function toggleTurn(snapshot) {
+//   return {
+//     type: TOGGLE_TURN,
+//     payload: snapshot,
+//   };
+// }
+
+export function removeSelectedCode() {
   return {
-    type: TOGGLE_TURN,
-    payload: snapshot,
+    type: REMOVE_SELECTED_CODE,
+  };
+}
+
+export function removeMovableTiles() {
+  return {
+    type: REMOVE_MOVABLE_TILES,
   };
 }
 
@@ -34,7 +53,7 @@ export function updateMovableTiles(code) {
     )(code);
 
     dispatch({
-      type: COMPUTE_MOVABLE_TILES,
+      type: UPDATE_MOVABLE_TILES,
       payload: movableTiles,
     });
   };
@@ -53,5 +72,29 @@ export function updateSelectedCode(code) {
         payload: code,
       });
     }
+  };
+}
+
+export function movePiece(tileName) {
+  return (dispatch, getState) => {
+    const {
+      ingame: { snapshot, selectedCode },
+    } = getState();
+
+    // NOTE steps
+
+    // 1. remove pervious code from snapshot
+    const prevSnapshot = reject(equals(selectedCode), snapshot);
+    dispatch(updateSnapshot(prevSnapshot));
+
+    // 2. reset clickable tiles
+    dispatch(removeSelectedCode());
+    dispatch(removeMovableTiles());
+
+    // 3. add moved piece(code) to snapshot
+    const { pKey } = parseCode(selectedCode);
+    dispatch(updateSnapshot([...prevSnapshot, `${pKey}${tileName}`]));
+
+    // TODO change turn
   };
 }

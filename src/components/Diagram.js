@@ -8,6 +8,7 @@ const Diagram = ({
   getTileBg,
   getPKey,
   updateSelectedCode,
+  movePiece,
 }) => {
   return (
     <FlexCol height="100%">
@@ -17,6 +18,7 @@ const Diagram = ({
         getTileBg={getTileBg}
         getPKey={getPKey}
         updateSelectedCode={updateSelectedCode}
+        movePiece={movePiece}
       />
     </FlexCol>
   );
@@ -26,6 +28,7 @@ Diagram.propTypes = {
   getTileBg: PropTypes.func.isRequired,
   getPKey: PropTypes.func.isRequired,
   updateSelectedCode: PropTypes.func.isRequired,
+  movePiece: PropTypes.func.isRequired,
   movableTiles: PropTypes.arrayOf(PropTypes.string),
   selectedCode: PropTypes.string,
 };

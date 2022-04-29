@@ -1,4 +1,3 @@
-import { useCallback } from 'react';
 import PropTypes from 'prop-types';
 import { File as Files } from 'chess/es';
 import Tile from './Tile';
@@ -9,17 +8,12 @@ const File = ({
   getTileBg,
   getPKey,
   updateSelectedCode,
+  movePiece,
   movableTiles,
 }) => {
-  const handleClick = useCallback(
-    (code) => (/* evt */) => {
-      updateSelectedCode(code);
-    },
-    [updateSelectedCode]
-  );
-
   return Files.map((fileName) => {
     const tileName = `${fileName}${rankName}`;
+    const pKey = getPKey(tileName);
 
     return (
       <Tile
@@ -29,9 +23,10 @@ const File = ({
         fileName={fileName}
         rankName={rankName}
         movableTiles={movableTiles}
-        onClick={handleClick}
+        updateSelectedCode={updateSelectedCode}
         getTileBg={getTileBg}
-        getPKey={getPKey}
+        movePiece={movePiece}
+        pKey={pKey}
       />
     );
   });
@@ -41,6 +36,7 @@ File.propTypes = {
   getTileBg: PropTypes.func.isRequired,
   getPKey: PropTypes.func.isRequired,
   updateSelectedCode: PropTypes.func.isRequired,
+  movePiece: PropTypes.func.isRequired,
   rankName: PropTypes.oneOfType([PropTypes.string, PropTypes.number])
     .isRequired,
   movableTiles: PropTypes.arrayOf(PropTypes.string),

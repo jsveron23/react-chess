@@ -9,6 +9,7 @@ const Rank = ({
   getTileBg,
   getPKey,
   updateSelectedCode,
+  movePiece,
 }) => {
   return Ranks.map((rankName) => {
     return (
@@ -19,6 +20,7 @@ const Rank = ({
           getTileBg={getTileBg}
           getPKey={getPKey}
           updateSelectedCode={updateSelectedCode}
+          movePiece={movePiece}
           movableTiles={movableTiles}
         />
       </FlexRow>
@@ -29,6 +31,7 @@ const Rank = ({
 Rank.propTypes = {
   getPKey: PropTypes.func.isRequired,
   updateSelectedCode: PropTypes.func.isRequired,
+  movePiece: PropTypes.func.isRequired,
   movableTiles: PropTypes.arrayOf(PropTypes.string),
   selectedCode: PropTypes.string,
 };

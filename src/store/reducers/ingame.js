@@ -3,7 +3,9 @@ import {
   TOGGLE_TURN,
   UPDATE_SNAPSHOT,
   UPDATE_SELECTED_CODE,
-  COMPUTE_MOVABLE_TILES,
+  REMOVE_SELECTED_CODE,
+  UPDATE_MOVABLE_TILES,
+  REMOVE_MOVABLE_TILES,
 } from '../actionTypes';
 
 const initialState = {
@@ -38,10 +40,24 @@ function reducer(state = initialState, action) {
       };
     }
 
-    case COMPUTE_MOVABLE_TILES: {
+    case REMOVE_SELECTED_CODE: {
+      return {
+        ...state,
+        selectedCode: '',
+      };
+    }
+
+    case UPDATE_MOVABLE_TILES: {
       return {
         ...state,
         movableTiles: payload,
+      };
+    }
+
+    case REMOVE_MOVABLE_TILES: {
+      return {
+        ...state,
+        movableTiles: [],
       };
     }
 
