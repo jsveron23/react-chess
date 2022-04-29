@@ -4,7 +4,11 @@ import { parseCode, findCode, detectDarkTile } from 'chess/es';
 import { Diagram } from '~/components';
 import { updateSelectedCode, movePiece } from '~/store/actions';
 
-function mapStateToProps({ ingame: { selectedCode, movableTiles, snapshot } }) {
+function mapStateToProps({
+  ingame: {
+    present: { selectedCode, movableTiles, snapshot },
+  },
+}) {
   const props = {
     selectedCode,
     snapshot,

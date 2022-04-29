@@ -18,7 +18,9 @@ import {
 export function toggleTurn() {
   return (dispatch, getState) => {
     const {
-      ingame: { turn },
+      ingame: {
+        present: { turn },
+      },
     } = getState();
 
     dispatch({
@@ -50,7 +52,9 @@ export function updateSnapshot(snapshot) {
 export function updateMovableTiles(code) {
   return (dispatch, getState) => {
     const {
-      ingame: { snapshot },
+      ingame: {
+        present: { snapshot },
+      },
     } = getState();
 
     const movableTiles = compose(
@@ -70,7 +74,9 @@ export function updateMovableTiles(code) {
 export function updateSelectedCode(code) {
   return (dispatch, getState) => {
     const {
-      ingame: { turn },
+      ingame: {
+        present: { turn },
+      },
     } = getState();
 
     if (detectTurn(turn, code)) {
@@ -86,7 +92,9 @@ export function updateSelectedCode(code) {
 export function movePiece(tileName) {
   return (dispatch, getState) => {
     const {
-      ingame: { snapshot, selectedCode },
+      ingame: {
+        present: { snapshot, selectedCode },
+      },
     } = getState();
 
     // NOTE steps
