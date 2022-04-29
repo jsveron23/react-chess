@@ -11,10 +11,10 @@ import parseCode from './parseCode';
  * @return {String*}
  */
 function getNextTile(code, axis) {
-  const { fileName, rankName } = parseCode(code);
+  const { side, fileName, rankName } = parseCode(code);
   const [x, y] = axis;
   const nextFileName = getNextFileName(fileName, x);
-  const nextRankName = getNextRankName(rankName, y);
+  const nextRankName = getNextRankName(rankName, side === 'w' ? y : -y);
 
   if (invalidTile(nextFileName, nextRankName)) {
     return '';

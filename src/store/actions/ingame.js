@@ -1,12 +1,13 @@
 import { compose, reject, equals } from 'ramda';
 import {
+  Opponent,
   detectTurn,
   parseCode,
   computeMovableTiles,
   computeBlockedTiles,
 } from 'chess/es';
 import {
-  // TOGGLE_TURN,
+  TOGGLE_TURN,
   UPDATE_SNAPSHOT,
   UPDATE_SELECTED_CODE,
   REMOVE_SELECTED_CODE,
@@ -14,12 +15,18 @@ import {
   REMOVE_MOVABLE_TILES,
 } from '../actionTypes';
 
-// export function toggleTurn(snapshot) {
-//   return {
-//     type: TOGGLE_TURN,
-//     payload: snapshot,
-//   };
-// }
+export function toggleTurn() {
+  return (dispatch, getState) => {
+    const {
+      ingame: { turn },
+    } = getState();
+
+    dispatch({
+      type: TOGGLE_TURN,
+      payload: Opponent[turn],
+    });
+  };
+}
 
 export function removeSelectedCode() {
   return {
@@ -47,8 +54,9 @@ export function updateMovableTiles(code) {
     } = getState();
 
     const movableTiles = compose(
+      // -> TODO able to capture
       computeBlockedTiles(code, snapshot),
-      // TODO add spacial movement
+      // -> TODO add spacial movement
       computeMovableTiles
     )(code);
 
@@ -96,5 +104,6 @@ export function movePiece(tileName) {
     dispatch(updateSnapshot([...prevSnapshot, `${pKey}${tileName}`]));
 
     // TODO change turn
+    dispatch(toggleTurn());
   };
 }
