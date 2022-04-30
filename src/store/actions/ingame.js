@@ -1,8 +1,9 @@
-import { compose, reject, equals } from 'ramda';
+import { compose } from 'ramda';
 import {
   Opponent,
   detectTurn,
   parseCode,
+  replaceSnapshot,
   computeMovableTiles,
   computeBlockedTiles,
 } from 'chess/es';
@@ -97,21 +98,13 @@ export function movePiece(tileName) {
       },
     } = getState();
 
-    // NOTE steps
+    const { pKey } = parseCode(selectedCode);
+    const nextCode = `${pKey}${tileName}`;
+    const nextSnapshot = replaceSnapshot(selectedCode, nextCode, snapshot);
 
-    // 1. remove pervious code from snapshot
-    const prevSnapshot = reject(equals(selectedCode), snapshot);
-    dispatch(updateSnapshot(prevSnapshot));
-
-    // 2. reset clickable tiles
+    dispatch(updateSnapshot(nextSnapshot));
     dispatch(removeSelectedCode());
     dispatch(removeMovableTiles());
-
-    // 3. add moved piece(code) to snapshot
-    const { pKey } = parseCode(selectedCode);
-    dispatch(updateSnapshot([...prevSnapshot, `${pKey}${tileName}`]));
-
-    // TODO change turn
     dispatch(toggleTurn());
   };
 }
