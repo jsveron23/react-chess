@@ -1,28 +1,41 @@
+import Box from 'ui-box';
+import { Relative, Flex, FlexCol, Text } from 'ui/es';
 import {
-  DiagramSection,
-  LogoSection,
-  MenuSection,
-  SheetSection,
-} from '~/sections';
-import { Viewport, Sidebar } from '~/components';
+  OverlayContainer,
+  DiagramContainer,
+  MenuContainer,
+} from '~/containers';
+import useTheme from '~/styles/useTheme';
+import Logo from '~/assets/logo.svg';
+import { Viewport, Sidebar } from '~/layout';
 import '~/styles/app.css';
 
-/**
- * TODO
- * 1. Load game
- * 2. Check localstorage for checking save file
- * 3. If not, automatically get started 1 vs 1
- */
-
 function App() {
+  const { diagram, logo } = useTheme();
+
   return (
     <Viewport>
-      <DiagramSection />
+      <Relative flexBasis={diagram.width}>
+        <OverlayContainer />
+        <DiagramContainer />
+      </Relative>
 
       <Sidebar>
-        <LogoSection />
-        <MenuSection />
-        <SheetSection />
+        <FlexCol>
+          <Text is="h1" textAlign="center" marginTop={30}>
+            React-Chess
+          </Text>
+
+          <Flex is="figure" justifyContent="center">
+            <Logo width={logo.width} height={logo.height} />
+          </Flex>
+        </FlexCol>
+
+        <Box padding={20} marginTop={20}>
+          <MenuContainer />
+        </Box>
+
+        <Box>Sheet</Box>
       </Sidebar>
     </Viewport>
   );

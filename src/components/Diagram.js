@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types';
 import { FlexCol } from 'ui/es';
-import Rank from './Rank';
+import Rank from './internal/Rank';
 
 const Diagram = ({
   selectedCode,

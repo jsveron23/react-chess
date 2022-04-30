@@ -10,17 +10,29 @@ import {
   intersection,
 } from 'ramda';
 import snapshotToTiles from './snapshotToTiles';
-import _groupTilesByDirection from './internal/_groupTilesByDirection';
+import groupDirectionTilesByCode from './groupDirectionTilesByCode';
 
+/**
+ * Compute blocked tiles
+ * @param  {String} code
+ * @param  {Array}  snapshot
+ * @param  {Array}  movableTiles
+ * @return {Array}
+ *
+ * @description
+ * convert all axis to next tiles of piece movement (tilesGrp)
+ * then comparing with placed tiles (placedTiles)
+ * then get tiles by intersect with computed movable tiles
+ */
 function computeBlockedTiles(code, snapshot, movableTiles) {
+  // generic direction group (tiles)
+  const tilesGrp = groupDirectionTilesByCode(code);
+
   // change all code to tiles
   const placedTiles = snapshotToTiles(snapshot);
 
-  // generic direction group (tiles)
-  const tilesGrp = _groupTilesByDirection(code);
-
   return compose(
-    // remain only movable tiles
+    // remain only movable tiles without blocked tiles
     // intersection(
     //   calculated actual movable tiles
     //   calculated generic blocked tiles,
@@ -38,6 +50,7 @@ function computeBlockedTiles(code, snapshot, movableTiles) {
             let lastIdx = -1;
 
             // ignore first tile also
+            // compare with placedTiles(snapshot)
             const _ignoreTilesAfter = (tile) => {
               if (lastIdx === -1) {
                 lastIdx = placedTiles.indexOf(tile);

@@ -13,6 +13,7 @@ export { default as getNextTile } from './core/getNextTile';
 export { default as computeMovableTiles } from './core/computeMovableTiles';
 export { default as computeBlockedTiles } from './core/computeBlockedTiles';
 export { default as snapshotToTiles } from './core/snapshotToTiles';
+export { default as groupDirectionTilesByCode } from './core/groupDirectionTilesByCode';
 
 export { default as validCode } from './core/validCode';
 export { default as findCode } from './core/findCode';

@@ -1,51 +1,28 @@
-import { Fragment, useCallback } from 'react';
+import { memo } from 'react';
 import PropTypes from 'prop-types';
-import { ActionTypes } from 'redux-undo';
-import { FlexCol, Button, Hr } from 'ui/es';
+import { Hr } from 'ui/es';
+import SubMenu from './internal/SubMenu';
 
-const Menu = ({ items, updateMatchType, undo }) => {
-  const handleClick = useCallback(
-    (mKey) => () => {
-      switch (mKey) {
-        case ActionTypes.UNDO: {
-          undo();
-
-          break;
-        }
-
-        default: {
-          updateMatchType(mKey);
-
-          break;
-        }
-      }
-    },
-    [updateMatchType, undo]
-  );
-
+const Menu = ({ ingameMenu, mainMenu, handleMenuButtonClick }) => {
   return (
-    <FlexCol gap={10} alignItems="center">
-      {items.map(({ key, title, ...itemProps }) => {
-        const isUndo = key === ActionTypes.UNDO;
-
-        return (
-          <Fragment key={key}>
-            <Button onClick={handleClick(key)} {...itemProps}>
-              {title}
-            </Button>
-
-            {isUndo && <Hr />}
-          </Fragment>
-        );
-      })}
-    </FlexCol>
+    <>
+      <SubMenu data={ingameMenu} onClick={handleMenuButtonClick} />
+      <Hr is="p" marginTop={10} marginBottom={10} />
+      <SubMenu data={mainMenu} onClick={handleMenuButtonClick} />
+    </>
   );
 };
 
 Menu.propTypes = {
-  updateMatchType: PropTypes.func.isRequired,
-  undo: PropTypes.func.isRequired,
-  items: PropTypes.arrayOf(
+  handleMenuButtonClick: PropTypes.func.isRequired,
+  ingameMenu: PropTypes.arrayOf(
+    PropTypes.shape({
+      key: PropTypes.string,
+      title: PropTypes.string,
+      disabled: PropTypes.bool,
+    })
+  ).isRequired,
+  mainMenu: PropTypes.arrayOf(
     PropTypes.shape({
       key: PropTypes.string,
       title: PropTypes.string,
@@ -54,4 +31,4 @@ Menu.propTypes = {
   ).isRequired,
 };
 
-export default Menu;
+export default memo(Menu);

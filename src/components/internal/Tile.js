@@ -7,31 +7,32 @@ import Piece from './Piece';
 import Mask from './Mask';
 
 const Tile = ({
-  selectedCode,
+  pKey,
   tileName,
   fileName,
   rankName,
-  pKey,
+  selectedCode,
   movableTiles,
-  updateSelectedCode,
   getTileBg,
   movePiece,
+  updateSelectedCode,
 }) => {
   const { tile } = useTheme();
   const bg = getTileBg(tile, fileName, rankName);
   const code = `${pKey}${tileName}`;
-  const isPieceTile = validCode(code);
-  const isMovableTile = movableTiles.indexOf(tileName) > -1;
   const isCodeMatched = [selectedCode, ...movableTiles].indexOf(code) > -1;
   const handleClickTile = useCallback(
     (/* evt */) => {
+      const isPieceTile = validCode(code);
+      const isMovableTile = movableTiles.indexOf(tileName) > -1;
+
       if (isPieceTile) {
         updateSelectedCode(code);
       } else if (isMovableTile) {
         movePiece(tileName);
       }
     },
-    [movePiece, code, tileName, isPieceTile, isMovableTile, updateSelectedCode]
+    [movePiece, code, tileName, movableTiles, updateSelectedCode]
   );
 
   return (

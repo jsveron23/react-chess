@@ -69,7 +69,8 @@ export function updateMovableTiles(code) {
       },
     } = getState();
 
-    const movableTiles = compose(
+    // TODO optimize it
+    const computedMovableTiles = compose(
       // -> TODO able to capture
       computeBlockedTiles(code, snapshot),
       // -> TODO add spacial movement
@@ -78,7 +79,7 @@ export function updateMovableTiles(code) {
 
     dispatch({
       type: UPDATE_MOVABLE_TILES,
-      payload: movableTiles,
+      payload: computedMovableTiles,
     });
   };
 }

@@ -6,12 +6,19 @@ import { ONE_VS_ONE, ONE_VS_CPU, SAVE, ONLINE } from '~/config';
 
 function mapStateToProps({ ingame: { past } }) {
   return {
-    items: [
+    ingameMenu: [
       {
         key: ActionTypes.UNDO,
         title: 'Undo',
         disabled: past.length === 0,
       },
+      // {
+      //   key: ActionTypes.REDO,
+      //   title: 'Redo',
+      //   disabled: future.length === 0,
+      // },
+    ],
+    mainMenu: [
       {
         key: ONE_VS_ONE,
         title: '1 vs 1',
@@ -46,9 +53,28 @@ function mapStateToProps({ ingame: { past } }) {
   };
 }
 
-const MenuContainer = connect(mapStateToProps, {
-  updateMatchType,
-  undo,
-})(Menu);
+function mapDispatchToProps(dispatch) {
+  return {
+    handleMenuButtonClick(key) {
+      return () => {
+        switch (key) {
+          case ActionTypes.UNDO: {
+            dispatch(undo());
+
+            break;
+          }
+
+          default: {
+            dispatch(updateMatchType(key));
+
+            break;
+          }
+        }
+      };
+    },
+  };
+}
+
+const MenuContainer = connect(mapStateToProps, mapDispatchToProps)(Menu);
 
 export default MenuContainer;
