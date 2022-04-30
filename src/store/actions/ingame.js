@@ -8,8 +8,11 @@ import {
   computeMovableTiles,
   computeBlockedTiles,
 } from 'chess/es';
+import { ONE_VS_ONE } from '~/config';
+import { next } from '../batchActions';
 import {
-  TOGGLE_TURN,
+  UPDATE_TURN,
+  // TOGGLE_TURN,
   UPDATE_SNAPSHOT,
   UPDATE_SELECTED_CODE,
   REMOVE_SELECTED_CODE,
@@ -17,18 +20,25 @@ import {
   REMOVE_MOVABLE_TILES,
 } from '../actionTypes';
 
-export function toggleTurn() {
-  return (dispatch, getState) => {
-    const {
-      ingame: {
-        present: { turn },
-      },
-    } = getState();
+// export function toggleTurn() {
+//   return (dispatch, getState) => {
+//     const {
+//       ingame: {
+//         present: { turn },
+//       },
+//     } = getState();
+//
+//     dispatch({
+//       type: TOGGLE_TURN,
+//       payload: Opponent[turn],
+//     });
+//   };
+// }
 
-    dispatch({
-      type: TOGGLE_TURN,
-      payload: Opponent[turn],
-    });
+export function updateTurn(turn) {
+  return {
+    type: UPDATE_TURN,
+    payload: turn,
   };
 }
 
@@ -95,7 +105,7 @@ export function movePiece(tileName) {
   return (dispatch, getState) => {
     const {
       ingame: {
-        present: { snapshot, selectedCode },
+        present: { snapshot, selectedCode, turn },
       },
     } = getState();
 
@@ -103,21 +113,24 @@ export function movePiece(tileName) {
     const nextCode = `${pKey}${tileName}`;
     const nextSnapshot = replaceSnapshot(selectedCode, nextCode, snapshot);
 
-    dispatch(updateSnapshot(nextSnapshot));
-    dispatch(removeSelectedCode());
-    dispatch(removeMovableTiles());
-    dispatch(toggleTurn());
+    dispatch(next(nextSnapshot, Opponent[turn]));
   };
 }
 
 export function undo() {
   return (dispatch, getState) => {
     const {
+      general: { matchType },
       ingame: { past },
     } = getState();
-    const lastTurn = past.length - 2;
 
-    dispatch(ActionCreators.jumpToPast(lastTurn < 0 ? 0 : lastTurn));
-    // dispatch(ActionCreators.undo());
+    if (matchType === ONE_VS_ONE) {
+      const lastTurn = past.length - 2;
+      const pastTurn = lastTurn < 0 ? 0 : lastTurn;
+
+      dispatch(ActionCreators.jumpToPast(pastTurn));
+    } else {
+      dispatch(ActionCreators.undo());
+    }
   };
 }

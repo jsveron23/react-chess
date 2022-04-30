@@ -2,6 +2,7 @@ import { connect } from 'react-redux';
 import { ActionTypes } from 'redux-undo';
 import { Menu } from '~/components';
 import { updateMatchType, undo } from '~/store/actions';
+import { ONE_VS_ONE, ONE_VS_CPU, SAVE, ONLINE } from '~/config';
 
 function mapStateToProps({ ingame: { past } }) {
   return {
@@ -12,37 +13,32 @@ function mapStateToProps({ ingame: { past } }) {
         disabled: past.length === 0,
       },
       {
-        key: '1v1',
+        key: ONE_VS_ONE,
         title: '1 vs 1',
         disabled: false,
       },
       {
-        key: '1vscpu',
+        key: ONE_VS_CPU,
         title: '1 vs CPU',
         disabled: true,
       },
       {
-        key: 'save',
+        key: SAVE,
         title: 'Save',
         disabled: true,
       },
+      // {
+      //   key: IMPORT,
+      //   title: 'Import',
+      //   disabled: true,
+      // },
+      // {
+      //   key: EXPORT,
+      //   title: 'Export',
+      //   disabled: true,
+      // },
       {
-        key: 'import',
-        title: 'Import',
-        disabled: true,
-      },
-      {
-        key: 'export',
-        title: 'Export',
-        disabled: true,
-      },
-      {
-        key: 'observe',
-        title: 'Observe',
-        disabled: true,
-      },
-      {
-        key: 'online',
+        key: ONLINE,
         title: 'Online',
         disabled: true,
       },

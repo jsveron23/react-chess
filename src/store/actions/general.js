@@ -1,8 +1,12 @@
 import { UPDATE_MATCH_TYPE } from '../actionTypes';
+import { restart } from '../batchActions';
 
 export function updateMatchType(mKey) {
-  return {
-    type: UPDATE_MATCH_TYPE,
-    payload: mKey,
+  return (dispatch) => {
+    dispatch({
+      type: UPDATE_MATCH_TYPE,
+      payload: mKey,
+    });
+    dispatch(restart());
   };
 }

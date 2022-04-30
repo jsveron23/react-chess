@@ -1,5 +1,6 @@
 import { Turn, Snapshot } from 'chess/es';
 import {
+  UPDATE_TURN,
   TOGGLE_TURN,
   UPDATE_SNAPSHOT,
   UPDATE_SELECTED_CODE,
@@ -19,6 +20,13 @@ function reducer(state = initialState, action) {
   const { type, payload } = action;
 
   switch (type) {
+    case UPDATE_TURN: {
+      return {
+        ...state,
+        turn: payload,
+      };
+    }
+
     case TOGGLE_TURN: {
       return {
         ...state,
