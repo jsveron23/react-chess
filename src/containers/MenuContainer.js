@@ -1,10 +1,16 @@
 import { connect } from 'react-redux';
+import { ActionTypes } from 'redux-undo';
 import { Menu } from '~/components';
-import { updateMatchType } from '~/store/actions';
+import { updateMatchType, undo } from '~/store/actions';
 
-function mapStateToProps() {
+function mapStateToProps({ ingame: { past } }) {
   return {
     items: [
+      {
+        key: ActionTypes.UNDO,
+        title: 'Undo',
+        disabled: past.length === 0,
+      },
       {
         key: '1v1',
         title: '1 vs 1',
@@ -46,6 +52,7 @@ function mapStateToProps() {
 
 const MenuContainer = connect(mapStateToProps, {
   updateMatchType,
+  undo,
 })(Menu);
 
 export default MenuContainer;

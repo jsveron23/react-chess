@@ -1,4 +1,5 @@
 import { compose } from 'ramda';
+import { ActionCreators } from 'redux-undo';
 import {
   Opponent,
   detectTurn,
@@ -106,5 +107,17 @@ export function movePiece(tileName) {
     dispatch(removeSelectedCode());
     dispatch(removeMovableTiles());
     dispatch(toggleTurn());
+  };
+}
+
+export function undo() {
+  return (dispatch, getState) => {
+    const {
+      ingame: { past },
+    } = getState();
+    const lastTurn = past.length - 2;
+
+    dispatch(ActionCreators.jumpToPast(lastTurn < 0 ? 0 : lastTurn));
+    // dispatch(ActionCreators.undo());
   };
 }
