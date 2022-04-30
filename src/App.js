@@ -1,10 +1,6 @@
 import Box from 'ui-box';
 import { Relative, Flex, FlexCol, Text } from 'ui/es';
-import {
-  OverlayContainer,
-  DiagramContainer,
-  MenuContainer,
-} from '~/containers';
+import { DiagramContainer, MenuContainer } from '~/containers';
 import useTheme from '~/styles/useTheme';
 import Logo from '~/assets/logo.svg';
 import { Viewport, Sidebar } from '~/layout';
@@ -16,7 +12,6 @@ function App() {
   return (
     <Viewport>
       <Relative flexBasis={diagram.width}>
-        <OverlayContainer />
         <DiagramContainer />
       </Relative>
 

@@ -1,16 +1,18 @@
 import { connect } from 'react-redux';
 import { ActionTypes } from 'redux-undo';
 import { Menu } from '~/components';
-import { updateMatchType, undo } from '~/store/actions';
+import { updateMatchType, saveGame, undo } from '~/store/actions';
 import { ONE_VS_ONE, ONE_VS_CPU, SAVE, ONLINE } from '~/config';
 
 function mapStateToProps({ ingame: { past } }) {
+  const noUndoYet = past.length === 0;
+
   return {
     ingameMenu: [
       {
         key: ActionTypes.UNDO,
         title: 'Undo',
-        disabled: past.length === 0,
+        disabled: noUndoYet,
       },
       // {
       //   key: ActionTypes.REDO,
@@ -32,7 +34,7 @@ function mapStateToProps({ ingame: { past } }) {
       {
         key: SAVE,
         title: 'Save',
-        disabled: true,
+        disabled: noUndoYet,
       },
       // {
       //   key: IMPORT,
@@ -60,6 +62,12 @@ function mapDispatchToProps(dispatch) {
         switch (key) {
           case ActionTypes.UNDO: {
             dispatch(undo());
+
+            break;
+          }
+
+          case SAVE: {
+            dispatch(saveGame());
 
             break;
           }

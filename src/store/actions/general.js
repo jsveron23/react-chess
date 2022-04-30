@@ -1,12 +1,25 @@
-import { UPDATE_MATCH_TYPE } from '../actionTypes';
+import { setItem } from '~/utils/localStorage';
+import { UPDATE_MATCH_TYPE, SAVE_TO_LOCALSTORAGE } from '../actionTypes';
 import { restart } from '../batchActions';
 
-export function updateMatchType(mKey) {
+export function updateMatchType(key) {
   return (dispatch) => {
     dispatch({
       type: UPDATE_MATCH_TYPE,
-      payload: mKey,
+      payload: key,
     });
     dispatch(restart());
+  };
+}
+
+export function saveGame() {
+  return (dispatch, getState) => {
+    const currState = getState();
+
+    setItem('save-game', currState);
+
+    dispatch({
+      type: SAVE_TO_LOCALSTORAGE,
+    });
   };
 }
