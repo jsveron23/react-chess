@@ -1,8 +1,7 @@
-import { useCallback } from 'react';
+import { Fragment, useCallback } from 'react';
 import PropTypes from 'prop-types';
 import { ActionTypes } from 'redux-undo';
-import Box from 'ui-box';
-import { FlexCol, Button } from 'ui/es';
+import { FlexCol, Button, Hr } from 'ui/es';
 
 const Menu = ({ items, updateMatchType, undo }) => {
   const handleClick = useCallback(
@@ -30,20 +29,13 @@ const Menu = ({ items, updateMatchType, undo }) => {
         const isUndo = key === ActionTypes.UNDO;
 
         return (
-          <>
-            <Button key={key} onClick={handleClick(key)} {...itemProps}>
+          <Fragment key={key}>
+            <Button onClick={handleClick(key)} {...itemProps}>
               {title}
             </Button>
 
-            {isUndo && (
-              <Box
-                is="span"
-                backgroundColor="#cacaca"
-                width="100%"
-                height={1}
-              />
-            )}
-          </>
+            {isUndo && <Hr />}
+          </Fragment>
         );
       })}
     </FlexCol>

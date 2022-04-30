@@ -1,3 +1,4 @@
+export { default as Hr } from './Hr';
 export { default as Button } from './Button';
 export { default as Text } from './Text';
 export { default as Relative } from './Relative';
