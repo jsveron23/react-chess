@@ -6,6 +6,6 @@ test('detectDarkTile - invalid code', (t) => {
 });
 
 test('detectDarkTile - valid code', (t) => {
-  t.false(detectDarkTile(2, 'a'));
-  t.true(detectDarkTile(3, 'a'));
+  t.false(detectDarkTile('a', 2));
+  t.true(detectDarkTile('a', 3));
 });

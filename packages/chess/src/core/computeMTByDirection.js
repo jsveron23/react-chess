@@ -14,20 +14,14 @@ import validateCode from '../utils/validateCode';
 import validateSnapshot from '../utils/validateSnapshot';
 
 // TODO change spec
-// 'compute possible direction'
 
 /**
- * Compute blocked tiles by general directions + snapshot
- * (not movement from actual pieces)
+ * Compute generic movable tiles
  * @param  {String} code
  * @param  {Array}  snapshot
  * @return {Array}
- *
- * @description
- * convert all axis to next tiles of piece movement from where code point (tilesGrp)
- * then comparing with placed tiles (placedTiles)
  */
-function computeBlockedTiles(code, snapshot) {
+function computeMTByDirection(code, snapshot) {
   if (!validateCode(code) || !validateSnapshot(snapshot)) {
     throw new Error(`invalid argument | code: ${code} / snapshot: ${snapshot}`);
   }
@@ -76,4 +70,4 @@ function computeBlockedTiles(code, snapshot) {
   )(tilesGrp);
 }
 
-export default curry(computeBlockedTiles);
+export default curry(computeMTByDirection);

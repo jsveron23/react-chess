@@ -4,7 +4,7 @@ import parseCode from './parseCode';
 import validateCode from '../utils/validateCode';
 import { Movement } from '../presets';
 
-function computeMovableTiles(code) {
+function computeMTByCode(code) {
   if (!validateCode(code)) {
     return [];
   }
@@ -18,4 +18,4 @@ function computeMovableTiles(code) {
   )(code);
 }
 
-export default computeMovableTiles;
+export default computeMTByCode;

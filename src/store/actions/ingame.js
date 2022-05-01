@@ -5,8 +5,8 @@ import {
   detectTurn,
   parseCode,
   replaceSnapshot,
-  computeMovableTiles,
-  computeBlockedTiles,
+  computeMTByCode,
+  computeMTByDirection,
 } from 'chess/es';
 import { ONE_VS_ONE } from '~/config';
 import { next } from '../batchActions';
@@ -75,13 +75,9 @@ export function updateMovableTiles(code) {
       payload: compose(
         // -> TODO able to capture
 
-        // remain only actual movable tiles
-        // intersection(
-        //   calculated actual movable tiles
-        //   calculated generic blocked tiles,
-        // )
-        intersection(computeMovableTiles(code)),
-        computeBlockedTiles(code)
+        // remain only actual movable tiles (remove blocked tiles)
+        intersection(computeMTByCode(code)),
+        computeMTByDirection(code)
 
         // -> TODO add spacial movement
       )(snapshot),
