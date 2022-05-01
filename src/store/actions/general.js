@@ -15,11 +15,20 @@ export function updateMatchType(key) {
 export function saveGame() {
   return (dispatch, getState) => {
     const currState = getState();
+    const lastSaved = +new Date();
+    const data = {
+      ...currState,
+      general: {
+        lastSaved,
+        ...currState.general,
+      },
+    };
 
-    Storage.setItem('save-game', currState);
+    Storage.setItem('save-game', data);
 
     dispatch({
       type: SAVE_TO_LOCALSTORAGE,
+      payload: lastSaved,
     });
   };
 }

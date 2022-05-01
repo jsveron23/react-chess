@@ -1,6 +1,10 @@
 import Box from 'ui-box';
 import { Relative, Flex, FlexCol, Text } from 'ui/es';
-import { DiagramContainer, MenuContainer } from '~/containers';
+import {
+  DiagramContainer,
+  MenuContainer,
+  NotiBarContainer,
+} from '~/containers';
 import useTheme from '~/styles/useTheme';
 import Logo from '~/assets/logo.svg';
 import { Viewport, Sidebar } from '~/layout';
@@ -16,7 +20,7 @@ function App() {
       </Relative>
 
       <Sidebar>
-        <FlexCol>
+        <FlexCol height="100%" justifyContent="space-between">
           <Text is="h1" textAlign="center" marginTop={30}>
             React-Chess
           </Text>
@@ -24,13 +28,15 @@ function App() {
           <Flex is="figure" justifyContent="center">
             <Logo width={logo.width} height={logo.height} />
           </Flex>
+
+          <Box padding={20} marginTop={20}>
+            <MenuContainer />
+          </Box>
+
+          <Box flex="1">Sheet</Box>
+
+          <NotiBarContainer />
         </FlexCol>
-
-        <Box padding={20} marginTop={20}>
-          <MenuContainer />
-        </Box>
-
-        <Box>Sheet</Box>
       </Sidebar>
     </Viewport>
   );

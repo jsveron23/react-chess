@@ -33,9 +33,7 @@ function mapStateToProps({
   return props;
 }
 
-const DiagramContainer = connect(mapStateToProps, {
+export default connect(mapStateToProps, {
   updateSelectedCode,
   movePiece,
 })(Diagram);
-
-export default DiagramContainer;

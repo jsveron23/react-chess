@@ -83,6 +83,4 @@ function mapDispatchToProps(dispatch) {
   };
 }
 
-const MenuContainer = connect(mapStateToProps, mapDispatchToProps)(Menu);
-
-export default MenuContainer;
+export default connect(mapStateToProps, mapDispatchToProps)(Menu);

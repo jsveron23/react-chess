@@ -1,8 +1,9 @@
 import { ONE_VS_ONE } from '~/config';
-import { UPDATE_MATCH_TYPE } from '../actionTypes';
+import { UPDATE_MATCH_TYPE, SAVE_TO_LOCALSTORAGE } from '../actionTypes';
 
 const initialState = {
   matchType: ONE_VS_ONE,
+  lastSaved: null,
 };
 
 function reducer(state = initialState, action) {
@@ -13,6 +14,13 @@ function reducer(state = initialState, action) {
       return {
         ...state,
         matchType: payload,
+      };
+    }
+
+    case SAVE_TO_LOCALSTORAGE: {
+      return {
+        ...state,
+        lastSaved: payload,
       };
     }
 
