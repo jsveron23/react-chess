@@ -1,4 +1,4 @@
-import { setItem } from '~/utils/localStorage';
+import { Storage } from '~/utils';
 import { UPDATE_MATCH_TYPE, SAVE_TO_LOCALSTORAGE } from '../actionTypes';
 import { restart } from '../batchActions';
 
@@ -16,7 +16,7 @@ export function saveGame() {
   return (dispatch, getState) => {
     const currState = getState();
 
-    setItem('save-game', currState);
+    Storage.setItem('save-game', currState);
 
     dispatch({
       type: SAVE_TO_LOCALSTORAGE,

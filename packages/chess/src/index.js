@@ -1,20 +1,18 @@
-export * from './chess';
+export * from './presets';
 export * from './pieces';
 
-export { default as detectTurn } from './core/detectTurn';
+export { default as detectDarkTile } from './utils/detectDarkTile';
+export { default as detectTurn } from './utils/detectTurn';
+export { default as validateCode } from './utils/validateCode';
+export { default as validateTile } from './utils/validateTile';
+export { default as validateSnapshot } from './utils/validateSnapshot';
 
 export { default as replaceSnapshot } from './core/replaceSnapshot';
-
 export { default as getNextFileName } from './core/getNextFileName';
 export { default as getNextRankName } from './core/getNextRankName';
-export { default as detectDarkTile } from './core/detectDarkTile';
-export { default as invalidTile } from './core/invalidTile';
 export { default as getNextTile } from './core/getNextTile';
 export { default as computeMovableTiles } from './core/computeMovableTiles';
 export { default as computeBlockedTiles } from './core/computeBlockedTiles';
 export { default as snapshotToTiles } from './core/snapshotToTiles';
-export { default as groupDirectionTilesByCode } from './core/groupDirectionTilesByCode';
-
-export { default as validCode } from './core/validCode';
 export { default as findCode } from './core/findCode';
 export { default as parseCode } from './core/parseCode';

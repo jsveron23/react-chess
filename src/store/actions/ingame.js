@@ -1,4 +1,4 @@
-import { compose } from 'ramda';
+import { compose, intersection } from 'ramda';
 import { ActionCreators } from 'redux-undo';
 import {
   Opponent,
@@ -69,17 +69,22 @@ export function updateMovableTiles(code) {
       },
     } = getState();
 
-    // TODO optimize it
-    const computedMovableTiles = compose(
-      // -> TODO able to capture
-      computeBlockedTiles(code, snapshot),
-      // -> TODO add spacial movement
-      computeMovableTiles
-    )(code);
-
     dispatch({
       type: UPDATE_MOVABLE_TILES,
-      payload: computedMovableTiles,
+      // TODO optimize it
+      payload: compose(
+        // -> TODO able to capture
+
+        // remain only actual movable tiles
+        // intersection(
+        //   calculated actual movable tiles
+        //   calculated generic blocked tiles,
+        // )
+        intersection(computeMovableTiles(code)),
+        computeBlockedTiles(code)
+
+        // -> TODO add spacial movement
+      )(snapshot),
     });
   };
 }

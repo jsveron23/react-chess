@@ -1,5 +1,5 @@
 import { curry } from 'ramda';
-import { File } from '../chess';
+import { File } from '../presets';
 
 function getNextFileName(fileName, x) {
   const fileIdx = File.indexOf(fileName);

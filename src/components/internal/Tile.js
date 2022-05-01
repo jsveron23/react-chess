@@ -1,7 +1,7 @@
 import { useCallback } from 'react';
 import PropTypes from 'prop-types';
 import { Relative, Absolute, Text } from 'ui/es';
-import { validCode } from 'chess/es';
+import { validateCode } from 'chess/es';
 import useTheme from '~/styles/useTheme';
 import Piece from './Piece';
 import Mask from './Mask';
@@ -23,7 +23,7 @@ const Tile = ({
   const isCodeMatched = [selectedCode, ...movableTiles].indexOf(code) > -1;
   const handleClickTile = useCallback(
     (/* evt */) => {
-      const isPieceTile = validCode(code);
+      const isPieceTile = validateCode(code);
       const isMovableTile = movableTiles.indexOf(tileName) > -1;
 
       if (isPieceTile) {

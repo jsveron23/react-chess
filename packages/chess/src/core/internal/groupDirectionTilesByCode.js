@@ -1,29 +1,14 @@
 import { compose, reduce, prop, flip } from 'ramda';
 import arrowToNextTiles from './arrowToNextTiles';
-import parseCode from './parseCode';
-import {
-  AxisGroupByDirection,
-  Vertical,
-  Horizontal,
-  Diagonal,
-  Jumpover,
-} from '../chess';
+import parseCode from '../parseCode';
+import { AxisGroupByDirection, DirectionGroupByPiece } from '../../presets';
 
 /**
- * Convert axis to tiles in `GroupDirectionByPiece` base on code tile
+ * Convert axis to tiles in `DirectionGroupByPiece` base on code tile
  * @param  {String} code
- * @return {Object} same format as `GroupDirectionByPiece` but all axis converted as tiles
+ * @return {Object} same format as `DirectionGroupByPiece` but all axis converted as tiles
  */
 function groupDirectionTilesByCode(code) {
-  const GroupDirectionByPiece = {
-    K: [Vertical, Horizontal, Diagonal],
-    B: [Diagonal],
-    N: [Jumpover],
-    P: [Vertical],
-    Q: [Vertical, Horizontal, Diagonal],
-    R: [Vertical, Horizontal],
-  };
-
   return compose(
     // convert axis items to next tiles items
     reduce((acc, directionKey) => {
@@ -36,7 +21,7 @@ function groupDirectionTilesByCode(code) {
     }, {}),
 
     // figuring out which direction of piece
-    flip(prop)(GroupDirectionByPiece),
+    flip(prop)(DirectionGroupByPiece),
     prop('piece'),
     parseCode
   )(code);

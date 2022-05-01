@@ -1,0 +1,13 @@
+{
+  "reporter": [
+    "html",
+    "text"
+  ],
+  "all": true,
+  "per-file": true,
+  "include": ["packages/chess/src/core/**/*", "packages/chess/src/utils/**/*"],
+  "exclude": ["packages/ui/src/**/*", "**/index.js", "**/test/**/*"],
+  "lines": "95",
+  "branches": "95",
+  "statements": "95"
+}

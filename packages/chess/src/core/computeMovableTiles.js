@@ -1,9 +1,14 @@
 import { compose, flip, prop, map, filter } from 'ramda';
 import getNextTile from './getNextTile';
 import parseCode from './parseCode';
-import { Movement } from '../chess';
+import validateCode from '../utils/validateCode';
+import { Movement } from '../presets';
 
 function computeMovableTiles(code) {
+  if (!validateCode(code)) {
+    return [];
+  }
+
   return compose(
     filter(Boolean),
     map(getNextTile(code)),

@@ -15,7 +15,7 @@ function mapStateToProps({
     movableTiles,
 
     getTileBg(tile, fileName, rankName) {
-      const isDark = detectDarkTile({ rankName, fileName });
+      const isDark = detectDarkTile(rankName, fileName);
 
       return isDark ? tile.dark : tile.light;
     },

@@ -3,13 +3,13 @@ import thunk from 'redux-thunk';
 import { identity } from 'ramda';
 import { composeWithDevTools } from 'redux-devtools-extension';
 import { isDev } from '~/config';
-import { getItem } from '~/utils/localStorage';
+import { Storage } from '~/utils';
 import reducers from './reducers';
 
 const composeDev = isDev ? composeWithDevTools : identity;
 
 function configureStore(preloadedState) {
-  const parsedData = getItem('save-game');
+  const parsedData = Storage.getItem('save-game');
   const middlewareEnhancer = applyMiddleware(thunk);
   const composedEnhancer = composeDev(middlewareEnhancer);
   const store = createStore(

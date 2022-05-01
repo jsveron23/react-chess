@@ -1,8 +1,9 @@
 import { curry } from 'ramda';
 import getNextFileName from './getNextFileName';
 import getNextRankName from './getNextRankName';
-import invalidTile from './invalidTile';
 import parseCode from './parseCode';
+import validateTile from '../utils/validateTile';
+import { Side } from '../presets';
 
 /**
  * Get next tile from where piece stands
@@ -14,9 +15,9 @@ function getNextTile(code, axis) {
   const { side, fileName, rankName } = parseCode(code);
   const [x, y] = axis;
   const nextFileName = getNextFileName(fileName, x);
-  const nextRankName = getNextRankName(rankName, side === 'w' ? y : -y);
+  const nextRankName = getNextRankName(rankName, side === Side.w ? y : -y);
 
-  if (invalidTile(nextFileName, nextRankName)) {
+  if (!validateTile(nextFileName, nextRankName)) {
     return '';
   }
 

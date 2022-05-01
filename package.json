@@ -8,11 +8,14 @@
     "lint": "eslint 'src/**/*.js'",
     "prettier": "prettier -c src/**/*.js",
     "clean": "rimraf public",
-    "watch": "watchexec -w packages npm run build:w",
+    "clean:c": "rimraf coverage",
     "prebuild": "npm run clean",
+    "build:pw": "watchexec -w packages npm run build:w",
     "build:w": "npm run build --ws",
     "build": "webpack --env.production --display-error-details",
     "start": "webpack-dev-server",
+    "test": "npm run clean:c && c8 ava",
+    "test:open": "open ./coverage/index.html",
     "preinstall": "npm run build:w"
   },
   "keywords": [
@@ -42,8 +45,11 @@
     "@babel/plugin-transform-runtime": "^7.17.0",
     "@babel/preset-env": "^7.16.11",
     "@babel/preset-react": "^7.16.7",
+    "@babel/register": "^7.17.7",
     "@pmmmwh/react-refresh-webpack-plugin": "^0.5.4",
     "babel-loader": "^8.2.3",
+    "c8": "^7.11.2",
+    "core-js": "^3.22.3",
     "css-loader": "^6.6.0",
     "eslint": "^8.9.0",
     "eslint-import-resolver-webpack": "^0.13.2",
@@ -70,6 +76,7 @@
     "webpack-dev-server": "^4.7.4"
   },
   "dependencies": {
+    "ava": "^4.2.0",
     "classnames": "^2.3.1",
     "prop-types": "^15.8.1",
     "ramda": "^0.28.0",

@@ -1,4 +1,5 @@
-import { Rank, File } from '../chess';
+import { curry } from 'ramda';
+import { Rank, File } from '../presets';
 
 /**
  * Sum both index together
@@ -7,10 +8,12 @@ import { Rank, File } from '../chess';
  * @param  {String}  fileName
  * @return {Boolean}
  */
-export default function detectDarkTile({ rankName, fileName }) {
+function detectDarkTile(rankName, fileName) {
   const rankIdx = Math.abs(Rank.indexOf(rankName) - 8);
   const fileIdx = File.indexOf(fileName) + 1;
 
   // => (rankIdx + fileIdx) % 2 === 0
   return !((rankIdx + fileIdx) & 1);
 }
+
+export default curry(detectDarkTile);
