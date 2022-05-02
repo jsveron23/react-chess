@@ -1,10 +1,10 @@
 import { batch } from 'react-redux';
 import { ActionCreators } from 'redux-undo';
+import { compose, reject, equals } from 'ramda';
 import {
   Promotion,
   Special,
   Opponent,
-  detectTurn,
   parseCode,
   replaceSnapshot,
   getTimeline,
@@ -47,100 +47,54 @@ export function updateSnapshot(snapshot) {
   };
 }
 
-export function afterMoving(nextTileName) {
-  return (dispatch, getState) => {
-    const {
-      ingame: {
-        present: { snapshot, selectedCode },
-      },
-    } = getState();
-
-    const { side, piece, pKey } = parseCode(selectedCode);
-    const nextCode = `${pKey}${nextTileName}`;
-    const mvs = Special[piece];
-
-    // default snapshot
-    let nextSnapshot = replaceSnapshot(selectedCode, nextCode, snapshot);
-
-    if (mvs) {
-      mvs.forEach((mvName) => {
-        switch (mvName) {
-          // case Castling: {
-          //   dispatch();
-          //
-          //   break;
-          // }
-          //
-          // case EnPassant: {
-          //   // cature after moving
-          //   // store pending event
-          //   dispatch();
-          //
-          //   break;
-          // }
-
-          case Promotion: {
-            const queenCode = getPromotionCode(nextTileName, side);
-
-            nextSnapshot = replaceSnapshot(nextCode, queenCode, nextSnapshot);
-
-            break;
-          }
-
-          default:
-        }
-      });
-    }
-
-    dispatch(updateSnapshot(nextSnapshot));
-  };
-}
-
 // before moving
-export function updateMovableTiles(code) {
-  return (dispatch, getState) => {
-    const {
-      ingame: { present, past },
-    } = getState();
-
-    dispatch({
-      type: UPDATE_MOVABLE_TILES,
-      payload: computeFinalMT(code, getTimeline(present, past)),
+export function updateSelectedCode(pretendCode) {
+  return (dispatch) => {
+    batch(() => {
+      dispatch(updateMovableTiles(pretendCode));
+      dispatch({
+        type: UPDATE_SELECTED_CODE,
+        payload: pretendCode,
+      });
     });
   };
 }
 
-export function updateSelectedCode(code) {
+export function capturePiece(pretendCode, nextTileName) {
   return (dispatch, getState) => {
     const {
       ingame: {
-        present: { turn },
-      },
-    } = getState();
-
-    if (detectTurn(turn, code)) {
-      dispatch(updateMovableTiles(code));
-      dispatch({
-        type: UPDATE_SELECTED_CODE,
-        payload: code,
-      });
-    }
-  };
-}
-
-export function movePiece(tileName) {
-  return (dispatch, getState) => {
-    const {
-      ingame: {
-        present: { turn },
+        present: { selectedCode, snapshot },
       },
     } = getState();
 
     batch(() => {
-      dispatch(afterMoving(tileName));
-      dispatch(removeSelectedCode());
-      dispatch(removeMovableTiles());
-      dispatch(updateTurn(Opponent[turn]));
+      dispatch(
+        afterMoving(nextTileName, (nextCode) => {
+          return compose(
+            reject(equals(selectedCode)),
+            replaceSnapshot(pretendCode, nextCode)
+          )(snapshot);
+        })
+      );
+    });
+  };
+}
+
+export function movePiece(nextTileName) {
+  return (dispatch, getState) => {
+    const {
+      ingame: {
+        present: { selectedCode, snapshot },
+      },
+    } = getState();
+
+    batch(() => {
+      dispatch(
+        afterMoving(nextTileName, (nextCode) =>
+          replaceSnapshot(selectedCode, nextCode, snapshot)
+        )
+      );
     });
   };
 }
@@ -160,5 +114,78 @@ export function undo() {
     } else {
       dispatch(ActionCreators.undo());
     }
+  };
+}
+
+// before moving
+export function updateMovableTiles(code) {
+  return (dispatch, getState) => {
+    const {
+      ingame: { present, past },
+    } = getState();
+
+    dispatch({
+      type: UPDATE_MOVABLE_TILES,
+      payload: computeFinalMT(code, getTimeline(present, past)),
+    });
+  };
+}
+
+// before reset
+export function afterMoving(nextTileName, getNextSnapshot) {
+  return (dispatch, getState) => {
+    const {
+      ingame: {
+        present: { turn, snapshot, selectedCode },
+      },
+    } = getState();
+
+    const { side, piece, pKey } = parseCode(selectedCode);
+    const nextCode = `${pKey}${nextTileName}`;
+    const mvs = Special[piece];
+
+    // default snapshot for safeness
+    let nextSnapshot = snapshot;
+
+    if (typeof getNextSnapshot === 'function') {
+      // default snapshot before appying special movement
+      nextSnapshot = getNextSnapshot(nextCode);
+    }
+
+    if (mvs) {
+      mvs.forEach((mvName) => {
+        switch (mvName) {
+          // case Castling: {
+          //   dispatch();
+          //
+          //   break;
+          // }
+          //
+          // case EnPassant: {
+          //   // cature after moving
+          //   // store pending event
+          //   dispatch();
+          //
+          //   break;
+          // }
+
+          case Promotion: {
+            // TODO apply every kind of piece
+            const queenCode = getPromotionCode(nextTileName, side);
+
+            nextSnapshot = replaceSnapshot(nextCode, queenCode, nextSnapshot);
+
+            break;
+          }
+
+          default:
+        }
+      });
+    }
+
+    dispatch(updateSnapshot(nextSnapshot));
+    dispatch(removeSelectedCode());
+    dispatch(removeMovableTiles());
+    dispatch(updateTurn(Opponent[turn]));
   };
 }

@@ -1,48 +1,70 @@
 import { connect } from 'react-redux';
-import memoizeOne from 'memoize-one';
-import { compose, prop, defaultTo } from 'ramda';
-import { parseCode, validateCode, findCodeByTile } from 'chess/es';
+import { includes } from 'ramda';
+import { detectEnemy, validateCode, getPKeyBy, detectTurn } from 'chess/es';
 import { Diagram } from '~/components';
-import { updateSelectedCode, movePiece } from '~/store/actions';
-
-const getPKey = memoizeOne(function getPKey(snapshot) {
-  return (tileName) =>
-    compose(
-      prop('pKey'),
-      parseCode,
-      defaultTo(''),
-      findCodeByTile(snapshot)
-    )(tileName);
-});
+import { updateSelectedCode, movePiece, capturePiece } from '~/store/actions';
 
 function mapStateToProps({
   ingame: {
-    present: { selectedCode, movableTiles, snapshot },
+    present: { turn, selectedCode, movableTiles, snapshot },
   },
 }) {
-  const props = {
-    getPKey: getPKey(snapshot),
-    selectedCode,
-    snapshot,
+  return {
+    getPKey: getPKeyBy(snapshot),
+    detectEnemy: detectEnemy(movableTiles, selectedCode),
+    detectInMT: (code) => includes(code, [selectedCode, ...movableTiles]),
     movableTiles,
+    turn,
   };
-
-  return props;
 }
 
 function mapDispatchToProps(dispatch) {
   return {
-    onClickTile(movableTiles, nextTileName, pretendCode) {
+    onClickTile(getArgs, getState) {
+      const { nextTileName, pretendCode } = getArgs();
+      const { turn, movableTiles } = getState();
       const isPieceTile = validateCode(pretendCode);
+      const isOpponent = detectTurn(turn, pretendCode);
+
+      // only detect tile, not code(piece)
       const isMovableTile = movableTiles.indexOf(nextTileName) > -1;
 
-      if (isPieceTile) {
+      if (isMovableTile) {
+        if (isPieceTile && !isOpponent) {
+          dispatch(capturePiece(pretendCode, nextTileName));
+        } else {
+          dispatch(movePiece(nextTileName));
+        }
+      }
+
+      if (isPieceTile && isOpponent) {
         dispatch(updateSelectedCode(pretendCode));
-      } else if (isMovableTile) {
-        dispatch(movePiece(nextTileName));
       }
     },
   };
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(Diagram);
+function mergeProps(stateProps, dispatchProps, ownProps) {
+  return {
+    ...stateProps,
+    ...dispatchProps,
+    ...ownProps,
+    // this callback has been executed from `<Tile />.onClickTile`
+    onClickTile(nextTileName, pretendCode) {
+      // HOF
+      dispatchProps.onClickTile(
+        // get arguments from actual callback
+        () => ({ nextTileName, pretendCode }),
+
+        // state from `mapStateToProps`
+        () => stateProps
+      );
+    },
+  };
+}
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps,
+  mergeProps
+)(Diagram);

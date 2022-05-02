@@ -13,8 +13,6 @@ import groupDirectionTilesByCode from './internal/groupDirectionTilesByCode';
 import validateCode from '../utils/validateCode';
 import validateSnapshot from '../utils/validateSnapshot';
 
-// TODO change spec
-
 /**
  * Compute generic movable tiles
  * @param  {String} code

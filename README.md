@@ -4,6 +4,13 @@ Programs must be written for people to read, and only incidentally for machines 
 
 - Abelson & Sussman, Structure and Interpretation of Computer Programs
 
+## Thoughts
+
+- Logic is almost same but completely redesign functions
+- My goal is never do unit testing for React components
+- To do that, `Key purpose are decouple components and business logic functions` then test logic functions only
+- As functional programming lover, try to be free from side effects
+
 ## Demo
 
 [WIP] https://react-chess.app

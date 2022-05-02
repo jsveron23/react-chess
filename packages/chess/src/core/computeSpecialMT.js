@@ -1,6 +1,5 @@
 import { curry, compose, nth, map, of, flip } from 'ramda';
 import {
-  // Side,
   Snapshot,
   Special,
   Castling,

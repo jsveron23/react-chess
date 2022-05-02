@@ -28,6 +28,9 @@ export function updateMatchType(key) {
 
 export function saveGame() {
   return (dispatch, getState) => {
+    dispatch(removeSelectedCode());
+    dispatch(removeMovableTiles());
+
     const currState = getState();
     const lastSaved = +new Date();
     const data = {

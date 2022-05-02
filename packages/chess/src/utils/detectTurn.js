@@ -1,11 +1,11 @@
 import { curry } from 'ramda';
 import parseCode from '../core/parseCode';
-import { Side } from '../presets';
+import { Turn } from '../presets';
 
 function detectTurn(turn, code) {
   const { side } = parseCode(code);
 
-  return Side[turn] === Side[side];
+  return turn === Turn[side];
 }
 
 export default curry(detectTurn);
