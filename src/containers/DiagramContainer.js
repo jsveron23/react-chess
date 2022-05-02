@@ -14,6 +14,7 @@ function mapStateToProps({
     snapshot,
     movableTiles,
 
+    // TODO optimize it
     getPKey(tileName) {
       return compose(
         prop('pKey'),

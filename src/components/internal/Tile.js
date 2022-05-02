@@ -23,8 +23,7 @@ const Tile = ({
 
   // actual code will match with piece tile
   // tiles will match with empty tiles
-  const isCodeMatched =
-    [selectedCode, ...movableTiles].indexOf(pretendCode) > -1;
+  const isInWay = [selectedCode, ...movableTiles].indexOf(pretendCode) > -1;
 
   const handleClickTile = useCallback(
     (/* evt */) => onClickTile(movableTiles, tileName, pretendCode),
@@ -42,7 +41,7 @@ const Tile = ({
       </Absolute>
 
       <Piece pKey={pKey} />
-      <Mask isCodeMatched={isCodeMatched} />
+      <Mask isInWay={isInWay} />
     </Relative>
   );
 };

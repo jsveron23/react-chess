@@ -3,7 +3,7 @@ import {
   // Side,
   Snapshot,
   Special,
-  // Castling,
+  Castling,
   DoubleStep,
   // EnPassant,
 } from '../presets';
@@ -26,10 +26,11 @@ function computeSpecialMT(code) {
     nth(0),
     map((mvName) => {
       switch (mvName) {
-        // case Castling: {
-        //   // TODO
-        //   break;
-        // }
+        case Castling: {
+          // TODO
+
+          return [];
+        }
 
         case DoubleStep: {
           return compose(

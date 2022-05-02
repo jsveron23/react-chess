@@ -11,9 +11,10 @@ function computeFinalMT(code, timeline) {
   const cmt = computeMTByCode(code);
   const smt = computeSpecialMT(code);
 
-  // console.log('dmt: ', dmt);
-  // console.log('cmt: ', cmt);
-  // console.log('smt: ', smt);
+  console.log('dmt: ', dmt);
+  console.log('cmt: ', cmt);
+  console.log('smt: ', smt);
+  console.log('inter...: ', intersection(dmt, concat(cmt, smt)));
 
   // intersection combined mt with
   return intersection(dmt, concat(cmt, smt));

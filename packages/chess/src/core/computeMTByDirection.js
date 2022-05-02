@@ -50,9 +50,9 @@ function computeMTByDirection(code, snapshot) {
                 const idxNotSet = lastIdx === -1;
                 const isBlocked = lastIdx > -1;
 
-                // ignore first tile also
                 // compare with placedTiles(snapshot)
                 if (idxNotSet) {
+                  // TODO check opponent
                   lastIdx = placedTiles.indexOf(tile);
                 }
 
