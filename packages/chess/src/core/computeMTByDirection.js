@@ -52,7 +52,6 @@ function computeMTByDirection(code, snapshot) {
 
                 // compare with placedTiles(snapshot)
                 if (idxNotSet) {
-                  // TODO check opponent
                   lastIdx = placedTiles.indexOf(tile);
                 }
 

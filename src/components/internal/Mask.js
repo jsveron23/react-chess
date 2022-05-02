@@ -2,7 +2,13 @@ import { memo } from 'react';
 import PropTypes from 'prop-types';
 import { Absolute } from 'ui/es';
 
-const Mask = ({ isCodeMatched }) => {
+const Mask = ({ isInWay, isEnemy }) => {
+  let bg = isInWay ? 'rgba(100, 100, 100, 0.3)' : 'auto';
+  bg = isEnemy ? 'rgba(220, 20, 60, 0.3)' : bg;
+
+  let border = isInWay ? '2px dashed #999' : 'none';
+  border = isEnemy ? '2px dashed red' : border;
+
   return (
     <Absolute
       top={0}
@@ -10,18 +16,20 @@ const Mask = ({ isCodeMatched }) => {
       left={0}
       right={0}
       margin={1}
-      backgroundColor={isCodeMatched ? 'rgba(100, 100, 100, 0.3)' : 'auto'}
-      border={isCodeMatched ? '2px dashed #999' : 'none'}
+      backgroundColor={bg}
+      border={border}
     />
   );
 };
 
 Mask.propTypes = {
-  isCodeMatched: PropTypes.bool,
+  isInWay: PropTypes.bool,
+  isEnemy: PropTypes.bool,
 };
 
 Mask.defaultProps = {
-  isCodeMatched: false,
+  isInWay: false,
+  isEnemy: false,
 };
 
 export default memo(Mask);

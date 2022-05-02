@@ -1,8 +1,19 @@
 import { connect } from 'react-redux';
+import memoizeOne from 'memoize-one';
 import { compose, prop, defaultTo } from 'ramda';
 import { parseCode, validateCode, findCodeByTile } from 'chess/es';
 import { Diagram } from '~/components';
 import { updateSelectedCode, movePiece } from '~/store/actions';
+
+const getPKey = memoizeOne(function getPKey(snapshot) {
+  return (tileName) =>
+    compose(
+      prop('pKey'),
+      parseCode,
+      defaultTo(''),
+      findCodeByTile(snapshot)
+    )(tileName);
+});
 
 function mapStateToProps({
   ingame: {
@@ -10,19 +21,10 @@ function mapStateToProps({
   },
 }) {
   const props = {
+    getPKey: getPKey(snapshot),
     selectedCode,
     snapshot,
     movableTiles,
-
-    // TODO optimize it
-    getPKey(tileName) {
-      return compose(
-        prop('pKey'),
-        parseCode,
-        defaultTo(''),
-        findCodeByTile(snapshot)
-      )(tileName);
-    },
   };
 
   return props;

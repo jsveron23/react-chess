@@ -15,8 +15,8 @@ export const Side = {
 export const Opponent = {
   white: 'black',
   black: 'white',
-  w: 'black',
-  b: 'white',
+  w: 'b',
+  b: 'w',
 };
 
 // prettier-ignore

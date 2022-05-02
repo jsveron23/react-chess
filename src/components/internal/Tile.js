@@ -1,10 +1,22 @@
 import { useCallback } from 'react';
 import PropTypes from 'prop-types';
-import { detectDarkTile } from 'chess/es';
+import { Opponent, detectDarkTile, parseCode } from 'chess/es';
 import { Relative, Absolute, Text } from 'ui/es';
 import useTheme from '~/styles/useTheme';
 import Piece from './Piece';
 import Mask from './Mask';
+
+function detectEnemy(pKey, selectedCode, tileName, movableTiles) {
+  const { piece, side } = parseCode(selectedCode);
+  const enemySide = Opponent[side];
+
+  const isExist = !!pKey && !!tileName;
+  const isNotSameSide = side !== enemySide;
+  const isNotPawn = !piece.startsWith('P');
+  const isInMt = movableTiles.indexOf(tileName) > -1;
+
+  return isExist && isNotSameSide && isNotPawn && isInMt;
+}
 
 const Tile = ({
   pKey,
@@ -23,7 +35,12 @@ const Tile = ({
 
   // actual code will match with piece tile
   // tiles will match with empty tiles
+  // enemy title in it, but it won't match it because it's tile (not code)
   const isInWay = [selectedCode, ...movableTiles].indexOf(pretendCode) > -1;
+
+  const enemyTile =
+    detectEnemy(pKey, selectedCode, tileName, movableTiles) && tileName;
+  const isEnemyTile = enemyTile === tileName;
 
   const handleClickTile = useCallback(
     (/* evt */) => onClickTile(movableTiles, tileName, pretendCode),
@@ -41,7 +58,7 @@ const Tile = ({
       </Absolute>
 
       <Piece pKey={pKey} />
-      <Mask isInWay={isInWay} />
+      <Mask isInWay={isInWay} isEnemy={isEnemyTile} />
     </Relative>
   );
 };
