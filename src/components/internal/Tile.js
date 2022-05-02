@@ -1,7 +1,7 @@
 import { useCallback } from 'react';
 import PropTypes from 'prop-types';
+import { detectDarkTile } from 'chess/es';
 import { Relative, Absolute, Text } from 'ui/es';
-import { validateCode } from 'chess/es';
 import useTheme from '~/styles/useTheme';
 import Piece from './Piece';
 import Mask from './Mask';
@@ -13,30 +13,30 @@ const Tile = ({
   rankName,
   selectedCode,
   movableTiles,
-  getTileBg,
-  movePiece,
-  updateSelectedCode,
+  onClickTile,
 }) => {
   const { tile } = useTheme();
-  const bg = getTileBg(tile, fileName, rankName);
-  const code = `${pKey}${tileName}`;
-  const isCodeMatched = [selectedCode, ...movableTiles].indexOf(code) > -1;
-  const handleClickTile = useCallback(
-    (/* evt */) => {
-      const isPieceTile = validateCode(code);
-      const isMovableTile = movableTiles.indexOf(tileName) > -1;
+  const isDark = detectDarkTile(fileName, rankName);
 
-      if (isPieceTile) {
-        updateSelectedCode(code);
-      } else if (isMovableTile) {
-        movePiece(tileName);
-      }
-    },
-    [movePiece, code, tileName, movableTiles, updateSelectedCode]
+  // code or tileName(pKey can be empty if no piece on tile)
+  const pretendCode = `${pKey}${tileName}`;
+
+  // actual code will match with piece tile
+  // tiles will match with empty tiles
+  const isCodeMatched =
+    [selectedCode, ...movableTiles].indexOf(pretendCode) > -1;
+
+  const handleClickTile = useCallback(
+    (/* evt */) => onClickTile(movableTiles, tileName, pretendCode),
+    [pretendCode, tileName, movableTiles, onClickTile]
   );
 
   return (
-    <Relative flex="1" backgroundColor={bg} onClick={handleClickTile}>
+    <Relative
+      flex="1"
+      backgroundColor={isDark ? tile.dark : tile.light}
+      onClick={handleClickTile}
+    >
       <Absolute color={tile.text}>
         <Text padding={5}>{tileName}</Text>
       </Absolute>
@@ -48,9 +48,7 @@ const Tile = ({
 };
 
 Tile.propTypes = {
-  getTileBg: PropTypes.func.isRequired,
-  updateSelectedCode: PropTypes.func.isRequired,
-  movePiece: PropTypes.func.isRequired,
+  onClickTile: PropTypes.func.isRequired,
   tileName: PropTypes.string.isRequired,
   fileName: PropTypes.string.isRequired,
   rankName: PropTypes.oneOfType([PropTypes.string, PropTypes.number])

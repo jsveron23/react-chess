@@ -8,7 +8,7 @@ function replaceSnapshot(currCode, nextCode, snapshot) {
     !validateCode(nextCode) ||
     !validateSnapshot(snapshot)
   ) {
-    return [];
+    return snapshot || [];
   }
 
   const cloneSnapshot = clone(snapshot);

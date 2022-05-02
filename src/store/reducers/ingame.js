@@ -12,6 +12,9 @@ const initialState = {
   turn: Turn.w,
   selectedCode: '',
   movableTiles: [],
+  pendingActions: [
+    /* should be cleared once your turn started */
+  ],
   snapshot: Snapshot,
 };
 

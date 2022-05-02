@@ -47,14 +47,16 @@ function computeMTByDirection(code, snapshot) {
             return compose(
               filter(Boolean),
               map((tile) => {
+                const idxNotSet = lastIdx === -1;
+                const isBlocked = lastIdx > -1;
+
                 // ignore first tile also
                 // compare with placedTiles(snapshot)
-                //
-                if (lastIdx === -1) {
+                if (idxNotSet) {
                   lastIdx = placedTiles.indexOf(tile);
                 }
 
-                if (lastIdx > -1) {
+                if (isBlocked) {
                   return '';
                 }
 

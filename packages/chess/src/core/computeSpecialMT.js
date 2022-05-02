@@ -1,4 +1,4 @@
-import { curry } from 'ramda';
+import { curry, compose, nth, map, of, flip } from 'ramda';
 import {
   // Side,
   Snapshot,
@@ -6,7 +6,6 @@ import {
   // Castling,
   DoubleStep,
   // EnPassant,
-  // Promotion,
 } from '../presets';
 import findCode from './findCode';
 import parseCode from './parseCode';
@@ -15,7 +14,7 @@ import getNextTile from './getNextTile';
 // TODO only compute special movable tiles
 function computeSpecialMT(code) {
   // const [presentSnapshot] = timeline;
-  const { piece, tileName } = parseCode(code);
+  const { piece } = parseCode(code);
   const mvs = Special[piece];
 
   // no special
@@ -23,35 +22,32 @@ function computeSpecialMT(code) {
     return [];
   }
 
-  return mvs.reduce((acc, mvName) => {
-    switch (mvName) {
-      // case Castling: {
-      //   // TODO
-      //   break;
-      // }
+  return compose(
+    nth(0),
+    map((mvName) => {
+      switch (mvName) {
+        // case Castling: {
+        //   // TODO
+        //   break;
+        // }
 
-      case DoubleStep: {
-        const initCode = findCode(Snapshot, tileName);
-        const dbstTile = getNextTile(initCode, [0, 2]);
+        case DoubleStep: {
+          return compose(
+            of,
+            flip(getNextTile)([0, 2]),
+            findCode(Snapshot)
+          )(code);
+        }
 
-        return [...acc, dbstTile];
+        // case EnPassant: {
+        //   // TODO move side
+        //   break;
+        // }
+
+        default:
       }
-
-      // case EnPassant: {
-      //   // TODO
-      //   break;
-      // }
-
-      // case Promotion: {
-      //   // TODO use it after move
-      //   break;
-      // }
-
-      default: {
-        return acc;
-      }
-    }
-  }, []);
+    })
+  )(mvs);
 }
 
 export default curry(computeSpecialMT);

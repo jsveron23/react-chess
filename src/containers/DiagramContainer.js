@@ -1,6 +1,6 @@
 import { connect } from 'react-redux';
 import { compose, prop, defaultTo } from 'ramda';
-import { parseCode, findCode, detectDarkTile } from 'chess/es';
+import { parseCode, validateCode, findCodeByTile } from 'chess/es';
 import { Diagram } from '~/components';
 import { updateSelectedCode, movePiece } from '~/store/actions';
 
@@ -14,18 +14,12 @@ function mapStateToProps({
     snapshot,
     movableTiles,
 
-    getTileBg(tile, fileName, rankName) {
-      const isDark = detectDarkTile(fileName, rankName);
-
-      return isDark ? tile.dark : tile.light;
-    },
-
     getPKey(tileName) {
       return compose(
         prop('pKey'),
         parseCode,
         defaultTo(''),
-        findCode(snapshot)
+        findCodeByTile(snapshot)
       )(tileName);
     },
   };
@@ -33,7 +27,19 @@ function mapStateToProps({
   return props;
 }
 
-export default connect(mapStateToProps, {
-  updateSelectedCode,
-  movePiece,
-})(Diagram);
+function mapDispatchToProps(dispatch) {
+  return {
+    onClickTile(movableTiles, nextTileName, pretendCode) {
+      const isPieceTile = validateCode(pretendCode);
+      const isMovableTile = movableTiles.indexOf(nextTileName) > -1;
+
+      if (isPieceTile) {
+        dispatch(updateSelectedCode(pretendCode));
+      } else if (isMovableTile) {
+        dispatch(movePiece(nextTileName));
+      }
+    },
+  };
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(Diagram);

@@ -3,24 +3,15 @@ import { FlexRow } from 'ui/es';
 import { Rank as Ranks } from 'chess/es';
 import File from './File';
 
-const Rank = ({
-  selectedCode,
-  movableTiles,
-  getTileBg,
-  getPKey,
-  updateSelectedCode,
-  movePiece,
-}) => {
+const Rank = ({ selectedCode, movableTiles, getPKey, onClickTile }) => {
   return Ranks.map((rankName) => {
     return (
       <FlexRow key={rankName} flex="1">
         <File
           selectedCode={selectedCode}
           rankName={rankName}
-          getTileBg={getTileBg}
           getPKey={getPKey}
-          updateSelectedCode={updateSelectedCode}
-          movePiece={movePiece}
+          onClickTile={onClickTile}
           movableTiles={movableTiles}
         />
       </FlexRow>
@@ -30,8 +21,7 @@ const Rank = ({
 
 Rank.propTypes = {
   getPKey: PropTypes.func.isRequired,
-  updateSelectedCode: PropTypes.func.isRequired,
-  movePiece: PropTypes.func.isRequired,
+  onClickTile: PropTypes.func.isRequired,
   movableTiles: PropTypes.arrayOf(PropTypes.string),
   selectedCode: PropTypes.string,
 };

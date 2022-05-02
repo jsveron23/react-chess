@@ -5,11 +5,9 @@ import Tile from './Tile';
 const File = ({
   selectedCode,
   rankName,
-  getTileBg,
-  getPKey,
-  updateSelectedCode,
-  movePiece,
   movableTiles,
+  getPKey,
+  onClickTile,
 }) => {
   return Files.map((fileName) => {
     const tileName = `${fileName}${rankName}`;
@@ -23,9 +21,7 @@ const File = ({
         fileName={fileName}
         rankName={rankName}
         movableTiles={movableTiles}
-        updateSelectedCode={updateSelectedCode}
-        getTileBg={getTileBg}
-        movePiece={movePiece}
+        onClickTile={onClickTile}
         pKey={pKey}
       />
     );
@@ -33,10 +29,8 @@ const File = ({
 };
 
 File.propTypes = {
-  getTileBg: PropTypes.func.isRequired,
   getPKey: PropTypes.func.isRequired,
-  updateSelectedCode: PropTypes.func.isRequired,
-  movePiece: PropTypes.func.isRequired,
+  onClickTile: PropTypes.func.isRequired,
   rankName: PropTypes.oneOfType([PropTypes.string, PropTypes.number])
     .isRequired,
   movableTiles: PropTypes.arrayOf(PropTypes.string),
