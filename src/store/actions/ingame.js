@@ -1,39 +1,22 @@
-import { compose, intersection } from 'ramda';
+import { batch } from 'react-redux';
 import { ActionCreators } from 'redux-undo';
 import {
   Opponent,
   detectTurn,
   parseCode,
   replaceSnapshot,
-  computeMTByCode,
-  computeMTByDirection,
+  getTimeline,
+  computeFinalMT,
 } from 'chess/es';
 import { ONE_VS_ONE } from '~/config';
-import { next } from '../batchActions';
 import {
   UPDATE_TURN,
-  // TOGGLE_TURN,
   UPDATE_SNAPSHOT,
   UPDATE_SELECTED_CODE,
   REMOVE_SELECTED_CODE,
   UPDATE_MOVABLE_TILES,
   REMOVE_MOVABLE_TILES,
 } from '../actionTypes';
-
-// export function toggleTurn() {
-//   return (dispatch, getState) => {
-//     const {
-//       ingame: {
-//         present: { turn },
-//       },
-//     } = getState();
-//
-//     dispatch({
-//       type: TOGGLE_TURN,
-//       payload: Opponent[turn],
-//     });
-//   };
-// }
 
 export function updateTurn(turn) {
   return {
@@ -64,23 +47,12 @@ export function updateSnapshot(snapshot) {
 export function updateMovableTiles(code) {
   return (dispatch, getState) => {
     const {
-      ingame: {
-        present: { snapshot },
-      },
+      ingame: { present, past },
     } = getState();
 
     dispatch({
       type: UPDATE_MOVABLE_TILES,
-      // TODO optimize it
-      payload: compose(
-        // -> TODO able to capture
-
-        // remain only actual movable tiles (remove blocked tiles)
-        intersection(computeMTByCode(code)),
-        computeMTByDirection(code)
-
-        // -> TODO add spacial movement
-      )(snapshot),
+      payload: computeFinalMT(code, getTimeline(present, past)),
     });
   };
 }
@@ -115,7 +87,12 @@ export function movePiece(tileName) {
     const nextCode = `${pKey}${tileName}`;
     const nextSnapshot = replaceSnapshot(selectedCode, nextCode, snapshot);
 
-    dispatch(next(nextSnapshot, Opponent[turn]));
+    batch(() => {
+      dispatch(updateSnapshot(nextSnapshot));
+      dispatch(removeSelectedCode());
+      dispatch(removeMovableTiles());
+      dispatch(updateTurn(Opponent[turn]));
+    });
   };
 }
 
