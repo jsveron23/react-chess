@@ -3,18 +3,17 @@ import PropTypes from 'prop-types';
 import { Hr } from 'ui/es';
 import SubMenu from './internal/SubMenu';
 
-const Menu = ({ ingameMenu, mainMenu, handleMenuButtonClick }) => {
+const Menu = ({ ingameMenu, mainMenu }) => {
   return (
     <>
-      <SubMenu data={ingameMenu} onClick={handleMenuButtonClick} />
+      <SubMenu data={ingameMenu} />
       <Hr is="p" marginTop={10} marginBottom={10} />
-      <SubMenu data={mainMenu} onClick={handleMenuButtonClick} />
+      <SubMenu data={mainMenu} />
     </>
   );
 };
 
 Menu.propTypes = {
-  handleMenuButtonClick: PropTypes.func.isRequired,
   ingameMenu: PropTypes.arrayOf(
     PropTypes.shape({
       key: PropTypes.string,
