@@ -11,6 +11,7 @@ export const Diagonal = 'Diagonal';
 export const Jumpover = 'Jumpover';
 export const Castling = 'Castling';
 export const DoubleStep = 'Double-step';
+export const Diagonally = 'Diagonally';
 export const EnPassant = 'En-passant';
 export const Promotion = 'Promotion';
 

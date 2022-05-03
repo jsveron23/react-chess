@@ -1,20 +1,23 @@
-import { curry, compose, nth, map, of, flip } from 'ramda';
+import { curry, compose, reduce, flip, filter } from 'ramda';
 import {
   Snapshot,
   Special,
   Castling,
   DoubleStep,
+  Diagonally,
   // EnPassant,
 } from '../presets';
 import findCode from './findCode';
 import parseCode from './parseCode';
+import getNextTiles from './getNextTiles';
 import getNextTile from './getNextTile';
+import findCodeByTile from './findCodeByTile';
 
 // TODO only compute special movable tiles
-function computeSpecialMT(code) {
+function computeSpecialMT(code, timeline) {
   // const [presentSnapshot] = timeline;
-  const { piece } = parseCode(code);
-  const mvs = Special[piece];
+  const { piece: sPiece, side: sSide } = parseCode(code);
+  const mvs = Special[sPiece];
 
   // no special
   if (!mvs) {
@@ -22,21 +25,40 @@ function computeSpecialMT(code) {
   }
 
   return compose(
-    nth(0),
-    map((mvName) => {
+    filter(Boolean),
+    reduce((acc, mvName) => {
       switch (mvName) {
         case Castling: {
           // TODO
 
-          return [];
+          return acc;
         }
 
         case DoubleStep: {
-          return compose(
-            of,
+          const tileName = compose(
             flip(getNextTile)([0, 2]),
             findCode(Snapshot)
           )(code);
+
+          return [...acc, tileName];
+        }
+
+        case Diagonally: {
+          const [snapshot] = timeline;
+          const findCodeBy = findCodeByTile(snapshot);
+          const capturableTiles = compose(
+            reduce((acc, tN) => {
+              const { side, tileName } = compose(parseCode, findCodeBy)(tN);
+
+              return sSide !== side ? [...acc, tileName] : acc;
+            }, []),
+            getNextTiles(code)
+          )([
+            [1, 1],
+            [-1, 1],
+          ]);
+
+          return [...acc, ...capturableTiles];
         }
 
         // case EnPassant: {
@@ -44,9 +66,11 @@ function computeSpecialMT(code) {
         //   break;
         // }
 
-        default:
+        default: {
+          return acc;
+        }
       }
-    })
+    }, [])
   )(mvs);
 }
 

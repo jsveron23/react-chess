@@ -18,7 +18,6 @@ const SubMenu = ({ data }) => {
 };
 
 SubMenu.propTypes = {
-  onClick: PropTypes.func.isRequired,
   data: PropTypes.arrayOf(
     PropTypes.shape({
       key: PropTypes.string,

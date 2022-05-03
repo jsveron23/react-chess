@@ -32,7 +32,7 @@ function mapDispatchToProps(dispatch) {
       if (isMovableTile) {
         if (isPieceTile && !isOpponent) {
           dispatch(capturePiece(pretendCode, nextTileName));
-        } else {
+        } else if (!isPieceTile && !isOpponent) {
           dispatch(movePiece(nextTileName));
         }
       }

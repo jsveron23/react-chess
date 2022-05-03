@@ -62,7 +62,7 @@ export const Movement = {
 export const Special = {
   [T.King]: [T.Castling],
   // [Knight]: [Jumpover],
-  [T.Pawn]: [T.DoubleStep, T.EnPassant, T.Promotion],
+  [T.Pawn]: [T.DoubleStep, T.EnPassant, T.Promotion, T.Diagonally],
 };
 
 // prettier-ignore
