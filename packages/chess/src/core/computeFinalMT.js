@@ -2,6 +2,7 @@ import { curry, compose, concat, intersection, flatten } from 'ramda';
 import computeMTByCode from './computeMTByCode';
 import computeMTByDirection from './computeMTByDirection';
 import computeSpecialMT from './computeSpecialMT';
+import debug from '../debug';
 
 // TODO optimize it
 // TODO add capture logic
@@ -17,19 +18,19 @@ function computeFinalMT(code, timeline) {
   const dmt = compose(_concatMT, computeMTByDirection(code))(snapshot);
   const cmt = compose(_concatMT, computeMTByCode)(code);
 
-  // console.group('dmt');
-  // console.log('original: ', computeMTByDirection(code, snapshot));
-  // console.log('concat: ', dmt);
-  // console.groupEnd();
-  //
-  // console.group('cmt');
-  // console.log('original: ', computeMTByCode(code));
-  // console.log('concat: ', cmt);
-  // console.groupEnd();
-  //
-  // console.group('smt');
-  // console.log('original: ', smt);
-  // console.groupEnd();
+  debug.grp({
+    dmt: [
+      ['original: ', computeMTByDirection(code, snapshot)],
+      ['concat: ', dmt],
+    ],
+
+    cmt: [
+      ['original: ', computeMTByCode(code)],
+      ['concat: ', cmt],
+    ],
+
+    smt: [['original: ', smt]],
+  });
 
   return intersection(dmt, cmt);
 }
