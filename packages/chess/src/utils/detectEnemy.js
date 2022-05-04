@@ -1,9 +1,7 @@
-import { compose, curry, reject, startsWith, includes, clone } from 'ramda';
+import { curry, reject, startsWith, includes } from 'ramda';
 import parseCode from '../core/parseCode';
-import validateCode from './validateCode';
 import { Opponent, Pawn } from '../presets';
 
-// TODO change spec
 function detectEnemy(movableTiles, selectedCode, pretendCode, tileName) {
   const {
     piece: sPiece = '',
@@ -11,22 +9,17 @@ function detectEnemy(movableTiles, selectedCode, pretendCode, tileName) {
     fileName: sFilename,
   } = parseCode(selectedCode);
 
-  const { side: rSide } = parseCode(pretendCode);
-  const isOppnentSide = sSide === Opponent[rSide];
-  const isPieceTile = validateCode(pretendCode);
+  // pawn naver have enemy on vertical tile
   const isPawn = sPiece === Pawn;
-  let isInMt = includes(tileName, movableTiles);
+  const filteredMt = isPawn
+    ? reject(startsWith(sFilename), movableTiles)
+    : movableTiles;
 
-  // pawn don't need vertical enemy
-  if (isPawn) {
-    isInMt = compose(
-      includes(tileName),
-      reject(startsWith(sFilename)),
-      clone
-    )(movableTiles);
-  }
+  const { side: rSide } = parseCode(pretendCode);
+  const isEnemy = sSide === Opponent[rSide];
+  const isOTW = includes(tileName, filteredMt);
 
-  return isPieceTile && isInMt && isOppnentSide;
+  return isOTW && isEnemy;
 }
 
 export default curry(detectEnemy);

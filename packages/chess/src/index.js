@@ -2,6 +2,7 @@ export * from './presets';
 export * from './pieces';
 
 export { default as detectDarkTile } from './utils/detectDarkTile';
+export { default as detectTileInWay } from './utils/detectTileInWay';
 export { default as detectTurn } from './utils/detectTurn';
 export { default as detectEnemy } from './utils/detectEnemy';
 export { default as validateCode } from './utils/validateCode';

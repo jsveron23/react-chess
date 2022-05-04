@@ -2,12 +2,12 @@ import PropTypes from 'prop-types';
 import { FlexCol } from 'ui/es';
 import Rank from './internal/Rank';
 
-const Diagram = ({ detectEnemy, getPKey, detectInMT, onClickTile }) => {
+const Diagram = ({ detectEnemy, getPKey, detectOTWByCode, onClickTile }) => {
   return (
     <FlexCol height="100%">
       <Rank
         getPKey={getPKey}
-        detectInMT={detectInMT}
+        detectOTWByCode={detectOTWByCode}
         detectEnemy={detectEnemy}
         onClickTile={onClickTile}
       />
@@ -17,7 +17,7 @@ const Diagram = ({ detectEnemy, getPKey, detectInMT, onClickTile }) => {
 
 Diagram.propTypes = {
   getPKey: PropTypes.func.isRequired,
-  detectInMT: PropTypes.func.isRequired,
+  detectOTWByCode: PropTypes.func.isRequired,
   detectEnemy: PropTypes.func.isRequired,
   onClickTile: PropTypes.func.isRequired,
 };

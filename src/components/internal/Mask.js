@@ -2,12 +2,15 @@ import { memo } from 'react';
 import PropTypes from 'prop-types';
 import { Absolute } from 'ui/es';
 
-const Mask = ({ isInMt, isEnemy }) => {
-  let bg = isInMt ? 'rgba(100, 100, 100, 0.3)' : 'auto';
-  bg = isEnemy ? 'rgba(220, 20, 60, 0.3)' : bg;
+const Mask = ({ tileName, pretendCode, detectOTWByCode, detectEnemy }) => {
+  const isOTW = detectOTWByCode(pretendCode);
+  const isEnemy = detectEnemy(pretendCode, tileName);
 
-  let border = isInMt ? '2px dashed #999' : 'none';
-  border = isEnemy ? '2px dashed red' : border;
+  let bg = isOTW ? 'rgba(200, 200, 200, 1)' : 'auto';
+  bg = isEnemy ? 'rgba(220, 20, 60, 1)' : bg;
+
+  let border = isOTW ? '2px solid #999' : 'none';
+  border = isEnemy ? '2px solid red' : border;
 
   return (
     <Absolute
@@ -23,13 +26,10 @@ const Mask = ({ isInMt, isEnemy }) => {
 };
 
 Mask.propTypes = {
-  isInMt: PropTypes.bool,
-  isEnemy: PropTypes.bool,
-};
-
-Mask.defaultProps = {
-  isInMt: false,
-  isEnemy: false,
+  detectOTWByCode: PropTypes.func.isRequired,
+  detectEnemy: PropTypes.func.isRequired,
+  tileName: PropTypes.string.isRequired,
+  pretendCode: PropTypes.string.isRequired,
 };
 
 export default memo(Mask);

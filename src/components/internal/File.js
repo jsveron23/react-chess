@@ -2,7 +2,13 @@ import PropTypes from 'prop-types';
 import { File as Files, detectDarkTile } from 'chess/es';
 import Tile from './Tile';
 
-const File = ({ rankName, getPKey, detectInMT, detectEnemy, onClickTile }) => {
+const File = ({
+  rankName,
+  getPKey,
+  detectOTWByCode,
+  detectEnemy,
+  onClickTile,
+}) => {
   return Files.map((fileName) => {
     const isDark = detectDarkTile(fileName, rankName);
     const tileName = `${fileName}${rankName}`;
@@ -16,7 +22,7 @@ const File = ({ rankName, getPKey, detectInMT, detectEnemy, onClickTile }) => {
         isDark={isDark}
         tileName={tileName}
         pKey={pKey}
-        detectInMT={detectInMT}
+        detectOTWByCode={detectOTWByCode}
         detectEnemy={detectEnemy}
         onClickTile={onClickTile}
       />
@@ -26,7 +32,7 @@ const File = ({ rankName, getPKey, detectInMT, detectEnemy, onClickTile }) => {
 
 File.propTypes = {
   getPKey: PropTypes.func.isRequired,
-  detectInMT: PropTypes.func.isRequired,
+  detectOTWByCode: PropTypes.func.isRequired,
   detectEnemy: PropTypes.func.isRequired,
   onClickTile: PropTypes.func.isRequired,
   rankName: PropTypes.oneOfType([PropTypes.string, PropTypes.number])

@@ -9,20 +9,16 @@ const Tile = ({
   isDark,
   pKey,
   tileName,
-  detectInMT,
+  detectOTWByCode,
   detectEnemy,
   onClickTile,
 }) => {
   const { tile } = useTheme();
   const pretendCode = `${pKey}${tileName}`;
-  const isInMt = detectInMT(pretendCode);
-  const isEnemy = detectEnemy(pretendCode, tileName);
   const handleClick = useCallback(
     (/* evt */) => onClickTile(tileName, pretendCode),
     [pretendCode, tileName, onClickTile]
   );
-  //
-  // console.log(pretendCode, isInMt, isEnemy);
 
   return (
     <Relative
@@ -35,13 +31,19 @@ const Tile = ({
       </Absolute>
 
       <Piece pKey={pKey} />
-      <Mask isInMt={isInMt} isEnemy={isEnemy} />
+
+      <Mask
+        pretendCode={pretendCode}
+        tileName={tileName}
+        detectOTWByCode={detectOTWByCode}
+        detectEnemy={detectEnemy}
+      />
     </Relative>
   );
 };
 
 Tile.propTypes = {
-  detectInMT: PropTypes.func.isRequired,
+  detectOTWByCode: PropTypes.func.isRequired,
   detectEnemy: PropTypes.func.isRequired,
   onClickTile: PropTypes.func.isRequired,
   tileName: PropTypes.string.isRequired,
