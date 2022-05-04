@@ -21,6 +21,8 @@ const Tile = ({
     (/* evt */) => onClickTile(tileName, pretendCode),
     [pretendCode, tileName, onClickTile]
   );
+  //
+  // console.log(pretendCode, isInMt, isEnemy);
 
   return (
     <Relative

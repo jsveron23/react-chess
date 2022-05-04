@@ -43,6 +43,7 @@ function computeSpecialMT(code, timeline) {
           return [...acc, tileName];
         }
 
+        // TODO found bug
         case Diagonally: {
           const [snapshot] = timeline;
           const findCodeBy = findCodeByTile(snapshot);

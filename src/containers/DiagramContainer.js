@@ -14,6 +14,7 @@ function mapStateToProps({
     detectEnemy: detectEnemy(movableTiles, selectedCode),
     detectInMT: (code) => includes(code, [selectedCode, ...movableTiles]),
     movableTiles,
+    selectedCode,
     turn,
   };
 }
@@ -22,15 +23,17 @@ function mapDispatchToProps(dispatch) {
   return {
     onClickTile(getArgs, getState) {
       const { nextTileName, pretendCode } = getArgs();
-      const { turn, movableTiles } = getState();
+      const { turn, detectEnemy, movableTiles } = getState();
       const isPieceTile = validateCode(pretendCode);
+
+      // TODO investigate, why no `detectEnemy(pretendCode, nextTileName)`
       const isOpponent = detectTurn(turn, pretendCode);
 
       // only detect tile, not code(piece)
       const isMovableTile = movableTiles.indexOf(nextTileName) > -1;
 
       if (isMovableTile) {
-        if (isPieceTile && !isOpponent) {
+        if (isPieceTile && detectEnemy(pretendCode, nextTileName)) {
           dispatch(capturePiece(pretendCode, nextTileName));
         } else if (!isPieceTile && !isOpponent) {
           dispatch(movePiece(nextTileName));

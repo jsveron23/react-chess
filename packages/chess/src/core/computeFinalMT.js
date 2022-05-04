@@ -17,11 +17,20 @@ function computeFinalMT(code, timeline) {
   const dmt = compose(_concatMT, computeMTByDirection(code))(snapshot);
   const cmt = compose(_concatMT, computeMTByCode)(code);
 
-  // console.log('dmt: ', dmt);
-  // console.log('cmt: ', cmt);
-  // console.log('smt: ', smt);
+  // console.group('dmt');
+  // console.log('original: ', computeMTByDirection(code, snapshot));
+  // console.log('concat: ', dmt);
+  // console.groupEnd();
+  //
+  // console.group('cmt');
+  // console.log('original: ', computeMTByCode(code));
+  // console.log('concat: ', cmt);
+  // console.groupEnd();
+  //
+  // console.group('smt');
+  // console.log('original: ', smt);
+  // console.groupEnd();
 
-  // intersection combined mt with
   return intersection(dmt, cmt);
 }
 
