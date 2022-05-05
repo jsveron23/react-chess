@@ -3,7 +3,13 @@ import { FlexRow } from 'ui/es';
 import { Rank as Ranks } from 'chess/es';
 import File from './File';
 
-const Rank = ({ getPKey, detectOTWByCode, detectEnemy, onClickTile }) => {
+const Rank = ({
+  getPKey,
+  detectOTWByCode,
+  detectEnemy,
+  onClickTile,
+  detectEnPassantTile,
+}) => {
   return Ranks.map((rankName) => {
     return (
       <FlexRow key={rankName} flex="1">
@@ -13,6 +19,7 @@ const Rank = ({ getPKey, detectOTWByCode, detectEnemy, onClickTile }) => {
           detectOTWByCode={detectOTWByCode}
           detectEnemy={detectEnemy}
           onClickTile={onClickTile}
+          detectEnPassantTile={detectEnPassantTile}
         />
       </FlexRow>
     );
@@ -23,6 +30,7 @@ Rank.propTypes = {
   getPKey: PropTypes.func.isRequired,
   detectOTWByCode: PropTypes.func.isRequired,
   detectEnemy: PropTypes.func.isRequired,
+  detectEnPassantTile: PropTypes.func.isRequired,
   onClickTile: PropTypes.func.isRequired,
 };
 

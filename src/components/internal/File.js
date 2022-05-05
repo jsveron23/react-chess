@@ -8,6 +8,7 @@ const File = ({
   detectOTWByCode,
   detectEnemy,
   onClickTile,
+  detectEnPassantTile,
 }) => {
   return Files.map((fileName) => {
     const isDark = detectDarkTile(fileName, rankName);
@@ -25,6 +26,7 @@ const File = ({
         detectOTWByCode={detectOTWByCode}
         detectEnemy={detectEnemy}
         onClickTile={onClickTile}
+        detectEnPassantTile={detectEnPassantTile}
       />
     );
   });
@@ -33,6 +35,7 @@ const File = ({
 File.propTypes = {
   getPKey: PropTypes.func.isRequired,
   detectOTWByCode: PropTypes.func.isRequired,
+  detectEnPassantTile: PropTypes.func.isRequired,
   detectEnemy: PropTypes.func.isRequired,
   onClickTile: PropTypes.func.isRequired,
   rankName: PropTypes.oneOfType([PropTypes.string, PropTypes.number])

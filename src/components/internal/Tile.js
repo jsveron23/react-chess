@@ -11,6 +11,7 @@ const Tile = ({
   tileName,
   detectOTWByCode,
   detectEnemy,
+  detectEnPassantTile,
   onClickTile,
 }) => {
   const { tile } = useTheme();
@@ -37,6 +38,7 @@ const Tile = ({
         tileName={tileName}
         detectOTWByCode={detectOTWByCode}
         detectEnemy={detectEnemy}
+        detectEnPassantTile={detectEnPassantTile}
       />
     </Relative>
   );
@@ -45,6 +47,7 @@ const Tile = ({
 Tile.propTypes = {
   detectOTWByCode: PropTypes.func.isRequired,
   detectEnemy: PropTypes.func.isRequired,
+  detectEnPassantTile: PropTypes.func.isRequired,
   onClickTile: PropTypes.func.isRequired,
   tileName: PropTypes.string.isRequired,
   pKey: PropTypes.string,

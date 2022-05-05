@@ -1,11 +1,14 @@
 import { connect } from 'react-redux';
-import { flip } from 'ramda';
+import { compose, flip, intersection, includes } from 'ramda';
 import {
+  Pawn,
   detectEnemyOTW,
   validateCode,
   getPKeyBy,
   detectTurn,
   detectTileOTW,
+  detectPiece,
+  convertAxisListToTiles,
 } from 'chess/es';
 import { Diagram } from '~/components';
 import { updateSelectedCode, movePiece, capturePiece } from '~/store/actions';
@@ -19,6 +22,19 @@ function mapStateToProps({
     getPKey: getPKeyBy(snapshot),
     detectEnemy: detectEnemyOTW(movableTiles, selectedCode),
     detectOTWByCode: flip(detectTileOTW)([selectedCode, ...movableTiles]),
+    detectEnPassantTile(tileName) {
+      const isPawn = detectPiece(Pawn, selectedCode);
+      const isEnemyTile = compose(
+        includes(tileName),
+        intersection(movableTiles),
+        convertAxisListToTiles(selectedCode)
+      )([
+        [1, 1],
+        [-1, 1],
+      ]);
+
+      return isPawn && isEnemyTile;
+    },
     movableTiles,
     turn,
   };
@@ -26,8 +42,6 @@ function mapStateToProps({
 
 function mapDispatchToProps(dispatch) {
   return {
-    // 3 actions => move, select, capture
-    // TODO move to redux.action
     decideAction(getArgs, getState) {
       const { nextTileName, pretendCode } = getArgs();
       const { turn, detectEnemy, movableTiles } = getState();

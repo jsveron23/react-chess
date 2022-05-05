@@ -2,9 +2,16 @@ import { memo } from 'react';
 import PropTypes from 'prop-types';
 import { Absolute } from 'ui/es';
 
-const Mask = ({ tileName, pretendCode, detectOTWByCode, detectEnemy }) => {
+const Mask = ({
+  tileName,
+  pretendCode,
+  detectOTWByCode,
+  detectEnemy,
+  detectEnPassantTile,
+}) => {
   const isOTW = detectOTWByCode(pretendCode);
-  const isEnemy = detectEnemy(pretendCode, tileName);
+  const isEnemy =
+    detectEnemy(pretendCode, tileName) || detectEnPassantTile(tileName);
 
   let bg = isOTW ? 'rgba(200, 200, 200, 1)' : 'auto';
   bg = isEnemy ? 'rgba(220, 20, 60, 1)' : bg;
@@ -18,7 +25,7 @@ const Mask = ({ tileName, pretendCode, detectOTWByCode, detectEnemy }) => {
       bottom={0}
       left={0}
       right={0}
-      margin={1}
+      margin={8}
       backgroundColor={bg}
       border={border}
     />
@@ -28,6 +35,7 @@ const Mask = ({ tileName, pretendCode, detectOTWByCode, detectEnemy }) => {
 Mask.propTypes = {
   detectOTWByCode: PropTypes.func.isRequired,
   detectEnemy: PropTypes.func.isRequired,
+  detectEnPassantTile: PropTypes.func.isRequired,
   tileName: PropTypes.string.isRequired,
   pretendCode: PropTypes.string.isRequired,
 };
