@@ -1,19 +1,30 @@
 import { curry, compose, reduce } from 'ramda';
-import { parseCode, findCodeByTile, getNextTiles } from '../utils';
+import {
+  parseCode,
+  findCodeByTile,
+  convertAxisListToTiles,
+  detectOpponent,
+} from '../utils';
 
-function getDiagonallyTiles(side, code, snapshot) {
+/**
+ * Get diagonally tiles
+ * @param  {String} code
+ * @param  {Array}  snapshot
+ * @return {Array}
+ */
+function getDiagonallyTiles(code, snapshot) {
   const findCodeBy = findCodeByTile(snapshot);
 
   return compose(
     reduce((acc, tN) => {
-      const { side: nSide, tileName: nTileName } = compose(
+      const { tileName: nTileName, code: nCode } = compose(
         parseCode,
         findCodeBy
       )(tN);
 
-      return side !== nSide ? [...acc, nTileName] : acc;
+      return detectOpponent(code, nCode) ? [...acc, nTileName] : acc;
     }, []),
-    getNextTiles(code)
+    convertAxisListToTiles(code)
   )([
     [1, 1],
     [-1, 1],

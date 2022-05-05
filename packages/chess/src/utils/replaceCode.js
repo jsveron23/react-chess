@@ -2,12 +2,17 @@ import { curry, clone, filter } from 'ramda';
 import validateCode from './validateCode';
 import validateSnapshot from './validateSnapshot';
 
-function replaceSnapshot(snapshot, currCode, nextCode) {
-  if (
-    !validateCode(currCode) ||
-    !validateCode(nextCode) ||
-    !validateSnapshot(snapshot)
-  ) {
+/**
+ * Replace code
+ * @param  {Array}  snapshot
+ * @param  {String} currCode
+ * @param  {String} nextCode
+ * @return {Array}
+ */
+function replaceCode(snapshot, currCode, nextCode) {
+  const invalidCode = !validateCode(currCode) || !validateCode(nextCode);
+
+  if (invalidCode || !validateSnapshot(snapshot)) {
     return snapshot || [];
   }
 
@@ -26,4 +31,4 @@ function replaceSnapshot(snapshot, currCode, nextCode) {
   return filter(Boolean, cloneSnapshot);
 }
 
-export default curry(replaceSnapshot);
+export default curry(replaceCode);

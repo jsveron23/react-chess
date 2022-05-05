@@ -4,7 +4,12 @@ import computeMTByDirection from './computeMTByDirection';
 import computeSpecialMT from './computeSpecialMT';
 import debug from '../debug';
 
-// TODO optimize it
+/**
+ * Compute final movable tiles
+ * @param  {String} code
+ * @param  {Array}  timeline
+ * @return {Array}
+ */
 function computeFinalMT(code, timeline) {
   const [snapshot] = timeline;
 

@@ -1,5 +1,10 @@
 import validateCode from './validateCode';
 
+/**
+ * Parse code
+ * @param  {String} code
+ * @return {Object}
+ */
 export default function parseCode(code) {
   if (!validateCode(code)) {
     return {};
@@ -8,9 +13,7 @@ export default function parseCode(code) {
   const [side, piece, fileName, rankName] = code.split('');
 
   return {
-    // for getPiece function
     pKey: `${side}${piece}`,
-
     tileName: `${fileName}${rankName}`,
     code,
     side,

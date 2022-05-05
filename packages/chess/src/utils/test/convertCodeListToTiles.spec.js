@@ -1,5 +1,5 @@
 import test from 'ava';
-import snapshotToTiles from '../snapshotToTiles';
+import convertCodeListToTiles from '../convertCodeListToTiles';
 
 // prettier-ignore
 const Snapshot = [
@@ -9,14 +9,14 @@ const Snapshot = [
   'wRa1', 'wNb1', 'wBc1', 'wQd1', 'wKe1', 'wBf1', 'wNg1', 'wRh1'
 ];
 
-test('snapshotToTiles - invalid code', (t) => {
-  t.deepEqual(snapshotToTiles(), []);
-  t.deepEqual(snapshotToTiles([]), []);
+test('convertCodeListToTiles - invalid code', (t) => {
+  t.deepEqual(convertCodeListToTiles(), []);
+  t.deepEqual(convertCodeListToTiles([]), []);
 });
 
-test('snapshotToTiles - valid code', (t) => {
+test('convertCodeListToTiles - valid code', (t) => {
   // prettier-ignore
-  t.deepEqual(snapshotToTiles(Snapshot), [
+  t.deepEqual(convertCodeListToTiles(Snapshot), [
     'a8', 'b8', 'c8', 'd8', 'e8', 'f8', 'g8', 'h8',
     'a7', 'b7', 'c7', 'd7', 'e7', 'f7', 'g7', 'h7',
     'a2', 'b2', 'c2', 'd2', 'e2', 'f2', 'g2', 'h2',

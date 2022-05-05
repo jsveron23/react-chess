@@ -1,11 +1,11 @@
 import { connect } from 'react-redux';
 import { flip } from 'ramda';
 import {
-  detectEnemy,
+  detectEnemyOTW,
   validateCode,
   getPKeyBy,
   detectTurn,
-  detectTileInWay,
+  detectTileOTW,
 } from 'chess/es';
 import { Diagram } from '~/components';
 import { updateSelectedCode, movePiece, capturePiece } from '~/store/actions';
@@ -17,8 +17,8 @@ function mapStateToProps({
 }) {
   return {
     getPKey: getPKeyBy(snapshot),
-    detectEnemy: detectEnemy(movableTiles, selectedCode),
-    detectOTWByCode: flip(detectTileInWay)([selectedCode, ...movableTiles]),
+    detectEnemy: detectEnemyOTW(movableTiles, selectedCode),
+    detectOTWByCode: flip(detectTileOTW)([selectedCode, ...movableTiles]),
     movableTiles,
     turn,
   };
@@ -32,7 +32,7 @@ function mapDispatchToProps(dispatch) {
       const { nextTileName, pretendCode } = getArgs();
       const { turn, detectEnemy, movableTiles } = getState();
       const isPieceTile = validateCode(pretendCode);
-      const isOTW = detectTileInWay(nextTileName, movableTiles);
+      const isOTW = detectTileOTW(nextTileName, movableTiles);
       const isSameSide = isPieceTile && detectTurn(turn, pretendCode);
       const isEnemyTile = isPieceTile && detectEnemy(pretendCode, nextTileName);
       const isMovable = !isPieceTile && !isSameSide && isOTW;

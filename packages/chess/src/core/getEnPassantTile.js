@@ -10,47 +10,56 @@ import {
 } from 'ramda';
 import {
   parseCode,
-  getNextTile,
-  getNextTiles,
+  convertAxisToTile,
+  convertAxisListToTiles,
   findCodeByTile,
   detectMoved,
+  detectPiece,
+  detectOpponent,
 } from '../utils';
-import { Side, Pawn, Opponent } from '../presets';
+import { Side, Pawn } from '../presets';
 
+const RANK_SPOT = {
+  [Side.w]: 5,
+  [Side.b]: 4,
+};
+
+/**
+ * Get En-passant tile
+ * @param  {String} code
+ * @param  {Array}  timeline
+ * @return {String}
+ */
 function getEnPassantTile(code, timeline) {
-  const { side: sSide, rankName: sRankName } = parseCode(code);
-  const RANK_SPOT = {
-    [Side.w]: 5,
-    [Side.b]: 4,
-  };
+  const { side, rankName } = parseCode(code);
 
-  if (RANK_SPOT[sSide] === Number(sRankName)) {
+  if (RANK_SPOT[side] === Number(rankName)) {
     const [snapshot, ...prevTimeline] = timeline;
     const findCodeBy = findCodeByTile(snapshot);
     const detectMovedBy = detectMoved(prevTimeline);
     const parseCodeBy = compose(parseCode, findCodeBy);
 
     const _candidateTileToCode = (acc, tN) => {
-      const { side, piece, code: cd } = parseCodeBy(tN);
-      const isPawn = piece === Pawn;
-      const isEnemy = Opponent[sSide] === side;
+      const { code: cd } = parseCodeBy(tN);
+      const isPawn = detectPiece(Pawn, cd);
+      const isEnemy = detectOpponent(code, cd);
 
       return isPawn && isEnemy ? [...acc, cd] : acc;
     };
 
     const _getRidOfMovedCode = (cd) => {
-      const prevTile = getNextTile(cd, [0, -2]);
+      const prevTile = convertAxisToTile(cd, [0, -2]);
       const { pKey } = parseCode(cd);
 
       return !detectMovedBy(`${pKey}${prevTile}`);
     };
 
     return compose(
-      flip(getNextTile)([0, -1]),
+      flip(convertAxisToTile)([0, -1]),
       nth(0),
       filter(_getRidOfMovedCode),
       reduce(_candidateTileToCode, []),
-      getNextTiles(code)
+      convertAxisListToTiles(code)
     )([
       [1, 0],
       [-1, 0],
@@ -62,6 +71,12 @@ function getEnPassantTile(code, timeline) {
 
 const _getEnPassantTile = curry(getEnPassantTile);
 
+/**
+ * Get En-passant tile (after move)
+ * @param  {Array}  nextSnapshot
+ * @param  {Array}  snapshot
+ * @return {String}
+ */
 _getEnPassantTile.after = curry(function after(nextSnapshot, snapshot) {
   const [beforeCode] = without(nextSnapshot, snapshot);
   const { fileName: bFileName } = parseCode(beforeCode);
@@ -71,7 +86,7 @@ _getEnPassantTile.after = curry(function after(nextSnapshot, snapshot) {
   const noCapture = nextSnapshot.length === snapshot.length;
 
   if (isDiagonalMove && noCapture) {
-    return getNextTile(afterCode, [0, -1]);
+    return convertAxisToTile(afterCode, [0, -1]);
   }
 
   return '';

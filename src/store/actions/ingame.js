@@ -8,7 +8,7 @@ import {
   Opponent,
   parseCode,
   getTimeline,
-  replaceSnapshot,
+  replaceCode,
   computeFinalMT,
   getPromotionCode,
   getEnPassantTile,
@@ -79,7 +79,7 @@ export function capturePiece(pretendCode, nextTileName) {
         afterMoving(nextTileName, (nextCode) => {
           return compose(
             reject(equals(selectedCode)),
-            replaceSnapshot(snapshot, pretendCode)
+            replaceCode(snapshot, pretendCode)
           )(nextCode);
         })
       );
@@ -98,7 +98,7 @@ export function movePiece(nextTileName) {
     batch(() => {
       dispatch(
         afterMoving(nextTileName, (nextCode) => {
-          return replaceSnapshot(snapshot, selectedCode, nextCode);
+          return replaceCode(snapshot, selectedCode, nextCode);
         })
       );
     });
@@ -182,7 +182,7 @@ export function afterMoving(nextTileName, getNextSnapshot) {
             const queenCode = getPromotionCode(nextTileName, side);
 
             if (queenCode) {
-              nextSnapshot = replaceSnapshot(nextSnapshot, nextCode, queenCode);
+              nextSnapshot = replaceCode(nextSnapshot, nextCode, queenCode);
             }
 
             break;

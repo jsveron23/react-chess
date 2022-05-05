@@ -11,12 +11,16 @@ import {
   EnPassant,
 } from '../presets';
 
-// TODO only compute special movable tiles
+/**
+ * Compute special movable tiles
+ * @param  {String} code
+ * @param  {Array}  timeline
+ * @return {Array}
+ */
 function computeSpecialMT(code, timeline) {
-  const { piece: sPiece, side: sSide } = parseCode(code);
+  const { piece: sPiece } = parseCode(code);
   const mvs = Special[sPiece];
 
-  // no special
   if (!mvs) {
     return [];
   }
@@ -37,7 +41,7 @@ function computeSpecialMT(code, timeline) {
 
       case Diagonally: {
         const [snapshot] = timeline;
-        const capturableTiles = getDiagonallyTiles(sSide, code, snapshot);
+        const capturableTiles = getDiagonallyTiles(code, snapshot);
 
         return [...state, ...capturableTiles];
       }

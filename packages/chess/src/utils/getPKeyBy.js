@@ -2,6 +2,12 @@ import { compose, prop, defaultTo, curry } from 'ramda';
 import parseCode from './parseCode';
 import findCodeByTile from './findCodeByTile';
 
+/**
+ * Get pKey by tile
+ * @param  {Array}  snapshot
+ * @param  {String} tileName
+ * @return {String}
+ */
 function getPKeyBy(snapshot, tileName) {
   return compose(
     prop('pKey'),

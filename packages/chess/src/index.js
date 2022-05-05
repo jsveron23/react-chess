@@ -8,3 +8,4 @@ export { default as computeSpecialMT } from './core/computeSpecialMT';
 export { default as computeMTByCode } from './core/computeMTByCode';
 export { default as computeMTByDirection } from './core/computeMTByDirection';
 export { default as computeFinalMT } from './core/computeFinalMT';
+export { default as detectEnemyOTW } from './core/detectEnemyOTW';

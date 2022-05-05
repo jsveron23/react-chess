@@ -1,16 +1,14 @@
-import { compose, curry, prop, equals } from 'ramda';
+import { compose, curry, prop, equals, find } from 'ramda';
 import parseCode from './parseCode';
 
 /**
- * Find code from snapshot array
+ * Find code by tile
  * @param  {Array}  snapshot
  * @param  {String} tileName
  * @return {String}
  */
 function findCodeByTile(snapshot, tileName) {
-  const matchTilename = compose(equals(tileName), prop('tileName'), parseCode);
-
-  return snapshot.find(matchTilename);
+  return find(compose(equals(tileName), prop('tileName'), parseCode), snapshot);
 }
 
 export default curry(findCodeByTile);
