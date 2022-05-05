@@ -1,5 +1,5 @@
 import { curry, compose, prop } from 'ramda';
-import parseTile from './parseTile';
+import { parseTile } from '../utils';
 import { Side, Rank } from '../presets';
 
 function getPromotionCode(tileName, side) {

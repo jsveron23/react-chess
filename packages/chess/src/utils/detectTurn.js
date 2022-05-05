@@ -1,5 +1,5 @@
 import { curry } from 'ramda';
-import parseCode from '../core/parseCode';
+import parseCode from './parseCode';
 import { Turn } from '../presets';
 
 function detectTurn(turn, code) {

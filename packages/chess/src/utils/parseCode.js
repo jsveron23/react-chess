@@ -1,4 +1,4 @@
-import validateCode from '../utils/validateCode';
+import validateCode from './validateCode';
 
 export default function parseCode(code) {
   if (!validateCode(code)) {
@@ -12,6 +12,7 @@ export default function parseCode(code) {
     pKey: `${side}${piece}`,
 
     tileName: `${fileName}${rankName}`,
+    code,
     side,
     piece,
     fileName,

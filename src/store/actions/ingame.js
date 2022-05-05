@@ -3,13 +3,16 @@ import { ActionCreators } from 'redux-undo';
 import { compose, reject, equals } from 'ramda';
 import {
   Promotion,
+  EnPassant,
   Special,
   Opponent,
   parseCode,
-  replaceSnapshot,
   getTimeline,
+  replaceSnapshot,
   computeFinalMT,
   getPromotionCode,
+  getEnPassantTile,
+  removeCodeByTile,
 } from 'chess/es';
 import { ONE_VS_ONE } from '~/config';
 import {
@@ -47,14 +50,17 @@ export function updateSnapshot(snapshot) {
   };
 }
 
-// before moving
-export function updateSelectedCode(pretendCode) {
+/**
+ * Update select code when click a tile
+ * @param {String} code pretendCode
+ */
+export function updateSelectedCode(code) {
   return (dispatch) => {
     batch(() => {
-      dispatch(updateMovableTiles(pretendCode));
+      dispatch(updateMovableTiles(code));
       dispatch({
         type: UPDATE_SELECTED_CODE,
-        payload: pretendCode,
+        payload: code,
       });
     });
   };
@@ -73,8 +79,8 @@ export function capturePiece(pretendCode, nextTileName) {
         afterMoving(nextTileName, (nextCode) => {
           return compose(
             reject(equals(selectedCode)),
-            replaceSnapshot(pretendCode, nextCode)
-          )(snapshot);
+            replaceSnapshot(snapshot, pretendCode)
+          )(nextCode);
         })
       );
     });
@@ -91,9 +97,9 @@ export function movePiece(nextTileName) {
 
     batch(() => {
       dispatch(
-        afterMoving(nextTileName, (nextCode) =>
-          replaceSnapshot(selectedCode, nextCode, snapshot)
-        )
+        afterMoving(nextTileName, (nextCode) => {
+          return replaceSnapshot(snapshot, selectedCode, nextCode);
+        })
       );
     });
   };
@@ -160,20 +166,24 @@ export function afterMoving(nextTileName, getNextSnapshot) {
           //
           //   break;
           // }
-          //
-          // case EnPassant: {
-          //   // cature after moving
-          //   // store pending event
-          //   dispatch();
-          //
-          //   break;
-          // }
+
+          case EnPassant: {
+            const tileName = getEnPassantTile.after(nextSnapshot, snapshot);
+
+            if (tileName) {
+              nextSnapshot = removeCodeByTile(nextSnapshot, tileName);
+            }
+
+            break;
+          }
 
           case Promotion: {
             // TODO apply every kind of piece
             const queenCode = getPromotionCode(nextTileName, side);
 
-            nextSnapshot = replaceSnapshot(nextCode, queenCode, nextSnapshot);
+            if (queenCode) {
+              nextSnapshot = replaceSnapshot(nextSnapshot, nextCode, queenCode);
+            }
 
             break;
           }

@@ -1,5 +1,5 @@
 import { curry, compose, reduce, keys } from 'ramda';
-import getNextTiles from '../getNextTiles';
+import getNextTiles from './getNextTiles';
 
 function arrowToNextTiles(code, arrow) {
   return compose(

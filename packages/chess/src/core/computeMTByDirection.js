@@ -8,10 +8,12 @@ import {
   filter,
   flatten,
 } from 'ramda';
-import snapshotToTiles from './snapshotToTiles';
-import groupDirectionTilesByCode from './internal/groupDirectionTilesByCode';
-import validateCode from '../utils/validateCode';
-import validateSnapshot from '../utils/validateSnapshot';
+import {
+  snapshotToTiles,
+  groupDirectionTilesByCode,
+  validateCode,
+  validateSnapshot,
+} from '../utils';
 
 /**
  * Compute generic movable tiles

@@ -1,6 +1,6 @@
 import { compose, keys, forEach, identity, apply } from 'ramda';
 
-function debug(options) {
+function createDebug(options) {
   options = {
     debug: process.env.NODE_ENV === 'development',
     group: false,
@@ -8,7 +8,7 @@ function debug(options) {
     ...options,
   };
 
-  if (!debug) {
+  if (!options.debug) {
     return identity;
   }
 
@@ -25,11 +25,11 @@ function debug(options) {
   };
 }
 
-const _debug = debug();
+const debug = createDebug();
 
-_debug.o = debug;
-_debug.grp = (group = {}, options = {}) => {
-  const groupDebug = debug({ group: true, ...options });
+debug.o = createDebug;
+debug.grp = (group = {}, options = {}) => {
+  const groupDebug = createDebug({ group: true, ...options });
 
   compose(
     forEach((key) => groupDebug(group[key], key)),
@@ -37,4 +37,4 @@ _debug.grp = (group = {}, options = {}) => {
   )(group);
 };
 
-export default _debug;
+export default debug;

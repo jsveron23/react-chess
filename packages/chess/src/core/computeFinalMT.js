@@ -5,7 +5,6 @@ import computeSpecialMT from './computeSpecialMT';
 import debug from '../debug';
 
 // TODO optimize it
-// TODO add capture logic
 function computeFinalMT(code, timeline) {
   const [snapshot] = timeline;
 
@@ -13,24 +12,25 @@ function computeFinalMT(code, timeline) {
   const smt = computeSpecialMT(code, timeline);
   const _concatMT = compose(flatten, concat(smt));
 
-  // TODO optimize
-  // add special tiles for `intersection`
   const dmt = compose(_concatMT, computeMTByDirection(code))(snapshot);
   const cmt = compose(_concatMT, computeMTByCode)(code);
 
-  debug.grp({
-    dmt: [
-      ['original: ', computeMTByDirection(code, snapshot)],
-      ['concat: ', dmt],
-    ],
+  debug.grp(
+    {
+      dmt: [
+        ['original: ', computeMTByDirection(code, snapshot)],
+        ['concat: ', dmt],
+      ],
 
-    cmt: [
-      ['original: ', computeMTByCode(code)],
-      ['concat: ', cmt],
-    ],
+      cmt: [
+        ['original: ', computeMTByCode(code)],
+        ['concat: ', cmt],
+      ],
 
-    smt: [['original: ', smt]],
-  });
+      smt: [['original: ', smt]],
+    },
+    { collapsed: true }
+  );
 
   return intersection(dmt, cmt);
 }

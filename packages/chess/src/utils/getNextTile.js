@@ -2,7 +2,7 @@ import { curry } from 'ramda';
 import getNextFileName from './getNextFileName';
 import getNextRankName from './getNextRankName';
 import parseCode from './parseCode';
-import validateTile from '../utils/validateTile';
+import validateTile from './validateTile';
 import { Side } from '../presets';
 
 /**

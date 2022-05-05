@@ -1,5 +1,5 @@
 import { curry, reject, startsWith, includes } from 'ramda';
-import parseCode from '../core/parseCode';
+import parseCode from './parseCode';
 import { Opponent, Pawn } from '../presets';
 
 function detectEnemy(movableTiles, selectedCode, pretendCode, tileName) {

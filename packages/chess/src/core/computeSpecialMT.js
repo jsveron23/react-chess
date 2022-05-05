@@ -1,21 +1,18 @@
-import { curry, compose, reduce, flip, filter } from 'ramda';
+import { curry, compose, reduce, filter } from 'ramda';
+import getDoubleStepTile from './getDoubleStepTile';
+import getEnPassantTile from './getEnPassantTile';
+import getDiagonallyTiles from './getDiagonallyTiles';
+import { parseCode } from '../utils';
 import {
-  Snapshot,
   Special,
   Castling,
   DoubleStep,
   Diagonally,
-  // EnPassant,
+  EnPassant,
 } from '../presets';
-import findCode from './findCode';
-import parseCode from './parseCode';
-import getNextTiles from './getNextTiles';
-import getNextTile from './getNextTile';
-import findCodeByTile from './findCodeByTile';
 
 // TODO only compute special movable tiles
 function computeSpecialMT(code, timeline) {
-  // const [presentSnapshot] = timeline;
   const { piece: sPiece, side: sSide } = parseCode(code);
   const mvs = Special[sPiece];
 
@@ -24,55 +21,40 @@ function computeSpecialMT(code, timeline) {
     return [];
   }
 
-  return compose(
-    filter(Boolean),
-    reduce((acc, mvName) => {
-      switch (mvName) {
-        case Castling: {
-          // TODO
+  const _reduceFn = (state, mvName) => {
+    switch (mvName) {
+      case Castling: {
+        // TODO
 
-          return acc;
-        }
-
-        case DoubleStep: {
-          const tileName = compose(
-            flip(getNextTile)([0, 2]),
-            findCode(Snapshot)
-          )(code);
-
-          return [...acc, tileName];
-        }
-
-        // TODO found bug
-        case Diagonally: {
-          const [snapshot] = timeline;
-          const findCodeBy = findCodeByTile(snapshot);
-          const capturableTiles = compose(
-            reduce((acc, tN) => {
-              const { side, tileName } = compose(parseCode, findCodeBy)(tN);
-
-              return sSide !== side ? [...acc, tileName] : acc;
-            }, []),
-            getNextTiles(code)
-          )([
-            [1, 1],
-            [-1, 1],
-          ]);
-
-          return [...acc, ...capturableTiles];
-        }
-
-        // case EnPassant: {
-        //   // TODO move side
-        //   break;
-        // }
-
-        default: {
-          return acc;
-        }
+        return state;
       }
-    }, [])
-  )(mvs);
+
+      case DoubleStep: {
+        const oneMoreTile = getDoubleStepTile(code);
+
+        return [...state, oneMoreTile];
+      }
+
+      case Diagonally: {
+        const [snapshot] = timeline;
+        const capturableTiles = getDiagonallyTiles(sSide, code, snapshot);
+
+        return [...state, ...capturableTiles];
+      }
+
+      case EnPassant: {
+        const diagonalTile = getEnPassantTile(code, timeline);
+
+        return [...state, diagonalTile];
+      }
+
+      default: {
+        return state;
+      }
+    }
+  };
+
+  return compose(filter(Boolean), reduce(_reduceFn, []))(mvs);
 }
 
 export default curry(computeSpecialMT);

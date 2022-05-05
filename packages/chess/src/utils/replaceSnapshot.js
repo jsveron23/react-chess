@@ -1,8 +1,8 @@
-import { curry, clone } from 'ramda';
-import validateCode from '../utils/validateCode';
-import validateSnapshot from '../utils/validateSnapshot';
+import { curry, clone, filter } from 'ramda';
+import validateCode from './validateCode';
+import validateSnapshot from './validateSnapshot';
 
-function replaceSnapshot(currCode, nextCode, snapshot) {
+function replaceSnapshot(snapshot, currCode, nextCode) {
   if (
     !validateCode(currCode) ||
     !validateCode(nextCode) ||
@@ -23,7 +23,7 @@ function replaceSnapshot(currCode, nextCode, snapshot) {
     }
   }
 
-  return cloneSnapshot;
+  return filter(Boolean, cloneSnapshot);
 }
 
 export default curry(replaceSnapshot);

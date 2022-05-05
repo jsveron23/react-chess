@@ -1,7 +1,5 @@
 import { compose, flip, prop, map, filter } from 'ramda';
-import getNextTile from './getNextTile';
-import parseCode from './parseCode';
-import validateCode from '../utils/validateCode';
+import { getNextTile, parseCode, validateCode } from '../utils';
 import { Movement } from '../presets';
 
 function computeMTByCode(code) {
