@@ -34,7 +34,8 @@ function computeFinalMT(code, timeline) {
 
       smt: [['original: ', smt]],
     },
-    { collapsed: true }
+    { collapsed: true },
+    `Movable tiles - ${code}`
   );
 
   return intersection(dmt, cmt);

@@ -28,13 +28,15 @@ function createDebug(options) {
 const debug = createDebug();
 
 debug.o = createDebug;
-debug.grp = (group = {}, options = {}) => {
+debug.grp = (group = {}, options = {}, title = '') => {
   const groupDebug = createDebug({ group: true, ...options });
 
+  console.group(title);
   compose(
     forEach((key) => groupDebug(group[key], key)),
     keys
   )(group);
+  console.groupEnd();
 };
 
 export default debug;
