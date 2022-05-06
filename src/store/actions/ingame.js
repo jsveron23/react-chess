@@ -148,7 +148,7 @@ export function afterMoving(nextTileName, getNextSnapshot) {
 
     const { side, piece, pKey } = parseCode(selectedCode);
     const nextCode = `${pKey}${nextTileName}`;
-    const mvs = Special[piece];
+    const mvs = Special[piece] || [];
 
     // default snapshot for safeness
     let nextSnapshot = snapshot;
@@ -158,40 +158,38 @@ export function afterMoving(nextTileName, getNextSnapshot) {
       nextSnapshot = getNextSnapshot(nextCode);
     }
 
-    if (mvs) {
-      mvs.forEach((mvName) => {
-        switch (mvName) {
-          // case Castling: {
-          //   dispatch();
-          //
-          //   break;
-          // }
+    mvs.forEach((mvName) => {
+      switch (mvName) {
+        // case Castling: {
+        //   dispatch();
+        //
+        //   break;
+        // }
 
-          case EnPassant: {
-            const tileName = getEnPassantTile.after(nextSnapshot, snapshot);
+        case EnPassant: {
+          const tileName = getEnPassantTile.after(nextSnapshot, snapshot);
 
-            if (tileName) {
-              nextSnapshot = removeCodeByTile(nextSnapshot, tileName);
-            }
-
-            break;
+          if (tileName) {
+            nextSnapshot = removeCodeByTile(nextSnapshot, tileName);
           }
 
-          case Promotion: {
-            // TODO apply every kind of piece
-            const queenCode = getPromotionCode(nextTileName, side);
-
-            if (queenCode) {
-              nextSnapshot = replaceCode(nextSnapshot, nextCode, queenCode);
-            }
-
-            break;
-          }
-
-          default:
+          break;
         }
-      });
-    }
+
+        case Promotion: {
+          // TODO apply every kind of piece
+          const queenCode = getPromotionCode(nextTileName, side);
+
+          if (queenCode) {
+            nextSnapshot = replaceCode(nextSnapshot, nextCode, queenCode);
+          }
+
+          break;
+        }
+
+        default:
+      }
+    });
 
     dispatch(updateSnapshot(nextSnapshot));
     dispatch(removeSelectedCode());

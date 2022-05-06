@@ -1,11 +1,11 @@
-import { curry, reject, startsWith } from 'ramda';
+import { curry } from 'ramda';
 import {
-  parseCode,
   detectOpponent,
   detectPiece,
   detectTileOTW,
+  removeDirection,
 } from '../utils';
-import { Pawn } from '../presets';
+import { Pawn, Vertical } from '../presets';
 
 /**
  * Detect eneny on the way
@@ -16,12 +16,10 @@ import { Pawn } from '../presets';
  * @return {Boolean}
  */
 function detectEnemyOTW(movableTiles, selectedCode, pretendCode, tileName) {
-  const { fileName } = parseCode(selectedCode);
-
   // pawn naver have enemy on vertical tile
   const isPawn = detectPiece(Pawn, selectedCode);
   const filteredMt = isPawn
-    ? reject(startsWith(fileName), movableTiles)
+    ? removeDirection(Vertical, movableTiles, selectedCode)
     : movableTiles;
 
   const isEnemy = detectOpponent(selectedCode, pretendCode);

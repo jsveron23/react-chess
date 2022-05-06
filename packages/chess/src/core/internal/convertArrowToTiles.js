@@ -1,9 +1,8 @@
 import { curry, compose, reduce, keys } from 'ramda';
-import convertAxisListToTiles from './convertAxisListToTiles';
+import { convertAxisListToTiles } from '../../utils';
 
 /**
  * Convert arrow to tiles
- * @see groupDirectionTilesBy.js
  * @param  {String} code where piece placed
  * @param  {Array}  arrow axis list (Up, Down, Right, Left...)
  * @return {Object}

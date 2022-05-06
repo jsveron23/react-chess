@@ -2,7 +2,7 @@ import { connect } from 'react-redux';
 import { ActionTypes } from 'redux-undo';
 import { Menu } from '~/components';
 import { updateMatchType, saveGame, undo } from '~/store/actions';
-import { ONE_VS_ONE, ONE_VS_CPU, SAVE, ONLINE } from '~/config';
+import { ONE_VS_ONE, SAVE } from '~/config';
 
 function mapStateToProps({ ingame: { past } }) {
   return { past };
@@ -41,11 +41,11 @@ function mergeProps(stateProps, dispatchProps, ownProps) {
         disabled: false,
         onClick: () => dispatch(updateMatchType(ONE_VS_ONE)),
       },
-      {
-        key: ONE_VS_CPU,
-        title: '1 vs CPU',
-        disabled: true,
-      },
+      // {
+      //   key: ONE_VS_CPU,
+      //   title: '1 vs CPU',
+      //   disabled: true,
+      // },
       {
         key: SAVE,
         title: 'Save',
@@ -62,11 +62,11 @@ function mergeProps(stateProps, dispatchProps, ownProps) {
       //   title: 'Export',
       //   disabled: true,
       // },
-      {
-        key: ONLINE,
-        title: 'Online',
-        disabled: true,
-      },
+      // {
+      //   key: ONLINE,
+      //   title: 'Online',
+      //   disabled: true,
+      // },
     ],
   };
 }

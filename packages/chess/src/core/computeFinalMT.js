@@ -13,7 +13,7 @@ import debug from '../debug';
 function computeFinalMT(code, timeline) {
   const [snapshot] = timeline;
 
-  // smt will return tiles list
+  // `computeSpecialMT` return tiles list
   const smt = computeSpecialMT(code, timeline);
   const _concatMT = compose(flatten, concat(smt));
 

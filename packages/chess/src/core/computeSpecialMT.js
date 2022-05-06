@@ -1,4 +1,4 @@
-import { curry, compose, reduce, filter } from 'ramda';
+import { curry, compose, reduce, filter, defaultTo, flip, prop } from 'ramda';
 import getDoubleStepTile from './getDoubleStepTile';
 import getEnPassantTile from './getEnPassantTile';
 import getDiagonallyTiles from './getDiagonallyTiles';
@@ -18,47 +18,45 @@ import {
  * @return {Array}
  */
 function computeSpecialMT(code, timeline) {
-  const { piece: sPiece } = parseCode(code);
-  const mvs = Special[sPiece];
+  return compose(
+    filter(Boolean),
+    reduce((acc, mvName) => {
+      switch (mvName) {
+        case Castling: {
+          // TODO
 
-  if (!mvs) {
-    return [];
-  }
+          return acc;
+        }
 
-  const _reduceFn = (state, mvName) => {
-    switch (mvName) {
-      case Castling: {
-        // TODO
+        case DoubleStep: {
+          const oneMoreTile = getDoubleStepTile(code);
 
-        return state;
+          return [...acc, oneMoreTile];
+        }
+
+        case Diagonally: {
+          const [snapshot] = timeline;
+          const capturableTiles = getDiagonallyTiles(code, snapshot);
+
+          return [...acc, ...capturableTiles];
+        }
+
+        case EnPassant: {
+          const diagonalTile = getEnPassantTile(code, timeline);
+
+          return [...acc, diagonalTile];
+        }
+
+        default: {
+          return acc;
+        }
       }
-
-      case DoubleStep: {
-        const oneMoreTile = getDoubleStepTile(code);
-
-        return [...state, oneMoreTile];
-      }
-
-      case Diagonally: {
-        const [snapshot] = timeline;
-        const capturableTiles = getDiagonallyTiles(code, snapshot);
-
-        return [...state, ...capturableTiles];
-      }
-
-      case EnPassant: {
-        const diagonalTile = getEnPassantTile(code, timeline);
-
-        return [...state, diagonalTile];
-      }
-
-      default: {
-        return state;
-      }
-    }
-  };
-
-  return compose(filter(Boolean), reduce(_reduceFn, []))(mvs);
+    }, []),
+    defaultTo([]),
+    flip(prop)(Special),
+    prop('piece'),
+    parseCode
+  )(code);
 }
 
 export default curry(computeSpecialMT);
