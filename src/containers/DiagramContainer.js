@@ -15,7 +15,13 @@ import { updateSelectedCode, movePiece, capturePiece } from '~/store/actions';
 
 function mapStateToProps({
   ingame: {
-    present: { turn, selectedCode, movableTiles, snapshot },
+    present: {
+      check: { to, routes, defenders },
+      turn,
+      selectedCode,
+      movableTiles,
+      snapshot,
+    },
   },
 }) {
   return {
@@ -35,6 +41,9 @@ function mapStateToProps({
 
       return isPawn && isEnemyTile;
     },
+    checkCode: to,
+    checkRoute: routes,
+    checkDefenders: defenders,
     movableTiles,
     turn,
   };

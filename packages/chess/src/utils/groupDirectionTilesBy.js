@@ -1,7 +1,7 @@
 import { compose, reduce, prop, flip } from 'ramda';
 import convertArrowToTiles from './convertArrowToTiles';
-import { parseCode } from '../../utils';
-import { AxisGroupByDirection, DirectionGroupByPiece } from '../../presets';
+import parseCode from './parseCode';
+import { AxisGroupByDirection, DirectionGroupByPiece } from '../presets';
 
 /**
  * Convert all axis to tiles from `DirectionGroupByPiece`

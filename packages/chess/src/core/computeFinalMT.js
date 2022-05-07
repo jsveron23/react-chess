@@ -2,7 +2,7 @@ import { curry, compose, concat, intersection, flatten } from 'ramda';
 import computeMTByCode from './computeMTByCode';
 import computeMTByDirection from './computeMTByDirection';
 import computeSpecialMT from './computeSpecialMT';
-import debug from '../debug';
+// import debug from '../debug';
 
 /**
  * Compute final movable tiles
@@ -20,23 +20,23 @@ function computeFinalMT(code, timeline) {
   const dmt = compose(_concatMT, computeMTByDirection(code))(snapshot);
   const cmt = compose(_concatMT, computeMTByCode)(code);
 
-  debug.grp(
-    {
-      dmt: [
-        ['original: ', computeMTByDirection(code, snapshot)],
-        ['concat: ', dmt],
-      ],
-
-      cmt: [
-        ['original: ', computeMTByCode(code)],
-        ['concat: ', cmt],
-      ],
-
-      smt: [['original: ', smt]],
-    },
-    { collapsed: true },
-    `Movable tiles - ${code}`
-  );
+  // debug.grp(
+  //   {
+  //     dmt: [
+  //       ['original: ', computeMTByDirection(code, snapshot)],
+  //       ['concat: ', dmt],
+  //     ],
+  //
+  //     cmt: [
+  //       ['original: ', computeMTByCode(code)],
+  //       ['concat: ', cmt],
+  //     ],
+  //
+  //     smt: [['original: ', smt]],
+  //   },
+  //   { collapsed: true },
+  //   `Movable tiles - ${code}`
+  // );
 
   return intersection(dmt, cmt);
 }

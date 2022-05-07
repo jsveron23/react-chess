@@ -3,6 +3,9 @@ import { FlexCol } from 'ui/es';
 import Rank from './internal/Rank';
 
 const Diagram = ({
+  checkCode,
+  checkRoute,
+  checkDefenders,
   detectEnemy,
   getPKey,
   detectOTWByCode,
@@ -12,6 +15,9 @@ const Diagram = ({
   return (
     <FlexCol height="100%">
       <Rank
+        checkCode={checkCode}
+        checkRoute={checkRoute}
+        checkDefenders={checkDefenders}
         getPKey={getPKey}
         detectOTWByCode={detectOTWByCode}
         detectEnemy={detectEnemy}
@@ -28,6 +34,15 @@ Diagram.propTypes = {
   detectEnemy: PropTypes.func.isRequired,
   detectEnPassantTile: PropTypes.func.isRequired,
   onClickTile: PropTypes.func.isRequired,
+  checkRoute: PropTypes.arrayOf(PropTypes.string),
+  checkDefenders: PropTypes.arrayOf(PropTypes.string),
+  checkCode: PropTypes.string,
+};
+
+Diagram.defaultProps = {
+  checkCode: '',
+  checkRoute: [],
+  checkDefenders: [],
 };
 
 export default Diagram;

@@ -1,5 +1,5 @@
 import { curry, compose, reduce, keys } from 'ramda';
-import { convertAxisListToTiles } from '../../utils';
+import convertAxisListToTiles from './convertAxisListToTiles';
 
 /**
  * Convert arrow to tiles

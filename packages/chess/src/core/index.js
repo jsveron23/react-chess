@@ -1,0 +1,12 @@
+export { default as getDefenders } from './getDefenders';
+export { default as getPromotionCode } from './getPromotionCode';
+export { default as getEnPassantTile } from './getEnPassantTile';
+export { default as computeSpecialMT } from './computeSpecialMT';
+export { default as computeMTByCode } from './computeMTByCode';
+export { default as computeMTByDirection } from './computeMTByDirection';
+export { default as computeCheck } from './computeCheck';
+export { default as computeFinalMT } from './computeFinalMT';
+export { default as detectEnemyOTW } from './detectEnemyOTW';
+export { default as detectAttack } from './detectAttack';
+export { default as findAttacker } from './findAttacker';
+export { default as detectAtackerRoutes } from './detectAtackerRoutes';

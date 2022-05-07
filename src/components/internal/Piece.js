@@ -13,7 +13,7 @@ const Piece = ({ pKey }) => {
   return (
     <Absolute zIndex={999} top={0} bottom={0} left={0} right={0}>
       <Flex width="100%" height="100%" justifyContent="center">
-        <Piece width="70%" />
+        <Piece width="57%" />
       </Flex>
     </Absolute>
   );

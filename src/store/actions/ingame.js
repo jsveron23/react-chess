@@ -1,26 +1,15 @@
 import { batch } from 'react-redux';
 import { ActionCreators } from 'redux-undo';
-import { compose, reject, equals } from 'ramda';
-import {
-  Promotion,
-  EnPassant,
-  Special,
-  Opponent,
-  parseCode,
-  getTimeline,
-  replaceCode,
-  computeFinalMT,
-  getPromotionCode,
-  getEnPassantTile,
-  removeCodeByTile,
-} from 'chess/es';
+import { compose, reject, equals, intersection, isEmpty } from 'ramda';
+import * as Chess from 'chess/es';
 import { ONE_VS_ONE } from '~/config';
 import {
   UPDATE_TURN,
   UPDATE_SNAPSHOT,
+  UPDATE_CHECK_CODE,
   UPDATE_SELECTED_CODE,
-  REMOVE_SELECTED_CODE,
   UPDATE_MOVABLE_TILES,
+  REMOVE_SELECTED_CODE,
   REMOVE_MOVABLE_TILES,
 } from '../actionTypes';
 
@@ -79,7 +68,7 @@ export function capturePiece(pretendCode, nextTileName) {
         afterMoving(nextTileName, (nextCode) => {
           return compose(
             reject(equals(selectedCode)),
-            replaceCode(snapshot, pretendCode)
+            Chess.replaceCode(snapshot, pretendCode)
           )(nextCode);
         })
       );
@@ -98,7 +87,7 @@ export function movePiece(nextTileName) {
     batch(() => {
       dispatch(
         afterMoving(nextTileName, (nextCode) => {
-          return replaceCode(snapshot, selectedCode, nextCode);
+          return Chess.replaceCode(snapshot, selectedCode, nextCode);
         })
       );
     });
@@ -127,12 +116,24 @@ export function undo() {
 export function updateMovableTiles(code) {
   return (dispatch, getState) => {
     const {
-      ingame: { present, past },
+      ingame: {
+        present: {
+          check: { from, routes },
+        },
+        present,
+        past,
+      },
     } = getState();
+
+    let mt = Chess.computeFinalMT(code, Chess.getTimeline(present, past));
+
+    if (from) {
+      mt = intersection(mt, routes);
+    }
 
     dispatch({
       type: UPDATE_MOVABLE_TILES,
-      payload: computeFinalMT(code, getTimeline(present, past)),
+      payload: mt,
     });
   };
 }
@@ -146,9 +147,9 @@ export function afterMoving(nextTileName, getNextSnapshot) {
       },
     } = getState();
 
-    const { side, piece, pKey } = parseCode(selectedCode);
+    const { side, piece, pKey } = Chess.parseCode(selectedCode);
     const nextCode = `${pKey}${nextTileName}`;
-    const mvs = Special[piece] || [];
+    const mvs = Chess.Special[piece] || [];
 
     // default snapshot for safeness
     let nextSnapshot = snapshot;
@@ -166,22 +167,22 @@ export function afterMoving(nextTileName, getNextSnapshot) {
         //   break;
         // }
 
-        case EnPassant: {
-          const tileName = getEnPassantTile.after(nextSnapshot, snapshot);
+        case Chess.EnPassant: {
+          const tileName = Chess.getEnPassantTile.after(nextSnapshot, snapshot);
 
           if (tileName) {
-            nextSnapshot = removeCodeByTile(nextSnapshot, tileName);
+            nextSnapshot = Chess.removeCodeByTile(nextSnapshot, tileName);
           }
 
           break;
         }
 
-        case Promotion: {
+        case Chess.Promotion: {
           // TODO apply every kind of piece
-          const queenCode = getPromotionCode(nextTileName, side);
+          const queenCode = Chess.getPromotionCode(nextTileName, side);
 
           if (queenCode) {
-            nextSnapshot = replaceCode(nextSnapshot, nextCode, queenCode);
+            nextSnapshot = Chess.replaceCode(nextSnapshot, nextCode, queenCode);
           }
 
           break;
@@ -191,9 +192,55 @@ export function afterMoving(nextTileName, getNextSnapshot) {
       }
     });
 
+    // NOTE
+    // `updateCheck` should be called
+    // after `updateSnapshot`
+    // before `removeSelectedCode`
     dispatch(updateSnapshot(nextSnapshot));
+    dispatch(updateCheck());
     dispatch(removeSelectedCode());
     dispatch(removeMovableTiles());
-    dispatch(updateTurn(Opponent[turn]));
+    // TODO remove check object
+    dispatch(updateTurn(Chess.Opponent[turn]));
+  };
+}
+
+export function updateCheck() {
+  return (dispatch, getState) => {
+    const {
+      ingame: {
+        present: { selectedCode },
+        present,
+        past,
+      },
+    } = getState();
+
+    const timeline = Chess.getTimeline(present, past);
+    const {
+      kingCode = '',
+      atkerCode = '',
+      atkerRoutes = [],
+      defenderTiles = [],
+      defenders = [],
+    } = Chess.computeCheck(selectedCode, timeline);
+
+    if (isEmpty(defenderTiles)) {
+      // TODO
+      console.log('checkmate! or stalemate!');
+    }
+
+    // TODO king movement left
+    // TODO when capture by king, also need to detect protector of capture piece
+    console.log('attackerRoutes: ', atkerRoutes);
+
+    dispatch({
+      type: UPDATE_CHECK_CODE,
+      payload: {
+        to: atkerCode ? kingCode : '',
+        from: atkerCode || '',
+        routes: atkerRoutes,
+        defenders,
+      },
+    });
   };
 }

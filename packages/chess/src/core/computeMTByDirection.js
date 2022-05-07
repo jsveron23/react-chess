@@ -1,7 +1,10 @@
 import { compose, curry, reduce, keys, values, map, flatten } from 'ramda';
 import removeBlockedTiles from './removeBlockedTiles';
-import groupDirectionTilesBy from './internal/groupDirectionTilesBy';
-import { validateCode, validateSnapshot } from '../utils';
+import {
+  validateCode,
+  validateSnapshot,
+  groupDirectionTilesBy,
+} from '../utils';
 
 /**
  * Compute generic movable tiles (it remove blocked tiles also)

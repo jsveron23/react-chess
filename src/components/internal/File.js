@@ -3,6 +3,9 @@ import { File as Files, detectDarkTile } from 'chess/es';
 import Tile from './Tile';
 
 const File = ({
+  checkCode,
+  checkRoute,
+  checkDefenders,
   rankName,
   getPKey,
   detectOTWByCode,
@@ -20,6 +23,9 @@ const File = ({
     return (
       <Tile
         key={tileName}
+        checkCode={checkCode}
+        checkRoute={checkRoute}
+        checkDefenders={checkDefenders}
         isDark={isDark}
         tileName={tileName}
         pKey={pKey}
@@ -40,6 +46,15 @@ File.propTypes = {
   onClickTile: PropTypes.func.isRequired,
   rankName: PropTypes.oneOfType([PropTypes.string, PropTypes.number])
     .isRequired,
+  checkRoute: PropTypes.arrayOf(PropTypes.string),
+  checkDefenders: PropTypes.arrayOf(PropTypes.string),
+  checkCode: PropTypes.string,
+};
+
+File.defaultProps = {
+  checkCode: '',
+  checkRoute: [],
+  checkDefenders: [],
 };
 
 export default File;

@@ -2,9 +2,10 @@ import { Turn, Snapshot } from 'chess/es';
 import {
   UPDATE_TURN,
   UPDATE_SNAPSHOT,
+  UPDATE_CHECK_CODE,
   UPDATE_SELECTED_CODE,
-  REMOVE_SELECTED_CODE,
   UPDATE_MOVABLE_TILES,
+  REMOVE_SELECTED_CODE,
   REMOVE_MOVABLE_TILES,
 } from '../actionTypes';
 
@@ -12,10 +13,13 @@ const initialState = {
   turn: Turn.w,
   selectedCode: '',
   movableTiles: [],
-  pendingActions: [
-    /* should be cleared once your turn started */
-  ],
   snapshot: Snapshot,
+  check: {
+    from: '',
+    to: '',
+    routes: [],
+    defenders: [],
+  },
 };
 
 function reducer(state = initialState, action) {
@@ -61,6 +65,13 @@ function reducer(state = initialState, action) {
       return {
         ...state,
         movableTiles: [],
+      };
+    }
+
+    case UPDATE_CHECK_CODE: {
+      return {
+        ...state,
+        check: payload,
       };
     }
 

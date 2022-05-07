@@ -6,6 +6,9 @@ import Piece from './Piece';
 import Mask from './Mask';
 
 const Tile = ({
+  checkCode,
+  checkRoute,
+  checkDefenders,
   isDark,
   pKey,
   tileName,
@@ -27,19 +30,22 @@ const Tile = ({
       backgroundColor={isDark ? tile.dark : tile.light}
       onClick={handleClick}
     >
-      <Absolute color={tile.text}>
-        <Text padding={5}>{tileName}</Text>
-      </Absolute>
-
-      <Piece pKey={pKey} />
-
       <Mask
+        checkCode={checkCode}
+        checkRoute={checkRoute}
+        checkDefenders={checkDefenders}
         pretendCode={pretendCode}
         tileName={tileName}
         detectOTWByCode={detectOTWByCode}
         detectEnemy={detectEnemy}
         detectEnPassantTile={detectEnPassantTile}
       />
+
+      <Absolute color={tile.text}>
+        <Text padding={5}>{tileName}</Text>
+      </Absolute>
+
+      <Piece pKey={pKey} />
     </Relative>
   );
 };
@@ -50,12 +56,18 @@ Tile.propTypes = {
   detectEnPassantTile: PropTypes.func.isRequired,
   onClickTile: PropTypes.func.isRequired,
   tileName: PropTypes.string.isRequired,
+  checkRoute: PropTypes.arrayOf(PropTypes.string),
+  checkDefenders: PropTypes.arrayOf(PropTypes.string),
+  checkCode: PropTypes.string,
   pKey: PropTypes.string,
   isDark: PropTypes.bool,
 };
 
 Tile.defaultProps = {
   pKey: '',
+  checkCode: '',
+  checkRoute: [],
+  checkDefenders: [],
   isDark: false,
 };
 
