@@ -5,6 +5,7 @@ export { default as computeSpecialMT } from './computeSpecialMT';
 export { default as computeMTByCode } from './computeMTByCode';
 export { default as computeMTByDirection } from './computeMTByDirection';
 export { default as computeCheck } from './computeCheck';
+export { default as computePredictCheck } from './computePredictCheck';
 export { default as computeFinalMT } from './computeFinalMT';
 export { default as detectEnemyOTW } from './detectEnemyOTW';
 export { default as findAttacker } from './findAttacker';

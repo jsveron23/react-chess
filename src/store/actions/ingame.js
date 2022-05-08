@@ -3,45 +3,36 @@ import { ActionCreators } from 'redux-undo';
 import { compose, reject, equals, intersection, isEmpty } from 'ramda';
 import * as Chess from 'chess/es';
 import { ONE_VS_ONE } from '~/config';
-import {
-  UPDATE_TURN,
-  UPDATE_SNAPSHOT,
-  UPDATE_CHECK_CODE,
-  UPDATE_SELECTED_CODE,
-  UPDATE_MOVABLE_TILES,
-  REMOVE_CHECK,
-  REMOVE_SELECTED_CODE,
-  REMOVE_MOVABLE_TILES,
-} from '../actionTypes';
+import * as types from '../actionTypes';
 
 export function updateTurn(turn) {
   return {
-    type: UPDATE_TURN,
+    type: types.UPDATE_TURN,
     payload: turn,
   };
 }
 
 export function removeSelectedCode() {
   return {
-    type: REMOVE_SELECTED_CODE,
+    type: types.REMOVE_SELECTED_CODE,
   };
 }
 
 export function removeMovableTiles() {
   return {
-    type: REMOVE_MOVABLE_TILES,
+    type: types.REMOVE_MOVABLE_TILES,
   };
 }
 
 export function removeCheck() {
   return {
-    type: REMOVE_CHECK,
+    type: types.REMOVE_CHECK,
   };
 }
 
 export function updateSnapshot(snapshot) {
   return {
-    type: UPDATE_SNAPSHOT,
+    type: types.UPDATE_SNAPSHOT,
     payload: snapshot,
   };
 }
@@ -55,7 +46,7 @@ export function updateSelectedCode(code) {
     batch(() => {
       dispatch(updateMovableTiles(code));
       dispatch({
-        type: UPDATE_SELECTED_CODE,
+        type: types.UPDATE_SELECTED_CODE,
         payload: code,
       });
     });
@@ -126,23 +117,27 @@ export function updateMovableTiles(code) {
       ingame: {
         present: {
           check: { from, routes },
+          turn,
         },
         present,
         past,
       },
     } = getState();
 
-    // TODO if select piece which protect king,
-    // no compute movable tiles
+    const timeline = Chess.getTimeline(present, past);
+    const predictAtkerCode = Chess.computePredictCheck(timeline, turn, code);
+    let mt = [];
 
-    let mt = Chess.computeFinalMT(code, Chess.getTimeline(present, past));
+    if (!predictAtkerCode || from) {
+      mt = Chess.computeFinalMT(code, timeline);
 
-    if (from) {
-      mt = intersection(mt, routes);
+      if (from) {
+        mt = intersection(mt, routes);
+      }
     }
 
     dispatch({
-      type: UPDATE_MOVABLE_TILES,
+      type: types.UPDATE_MOVABLE_TILES,
       payload: mt,
     });
   };
@@ -210,7 +205,6 @@ export function afterMoving(nextTileName, getNextSnapshot) {
     dispatch(updateCheck());
     dispatch(removeSelectedCode());
     dispatch(removeMovableTiles());
-    // TODO remove check object
     dispatch(updateTurn(Chess.Opponent[turn]));
   };
 }
@@ -244,7 +238,7 @@ export function updateCheck() {
     console.log('attackerRoutes: ', atkerRoutes);
 
     dispatch({
-      type: UPDATE_CHECK_CODE,
+      type: types.UPDATE_CHECK_CODE,
       payload: {
         to: atkerCode ? kingCode : '',
         from: atkerCode || '',
