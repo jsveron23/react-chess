@@ -25,6 +25,7 @@ function computeCheck(code, timeline) {
     const pretendKing = pretendAs(kingCode, atkerCode);
     atkerRoutes = detectAtackerRoutes(atkerCode, pretendKing, timeline);
 
+    // TODO defender of Pawn should not be counted
     const o = getDefenders(atkerCode, timeline, atkerRoutes);
     defenders = o.defenders;
     defenderTiles = o.tiles;
