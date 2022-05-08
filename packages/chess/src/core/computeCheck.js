@@ -2,9 +2,15 @@ import { curry, compose, nth } from 'ramda';
 import detectAtackerRoutes from './detectAtackerRoutes';
 import findAttacker from './findAttacker';
 import getDefenders from './getDefenders';
-import { getOppntCodeList, parseCode } from '../utils';
+import { getOppntCodeList, pretendAs } from '../utils';
 import { King } from '../presets';
 
+/**
+ * Compute whether Check or not
+ * @param  {String} code
+ * @param  {Array}  timeline
+ * @return {Object}
+ */
 function computeCheck(code, timeline) {
   const [snapshot] = timeline;
   const kingCode = compose(nth(0), getOppntCodeList(King, code))(snapshot);
@@ -15,14 +21,13 @@ function computeCheck(code, timeline) {
 
   // check
   if (atkerCode) {
-    const { side, tileName } = parseCode(kingCode);
-    const { piece } = parseCode(atkerCode);
-    const pretendKing = `${side}${piece}${tileName}`;
-
+    // match same movement of piece but same tile as King
+    const pretendKing = pretendAs(kingCode, atkerCode);
     atkerRoutes = detectAtackerRoutes(atkerCode, pretendKing, timeline);
-    const defendersGrp = getDefenders(atkerCode, atkerRoutes, timeline);
-    defenders = defendersGrp.defenders;
-    defenderTiles = defendersGrp.tiles;
+
+    const o = getDefenders(atkerCode, timeline, atkerRoutes);
+    defenders = o.defenders;
+    defenderTiles = o.tiles;
   }
 
   return {

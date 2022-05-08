@@ -28,3 +28,5 @@ export { default as validateSnapshot } from './validateSnapshot';
 export { default as validateTile } from './validateTile';
 export { default as filterOpponent } from './filterOpponent';
 export { default as getOppntCodeList } from './getOppntCodeList';
+export { default as pretendAs } from './pretendAs';
+export { default as computeDistance } from './computeDistance';

@@ -132,6 +132,9 @@ export function updateMovableTiles(code) {
       },
     } = getState();
 
+    // TODO if select piece which protect king,
+    // no compute movable tiles
+
     let mt = Chess.computeFinalMT(code, Chess.getTimeline(present, past));
 
     if (from) {
@@ -231,7 +234,7 @@ export function updateCheck() {
       defenders = [],
     } = Chess.computeCheck(selectedCode, timeline);
 
-    if (isEmpty(defenderTiles)) {
+    if (atkerCode && isEmpty(defenderTiles)) {
       // TODO
       console.log('checkmate! or stalemate!');
     }

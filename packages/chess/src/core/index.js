@@ -7,6 +7,5 @@ export { default as computeMTByDirection } from './computeMTByDirection';
 export { default as computeCheck } from './computeCheck';
 export { default as computeFinalMT } from './computeFinalMT';
 export { default as detectEnemyOTW } from './detectEnemyOTW';
-export { default as detectAttack } from './detectAttack';
 export { default as findAttacker } from './findAttacker';
 export { default as detectAtackerRoutes } from './detectAtackerRoutes';

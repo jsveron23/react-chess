@@ -12,11 +12,8 @@ import computeSpecialMT from './computeSpecialMT';
  */
 function computeFinalMT(code, timeline) {
   const [snapshot] = timeline;
-
-  // `computeSpecialMT` return tiles list
   const smt = computeSpecialMT(code, timeline);
   const _concatMT = compose(flatten, concat(smt));
-
   const dmt = compose(_concatMT, computeMTByDirection(code))(snapshot);
   const cmt = compose(_concatMT, computeMTByCode)(code);
 

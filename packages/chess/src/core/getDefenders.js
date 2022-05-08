@@ -14,7 +14,8 @@ import {
 import computeFinalMT from './computeFinalMT';
 import { filterOpponent } from '../utils';
 
-function getDefenders(code, movableTiles, timeline) {
+// TODO check if 1 tile close
+function getDefenders(code, timeline, movableTiles) {
   const group = compose(
     reduce((acc, cd) => {
       const defendableTiles = compose(
@@ -40,8 +41,6 @@ function getDefenders(code, movableTiles, timeline) {
 
   return {
     defenders: map(prop('code'), group),
-
-    // TODO if none => checkmate
     tiles: compose(uniq, flatten, map(prop('defendableTiles')))(group),
   };
 }

@@ -9,12 +9,20 @@ import {
 } from '../utils';
 import { Pawn, Vertical } from '../presets';
 
+/**
+ * Find attacker
+ * @param  {String} code
+ * @param  {Array}  timeline
+ * @return {String}
+ */
 function findAttacker(code, timeline) {
   const { tileName } = parseCode(code);
   const [snapshot] = timeline;
 
   return compose(
     find((cd) => {
+      // if Pawn front from code,
+      // remove vertical tiles (cannot attack by vertical way)
       const isPawn = detectPiece(Pawn, cd);
       let mt = computeFinalMT(cd, timeline);
 
