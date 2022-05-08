@@ -84,9 +84,7 @@ export function movePiece(nextTileName) {
 
     batch(() => {
       dispatch(
-        afterMoving(nextTileName, (nextCode) => {
-          return Chess.replaceCode(snapshot, selectedCode, nextCode);
-        })
+        afterMoving(nextTileName, Chess.replaceCode(snapshot, selectedCode))
       );
     });
   };
@@ -155,9 +153,7 @@ export function afterMoving(nextTileName, getNextSnapshot) {
     const { side, piece, pKey } = Chess.parseCode(selectedCode);
     const nextCode = `${pKey}${nextTileName}`;
     const mvs = Chess.Special[piece] || [];
-
-    // default snapshot for safeness
-    let nextSnapshot = snapshot;
+    let nextSnapshot = snapshot; // default snapshot for safeness
 
     if (typeof getNextSnapshot === 'function') {
       // default snapshot before appying special movement

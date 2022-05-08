@@ -9,19 +9,40 @@ import {
   prop,
   uniq,
   flatten,
+  reject,
+  startsWith,
   intersection,
 } from 'ramda';
 import computeFinalMT from './computeFinalMT';
-import { filterOpponent } from '../utils';
+import { filterOpponent, parseCode, detectPiece } from '../utils';
+import { Pawn } from '../presets';
 
-// TODO check if 1 tile close
+/**
+ * Get defender tiles and defender code list
+ * @param  {String} code
+ * @param  {Array}  timeline
+ * @param  {Array}  movableTiles
+ * @return {Object}
+ */
 function getDefenders(code, timeline, movableTiles) {
+  const { tileName } = parseCode(code);
+
   const group = compose(
     reduce((acc, cd) => {
-      const defendableTiles = compose(
+      let defendableTiles = compose(
         intersection(movableTiles),
         flip(computeFinalMT)(timeline)
       )(cd);
+
+      const isPawn = detectPiece(Pawn, cd);
+
+      if (isPawn) {
+        const { fileName } = parseCode(cd);
+
+        defendableTiles = reject((tN) => {
+          return startsWith(fileName, tN) && tN === tileName;
+        }, defendableTiles);
+      }
 
       if (isEmpty(defendableTiles)) {
         return acc;
