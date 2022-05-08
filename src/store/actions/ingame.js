@@ -9,6 +9,7 @@ import {
   UPDATE_CHECK_CODE,
   UPDATE_SELECTED_CODE,
   UPDATE_MOVABLE_TILES,
+  REMOVE_CHECK,
   REMOVE_SELECTED_CODE,
   REMOVE_MOVABLE_TILES,
 } from '../actionTypes';
@@ -29,6 +30,12 @@ export function removeSelectedCode() {
 export function removeMovableTiles() {
   return {
     type: REMOVE_MOVABLE_TILES,
+  };
+}
+
+export function removeCheck() {
+  return {
+    type: REMOVE_CHECK,
   };
 }
 

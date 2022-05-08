@@ -5,6 +5,7 @@ import {
   UPDATE_CHECK_CODE,
   UPDATE_SELECTED_CODE,
   UPDATE_MOVABLE_TILES,
+  REMOVE_CHECK,
   REMOVE_SELECTED_CODE,
   REMOVE_MOVABLE_TILES,
 } from '../actionTypes';
@@ -72,6 +73,18 @@ function reducer(state = initialState, action) {
       return {
         ...state,
         check: payload,
+      };
+    }
+
+    case REMOVE_CHECK: {
+      return {
+        ...state,
+        check: {
+          from: '',
+          to: '',
+          routes: [],
+          defenders: [],
+        },
       };
     }
 

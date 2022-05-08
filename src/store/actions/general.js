@@ -5,6 +5,7 @@ import { Storage } from '~/utils';
 import {
   updateTurn,
   updateSnapshot,
+  removeCheck,
   removeSelectedCode,
   removeMovableTiles,
 } from './ingame';
@@ -20,6 +21,7 @@ export function updateMatchType(key) {
       dispatch(updateSnapshot(Snapshot));
       dispatch(removeSelectedCode());
       dispatch(removeMovableTiles());
+      dispatch(removeCheck());
       dispatch(updateTurn(Turn.w));
       dispatch(ActionCreators.clearHistory());
     });
