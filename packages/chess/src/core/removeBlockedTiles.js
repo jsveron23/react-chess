@@ -1,4 +1,4 @@
-import { curry, filter } from 'ramda';
+import { curry, filter, indexOf } from 'ramda';
 import memoizeOne from 'memoize-one';
 import { convertCodeListToTiles } from '../utils';
 
@@ -18,11 +18,11 @@ function removeBlockedTiles(snapshot, tiles) {
 
   return filter((tile) => {
     const idxNotDetectedYet = lastIdx === -1;
+    // TODO possible bug
     const isBlocked = lastIdx > -1;
 
-    // compare with placedTiles(snapshot)
     if (idxNotDetectedYet) {
-      lastIdx = placedTiles.indexOf(tile);
+      lastIdx = indexOf(tile, placedTiles);
     }
 
     return !isBlocked;

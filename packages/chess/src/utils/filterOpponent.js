@@ -1,5 +1,6 @@
 import { curry, filter } from 'ramda';
 import detectOpponent from './detectOpponent';
+import validateSnapshot from './validateSnapshot';
 
 /**
  * Filter opponent
@@ -8,6 +9,10 @@ import detectOpponent from './detectOpponent';
  * @return {Array}
  */
 function filterOpponent(code, snapshot) {
+  if (!validateSnapshot(snapshot)) {
+    throw new TypeError(`invalid argument | snapshot: ${snapshot}`);
+  }
+
   return filter(detectOpponent(code), snapshot);
 }
 

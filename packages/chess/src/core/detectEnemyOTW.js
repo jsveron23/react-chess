@@ -2,7 +2,7 @@ import { curry } from 'ramda';
 import {
   detectOpponent,
   detectPiece,
-  detectTileOTW,
+  detectTileOn,
   removeDirection,
 } from '../utils';
 import { Pawn, Vertical } from '../presets';
@@ -23,7 +23,7 @@ function detectEnemyOTW(movableTiles, selectedCode, pretendCode, tileName) {
     : movableTiles;
 
   const isEnemy = detectOpponent(selectedCode, pretendCode);
-  const isOTW = detectTileOTW(tileName, filteredMt);
+  const isOTW = detectTileOn(tileName, filteredMt);
 
   return isOTW && isEnemy;
 }

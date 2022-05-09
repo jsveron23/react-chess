@@ -6,7 +6,7 @@ import {
   validateCode,
   getPKeyBy,
   detectTurn,
-  detectTileOTW,
+  detectTileOn,
   detectPiece,
   convertAxisListToTiles,
 } from 'chess/es';
@@ -27,7 +27,7 @@ function mapStateToProps({
   return {
     getPKey: getPKeyBy(snapshot),
     detectEnemy: detectEnemyOTW(movableTiles, selectedCode),
-    detectOTWByCode: flip(detectTileOTW)([selectedCode, ...movableTiles]),
+    detectOTWByCode: flip(detectTileOn)([selectedCode, ...movableTiles]),
     detectEnPassantTile(tileName) {
       const isPawn = detectPiece(Pawn, selectedCode);
       const isEnemyTile = compose(
@@ -55,7 +55,7 @@ function mapDispatchToProps(dispatch) {
       const { nextTileName, pretendCode } = getArgs();
       const { turn, detectEnemy, movableTiles } = getState();
       const isPieceTile = validateCode(pretendCode);
-      const isOTW = detectTileOTW(nextTileName, movableTiles);
+      const isOTW = detectTileOn(nextTileName, movableTiles);
       const isSameSide = isPieceTile && detectTurn(turn, pretendCode);
       const isEnemyTile = isPieceTile && detectEnemy(pretendCode, nextTileName);
       const isMovable = !isPieceTile && !isSameSide && isOTW;

@@ -1,6 +1,6 @@
-import { curry, indexOf, flip } from 'ramda';
+import { curry, indexOf, flip, keys, filter, nth, compose } from 'ramda';
 import parseTile from './parseTile';
-import { File, Rank } from '../presets';
+import { File, Rank, Diagonal, Vertical, Horizontal } from '../presets';
 
 const _idxOfF = flip(indexOf)(File);
 const _idxOfR = flip(indexOf)(Rank);
@@ -14,10 +14,26 @@ const _idxOfR = flip(indexOf)(Rank);
 function computeDistanceByTile(aTile, bTile) {
   const { fileName: aFn, rankName: aRn } = parseTile(aTile);
   const { fileName: dFn, rankName: dRn } = parseTile(bTile);
+  const file = Math.abs(_idxOfF(aFn) - _idxOfF(dFn));
+  const rank = Math.abs(_idxOfR(Number(aRn)) - _idxOfR(Number(dRn)));
+  const directionMap = {
+    [Diagonal]: file === rank,
+    [Vertical]: rank > 0 && file === 0,
+    [Horizontal]: file > 0 && rank === 0,
+  };
 
   return {
-    file: Math.abs(_idxOfF(aFn) - _idxOfF(dFn)),
-    rank: Math.abs(_idxOfR(Number(aRn)) - _idxOfR(Number(dRn))),
+    contact:
+      (file === 1 && rank === 1) ||
+      (file === 1 && rank === 0) ||
+      (file === 0 && rank === 1),
+    direction: compose(
+      nth(0),
+      filter((key) => directionMap[key]),
+      keys
+    )(directionMap),
+    file,
+    rank,
   };
 }
 

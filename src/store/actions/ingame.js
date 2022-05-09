@@ -1,6 +1,14 @@
 import { batch } from 'react-redux';
 import { ActionCreators } from 'redux-undo';
-import { compose, reject, equals, intersection, isEmpty } from 'ramda';
+import {
+  compose,
+  reject,
+  equals,
+  intersection,
+  isEmpty,
+  without,
+  prop,
+} from 'ramda';
 import * as Chess from 'chess/es';
 import { ONE_VS_ONE } from '~/config';
 import * as types from '../actionTypes';
@@ -37,18 +45,69 @@ export function updateSnapshot(snapshot) {
   };
 }
 
-/**
- * Update select code when click a tile
- * @param {String} code pretendCode
- */
 export function updateSelectedCode(code) {
   return (dispatch) => {
     batch(() => {
+      // NOTE do not change sequence
       dispatch(updateMovableTiles(code));
       dispatch({
         type: types.UPDATE_SELECTED_CODE,
         payload: code,
       });
+    });
+  };
+}
+
+// before moving, selected
+export function updateMovableTiles(code) {
+  return (dispatch, getState) => {
+    const {
+      ingame: {
+        // present: {
+        //   check: { from, routes },
+        // },
+        present,
+        past,
+      },
+    } = getState();
+
+    // TODO if checkmate => no mt
+
+    // const isKing = Chess.detectPiece(Chess.King, code);
+    const timeline = Chess.createTimeline(present, past);
+    let mt = Chess.computeFinalMT(timeline, code);
+
+    // TODO check why
+    // if (isKing) {
+    //   if (from) {
+    //     const isContacted = compose(
+    //       prop('contact'),
+    //       Chess.computeDistance(from)
+    //     )(code);
+    //
+    //     if (!isContacted && from) {
+    //       const attackingTile = intersection(mt, routes);
+    //
+    //       mt = without(attackingTile, mt);
+    //     }
+    //   }
+    // } else {
+    //   const psAtkerCode = Chess.predictPossibleCheck(timeline, code);
+    //
+    //   if (from) {
+    //     mt = intersection(mt, routes);
+    //   } else if (psAtkerCode) {
+    //     const psAtakerRoutes = Chess.computeFinalMT(timeline, psAtkerCode);
+    //     const captureRoutes = intersection(mt, psAtakerRoutes);
+    //     const { tileName } = Chess.parseCode(psAtkerCode);
+    //
+    //     mt = !isEmpty(captureRoutes) ? [tileName, ...captureRoutes] : [];
+    //   }
+    // }
+
+    dispatch({
+      type: types.UPDATE_MOVABLE_TILES,
+      payload: mt,
     });
   };
 }
@@ -63,12 +122,13 @@ export function capturePiece(pretendCode, nextTileName) {
 
     batch(() => {
       dispatch(
-        afterMoving(nextTileName, (nextCode) => {
-          return compose(
+        afterMoving(
+          nextTileName,
+          compose(
             reject(equals(selectedCode)),
             Chess.replaceCode(snapshot, pretendCode)
-          )(nextCode);
-        })
+          )
+        )
       );
     });
   };
@@ -105,39 +165,6 @@ export function undo() {
     } else {
       dispatch(ActionCreators.undo());
     }
-  };
-}
-
-// before moving
-export function updateMovableTiles(code) {
-  return (dispatch, getState) => {
-    const {
-      ingame: {
-        present: {
-          check: { from, routes },
-          turn,
-        },
-        present,
-        past,
-      },
-    } = getState();
-
-    const timeline = Chess.getTimeline(present, past);
-    const predictAtkerCode = Chess.computePredictCheck(timeline, turn, code);
-    let mt = [];
-
-    if (!predictAtkerCode || from) {
-      mt = Chess.computeFinalMT(code, timeline);
-
-      if (from) {
-        mt = intersection(mt, routes);
-      }
-    }
-
-    dispatch({
-      type: types.UPDATE_MOVABLE_TILES,
-      payload: mt,
-    });
   };
 }
 
@@ -215,30 +242,30 @@ export function updateCheck() {
       },
     } = getState();
 
-    const timeline = Chess.getTimeline(present, past);
+    const timeline = Chess.createTimeline(present, past);
     const {
       kingCode = '',
-      atkerCode = '',
-      atkerRoutes = [],
-      defenderTiles = [],
+      attackerCode = '',
+      attackerRoutes = [],
+      defendTiles = [],
       defenders = [],
     } = Chess.computeCheck(selectedCode, timeline);
 
-    if (atkerCode && isEmpty(defenderTiles)) {
+    // `defendTiles` = avoidable tiles by King
+    if (attackerCode && isEmpty(defendTiles)) {
       // TODO
       console.log('checkmate! or stalemate!');
     }
 
     // TODO king movement left
-    // TODO when capture by king, also need to detect protector of capture piece
-    console.log('attackerRoutes: ', atkerRoutes);
+    // console.log('attackerRoutes: ', attackerRoutes);
 
     dispatch({
       type: types.UPDATE_CHECK_CODE,
       payload: {
-        to: atkerCode ? kingCode : '',
-        from: atkerCode || '',
-        routes: atkerRoutes,
+        to: attackerCode ? kingCode : '',
+        from: attackerCode || '',
+        routes: attackerRoutes,
         defenders,
       },
     });

@@ -14,7 +14,9 @@ import {
  */
 function computeMTByDirection(code, snapshot) {
   if (!validateCode(code) || !validateSnapshot(snapshot)) {
-    throw new Error(`invalid argument | code: ${code} / snapshot: ${snapshot}`);
+    throw new TypeError(
+      `invalid argument | code: ${code} / snapshot: ${snapshot}`
+    );
   }
 
   // generic direction group (tiles)

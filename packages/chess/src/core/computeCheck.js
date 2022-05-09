@@ -1,41 +1,46 @@
 import { curry, compose, nth } from 'ramda';
-import detectAtackerRoutes from './detectAtackerRoutes';
+import detectAttackerRoutes from './detectAttackerRoutes';
 import findAttacker from './findAttacker';
 import getDefenders from './getDefenders';
-import { getOppntCodeList, pretendAs } from '../utils';
+import { getEqualPiece, pretendTo, filterOpponent } from '../utils';
 import { King } from '../presets';
 
 /**
  * Compute whether Check or not
- * @param  {String} code
+ * @param  {String} selectedCode opponent (moved code)
  * @param  {Array}  timeline
  * @return {Object}
  */
-function computeCheck(code, timeline) {
-  const [snapshot] = timeline;
-  const kingCode = compose(nth(0), getOppntCodeList(King, code))(snapshot);
-  const atkerCode = findAttacker(kingCode, timeline);
-  let atkerRoutes = [];
+function computeCheck(selectedCode, timeline) {
+  const kingCode = compose(
+    nth(0),
+    getEqualPiece(King),
+    filterOpponent(selectedCode),
+    nth(0)
+  )(timeline);
+  const attackerCode = findAttacker(kingCode, timeline);
+  let attackerRoutes = [];
   let defenders = [];
-  let defenderTiles = [];
+  let defendTiles = [];
 
   // check
-  if (atkerCode) {
+  if (attackerCode) {
     // match same movement of piece but same tile as King
-    const pretendKing = pretendAs(kingCode, atkerCode);
-    atkerRoutes = detectAtackerRoutes(atkerCode, pretendKing, timeline);
+    attackerRoutes = compose(
+      detectAttackerRoutes(timeline, attackerCode),
+      pretendTo(kingCode)
+    )(attackerCode);
 
-    // TODO defender of Pawn should not be counted
-    const o = getDefenders(atkerCode, timeline, atkerRoutes);
-    defenders = o.defenders;
-    defenderTiles = o.tiles;
+    const grp = getDefenders(attackerCode, timeline, attackerRoutes);
+    defenders = grp.of;
+    defendTiles = grp.tiles;
   }
 
   return {
     kingCode,
-    atkerCode,
-    atkerRoutes,
-    defenderTiles,
+    attackerCode,
+    attackerRoutes,
+    defendTiles,
     defenders,
   };
 }

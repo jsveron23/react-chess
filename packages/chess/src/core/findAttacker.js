@@ -1,39 +1,40 @@
-import { curry, compose, find } from 'ramda';
+import { curry, compose, find, nth } from 'ramda';
 import computeFinalMT from './computeFinalMT';
 import {
   filterOpponent,
   parseCode,
-  detectTileOTW,
+  detectTileOn,
   detectPiece,
   removeDirection,
 } from '../utils';
 import { Pawn, Vertical } from '../presets';
 
 /**
- * Find attacker
- * @param  {String} code
+ * Find which piece is attacker to `code`
+ * @param  {String} defenderCode
  * @param  {Array}  timeline
  * @return {String}
  */
-function findAttacker(code, timeline) {
-  const { tileName } = parseCode(code);
-  const [snapshot] = timeline;
+function findAttacker(defenderCode, timeline) {
+  const { tileName } = parseCode(defenderCode);
 
   return compose(
     find((cd) => {
-      // if Pawn front from code,
-      // remove vertical tiles (cannot attack by vertical way)
       const isPawn = detectPiece(Pawn, cd);
-      let mt = computeFinalMT(cd, timeline);
+      let mt = computeFinalMT(timeline, cd);
 
       if (isPawn) {
+        // if Pawn in vertical tiles of `defenderCode`,
+        // remove vertical tiles
+        // - cannot attack by vertical direction
         mt = removeDirection(Vertical, mt, cd);
       }
 
-      return detectTileOTW(tileName, mt);
+      return detectTileOn(tileName, mt);
     }),
-    filterOpponent(code)
-  )(snapshot);
+    filterOpponent(defenderCode),
+    nth(0)
+  )(timeline);
 }
 
 export default curry(findAttacker);

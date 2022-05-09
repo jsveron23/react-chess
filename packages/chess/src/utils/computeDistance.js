@@ -1,9 +1,6 @@
-import { curry, indexOf, flip } from 'ramda';
+import { curry } from 'ramda';
 import parseCode from './parseCode';
-import { File, Rank } from '../presets';
-
-const _idxOfF = flip(indexOf)(File);
-const _idxOfR = flip(indexOf)(Rank);
+import computeDistanceByTile from './computeDistanceByTile';
 
 /**
  * Compute distance
@@ -12,13 +9,11 @@ const _idxOfR = flip(indexOf)(Rank);
  * @return {Object}
  */
 function computeDistance(aCode, bCode) {
-  const { fileName: aFn, rankName: aRn } = parseCode(aCode);
-  const { fileName: dFn, rankName: dRn } = parseCode(bCode);
+  console.log(aCode, bCode);
+  const { tileName: aTileName } = parseCode(aCode);
+  const { tileName: bTilename } = parseCode(bCode);
 
-  return {
-    file: Math.abs(_idxOfF(aFn) - _idxOfF(dFn)),
-    rank: Math.abs(_idxOfR(Number(aRn)) - _idxOfR(Number(dRn))),
-  };
+  return computeDistanceByTile(aTileName, bTilename);
 }
 
 export default curry(computeDistance);
