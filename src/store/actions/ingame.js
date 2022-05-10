@@ -63,9 +63,9 @@ export function updateMovableTiles(code) {
   return (dispatch, getState) => {
     const {
       ingame: {
-        // present: {
-        //   check: { from, routes },
-        // },
+        present: {
+          check: { from, routes },
+        },
         present,
         past,
       },
@@ -73,37 +73,37 @@ export function updateMovableTiles(code) {
 
     // TODO if checkmate => no mt
 
-    // const isKing = Chess.detectPiece(Chess.King, code);
+    const isKing = Chess.detectPiece(Chess.King, code);
     const timeline = Chess.createTimeline(present, past);
     let mt = Chess.computeFinalMT(timeline, code);
 
-    // TODO check why
-    // if (isKing) {
-    //   if (from) {
-    //     const isContacted = compose(
-    //       prop('contact'),
-    //       Chess.computeDistance(from)
-    //     )(code);
-    //
-    //     if (!isContacted && from) {
-    //       const attackingTile = intersection(mt, routes);
-    //
-    //       mt = without(attackingTile, mt);
-    //     }
-    //   }
-    // } else {
-    //   const psAtkerCode = Chess.predictPossibleCheck(timeline, code);
-    //
-    //   if (from) {
-    //     mt = intersection(mt, routes);
-    //   } else if (psAtkerCode) {
-    //     const psAtakerRoutes = Chess.computeFinalMT(timeline, psAtkerCode);
-    //     const captureRoutes = intersection(mt, psAtakerRoutes);
-    //     const { tileName } = Chess.parseCode(psAtkerCode);
-    //
-    //     mt = !isEmpty(captureRoutes) ? [tileName, ...captureRoutes] : [];
-    //   }
-    // }
+    // TODO optimize it
+    if (isKing) {
+      if (from) {
+        const isContacted = compose(
+          prop('contact'),
+          Chess.computeDistance(from)
+        )(code);
+
+        if (!isContacted) {
+          const dodgeableTiles = Chess.getDodgeableTiles(timeline, from, code);
+
+          mt = intersection(dodgeableTiles, mt);
+        }
+      }
+    } else {
+      const psAtkerCode = Chess.predictPossibleCheck(timeline, code);
+
+      if (from) {
+        mt = intersection(mt, routes);
+      } else if (psAtkerCode) {
+        const psAtakerRoutes = Chess.computeFinalMT(timeline, psAtkerCode);
+        const captureRoutes = intersection(mt, psAtakerRoutes);
+        const { tileName } = Chess.parseCode(psAtkerCode);
+
+        mt = !isEmpty(captureRoutes) ? [tileName, ...captureRoutes] : [];
+      }
+    }
 
     dispatch({
       type: types.UPDATE_MOVABLE_TILES,
@@ -187,6 +187,7 @@ export function afterMoving(nextTileName, getNextSnapshot) {
       nextSnapshot = getNextSnapshot(nextCode);
     }
 
+    // BUG promotion bug found
     mvs.forEach((mvName) => {
       switch (mvName) {
         // case Castling: {
@@ -221,18 +222,18 @@ export function afterMoving(nextTileName, getNextSnapshot) {
     });
 
     // NOTE
-    // `updateCheck` should be called
+    // `updateCheckState` should be called
     // after `updateSnapshot`
     // before `removeSelectedCode`
     dispatch(updateSnapshot(nextSnapshot));
-    dispatch(updateCheck());
+    dispatch(updateCheckState());
     dispatch(removeSelectedCode());
     dispatch(removeMovableTiles());
     dispatch(updateTurn(Chess.Opponent[turn]));
   };
 }
 
-export function updateCheck() {
+export function updateCheckState() {
   return (dispatch, getState) => {
     const {
       ingame: {
@@ -242,17 +243,28 @@ export function updateCheck() {
       },
     } = getState();
 
-    const timeline = Chess.createTimeline(present, past);
     const {
       kingCode = '',
       attackerCode = '',
       attackerRoutes = [],
+      dodgeableTiles = [],
       defendTiles = [],
       defenders = [],
-    } = Chess.computeCheck(selectedCode, timeline);
+    } = compose(
+      Chess.computeCheck(selectedCode),
+      Chess.createTimeline(present)
+    )(past);
 
-    // `defendTiles` = avoidable tiles by King
-    if (attackerCode && isEmpty(defendTiles)) {
+    if (attackerCode) {
+      console.group('Check', attackerCode);
+      console.log('attackerRoutes: ', attackerRoutes);
+      console.log('defenders: ', defenders);
+      console.log('defendTiles: ', defendTiles);
+      console.log('dodgeableTiles: ', dodgeableTiles);
+      console.groupEnd();
+    }
+
+    if (attackerCode && isEmpty(defendTiles) && isEmpty(dodgeableTiles)) {
       // TODO
       console.log('checkmate! or stalemate!');
     }

@@ -4,7 +4,7 @@ import {
   parseCode,
   computeDistance,
   transformInto,
-  computeDistanceByTile,
+  convertAxisListToTiles,
 } from '../utils';
 import {
   Knight,
@@ -17,15 +17,20 @@ import {
 } from '../presets';
 
 /**
- * Detect attacker routes
+ * Get attacker routes
  * @param  {Array}  timeline
  * @param  {String} atkerCode
  * @param  {String} defenderCode
  * @return {Array}
  */
-function detectAttackerRoutes(timeline, atkerCode, defenderCode) {
+function getAttackerRoutes(timeline, atkerCode, defenderCode) {
   const { piece, fileName, rankName, tileName } = parseCode(atkerCode);
-  const { direction, contact } = computeDistance(atkerCode, defenderCode);
+  const {
+    file: fileDistance,
+    rank: rankDistance,
+    direction,
+    contact,
+  } = computeDistance(atkerCode, defenderCode);
 
   if (contact) {
     return [tileName];
@@ -52,20 +57,14 @@ function detectAttackerRoutes(timeline, atkerCode, defenderCode) {
           }
 
           case Diagonal: {
-            // 4 edges from diagonal moves (index)
-            // => [1, 1] [1, 7] [7, 1] [7, 7]
-            // => compute those by `Math.abs`
-            // => eg, [1, 1] - [7, 7] => [-6, -6] => [6, 6]
-            // => eg, [1, 7] - [7, 7] => [-6, 0] => [6, 0]
-            // => eg, [7, 1] - [7, 7] => [0, -6] => [0, 6]
-            // => eg, [7, 1] - [1, 1] => [6, 0]
-            // => eg, [1, 7] - [1, 1] => [0, 6]
-            // => eg, [1, 7] - [1, 1] => [0, 6]
-            // prettier-ignore
-            const Rules = [[0, 6], [6, 0], [6, 6]];
-            const { file, rank } = computeDistanceByTile(tileName, tN);
+            const mirrorTiles = convertAxisListToTiles(defenderCode, [
+              [fileDistance, rankDistance],
+              [-fileDistance, rankDistance],
+              [fileDistance, -rankDistance],
+              [-fileDistance, -rankDistance],
+            ]);
 
-            return includes([file, rank], Rules);
+            return includes(tN, mirrorTiles);
           }
 
           default: {
@@ -85,4 +84,4 @@ function detectAttackerRoutes(timeline, atkerCode, defenderCode) {
   return append(tileName, routes);
 }
 
-export default curry(detectAttackerRoutes);
+export default curry(getAttackerRoutes);

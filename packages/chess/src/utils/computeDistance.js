@@ -9,7 +9,6 @@ import computeDistanceByTile from './computeDistanceByTile';
  * @return {Object}
  */
 function computeDistance(aCode, bCode) {
-  console.log(aCode, bCode);
   const { tileName: aTileName } = parseCode(aCode);
   const { tileName: bTilename } = parseCode(bCode);
 

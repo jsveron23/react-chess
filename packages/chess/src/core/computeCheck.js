@@ -1,8 +1,9 @@
 import { curry, compose, nth } from 'ramda';
-import detectAttackerRoutes from './detectAttackerRoutes';
+import getAttackerRoutes from './getAttackerRoutes';
 import findAttacker from './findAttacker';
 import getDefenders from './getDefenders';
-import { getEqualPiece, pretendTo, filterOpponent } from '../utils';
+import getDodgeableTiles from './getDodgeableTiles';
+import { getEqualPieces, pretendTo, filterOpponent } from '../utils';
 import { King } from '../presets';
 
 /**
@@ -14,24 +15,30 @@ import { King } from '../presets';
 function computeCheck(selectedCode, timeline) {
   const kingCode = compose(
     nth(0),
-    getEqualPiece(King),
+    getEqualPieces(King),
     filterOpponent(selectedCode),
     nth(0)
   )(timeline);
+
+  // NOTE another way, just check attacker movable tiles
   const attackerCode = findAttacker(kingCode, timeline);
+
   let attackerRoutes = [];
   let defenders = [];
   let defendTiles = [];
+  let dodgeableTiles = [];
 
   // check
   if (attackerCode) {
     // match same movement of piece but same tile as King
     attackerRoutes = compose(
-      detectAttackerRoutes(timeline, attackerCode),
+      getAttackerRoutes(timeline, attackerCode),
       pretendTo(kingCode)
     )(attackerCode);
 
     const grp = getDefenders(attackerCode, timeline, attackerRoutes);
+    dodgeableTiles = getDodgeableTiles(timeline, attackerCode, kingCode);
+
     defenders = grp.of;
     defendTiles = grp.tiles;
   }
@@ -40,6 +47,7 @@ function computeCheck(selectedCode, timeline) {
     kingCode,
     attackerCode,
     attackerRoutes,
+    dodgeableTiles,
     defendTiles,
     defenders,
   };

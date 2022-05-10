@@ -8,7 +8,7 @@ import validateSnapshot from './validateSnapshot';
  * @param  {Array}  codeList snapshot
  * @return {Array}
  */
-function getEqualPiece(piece, codeList) {
+function getEqualPieces(piece, codeList) {
   if (!validateSnapshot(codeList)) {
     throw new TypeError(`invalid argument | codeList: ${codeList}`);
   }
@@ -18,4 +18,4 @@ function getEqualPiece(piece, codeList) {
   return filter(_extractPiece, codeList);
 }
 
-export default curry(getEqualPiece);
+export default curry(getEqualPieces);

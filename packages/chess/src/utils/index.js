@@ -27,7 +27,7 @@ export { default as validateCode } from './validateCode';
 export { default as validateSnapshot } from './validateSnapshot';
 export { default as validateTile } from './validateTile';
 export { default as filterOpponent } from './filterOpponent';
-export { default as getEqualPiece } from './getEqualPiece';
+export { default as getEqualPieces } from './getEqualPieces';
 export { default as computeDistance } from './computeDistance';
 export { default as computeDistanceByTile } from './computeDistanceByTile';
 export { default as pretendTo } from './pretendTo';

@@ -19,15 +19,15 @@ function findAttacker(defenderCode, timeline) {
   const { tileName } = parseCode(defenderCode);
 
   return compose(
-    find((cd) => {
-      const isPawn = detectPiece(Pawn, cd);
-      let mt = computeFinalMT(timeline, cd);
+    find((code) => {
+      const isPawn = detectPiece(Pawn, code);
+      let mt = computeFinalMT(timeline, code);
 
       if (isPawn) {
         // if Pawn in vertical tiles of `defenderCode`,
         // remove vertical tiles
         // - cannot attack by vertical direction
-        mt = removeDirection(Vertical, mt, cd);
+        mt = removeDirection(Vertical, mt, code);
       }
 
       return detectTileOn(tileName, mt);
