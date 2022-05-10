@@ -13,7 +13,7 @@ function getPromotionCode(tileName, side) {
   const rankIdx = Rank.indexOf(rankName);
   const isIt = {
     [Side.w]: rankIdx === 0,
-    [Side.b]: rankIdx === Rank.length,
+    [Side.b]: rankIdx === Rank.length - 1,
   };
 
   return isIt[side] ? `${side}${Queen}${tileName}` : '';
