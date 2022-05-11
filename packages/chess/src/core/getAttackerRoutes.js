@@ -28,11 +28,11 @@ function getAttackerRoutes(timeline, atkerCode, defenderCode) {
   const {
     file: fileDistance,
     rank: rankDistance,
+    contact: isContacted,
     direction,
-    contact,
   } = computeDistance(atkerCode, defenderCode);
 
-  if (contact) {
+  if (isContacted) {
     return [tileName];
   }
 

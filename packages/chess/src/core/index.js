@@ -9,5 +9,7 @@ export { default as computeMTByCode } from './computeMTByCode';
 export { default as computeMTByDirection } from './computeMTByDirection';
 export { default as computeCheckState } from './computeCheckState';
 export { default as computeRawMT } from './computeRawMT';
+export { default as computePossibleMT } from './computePossibleMT';
 export { default as findAttacker } from './findAttacker';
 export { default as predictPossibleCheck } from './predictPossibleCheck';
+export { default as removePredictTiles } from './removePredictTiles';

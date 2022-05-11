@@ -1,6 +1,6 @@
 import { batch } from 'react-redux';
 import { ActionCreators } from 'redux-undo';
-import { compose, reject, equals, intersection, isEmpty, prop } from 'ramda';
+import { compose, reject, equals, isEmpty } from 'ramda';
 import * as Chess from 'chess/es';
 import { ONE_VS_ONE } from '~/config';
 import * as types from '../actionTypes';
@@ -63,57 +63,12 @@ export function updateMovableTiles(code) {
       },
     } = getState();
 
-    const isKing = Chess.detectPiece(Chess.King, code);
-    const timeline = Chess.createTimeline(present, past);
-    const predictCheck = Chess.predictPossibleCheck(timeline);
-
-    // default movable tiles
-    let mt = Chess.computeRawMT(timeline, code);
-
-    // TODO optimize it
-    if (isKing) {
-      const { pKey } = Chess.parseCode(code);
-
-      // Check state
-      if (from) {
-        const isContacted = compose(
-          prop('contact'),
-          Chess.computeDistance(from)
-        )(code);
-
-        if (!isContacted) {
-          const dodgeableTiles = Chess.getDodgeableTiles(timeline, from, code);
-
-          mt = intersection(dodgeableTiles, mt);
-        }
-      }
-
-      // remove possible danger tiles from movable tiles
-      mt = mt.filter((tN) => !predictCheck(`${pKey}${tN}`));
-    } else {
-      if (from) {
-        mt = intersection(mt, routes);
-      } else {
-        // if move piece, it would be Check state?
-        const predictAttacker = predictCheck(code);
-
-        if (predictAttacker) {
-          const { tileName } = Chess.parseCode(predictAttacker);
-          const kingCode = Chess.findYourKing(predictAttacker, timeline);
-          const predictAttackerRoutes = compose(
-            Chess.getAttackerRoutes(timeline, predictAttacker),
-            Chess.pretendTo(kingCode)
-          )(predictAttacker);
-          const captureRoutes = intersection(mt, predictAttackerRoutes);
-
-          mt = !isEmpty(captureRoutes) ? [tileName, ...captureRoutes] : [];
-        }
-      }
-    }
-
     dispatch({
       type: types.UPDATE_MOVABLE_TILES,
-      payload: mt,
+      payload: compose(
+        Chess.computePossibleMT(from, routes, code),
+        Chess.createTimeline(present)
+      )(past),
     });
   };
 }
@@ -252,30 +207,31 @@ export function updateCheckState() {
       kingCode = '',
       attackerCode = '',
       attackerRoutes = [],
-      // dodgeableTiles = [],
-      // defendTiles = [],
+      dodgeableTiles = [],
+      defendTiles = [],
       defenders = [],
     } = compose(
       Chess.computeCheckState(selectedCode),
       Chess.createTimeline(present)
     )(past);
 
-    // if (attackerCode) {
-    //   console.group('Check', attackerCode);
-    //   console.log('attackerRoutes: ', attackerRoutes);
-    //   console.log('defenders: ', defenders);
-    //   console.log('defendTiles: ', defendTiles);
-    //   console.log('dodgeableTiles: ', dodgeableTiles);
-    //   console.groupEnd();
-    // }
-    // const isStuck = isEmpty(defendTiles) && isEmpty(dodgeableTiles);
-    // const isCheckmate = attackerCode && isStuck;
+    if (attackerCode) {
+      console.group('Check', attackerCode);
+      console.log('attackerRoutes: ', attackerRoutes);
+      console.log('defenders: ', defenders);
+      console.log('defendTiles: ', defendTiles);
+      console.log('dodgeableTiles: ', dodgeableTiles);
+      console.groupEnd();
+    }
+    const isStuck =
+      isEmpty(defenders) && isEmpty(defendTiles) && isEmpty(dodgeableTiles);
+    const isCheckmate = attackerCode && isStuck;
     // const isStalemate = !attackerCode && isStuck;
 
-    // if (isCheckmate) {
-    //   // TODO
-    //   console.log('checkmate!');
-    // }
+    if (isCheckmate) {
+      // TODO is it working?
+      console.log('checkmate!');
+    }
     // else if (isStalemate) {
     //   // TODO
     //   console.log('stalemate!');

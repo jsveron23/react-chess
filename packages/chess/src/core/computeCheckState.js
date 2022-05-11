@@ -3,16 +3,17 @@ import getAttackerRoutes from './getAttackerRoutes';
 import findAttacker from './findAttacker';
 import getDefenders from './getDefenders';
 import getDodgeableTiles from './getDodgeableTiles';
-import { findYourKing, pretendTo } from '../utils';
+import removePredictTiles from './removePredictTiles';
+import { findOpponentKing, pretendTo } from '../utils';
 
 /**
  * Compute whether Check or not
- * @param  {String} selectedCode opponent (moved code)
+ * @param  {String} opponentCode after moved
  * @param  {Array}  timeline
  * @return {Object}
  */
-function computeCheckState(selectedCode, timeline) {
-  const kingCode = findYourKing(selectedCode, timeline);
+function computeCheckState(opponentCode, timeline) {
+  const kingCode = findOpponentKing(opponentCode, timeline);
   const attackerCode = findAttacker(kingCode, timeline);
   let attackerRoutes = [];
   let defenders = [];
@@ -27,8 +28,14 @@ function computeCheckState(selectedCode, timeline) {
       pretendTo(kingCode)
     )(attackerCode);
 
+    // King
+    dodgeableTiles = compose(
+      removePredictTiles(timeline, kingCode),
+      getDodgeableTiles(timeline, attackerCode, kingCode)
+    )(attackerRoutes);
+
+    // not King (defenders)
     const grp = getDefenders(attackerCode, timeline, attackerRoutes);
-    dodgeableTiles = getDodgeableTiles(timeline, attackerCode, kingCode);
 
     defenders = grp.of;
     defendTiles = grp.tiles;

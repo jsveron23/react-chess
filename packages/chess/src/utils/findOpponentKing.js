@@ -3,7 +3,7 @@ import getEqualPieces from './getEqualPieces';
 import filterOpponent from './filterOpponent';
 import { King } from '../presets';
 
-function findYourKing(opponentCode, timeline) {
+function findOpponentKing(opponentCode, timeline) {
   return compose(
     nth(0),
     getEqualPieces(King),
@@ -12,4 +12,4 @@ function findYourKing(opponentCode, timeline) {
   )(timeline);
 }
 
-export default curry(findYourKing);
+export default curry(findOpponentKing);

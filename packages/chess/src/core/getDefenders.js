@@ -19,7 +19,7 @@ import { filterOpponent, parseCode, detectPiece } from '../utils';
 import { Pawn, King } from '../presets';
 
 /**
- * Get defender tiles and defender code list
+ * Get defenders for defending attacking routes(+ attacker tile)
  * @param  {String} attackerCode
  * @param  {Array}  timeline
  * @param  {Array}  routes

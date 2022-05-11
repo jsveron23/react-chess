@@ -16,7 +16,7 @@ export { default as detectTurn } from './detectTurn';
 export { default as findCode } from './findCode';
 export { default as findCodeBy } from './findCodeBy';
 export { default as findCodeByTile } from './findCodeByTile';
-export { default as findYourKing } from './findYourKing';
+export { default as findOpponentKing } from './findOpponentKing';
 export { default as getFileNameBy } from './getFileNameBy';
 export { default as getRankNameBy } from './getRankNameBy';
 export { default as getPKeyBy } from './getPKeyBy';

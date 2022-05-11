@@ -24,6 +24,10 @@ function computeSpecialMT(timeline, code) {
       switch (mvName) {
         case Castling: {
           // TODO
+          // King no moved
+          // no Check
+          // no atack in move tiles
+          // Rook no moved
 
           return acc;
         }

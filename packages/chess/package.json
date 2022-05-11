@@ -26,7 +26,7 @@
   "scripts": {
     "clean": "rimraf lib es",
     "build": "npm run clean && rollup --config ./rollup.config.js",
-    "build:nc": "rollup --config ./rollup.config.js",
+    "build:nc": "rollup -c -w",
     "lint": "eslint 'src/**/*.js'",
     "prettier": "prettier -c src/**/*.js"
   },
