@@ -26,28 +26,23 @@ import { Pawn, King } from '../presets';
  * @return {Object}
  */
 function getDefenders(attackerCode, timeline, routes) {
-  const { tileName } = parseCode(attackerCode);
+  const { tileName: attackerTileName } = parseCode(attackerCode);
   const grpList = compose(
     reduce((acc, cd) => {
-      const isPawn = detectPiece(Pawn, cd);
-      const isKing = detectPiece(King, cd);
       const mt = computeFinalMT(timeline, cd);
       let defendableTiles = intersection(routes, mt);
 
-      if (isKing) {
-        defendableTiles = [];
-      }
-
-      if (isPawn) {
+      if (detectPiece(Pawn, cd)) {
         const { fileName } = parseCode(cd);
 
+        // if vertical direction then remove it
         defendableTiles = reject(
-          allPass([startsWith(fileName), equals(tileName)]),
+          allPass([startsWith(fileName), equals(attackerTileName)]),
           defendableTiles
         );
       }
 
-      return isEmpty(defendableTiles)
+      return isEmpty(defendableTiles) || detectPiece(King, cd)
         ? acc
         : [
             ...acc,
@@ -62,9 +57,9 @@ function getDefenders(attackerCode, timeline, routes) {
   )(timeline);
 
   return {
-    of: map(prop('code'), grpList),
+    of: grpList.map(prop('code')),
     tiles: compose(uniq, flatten, map(prop('defendableTiles')))(grpList),
-    itself: grpList,
+    self: grpList,
   };
 }
 

@@ -1,14 +1,6 @@
 import { batch } from 'react-redux';
 import { ActionCreators } from 'redux-undo';
-import {
-  compose,
-  reject,
-  equals,
-  intersection,
-  isEmpty,
-  without,
-  prop,
-} from 'ramda';
+import { compose, reject, equals, intersection, isEmpty, prop } from 'ramda';
 import * as Chess from 'chess/es';
 import { ONE_VS_ONE } from '~/config';
 import * as types from '../actionTypes';
@@ -71,14 +63,22 @@ export function updateMovableTiles(code) {
       },
     } = getState();
 
-    // TODO if checkmate => no mt
-
     const isKing = Chess.detectPiece(Chess.King, code);
     const timeline = Chess.createTimeline(present, past);
+    const predictCheck = Chess.predictPossibleCheck(timeline);
+
+    // default movable tiles
     let mt = Chess.computeFinalMT(timeline, code);
 
     // TODO optimize it
     if (isKing) {
+      const { pKey } = Chess.parseCode(code);
+
+      // remove possible attack tiles from movable tiles
+      // TODO before capture it, check protector
+      mt = mt.filter((tN) => !predictCheck(`${pKey}${tN}`));
+
+      // Check state
       if (from) {
         const isContacted = compose(
           prop('contact'),
@@ -92,16 +92,23 @@ export function updateMovableTiles(code) {
         }
       }
     } else {
-      const psAtkerCode = Chess.predictPossibleCheck(timeline, code);
-
       if (from) {
         mt = intersection(mt, routes);
-      } else if (psAtkerCode) {
-        const psAtakerRoutes = Chess.computeFinalMT(timeline, psAtkerCode);
-        const captureRoutes = intersection(mt, psAtakerRoutes);
-        const { tileName } = Chess.parseCode(psAtkerCode);
+      } else {
+        // if move piece, it would be Check state?
+        const predictAttacker = predictCheck(code);
 
-        mt = !isEmpty(captureRoutes) ? [tileName, ...captureRoutes] : [];
+        if (predictAttacker) {
+          const { tileName } = Chess.parseCode(predictAttacker);
+          const kingCode = Chess.findYourKing(predictAttacker, timeline);
+          const predictAttackerRoutes = compose(
+            Chess.getAttackerRoutes(timeline, predictAttacker),
+            Chess.pretendTo(kingCode)
+          )(predictAttacker);
+          const captureRoutes = intersection(mt, predictAttackerRoutes);
+
+          mt = !isEmpty(captureRoutes) ? [tileName, ...captureRoutes] : [];
+        }
       }
     }
 
@@ -157,7 +164,7 @@ export function undo() {
       ingame: { past },
     } = getState();
 
-    if (matchType === ONE_VS_ONE) {
+    if (matchType !== ONE_VS_ONE) {
       const lastTurn = past.length - 2;
       const pastTurn = lastTurn < 0 ? 0 : lastTurn;
 
@@ -187,7 +194,6 @@ export function afterMoving(nextTileName, getNextSnapshot) {
       nextSnapshot = getNextSnapshot(nextCode);
     }
 
-    // BUG promotion bug found
     mvs.forEach((mvName) => {
       switch (mvName) {
         // case Castling: {
@@ -268,9 +274,6 @@ export function updateCheckState() {
       // TODO
       console.log('checkmate! or stalemate!');
     }
-
-    // TODO king movement left
-    // console.log('attackerRoutes: ', attackerRoutes);
 
     dispatch({
       type: types.UPDATE_CHECK_CODE,

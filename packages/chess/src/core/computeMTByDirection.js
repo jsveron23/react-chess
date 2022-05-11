@@ -8,11 +8,11 @@ import {
 
 /**
  * Compute generic movable tiles (it remove blocked tiles also)
- * @param  {String} code
  * @param  {Array}  snapshot
+ * @param  {String} code
  * @return {Array}
  */
-function computeMTByDirection(code, snapshot) {
+function computeMTByDirection(snapshot, code) {
   if (!validateCode(code) || !validateSnapshot(snapshot)) {
     throw new TypeError(
       `invalid argument | code: ${code} / snapshot: ${snapshot}`

@@ -13,11 +13,11 @@ import {
 
 /**
  * Compute special movable tiles
- * @param  {String} code
  * @param  {Array}  timeline
+ * @param  {String} code
  * @return {Array}
  */
-function computeSpecialMT(code, timeline) {
+function computeSpecialMT(timeline, code) {
   return compose(
     filter(Boolean),
     reduce((acc, mvName) => {

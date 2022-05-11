@@ -1,6 +1,6 @@
 import { curry, reject, compose, equals, prop, find } from 'ramda';
 import findAttacker from './findAttacker';
-import { parseCode } from '../utils';
+import { replaceCode, parseCode, detectPiece } from '../utils';
 import { King } from '../presets';
 
 /**
@@ -12,14 +12,24 @@ import { King } from '../presets';
 function predictPossibleCheck(timeline, selectedCode) {
   const { side } = parseCode(selectedCode);
   const [snapshot, ...prevSnapshots] = timeline;
-  const kingCode = find(
+  let kingCode = find(
     compose(equals(`${side}${King}`), prop('pKey'), parseCode),
     snapshot
   );
+  let pretendSnapshot;
+  let pretendTimeline;
 
-  // pretend remove selectedCode from snapshot
-  const pretendSnapshot = reject(equals(selectedCode), snapshot);
-  const pretendTimeline = [pretendSnapshot, ...prevSnapshots];
+  if (detectPiece(King, selectedCode)) {
+    // move King to provided tile
+    pretendSnapshot = replaceCode(snapshot, kingCode, selectedCode);
+    pretendTimeline = [pretendSnapshot, ...prevSnapshots];
+
+    kingCode = selectedCode;
+  } else {
+    // remove selectedCode from snapshot
+    pretendSnapshot = reject(equals(selectedCode), snapshot);
+    pretendTimeline = [pretendSnapshot, ...prevSnapshots];
+  }
 
   return findAttacker(kingCode, pretendTimeline);
 }

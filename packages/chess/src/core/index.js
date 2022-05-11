@@ -3,6 +3,7 @@ export { default as getDefenders } from './getDefenders';
 export { default as getPromotionCode } from './getPromotionCode';
 export { default as getEnPassantTile } from './getEnPassantTile';
 export { default as getDodgeableTiles } from './getDodgeableTiles';
+export { default as getSymmetryTile } from './getSymmetryTile';
 export { default as computeSpecialMT } from './computeSpecialMT';
 export { default as computeMTByCode } from './computeMTByCode';
 export { default as computeMTByDirection } from './computeMTByDirection';

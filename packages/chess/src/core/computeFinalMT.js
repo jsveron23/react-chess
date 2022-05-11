@@ -1,4 +1,4 @@
-import { curry, compose, concat, intersection, flatten, nth } from 'ramda';
+import { curry, compose, concat, intersection, flatten } from 'ramda';
 import computeMTByCode from './computeMTByCode';
 import computeMTByDirection from './computeMTByDirection';
 import computeSpecialMT from './computeSpecialMT';
@@ -11,9 +11,10 @@ import computeSpecialMT from './computeSpecialMT';
  * @return {Array}
  */
 function computeFinalMT(timeline, code) {
-  const smt = computeSpecialMT(code, timeline);
+  const [snapshot] = timeline;
+  const smt = computeSpecialMT(timeline, code);
   const _concatMT = compose(flatten, concat(smt));
-  const dmt = compose(_concatMT, computeMTByDirection(code), nth(0))(timeline);
+  const dmt = compose(_concatMT, computeMTByDirection(snapshot))(code);
   const cmt = compose(_concatMT, computeMTByCode)(code);
 
   // debug.grp(

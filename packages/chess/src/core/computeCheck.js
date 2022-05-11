@@ -1,10 +1,9 @@
-import { curry, compose, nth } from 'ramda';
+import { curry, compose } from 'ramda';
 import getAttackerRoutes from './getAttackerRoutes';
 import findAttacker from './findAttacker';
 import getDefenders from './getDefenders';
 import getDodgeableTiles from './getDodgeableTiles';
-import { getEqualPieces, pretendTo, filterOpponent } from '../utils';
-import { King } from '../presets';
+import { findYourKing, pretendTo } from '../utils';
 
 /**
  * Compute whether Check or not
@@ -13,16 +12,8 @@ import { King } from '../presets';
  * @return {Object}
  */
 function computeCheck(selectedCode, timeline) {
-  const kingCode = compose(
-    nth(0),
-    getEqualPieces(King),
-    filterOpponent(selectedCode),
-    nth(0)
-  )(timeline);
-
-  // NOTE another way, just check attacker movable tiles
+  const kingCode = findYourKing(selectedCode, timeline);
   const attackerCode = findAttacker(kingCode, timeline);
-
   let attackerRoutes = [];
   let defenders = [];
   let defendTiles = [];
