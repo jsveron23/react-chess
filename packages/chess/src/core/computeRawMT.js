@@ -5,12 +5,12 @@ import computeSpecialMT from './computeSpecialMT';
 // import debug from '../debug';
 
 /**
- * Compute final movable tiles
+ * Compute unfiltered movable tiles
  * @param  {Array}  timeline
  * @param  {String} code
  * @return {Array}
  */
-function computeFinalMT(timeline, code) {
+function computeRawMT(timeline, code) {
   const [snapshot] = timeline;
   const smt = computeSpecialMT(timeline, code);
   const _concatMT = compose(flatten, concat(smt));
@@ -38,4 +38,4 @@ function computeFinalMT(timeline, code) {
   return intersection(dmt, cmt);
 }
 
-export default curry(computeFinalMT);
+export default curry(computeRawMT);

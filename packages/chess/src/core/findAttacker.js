@@ -1,5 +1,5 @@
 import { curry, compose, find, nth } from 'ramda';
-import computeFinalMT from './computeFinalMT';
+import computeRawMT from './computeRawMT';
 import {
   filterOpponent,
   parseCode,
@@ -21,7 +21,7 @@ function findAttacker(defenderCode, timeline) {
   return compose(
     find((code) => {
       const isPawn = detectPiece(Pawn, code);
-      let mt = computeFinalMT(timeline, code);
+      let mt = computeRawMT(timeline, code);
 
       if (isPawn) {
         // if Pawn in vertical tiles of `defenderCode`,

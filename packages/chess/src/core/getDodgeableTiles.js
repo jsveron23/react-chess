@@ -1,6 +1,6 @@
 import { curry, compose, intersection, without, concat } from 'ramda';
 import getAttackerRoutes from './getAttackerRoutes';
-import computeFinalMT from './computeFinalMT';
+import computeRawMT from './computeRawMT';
 import getSymmetryTile from './getSymmetryTile';
 import { pretendTo, detectPiece, computeDistance } from '../utils';
 import { King } from '../presets';
@@ -13,16 +13,15 @@ function getDodgeableTiles(timeline, attackerCode, defenderCode) {
     pretendTo(defenderCode)
   )(attackerCode);
 
-  // const isPawn = detectPiece(Pawn, defenderCode);
   const isKing = detectPiece(King, defenderCode);
-  const mt = computeFinalMT(timeline, defenderCode);
+  const mt = computeRawMT(timeline, defenderCode);
 
   if (isKing && !contact) {
     // TODO check `predictPossibleCheck`
     const [removeTile] = intersection(mt, attackerRoutes);
     const symmetryTile = getSymmetryTile(direction, defenderCode, removeTile);
 
-    return without(concat([removeTile], symmetryTile), mt);
+    return without(concat([removeTile], [symmetryTile]), mt);
   }
 
   return '';

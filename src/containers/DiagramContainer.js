@@ -2,7 +2,7 @@ import { connect } from 'react-redux';
 import { compose, flip, intersection, includes } from 'ramda';
 import {
   Pawn,
-  detectEnemyOTW,
+  detectEnemyOn,
   validateCode,
   getPKeyBy,
   detectTurn,
@@ -26,7 +26,7 @@ function mapStateToProps({
 }) {
   return {
     getPKey: getPKeyBy(snapshot),
-    detectEnemy: detectEnemyOTW(movableTiles, selectedCode),
+    detectEnemy: detectEnemyOn(movableTiles, selectedCode),
     detectOTWByCode: flip(detectTileOn)([selectedCode, ...movableTiles]),
     detectEnPassantTile(tileName) {
       const isPawn = detectPiece(Pawn, selectedCode);

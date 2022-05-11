@@ -6,11 +6,11 @@ import { King } from '../presets';
 /**
  * Predict possible Check code even moving the code
  * @param  {Array}  timeline
- * @param  {String} selectedCode
- * @return {String}
+ * @param  {String} targetCode
+ * @return {String} attacker code
  */
-function predictPossibleCheck(timeline, selectedCode) {
-  const { side } = parseCode(selectedCode);
+function predictPossibleCheck(timeline, targetCode) {
+  const { side } = parseCode(targetCode);
   const [snapshot, ...prevSnapshots] = timeline;
   let kingCode = find(
     compose(equals(`${side}${King}`), prop('pKey'), parseCode),
@@ -19,18 +19,21 @@ function predictPossibleCheck(timeline, selectedCode) {
   let pretendSnapshot;
   let pretendTimeline;
 
-  if (detectPiece(King, selectedCode)) {
+  if (detectPiece(King, targetCode)) {
     // NOTE if it's already piece on tile there, remove it
-    const { tileName } = parseCode(selectedCode);
+    const { tileName } = parseCode(targetCode);
     const filteredSnapshot = reject(includes(tileName), snapshot);
 
-    pretendSnapshot = replaceCode(filteredSnapshot, kingCode, selectedCode);
+    // NOTE `targetCode` is not selected code
+    pretendSnapshot = replaceCode(filteredSnapshot, kingCode, targetCode);
     pretendTimeline = [pretendSnapshot, ...prevSnapshots];
 
-    kingCode = selectedCode;
+    kingCode = targetCode;
   } else {
-    // remove selectedCode from snapshot
-    pretendSnapshot = reject(equals(selectedCode), snapshot);
+    // NOTE `targetCode` === `selectedCode`
+
+    // remove `targetCode` from snapshot
+    pretendSnapshot = reject(equals(targetCode), snapshot);
     pretendTimeline = [pretendSnapshot, ...prevSnapshots];
   }
 

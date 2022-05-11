@@ -1,32 +1,34 @@
-import { curry, filter, indexOf } from 'ramda';
+import { curry } from 'ramda';
 import memoizeOne from 'memoize-one';
 import { convertCodeListToTiles } from '../utils';
 
-// prevent compute several times
+/**
+ * Prevent multiple compute by multiple calls
+ * @see `computeMTByDirection`
+ */
 const _convertCodeListToTiles = memoizeOne(convertCodeListToTiles);
 
 /**
- * Remove blocked tiles
+ * Remove blocked tiles (should be ordered by direction)
  * @param  {Array} snapshot
- * @param  {Array} tiles
- * @return {Array}
+ * @param  {Array} orderedTiles ordered tiles by direction
+ * @return {Array} removed tiles
  */
-function removeBlockedTiles(snapshot, tiles) {
+function removeBlockedTiles(snapshot, orderedTiles) {
   // change all code to tiles
   const placedTiles = _convertCodeListToTiles(snapshot);
   let lastIdx = -1;
 
-  return filter((tile) => {
+  return orderedTiles.filter((tN) => {
     const idxNotDetectedYet = lastIdx === -1;
-    // TODO possible bug
     const isBlocked = lastIdx > -1;
 
     if (idxNotDetectedYet) {
-      lastIdx = indexOf(tile, placedTiles);
+      lastIdx = placedTiles.indexOf(tN);
     }
 
     return !isBlocked;
-  }, tiles);
+  });
 }
 
 export default curry(removeBlockedTiles);

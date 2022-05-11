@@ -68,7 +68,7 @@ export function updateMovableTiles(code) {
     const predictCheck = Chess.predictPossibleCheck(timeline);
 
     // default movable tiles
-    let mt = Chess.computeFinalMT(timeline, code);
+    let mt = Chess.computeRawMT(timeline, code);
 
     // TODO optimize it
     if (isKing) {
@@ -256,7 +256,7 @@ export function updateCheckState() {
       // defendTiles = [],
       defenders = [],
     } = compose(
-      Chess.computeCheck(selectedCode),
+      Chess.computeCheckState(selectedCode),
       Chess.createTimeline(present)
     )(past);
 

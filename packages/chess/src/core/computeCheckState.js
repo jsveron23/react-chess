@@ -11,7 +11,7 @@ import { findYourKing, pretendTo } from '../utils';
  * @param  {Array}  timeline
  * @return {Object}
  */
-function computeCheck(selectedCode, timeline) {
+function computeCheckState(selectedCode, timeline) {
   const kingCode = findYourKing(selectedCode, timeline);
   const attackerCode = findAttacker(kingCode, timeline);
   let attackerRoutes = [];
@@ -44,4 +44,4 @@ function computeCheck(selectedCode, timeline) {
   };
 }
 
-export default curry(computeCheck);
+export default curry(computeCheckState);

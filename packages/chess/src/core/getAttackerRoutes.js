@@ -1,5 +1,5 @@
 import { compose, curry, intersection, append, reject, includes } from 'ramda';
-import computeFinalMT from './computeFinalMT';
+import computeRawMT from './computeRawMT';
 import {
   parseCode,
   computeDistance,
@@ -36,8 +36,8 @@ function getAttackerRoutes(timeline, atkerCode, defenderCode) {
     return [tileName];
   }
 
-  const aMt = computeFinalMT(timeline, atkerCode);
-  let bMt = computeFinalMT(timeline, defenderCode);
+  const aMt = computeRawMT(timeline, atkerCode);
+  let bMt = computeRawMT(timeline, defenderCode);
   let routes = intersection(aMt, bMt);
 
   // NOTE specific condition, just recalculation
@@ -73,7 +73,7 @@ function getAttackerRoutes(timeline, atkerCode, defenderCode) {
         }
       }),
       intersection(aMt),
-      computeFinalMT(timeline)
+      computeRawMT(timeline)
     )(
       direction === Diagonal
         ? transformInto(Bishop, defenderCode)

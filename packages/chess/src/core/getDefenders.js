@@ -14,7 +14,7 @@ import {
   startsWith,
   intersection,
 } from 'ramda';
-import computeFinalMT from './computeFinalMT';
+import computeRawMT from './computeRawMT';
 import { filterOpponent, parseCode, detectPiece } from '../utils';
 import { Pawn, King } from '../presets';
 
@@ -29,7 +29,7 @@ function getDefenders(attackerCode, timeline, routes) {
   const { tileName: attackerTileName } = parseCode(attackerCode);
   const grpList = compose(
     reduce((acc, cd) => {
-      const mt = computeFinalMT(timeline, cd);
+      const mt = computeRawMT(timeline, cd);
       let defendableTiles = intersection(routes, mt);
 
       if (detectPiece(Pawn, cd)) {
