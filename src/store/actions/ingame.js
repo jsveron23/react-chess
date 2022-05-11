@@ -74,10 +74,6 @@ export function updateMovableTiles(code) {
     if (isKing) {
       const { pKey } = Chess.parseCode(code);
 
-      // remove possible attack tiles from movable tiles
-      // TODO before capture it, check protector
-      mt = mt.filter((tN) => !predictCheck(`${pKey}${tN}`));
-
       // Check state
       if (from) {
         const isContacted = compose(
@@ -91,6 +87,9 @@ export function updateMovableTiles(code) {
           mt = intersection(dodgeableTiles, mt);
         }
       }
+
+      // remove possible danger tiles from movable tiles
+      mt = mt.filter((tN) => !predictCheck(`${pKey}${tN}`));
     } else {
       if (from) {
         mt = intersection(mt, routes);
@@ -253,27 +252,34 @@ export function updateCheckState() {
       kingCode = '',
       attackerCode = '',
       attackerRoutes = [],
-      dodgeableTiles = [],
-      defendTiles = [],
+      // dodgeableTiles = [],
+      // defendTiles = [],
       defenders = [],
     } = compose(
       Chess.computeCheck(selectedCode),
       Chess.createTimeline(present)
     )(past);
 
-    if (attackerCode) {
-      console.group('Check', attackerCode);
-      console.log('attackerRoutes: ', attackerRoutes);
-      console.log('defenders: ', defenders);
-      console.log('defendTiles: ', defendTiles);
-      console.log('dodgeableTiles: ', dodgeableTiles);
-      console.groupEnd();
-    }
+    // if (attackerCode) {
+    //   console.group('Check', attackerCode);
+    //   console.log('attackerRoutes: ', attackerRoutes);
+    //   console.log('defenders: ', defenders);
+    //   console.log('defendTiles: ', defendTiles);
+    //   console.log('dodgeableTiles: ', dodgeableTiles);
+    //   console.groupEnd();
+    // }
+    // const isStuck = isEmpty(defendTiles) && isEmpty(dodgeableTiles);
+    // const isCheckmate = attackerCode && isStuck;
+    // const isStalemate = !attackerCode && isStuck;
 
-    if (attackerCode && isEmpty(defendTiles) && isEmpty(dodgeableTiles)) {
-      // TODO
-      console.log('checkmate! or stalemate!');
-    }
+    // if (isCheckmate) {
+    //   // TODO
+    //   console.log('checkmate!');
+    // }
+    // else if (isStalemate) {
+    //   // TODO
+    //   console.log('stalemate!');
+    // }
 
     dispatch({
       type: types.UPDATE_CHECK_CODE,

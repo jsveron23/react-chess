@@ -13,6 +13,9 @@ module.exports = function configure(env = {}) {
   const mode = env.production ? 'production' : 'development';
   const isDev = mode === 'development';
   const config = {
+    // watchOptions: {
+    //   aggregateTimeout: 5000,
+    // },
     context: src,
     output: {
       publicPath: '/',
@@ -51,10 +54,9 @@ module.exports = function configure(env = {}) {
       new webpack.DefinePlugin({
         'process.env': JSON.stringify(process.env),
       }),
-      isDev && ReactRefreshPlugin && new ReactRefreshPlugin(),
+      isDev && new ReactRefreshPlugin(),
       isDev && new webpack.HotModuleReplacementPlugin(),
       !isDev &&
-        MiniCssExtractPlugin &&
         new MiniCssExtractPlugin({
           filename: '[name].[hash].css',
         }),

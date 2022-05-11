@@ -17,15 +17,12 @@ function getDodgeableTiles(timeline, attackerCode, defenderCode) {
   const isKing = detectPiece(King, defenderCode);
   const mt = computeFinalMT(timeline, defenderCode);
 
-  if (isKing) {
-    if (contact) {
-      // TODO if contact, capture atker but need to detect protector
-    } else {
-      const [removeTile] = intersection(mt, attackerRoutes);
-      const symmetryTile = getSymmetryTile(direction, defenderCode, removeTile);
+  if (isKing && !contact) {
+    // TODO check `predictPossibleCheck`
+    const [removeTile] = intersection(mt, attackerRoutes);
+    const symmetryTile = getSymmetryTile(direction, defenderCode, removeTile);
 
-      return without(concat([removeTile], symmetryTile), mt);
-    }
+    return without(concat([removeTile], symmetryTile), mt);
   }
 
   return '';
