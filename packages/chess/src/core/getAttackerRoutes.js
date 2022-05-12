@@ -19,25 +19,26 @@ import {
 /**
  * Get attacker routes
  * @param  {Array}  timeline
- * @param  {String} atkerCode
+ * @param  {String} attackerCode
  * @param  {String} defenderCode
  * @return {Array}
  */
-function getAttackerRoutes(timeline, atkerCode, defenderCode) {
-  const { piece, fileName, rankName, tileName } = parseCode(atkerCode);
+function getAttackerRoutes(timeline, attackerCode, defenderCode) {
+  const { piece, fileName, rankName, tileName } = parseCode(attackerCode);
   const {
     file: fileDistance,
     rank: rankDistance,
     contact: isContacted,
     direction,
-  } = computeDistance(atkerCode, defenderCode);
+  } = computeDistance(attackerCode, defenderCode);
 
   if (isContacted) {
     return [tileName];
   }
 
-  const aMt = computeRawMT(timeline, atkerCode);
-  let bMt = computeRawMT(timeline, defenderCode);
+  const computeMT = computeRawMT(timeline);
+  const aMt = computeMT(attackerCode);
+  let bMt = computeMT(defenderCode);
   let routes = intersection(aMt, bMt);
 
   // NOTE specific condition, just recalculation
@@ -73,7 +74,7 @@ function getAttackerRoutes(timeline, atkerCode, defenderCode) {
         }
       }),
       intersection(aMt),
-      computeRawMT(timeline)
+      computeMT
     )(
       direction === Diagonal
         ? transformInto(Bishop, defenderCode)

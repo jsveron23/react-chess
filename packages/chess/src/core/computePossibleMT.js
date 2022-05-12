@@ -1,12 +1,14 @@
-import { curryN, compose, intersection, isEmpty } from 'ramda';
+import { curryN, compose, intersection, isEmpty, concat } from 'ramda';
 import predictPossibleCheck from './predictPossibleCheck';
 import getDodgeableTiles from './getDodgeableTiles';
+import getCastlingTiles from './getCastlingTiles';
 import computeRawMT from './computeRawMT';
 import getAttackerRoutes from './getAttackerRoutes';
 import removePredictTiles from './removePredictTiles';
 import { detectPiece, parseCode, findOpponentKing, pretendTo } from '../utils';
 import { King } from '../presets';
 
+// BUG no mt when Check
 function computePossibleMT(
   attackerCode = '',
   attackerRoutes = [],
@@ -25,20 +27,24 @@ function computePossibleMT(
       mt = intersection(mt, attackerRoutes);
     }
   } else {
-    // NOTE if move this piece, it would be Check state?
-    // otherwise, free to move
-    const predictAttacker = predictPossibleCheck(timeline, code);
+    if (isKing) {
+      mt = compose(concat(mt), getCastlingTiles(timeline))(code);
+    } else {
+      // NOTE if move this piece, it would be Check state?
+      // otherwise, free to move
+      const predictAttacker = predictPossibleCheck(timeline, code);
 
-    if (predictAttacker) {
-      const kingCode = findOpponentKing(predictAttacker, timeline);
-      const captureRoutes = compose(
-        intersection(mt),
-        getAttackerRoutes(timeline, predictAttacker),
-        pretendTo(kingCode)
-      )(predictAttacker);
-      const { tileName } = parseCode(predictAttacker);
+      if (predictAttacker) {
+        const kingCode = findOpponentKing(predictAttacker, timeline);
+        const captureRoutes = compose(
+          intersection(mt),
+          getAttackerRoutes(timeline, predictAttacker),
+          pretendTo(kingCode)
+        )(predictAttacker);
+        const { tileName } = parseCode(predictAttacker);
 
-      mt = !isEmpty(captureRoutes) ? [tileName, ...captureRoutes] : [];
+        mt = !isEmpty(captureRoutes) ? [tileName, ...captureRoutes] : [];
+      }
     }
   }
 

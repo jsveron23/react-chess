@@ -3,13 +3,7 @@ import getDoubleStepTile from './getDoubleStepTile';
 import getEnPassantTile from './getEnPassantTile';
 import getDiagonallyTiles from './getDiagonallyTiles';
 import { parseCode } from '../utils';
-import {
-  Special,
-  Castling,
-  DoubleStep,
-  Diagonally,
-  EnPassant,
-} from '../presets';
+import { Special, DoubleStep, Diagonally, EnPassant } from '../presets';
 
 /**
  * Compute special movable tiles
@@ -22,16 +16,6 @@ function computeSpecialMT(timeline, code) {
     filter(Boolean),
     reduce((acc, mvName) => {
       switch (mvName) {
-        case Castling: {
-          // TODO
-          // King no moved
-          // no Check
-          // no atack in move tiles
-          // Rook no moved
-
-          return acc;
-        }
-
         case DoubleStep: {
           const oneMoreTile = getDoubleStepTile(code);
 

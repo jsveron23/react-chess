@@ -17,11 +17,12 @@ import { Pawn, Vertical } from '../presets';
  */
 function findAttacker(defenderCode, timeline) {
   const { tileName } = parseCode(defenderCode);
+  const computeMT = computeRawMT(timeline);
 
   return compose(
     find((code) => {
       const isPawn = detectPiece(Pawn, code);
-      let mt = computeRawMT(timeline, code);
+      let mt = computeMT(code);
 
       if (isPawn) {
         // if Pawn in vertical tiles of `defenderCode`,

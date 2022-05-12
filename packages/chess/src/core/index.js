@@ -2,6 +2,7 @@ export { default as getAttackerRoutes } from './getAttackerRoutes';
 export { default as getDefenders } from './getDefenders';
 export { default as getPromotionCode } from './getPromotionCode';
 export { default as getEnPassantTile } from './getEnPassantTile';
+export { default as getCastlingTiles } from './getCastlingTiles';
 export { default as getDodgeableTiles } from './getDodgeableTiles';
 export { default as getSymmetryTile } from './getSymmetryTile';
 export { default as computeSpecialMT } from './computeSpecialMT';
