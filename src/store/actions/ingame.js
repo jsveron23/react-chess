@@ -1,6 +1,6 @@
 import { batch } from 'react-redux';
 import { ActionCreators } from 'redux-undo';
-import { compose, reject, equals, isEmpty } from 'ramda';
+import { compose, reject, equals, isEmpty, flatten, flip } from 'ramda';
 import * as Chess from 'chess/es';
 import { ONE_VS_ONE } from '~/config';
 import * as types from '../actionTypes';
@@ -197,12 +197,13 @@ export function updateCheckState() {
   return (dispatch, getState) => {
     const {
       ingame: {
-        present: { selectedCode },
+        present: { selectedCode, snapshot },
         present,
         past,
       },
     } = getState();
 
+    const timeline = Chess.createTimeline(present, past);
     const {
       kingCode = '',
       attackerCode = '',
@@ -210,32 +211,36 @@ export function updateCheckState() {
       dodgeableTiles = [],
       defendTiles = [],
       defenders = [],
-    } = compose(
-      Chess.computeCheckState(selectedCode),
-      Chess.createTimeline(present)
-    )(past);
+    } = Chess.computeCheckState(selectedCode, timeline);
 
-    if (attackerCode) {
-      console.group('Check', attackerCode);
-      console.log('attackerRoutes: ', attackerRoutes);
-      console.log('defenders: ', defenders);
-      console.log('defendTiles: ', defendTiles);
-      console.log('dodgeableTiles: ', dodgeableTiles);
-      console.groupEnd();
-    }
-    const isStuck =
-      isEmpty(defenders) && isEmpty(defendTiles) && isEmpty(dodgeableTiles);
-    const isCheckmate = attackerCode && isStuck;
-    // const isStalemate = !attackerCode && isStuck;
+    // console.group('Attacker: ', attackerCode || 'none');
+    // console.log('attackerRoutes: ', attackerRoutes);
+    // console.log('defenders: ', defenders);
+    // console.log('defendTiles: ', defendTiles);
+    // console.log('dodgeableTiles: ', dodgeableTiles);
+    // console.groupEnd();
+
+    const flippedGetMT = flip(
+      Chess.computePossibleMT(attackerCode, attackerRoutes)
+    )(timeline);
+    const hasThierMt = compose(
+      isEmpty,
+      flatten,
+      reject(compose(isEmpty, flippedGetMT)),
+      Chess.filterOpponent(selectedCode)
+    )(snapshot);
+    const isStuck = isEmpty(defenders) && isEmpty(defendTiles);
+    const isNotDodgeableByKing = isEmpty(dodgeableTiles);
+    const isCheckmate = attackerCode && isStuck && isNotDodgeableByKing;
+
+    // TODO get `hasThierMt` from `dodgeableTiles`
+    const isStalemate = !attackerCode && isStuck && hasThierMt;
 
     if (isCheckmate) {
-      // TODO is it working?
       console.log('checkmate!');
+    } else if (isStalemate) {
+      console.log('stalemate!');
     }
-    // else if (isStalemate) {
-    //   // TODO
-    //   console.log('stalemate!');
-    // }
 
     dispatch({
       type: types.UPDATE_CHECK_CODE,

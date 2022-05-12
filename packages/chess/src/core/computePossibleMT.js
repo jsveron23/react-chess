@@ -7,7 +7,6 @@ import removePredictTiles from './removePredictTiles';
 import { detectPiece, parseCode, findOpponentKing, pretendTo } from '../utils';
 import { King } from '../presets';
 
-// TODO optimize it
 function computePossibleMT(
   attackerCode = '',
   attackerRoutes = [],
@@ -20,10 +19,7 @@ function computePossibleMT(
   // Check state
   if (attackerCode) {
     if (isKing) {
-      mt = compose(
-        removePredictTiles(timeline, code),
-        getDodgeableTiles(timeline, attackerCode, code)
-      )(attackerRoutes);
+      mt = getDodgeableTiles(timeline, attackerCode, code, attackerRoutes);
     } else {
       // block or capture
       mt = intersection(mt, attackerRoutes);
@@ -46,7 +42,7 @@ function computePossibleMT(
     }
   }
 
-  return mt;
+  return removePredictTiles(timeline, code, mt);
 }
 
 export default curryN(4, computePossibleMT);
