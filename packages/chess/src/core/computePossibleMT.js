@@ -8,7 +8,6 @@ import removePredictTiles from './removePredictTiles';
 import { detectPiece, parseCode, findOpponentKing, pretendTo } from '../utils';
 import { King } from '../presets';
 
-// BUG no mt when Check
 function computePossibleMT(
   attackerCode = '',
   attackerRoutes = [],
@@ -48,7 +47,7 @@ function computePossibleMT(
     }
   }
 
-  return removePredictTiles(timeline, code, mt);
+  return attackerCode ? mt : removePredictTiles(timeline, code, mt);
 }
 
 export default curryN(4, computePossibleMT);
