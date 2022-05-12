@@ -3,11 +3,11 @@ import getAttackerRoutes from './getAttackerRoutes';
 import findAttacker from './findAttacker';
 import getDefenders from './getDefenders';
 import getDodgeableTiles from './getDodgeableTiles';
-import removePredictTiles from './removePredictTiles';
+import removePredictTiles from './internal/removePredictTiles';
 import { findOpponentKing, pretendTo } from '../utils';
 
 /**
- * Compute whether Check or not
+ * Compute whether Check or not (entry function)
  * @param  {String} opponentCode after moved
  * @param  {Array}  timeline
  * @return {Object}

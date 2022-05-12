@@ -6,12 +6,12 @@ const _idxOfF = flip(indexOf)(File);
 const _idxOfR = flip(indexOf)(Rank);
 
 /**
- * Compute distance by tile
+ * Compute distance by two different tiles
  * @param  {String} aTile
  * @param  {String} bTile
  * @return {Object}
  */
-function computeDistanceByTile(aTile, bTile) {
+function computeDistanceByTiles(aTile, bTile) {
   const { fileName: aFn, rankName: aRn } = parseTile(aTile);
   const { fileName: dFn, rankName: dRn } = parseTile(bTile);
   const file = Math.abs(_idxOfF(aFn) - _idxOfF(dFn));
@@ -37,4 +37,4 @@ function computeDistanceByTile(aTile, bTile) {
   };
 }
 
-export default curry(computeDistanceByTile);
+export default curry(computeDistanceByTiles);

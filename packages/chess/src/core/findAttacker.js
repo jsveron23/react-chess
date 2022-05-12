@@ -3,7 +3,7 @@ import computeRawMT from './computeRawMT';
 import {
   filterOpponent,
   parseCode,
-  detectTileOn,
+  detectTileOnTiles,
   detectPiece,
   removeDirection,
 } from '../utils';
@@ -31,7 +31,7 @@ function findAttacker(defenderCode, timeline) {
         mt = removeDirection(Vertical, mt, code);
       }
 
-      return detectTileOn(tileName, mt);
+      return detectTileOnTiles(tileName, mt);
     }),
     filterOpponent(defenderCode),
     nth(0)

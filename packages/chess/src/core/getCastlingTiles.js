@@ -14,7 +14,7 @@ import {
   parseCode,
   detectMoved,
   convertAxisListToTiles,
-  convertCodeListToTiles,
+  convertSnapshotToTiles,
 } from '../utils';
 import { Rook } from '../presets';
 
@@ -28,7 +28,7 @@ import { Rook } from '../presets';
 function getCastlingTiles(timeline, code) {
   const { side, pKey } = parseCode(code);
   const convertToTiles = convertAxisListToTiles(code);
-  const placedTiles = compose(convertCodeListToTiles, nth(0))(timeline);
+  const placedTiles = compose(convertSnapshotToTiles, nth(0))(timeline);
   const detectIncludes = flip(includes)(placedTiles);
   const findPredictAttacker = flip(findAttacker)(timeline);
 

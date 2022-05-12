@@ -1,10 +1,7 @@
 import { compose, curry, reduce, keys, values, map, flatten } from 'ramda';
-import removeBlockedTiles from './removeBlockedTiles';
-import {
-  validateCode,
-  validateSnapshot,
-  groupDirectionTilesBy,
-} from '../utils';
+import removeBlockedTiles from './internal/removeBlockedTiles';
+import groupDirectionTilesByCode from './internal/groupDirectionTilesByCode';
+import { validateCode, validateSnapshot } from '../utils';
 
 /**
  * Compute generic movable tiles (it remove blocked tiles also)
@@ -20,7 +17,7 @@ function computeMTByDirection(snapshot, code) {
   }
 
   // generic direction group (tiles)
-  const tilesGrp = groupDirectionTilesBy(code);
+  const tilesGrp = groupDirectionTilesByCode(code);
 
   return compose(
     flatten,

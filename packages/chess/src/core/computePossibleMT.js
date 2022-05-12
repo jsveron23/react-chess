@@ -4,10 +4,18 @@ import getDodgeableTiles from './getDodgeableTiles';
 import getCastlingTiles from './getCastlingTiles';
 import computeRawMT from './computeRawMT';
 import getAttackerRoutes from './getAttackerRoutes';
-import removePredictTiles from './removePredictTiles';
+import removePredictTiles from './internal/removePredictTiles';
 import { detectPiece, parseCode, findOpponentKing, pretendTo } from '../utils';
 import { King } from '../presets';
 
+/**
+ * Compute possible movable tiles (entry function)
+ * @param  {String} [attackerCode='']
+ * @param  {Array}  [attackerRoutes=[]]
+ * @param  {String} code
+ * @param  {Array}  timeline
+ * @return {Array}
+ */
 function computePossibleMT(
   attackerCode = '',
   attackerRoutes = [],

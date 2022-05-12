@@ -1,12 +1,12 @@
 import { curry } from 'ramda';
 import memoizeOne from 'memoize-one';
-import { convertCodeListToTiles } from '../utils';
+import { convertSnapshotToTiles } from '../../utils';
 
 /**
  * Prevent multiple compute by multiple calls
  * @see `computeMTByDirection`
  */
-const _convertCodeListToTiles = memoizeOne(convertCodeListToTiles);
+const _convertSnapshotToTiles = memoizeOne(convertSnapshotToTiles);
 
 /**
  * Remove blocked tiles (should be ordered by direction)
@@ -16,7 +16,7 @@ const _convertCodeListToTiles = memoizeOne(convertCodeListToTiles);
  */
 function removeBlockedTiles(snapshot, orderedTiles) {
   // change all code to tiles
-  const placedTiles = _convertCodeListToTiles(snapshot);
+  const placedTiles = _convertSnapshotToTiles(snapshot);
   let lastIdx = -1;
 
   return orderedTiles.filter((tN) => {

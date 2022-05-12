@@ -8,7 +8,7 @@ import findCodeByTile from './findCodeByTile';
  * @param  {String} tileName
  * @return {String}
  */
-function getPKeyBy(snapshot, tileName) {
+function getPKeyByTile(snapshot, tileName) {
   return compose(
     prop('pKey'),
     parseCode,
@@ -17,4 +17,4 @@ function getPKeyBy(snapshot, tileName) {
   )(tileName);
 }
 
-export default curry(getPKeyBy);
+export default curry(getPKeyByTile);

@@ -1,5 +1,5 @@
 import { curry, compose, map, filter, flatten, nth } from 'ramda';
-import { convertAxisToTile } from '../utils';
+import convertAxisToTile from './convertAxisToTile';
 import { Vertical, Horizontal } from '../presets';
 
 /**

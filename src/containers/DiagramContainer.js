@@ -2,11 +2,11 @@ import { connect } from 'react-redux';
 import { compose, flip, intersection, includes } from 'ramda';
 import {
   Pawn,
-  detectEnemyOn,
+  detectEnemyOnTiles,
   validateCode,
-  getPKeyBy,
+  getPKeyByTile,
   detectTurn,
-  detectTileOn,
+  detectTileOnTiles,
   detectPiece,
   convertAxisListToTiles,
 } from 'chess/es';
@@ -25,9 +25,9 @@ function mapStateToProps({
   },
 }) {
   return {
-    getPKey: getPKeyBy(snapshot),
-    detectEnemy: detectEnemyOn(movableTiles, selectedCode),
-    detectOTWByCode: flip(detectTileOn)([selectedCode, ...movableTiles]),
+    getPKey: getPKeyByTile(snapshot),
+    detectEnemy: detectEnemyOnTiles(movableTiles, selectedCode),
+    detectOTWByCode: flip(detectTileOnTiles)([selectedCode, ...movableTiles]),
     detectEnPassantTile(tileName) {
       const isPawn = detectPiece(Pawn, selectedCode);
       const isEnemyTile = compose(
@@ -55,7 +55,7 @@ function mapDispatchToProps(dispatch) {
       const { nextTileName, pretendCode } = getArgs();
       const { turn, detectEnemy, movableTiles } = getState();
       const isPieceTile = validateCode(pretendCode);
-      const isOTW = detectTileOn(nextTileName, movableTiles);
+      const isOTW = detectTileOnTiles(nextTileName, movableTiles);
       const isSameSide = isPieceTile && detectTurn(turn, pretendCode);
       const isEnemyTile = isPieceTile && detectEnemy(pretendCode, nextTileName);
       const isMovable = !isPieceTile && !isSameSide && isOTW;

@@ -3,7 +3,6 @@ import parseCode from './parseCode';
 
 /**
  * Detect expect piece
- * @see ../presets
  * @param  {String}  piece
  * @param  {String}  code
  * @return {Boolean}

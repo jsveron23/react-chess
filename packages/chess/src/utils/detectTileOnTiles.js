@@ -6,8 +6,8 @@ import { curry, includes } from 'ramda';
  * @param  {Array}   movableTiles
  * @return {Boolean}
  */
-function detectTileOn(tileName, movableTiles) {
+function detectTileOnTiles(tileName, movableTiles) {
   return includes(tileName, movableTiles);
 }
 
-export default curry(detectTileOn);
+export default curry(detectTileOnTiles);

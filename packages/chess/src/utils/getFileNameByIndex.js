@@ -7,10 +7,10 @@ import { File } from '../presets';
  * @param  {Number} x
  * @return {String}
  */
-function getFileNameBy(fileName, x) {
+function getFileNameByIndex(fileName, x) {
   const fileIdx = File.indexOf(fileName);
 
   return File[fileIdx + x];
 }
 
-export default curry(getFileNameBy);
+export default curry(getFileNameByIndex);

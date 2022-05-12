@@ -7,7 +7,7 @@ import {
 } from '../utils';
 
 /**
- * Get diagonally tiles
+ * Get diagonally forward attack tiles
  * @param  {String} code
  * @param  {Array}  snapshot
  * @return {Array}

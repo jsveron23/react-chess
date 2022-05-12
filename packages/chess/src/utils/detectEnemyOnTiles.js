@@ -1,7 +1,7 @@
 import { curry } from 'ramda';
 import detectOpponent from './detectOpponent';
 import detectPiece from './detectPiece';
-import detectTileOn from './detectTileOn';
+import detectTileOnTiles from './detectTileOnTiles';
 import removeDirection from './removeDirection';
 import { Pawn, Vertical } from '../presets';
 
@@ -13,7 +13,7 @@ import { Pawn, Vertical } from '../presets';
  * @param  {String}  tileName
  * @return {Boolean}
  */
-function detectEnemyOn(movableTiles, selectedCode, pretendCode, tileName) {
+function detectEnemyOnTiles(movableTiles, selectedCode, pretendCode, tileName) {
   // pawn naver have enemy on vertical tile
   const isPawn = detectPiece(Pawn, selectedCode);
   const filteredMt = isPawn
@@ -21,9 +21,9 @@ function detectEnemyOn(movableTiles, selectedCode, pretendCode, tileName) {
     : movableTiles;
 
   const isEnemy = detectOpponent(selectedCode, pretendCode);
-  const isOTW = detectTileOn(tileName, filteredMt);
+  const isOTW = detectTileOnTiles(tileName, filteredMt);
 
   return isOTW && isEnemy;
 }
 
-export default curry(detectEnemyOn);
+export default curry(detectEnemyOnTiles);

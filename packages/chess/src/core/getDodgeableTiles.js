@@ -1,11 +1,11 @@
 import { curry, compose, intersection, without, concat, nth } from 'ramda';
 import computeRawMT from './computeRawMT';
-import getSymmetryTile from './getSymmetryTile';
 import {
   detectPiece,
-  computeDistance,
-  convertCodeListToTiles,
   filterOpponent,
+  computeDistance,
+  getSymmetryTile,
+  convertSnapshotToTiles,
 } from '../utils';
 import { King } from '../presets';
 
@@ -25,7 +25,7 @@ function getDodgeableTiles(
 
   if (isKing && !isContacted) {
     const placedSideTiles = compose(
-      convertCodeListToTiles,
+      convertSnapshotToTiles,
       filterOpponent(attackerCode),
       nth(0)
     )(timeline);

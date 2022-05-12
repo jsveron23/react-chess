@@ -6,8 +6,8 @@ import { curry } from 'ramda';
  * @param  {Number} y
  * @return {Number}
  */
-function getRankNameBy(rankName, y) {
+function getRankNameByIndex(rankName, y) {
   return Number(rankName) + y;
 }
 
-export default curry(getRankNameBy);
+export default curry(getRankNameByIndex);

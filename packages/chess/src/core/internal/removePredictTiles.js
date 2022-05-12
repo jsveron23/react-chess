@@ -1,6 +1,6 @@
 import { curry, filter } from 'ramda';
-import predictPossibleCheck from './predictPossibleCheck';
-import { parseCode } from '../utils';
+import predictPossibleCheck from '../predictPossibleCheck';
+import { parseCode } from '../../utils';
 
 /**
  * Remove predict attacking tiles from provided tiles

@@ -3,14 +3,16 @@ import convertCodeToTile from './convertCodeToTile';
 import validateSnapshot from './validateSnapshot';
 
 /**
- * Convert code list to tiles
- * @param  {Array} snapshot
+ * Convert snapshot to tiles
+ * @param  {Array} snapshot [code<String>, ...]
  * @return {Array}
  */
-export default function convertCodeListToTiles(snapshot) {
+function convertSnapshotToTiles(snapshot) {
   if (!validateSnapshot(snapshot)) {
     return [];
   }
 
   return map(convertCodeToTile, snapshot);
 }
+
+export default convertSnapshotToTiles;
