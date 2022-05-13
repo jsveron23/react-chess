@@ -9,7 +9,7 @@ import {
 import { King } from '../presets';
 
 /**
- * Predict possible Check code even moving the code
+ * Predict possible Check when moving the code
  * @param  {Array}  timeline
  * @param  {String} targetCode
  * @return {String} attacker code

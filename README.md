@@ -6,8 +6,8 @@ Programs must be written for people to read, and only incidentally for machines 
 
 ## Thoughts
 
-- Logic is almost same but completely redesign functions
-- My goal is never do unit testing for React components
+- Almost same logic but completely redesign functions
+- My goal is never do unit testing for React components (keep it simple)
 - To do that, `Key purpose are decouple components and business logic functions` then test logic functions only
 - As functional programming lover, try to be free from side effects
 
@@ -23,12 +23,6 @@ npm start
 ```
 
 open browser, http://localhost:3000
-
-## Components
-
-App component > Section components > Container components > Chess components
-- Diagram > Rank > File > Tile > Piece
-- Sidebar > Logo, Menu, Sheet
 
 ## License
 

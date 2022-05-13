@@ -1,4 +1,13 @@
-import { curry, compose, reduce, filter, defaultTo, flip, prop } from 'ramda';
+import {
+  curry,
+  compose,
+  reduce,
+  filter,
+  defaultTo,
+  flip,
+  prop,
+  nth,
+} from 'ramda';
 import getDoubleStepTile from './getDoubleStepTile';
 import getEnPassantTile from './getEnPassantTile';
 import getDiagonallyTiles from './getDiagonallyTiles';
@@ -23,8 +32,10 @@ function computeSpecialMT(timeline, code) {
         }
 
         case Diagonally: {
-          const [snapshot] = timeline;
-          const capturableTiles = getDiagonallyTiles(code, snapshot);
+          const capturableTiles = compose(
+            getDiagonallyTiles(code),
+            nth(0)
+          )(timeline);
 
           return [...acc, ...capturableTiles];
         }

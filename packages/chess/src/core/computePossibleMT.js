@@ -23,42 +23,43 @@ function computePossibleMT(
   timeline
 ) {
   const isKing = detectPiece(King, code);
+  const _removePredict = removePredictTiles(timeline);
   let mt = computeRawMT(timeline, code);
 
-  // Check state
-  if (attackerCode) {
-    if (isKing) {
-      mt = getDodgeableTiles(timeline, attackerCode, code, attackerRoutes);
-    } else {
-      // block or capture
-      mt = intersection(mt, attackerRoutes);
-    }
-  } else {
-    if (isKing) {
-      mt = compose(concat(mt), getCastlingTiles(timeline))(code);
-    } else {
-      // NOTE if move this piece, it would be Check state?
-      // otherwise, free to move
-      const predictAttacker = predictPossibleCheck(timeline, code);
+  // dodge or just movable tiles
+  if (isKing) {
+    mt = attackerCode
+      ? getDodgeableTiles(timeline, attackerCode, code, attackerRoutes)
+      : compose(concat(mt), getCastlingTiles(timeline))(code);
 
-      if (predictAttacker) {
-        const kingCode = compose(
-          findOpponentKing(predictAttacker),
-          nth(0)
-        )(timeline);
-        const captureRoutes = compose(
-          intersection(mt),
-          getAttackerRoutes(timeline, predictAttacker),
-          pretendTo(kingCode)
-        )(predictAttacker);
-        const { tileName } = parseCode(predictAttacker);
-
-        mt = !isEmpty(captureRoutes) ? [tileName, ...captureRoutes] : [];
-      }
-    }
+    return _removePredict(code, mt);
   }
 
-  return attackerCode ? mt : removePredictTiles(timeline, code, mt);
+  // block or capture
+  if (attackerCode) {
+    return intersection(mt, attackerRoutes);
+  }
+
+  // NOTE if move this piece, it would be Check state?
+  // otherwise, free to move
+  const predictAttacker = predictPossibleCheck(timeline, code);
+
+  if (predictAttacker) {
+    const { tileName } = parseCode(predictAttacker);
+    const kingCode = compose(
+      findOpponentKing(predictAttacker),
+      nth(0)
+    )(timeline);
+    const captureRoutes = compose(
+      intersection(mt),
+      getAttackerRoutes(timeline, predictAttacker),
+      pretendTo(kingCode)
+    )(predictAttacker);
+
+    mt = !isEmpty(captureRoutes) ? [tileName, ...captureRoutes] : [];
+  }
+
+  return _removePredict(code, mt);
 }
 
 export default curryN(4, computePossibleMT);
