@@ -3,13 +3,18 @@ import getEqualPieces from './getEqualPieces';
 import filterOpponent from './filterOpponent';
 import { King } from '../presets';
 
-function findOpponentKing(opponentCode, timeline) {
+/**
+ * Find opponent King
+ * @param  {String} opponentCode
+ * @param  {Array}  snapshot
+ * @return {String}
+ */
+function findOpponentKing(opponentCode, snapshot) {
   return compose(
     nth(0),
     getEqualPieces(King),
-    filterOpponent(opponentCode),
-    nth(0)
-  )(timeline);
+    filterOpponent(opponentCode)
+  )(snapshot);
 }
 
 export default curry(findOpponentKing);

@@ -8,6 +8,10 @@ import {
   join,
   prepend,
   flip,
+  append,
+  of,
+  anyPass,
+  concat,
 } from 'ramda';
 import findAttacker from './findAttacker';
 import {
@@ -19,7 +23,7 @@ import {
 import { Rook } from '../presets';
 
 /**
- * Compute castling (to avoid circular dependency issue)
+ * Get castling tiles (to avoid circular dependency issue)
  * @param  {Array}  timeline
  * @param  {String} code
  * @param  {String} attackerCode
@@ -30,35 +34,27 @@ function getCastlingTiles(timeline, code) {
   const convertToTiles = convertAxisListToTiles(code);
   const placedTiles = compose(convertSnapshotToTiles, nth(0))(timeline);
   const detectIncludes = flip(includes)(placedTiles);
-  const findPredictAttacker = flip(findAttacker)(timeline);
-
-  const _filterInvalidTiles = (tN) => {
-    return detectIncludes(tN) || findPredictAttacker(`${pKey}${tN}`);
-  };
-
-  const invalidLeftTiles = compose(
-    filter(_filterInvalidTiles),
+  const _filterInvalidTiles = compose(
+    filter(
+      anyPass([
+        detectIncludes,
+        compose(flip(findAttacker)(timeline), join(''), append(pKey), of),
+      ])
+    ),
     convertToTiles
-  )([
-    [-1, 0],
-    [-2, 0],
-    [-3, 0],
-  ]);
-
-  const invalidRightTiles = compose(
-    filter(_filterInvalidTiles),
-    convertToTiles
-  )([
-    [1, 0],
-    [2, 0],
-  ]);
-
+  );
   const _detectRookMoved = compose(
     detectMoved(timeline),
     join(''),
     prepend(`${side}${Rook}`),
     convertToTiles
   );
+
+  // prettier-ignore
+  const invalidLeftTiles = _filterInvalidTiles([[-1, 0], [-2, 0], [-3, 0]]);
+
+  // prettier-ignore
+  const invalidRightTiles = _filterInvalidTiles([[1, 0], [2, 0]]);
 
   const isKingMoved = detectMoved(timeline, code);
   const isLeftRookMoved = _detectRookMoved([[-4, 0]]);
@@ -70,7 +66,7 @@ function getCastlingTiles(timeline, code) {
   }
 
   if (!isKingMoved && !isRightRookMoved && isEmpty(invalidRightTiles)) {
-    castlingTiles = [...convertToTiles([[2, 0]]), ...castlingTiles];
+    castlingTiles = concat(convertToTiles([[2, 0]]), castlingTiles);
   }
 
   return castlingTiles;

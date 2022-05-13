@@ -23,7 +23,7 @@ import { filterOpponent, findOpponentKing, pretendTo } from '../utils';
  * @return {Object}
  */
 function computeCheckState(opponentCode, timeline) {
-  const kingCode = findOpponentKing(opponentCode, timeline);
+  const kingCode = compose(findOpponentKing(opponentCode), nth(0))(timeline);
   const attackerCode = findAttacker(kingCode, timeline);
   let attackerRoutes = [];
   let defenders = [];
@@ -51,7 +51,7 @@ function computeCheckState(opponentCode, timeline) {
     defendTiles = grp.tiles;
   }
 
-  const flippedGetMT = flip(computePossibleMT(attackerCode, attackerRoutes))(
+  const _getPMT = flip(computePossibleMT(attackerCode, attackerRoutes))(
     timeline
   );
 
@@ -60,7 +60,7 @@ function computeCheckState(opponentCode, timeline) {
     dodgeableTiles: compose(
       concat(dodgeableTiles),
       flatten,
-      reject(compose(isEmpty, flippedGetMT)),
+      reject(compose(isEmpty, _getPMT)),
       filterOpponent(opponentCode), // opponent's opponent
       nth(0)
     )(timeline),

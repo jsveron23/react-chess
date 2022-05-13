@@ -152,32 +152,36 @@ export function afterMoving(nextTileName, getNextSnapshot) {
       switch (mvName) {
         case Chess.Castling: {
           const { file } = Chess.computeDistance(selectedCode, nextCode);
-          const castlingMap = {
-            wKc1: {
-              curr: 'wRa1',
-              next: 'wRd1',
-            },
-            wKg1: {
-              curr: 'wRh1',
-              next: 'wRf1',
-            },
-            bKc8: {
-              curr: 'bRa8',
-              next: 'bRd8',
-            },
-            bKg8: {
-              curr: 'bRh8',
-              next: 'bRf8',
-            },
-          };
-          const currRookCode = castlingMap[nextCode].curr;
 
-          if (file === 2 && currRookCode) {
-            nextSnapshot = Chess.replaceCode(
-              nextSnapshot,
-              currRookCode,
-              castlingMap[nextCode].next
-            );
+          // filter it first, otherwise TypeError(`castlingMap`)
+          if (file === 2) {
+            const castlingMap = {
+              wKc1: {
+                curr: 'wRa1',
+                next: 'wRd1',
+              },
+              wKg1: {
+                curr: 'wRh1',
+                next: 'wRf1',
+              },
+              bKc8: {
+                curr: 'bRa8',
+                next: 'bRd8',
+              },
+              bKg8: {
+                curr: 'bRh8',
+                next: 'bRf8',
+              },
+            };
+            const currRookCode = castlingMap[nextCode].curr;
+
+            if (currRookCode) {
+              nextSnapshot = Chess.replaceCode(
+                nextSnapshot,
+                currRookCode,
+                castlingMap[nextCode].next
+              );
+            }
           }
 
           break;

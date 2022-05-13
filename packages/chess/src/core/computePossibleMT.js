@@ -1,4 +1,4 @@
-import { curryN, compose, intersection, isEmpty, concat } from 'ramda';
+import { curryN, compose, intersection, isEmpty, concat, nth } from 'ramda';
 import predictPossibleCheck from './predictPossibleCheck';
 import getDodgeableTiles from './getDodgeableTiles';
 import getCastlingTiles from './getCastlingTiles';
@@ -42,7 +42,10 @@ function computePossibleMT(
       const predictAttacker = predictPossibleCheck(timeline, code);
 
       if (predictAttacker) {
-        const kingCode = findOpponentKing(predictAttacker, timeline);
+        const kingCode = compose(
+          findOpponentKing(predictAttacker),
+          nth(0)
+        )(timeline);
         const captureRoutes = compose(
           intersection(mt),
           getAttackerRoutes(timeline, predictAttacker),
