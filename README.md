@@ -13,7 +13,7 @@ Programs must be written for people to read, and only incidentally for machines 
 
 ## Demo
 
-[WIP] https://react-chess.app
+Soon!
 
 ## Installation & Start
 
