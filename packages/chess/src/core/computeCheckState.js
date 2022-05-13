@@ -1,10 +1,20 @@
-import { curry, compose } from 'ramda';
+import {
+  curry,
+  compose,
+  flip,
+  concat,
+  flatten,
+  reject,
+  isEmpty,
+  nth,
+} from 'ramda';
+import computePossibleMT from './computePossibleMT';
 import getAttackerRoutes from './getAttackerRoutes';
 import findAttacker from './findAttacker';
 import getDefenders from './getDefenders';
 import getDodgeableTiles from './getDodgeableTiles';
 import removePredictTiles from './internal/removePredictTiles';
-import { findOpponentKing, pretendTo } from '../utils';
+import { filterOpponent, findOpponentKing, pretendTo } from '../utils';
 
 /**
  * Compute whether Check or not (entry function)
@@ -41,11 +51,23 @@ function computeCheckState(opponentCode, timeline) {
     defendTiles = grp.tiles;
   }
 
+  const flippedGetMT = flip(computePossibleMT(attackerCode, attackerRoutes))(
+    timeline
+  );
+
   return {
+    // this for every piece movable tiles of King side
+    dodgeableTiles: compose(
+      concat(dodgeableTiles),
+      flatten,
+      reject(compose(isEmpty, flippedGetMT)),
+      filterOpponent(opponentCode), // opponent's opponent
+      nth(0)
+    )(timeline),
+
     kingCode,
     attackerCode,
     attackerRoutes,
-    dodgeableTiles,
     defendTiles,
     defenders,
   };

@@ -1,6 +1,6 @@
 import { batch } from 'react-redux';
 import { ActionCreators } from 'redux-undo';
-import { compose, reject, equals, isEmpty, flatten, flip } from 'ramda';
+import { compose, reject, equals, isEmpty, clone } from 'ramda';
 import * as Chess from 'chess/es';
 import { ONE_VS_ONE } from '~/config';
 import * as types from '../actionTypes';
@@ -141,7 +141,7 @@ export function afterMoving(nextTileName, getNextSnapshot) {
     const { side, piece, pKey } = Chess.parseCode(selectedCode);
     const nextCode = `${pKey}${nextTileName}`;
     const mvs = Chess.Special[piece] || [];
-    let nextSnapshot = snapshot; // default snapshot for safeness
+    let nextSnapshot = clone(snapshot); // default snapshot for safeness
 
     if (typeof getNextSnapshot === 'function') {
       // default snapshot before appying special movement
@@ -150,12 +150,38 @@ export function afterMoving(nextTileName, getNextSnapshot) {
 
     mvs.forEach((mvName) => {
       switch (mvName) {
-        // TODO
-        // case Castling: {
-        //   dispatch();
-        //
-        //   break;
-        // }
+        case Chess.Castling: {
+          const { file } = Chess.computeDistance(selectedCode, nextCode);
+          const castlingMap = {
+            wKc1: {
+              curr: 'wRa1',
+              next: 'wRd1',
+            },
+            wKg1: {
+              curr: 'wRh1',
+              next: 'wRf1',
+            },
+            bKc8: {
+              curr: 'bRa8',
+              next: 'bRd8',
+            },
+            bKg8: {
+              curr: 'bRh8',
+              next: 'bRf8',
+            },
+          };
+          const currRookCode = castlingMap[nextCode].curr;
+
+          if (file === 2 && currRookCode) {
+            nextSnapshot = Chess.replaceCode(
+              nextSnapshot,
+              currRookCode,
+              castlingMap[nextCode].next
+            );
+          }
+
+          break;
+        }
 
         case Chess.EnPassant: {
           const tileName = Chess.getEnPassantTile.after(nextSnapshot, snapshot);
@@ -198,7 +224,7 @@ export function updateCheckState() {
   return (dispatch, getState) => {
     const {
       ingame: {
-        present: { selectedCode, snapshot },
+        present: { selectedCode },
         present,
         past,
       },
@@ -221,21 +247,10 @@ export function updateCheckState() {
     // console.log('dodgeableTiles: ', dodgeableTiles);
     // console.groupEnd();
 
-    const flippedGetMT = flip(
-      Chess.computePossibleMT(attackerCode, attackerRoutes)
-    )(timeline);
-    const hasThierMt = compose(
-      isEmpty,
-      flatten,
-      reject(compose(isEmpty, flippedGetMT)),
-      Chess.filterOpponent(selectedCode)
-    )(snapshot);
     const isStuck = isEmpty(defenders) && isEmpty(defendTiles);
-    const isNotDodgeableByKing = isEmpty(dodgeableTiles);
-    const isCheckmate = attackerCode && isStuck && isNotDodgeableByKing;
-
-    // TODO get `hasThierMt` from `dodgeableTiles`
-    const isStalemate = !attackerCode && isStuck && hasThierMt;
+    const isNotDodgeable = isEmpty(dodgeableTiles);
+    const isCheckmate = attackerCode && isStuck && isNotDodgeable;
+    const isStalemate = !attackerCode && isStuck && isNotDodgeable;
 
     if (isCheckmate) {
       console.log('checkmate!');
