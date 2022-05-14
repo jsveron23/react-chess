@@ -1,4 +1,5 @@
 export { default as createTimeline } from './createTimeline';
+export { default as createSheet } from './createSheet';
 export { default as convertAxisListToTiles } from './convertAxisListToTiles';
 export { default as convertAxisToTile } from './convertAxisToTile';
 export { default as convertSnapshotToTiles } from './convertSnapshotToTiles';
@@ -10,6 +11,7 @@ export { default as detectOpponent } from './detectOpponent';
 export { default as detectMoved } from './detectMoved';
 export { default as detectTileOnTiles } from './detectTileOnTiles';
 export { default as detectEnemyOnTiles } from './detectEnemyOnTiles';
+export { default as detectCheck } from './detectCheck';
 export { default as detectTurn } from './detectTurn';
 export { default as findCode } from './findCode';
 export { default as findCodeByTile } from './findCodeByTile';

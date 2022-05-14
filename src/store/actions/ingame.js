@@ -1,6 +1,6 @@
 import { batch } from 'react-redux';
 import { ActionCreators } from 'redux-undo';
-import { compose, reject, equals, isEmpty, clone } from 'ramda';
+import { compose, reject, equals, clone } from 'ramda';
 import * as Chess from 'chess/es';
 import { ONE_VS_ONE } from '~/config';
 import * as types from '../actionTypes';
@@ -235,27 +235,10 @@ export function updateCheckState() {
     } = getState();
 
     const timeline = Chess.createTimeline(present, past);
-    const {
-      kingCode = '',
-      attackerCode = '',
-      attackerRoutes = [],
-      dodgeableTiles = [],
-      defendTiles = [],
-      defenders = [],
-    } = Chess.computeCheckState(selectedCode, timeline);
+    const check = Chess.computeCheckState(selectedCode, timeline);
+    const { isCheckmate, isStalemate } = Chess.detectCheck(check);
 
-    // console.group('Attacker: ', attackerCode || 'none');
-    // console.log('attackerRoutes: ', attackerRoutes);
-    // console.log('defenders: ', defenders);
-    // console.log('defendTiles: ', defendTiles);
-    // console.log('dodgeableTiles: ', dodgeableTiles);
-    // console.groupEnd();
-
-    const isStuck = isEmpty(defenders) && isEmpty(defendTiles);
-    const isNotDodgeable = isEmpty(dodgeableTiles);
-    const isCheckmate = attackerCode && isStuck && isNotDodgeable;
-    const isStalemate = !attackerCode && isStuck && isNotDodgeable;
-
+    // TODO dispatch
     if (isCheckmate) {
       console.log('checkmate!');
     } else if (isStalemate) {
@@ -265,10 +248,12 @@ export function updateCheckState() {
     dispatch({
       type: types.UPDATE_CHECK_CODE,
       payload: {
-        to: attackerCode ? kingCode : '',
-        from: attackerCode || '',
-        routes: attackerRoutes,
-        defenders,
+        to: check.attackerCode ? check.kingCode : '',
+        from: check.attackerCode || '',
+        routes: check.attackerRoutes || [],
+        defenders: check.defender || [],
+        defendTiles: check.defendTiles || [],
+        dodgeableTiles: check.dodgeableTiles || [],
       },
     });
   };

@@ -26,6 +26,8 @@ function computePossibleMT(
   const _removePredict = removePredictTiles(timeline);
   let mt = computeRawMT(timeline, code);
 
+  // BUG Pawn diago move, predict atk
+
   // dodge or just movable tiles
   if (isKing) {
     mt = attackerCode

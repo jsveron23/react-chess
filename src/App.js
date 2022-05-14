@@ -3,6 +3,7 @@ import { Relative, Flex, FlexCol, Text } from 'ui/es';
 import {
   DiagramContainer,
   MenuContainer,
+  SheetContainer,
   NotiBarContainer,
 } from '~/containers';
 import useTheme from '~/styles/useTheme';
@@ -33,7 +34,15 @@ function App() {
             <MenuContainer />
           </Box>
 
-          <Box flex="1">Sheet</Box>
+          <Box
+            flex="1"
+            overflowY="scroll"
+            margin={20}
+            backgroundColor="#fff"
+            // border="1px solid #cacaca"
+          >
+            <SheetContainer />
+          </Box>
 
           <NotiBarContainer />
         </FlexCol>

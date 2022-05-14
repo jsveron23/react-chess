@@ -13,9 +13,9 @@ module.exports = function configure(env = {}) {
   const mode = env.production ? 'production' : 'development';
   const isDev = mode === 'development';
   const config = {
-    // watchOptions: {
-    //   aggregateTimeout: 5000,
-    // },
+    watchOptions: {
+      aggregateTimeout: 700,
+    },
     context: src,
     output: {
       publicPath: '/',

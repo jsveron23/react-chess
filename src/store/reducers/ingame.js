@@ -16,10 +16,12 @@ const initialState = {
   movableTiles: [],
   snapshot: Snapshot,
   check: {
-    from: '',
     to: '',
+    from: '',
     routes: [],
     defenders: [],
+    defendTiles: [],
+    dodgeableTiles: [],
   },
 };
 
@@ -80,10 +82,12 @@ function reducer(state = initialState, action) {
       return {
         ...state,
         check: {
-          from: '',
           to: '',
+          from: '',
           routes: [],
           defenders: [],
+          defendTiles: [],
+          dodgeableTiles: [],
         },
       };
     }
