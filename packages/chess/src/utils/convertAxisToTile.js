@@ -3,6 +3,7 @@ import getFileNameByIndex from './getFileNameByIndex';
 import getRankNameByIndex from './getRankNameByIndex';
 import parseCode from './parseCode';
 import validateTile from './validateTile';
+import validateCode from './validateCode';
 import { Side } from '../presets';
 
 /**
@@ -12,6 +13,10 @@ import { Side } from '../presets';
  * @return {String}
  */
 function convertAxisToTile(code, axis) {
+  if (!validateCode(code)) {
+    throw new TypeError(`invalid (convertAxisToTile) | code: ${code}`);
+  }
+
   const { side, fileName, rankName } = parseCode(code);
   const [x, y] = axis;
 

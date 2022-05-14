@@ -9,12 +9,9 @@ const Snapshot = [
   'wRa1', 'wNb1', 'wBc1', 'wQd1', 'wKe1', 'wBf1', 'wNg1', 'wRh1'
 ];
 
-test('convertSnapshotToTiles - invalid code', (t) => {
+test('convertSnapshotToTiles', (t) => {
   t.deepEqual(convertSnapshotToTiles(), []);
   t.deepEqual(convertSnapshotToTiles([]), []);
-});
-
-test('convertSnapshotToTiles - valid code', (t) => {
   // prettier-ignore
   t.deepEqual(convertSnapshotToTiles(Snapshot), [
     'a8', 'b8', 'c8', 'd8', 'e8', 'f8', 'g8', 'h8',

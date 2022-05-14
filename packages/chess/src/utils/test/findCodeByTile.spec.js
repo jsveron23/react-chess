@@ -9,12 +9,8 @@ const Snapshot = [
   'wRa1', 'wNb1', 'wBc1', 'wQd1', 'wKe1', 'wBf1', 'wNg1', 'wRh1'
 ];
 
-test('findCodeByTile - invalid code', (t) => {
-  t.is(typeof findCodeByTile(), 'function');
-  t.is(typeof findCodeByTile(Snapshot), 'function');
-});
-
-test('findCodeByTile - valid code', (t) => {
+test('findCodeByTile', (t) => {
+  t.is(findCodeByTile([], 'g5'), '');
   t.is(findCodeByTile(Snapshot, 'a2'), 'wPa2');
   t.falsy(findCodeByTile(Snapshot, 'a3'));
 });

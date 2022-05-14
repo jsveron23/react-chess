@@ -1,13 +1,9 @@
 import test from 'ava';
 import convertAxisListToTiles from '../convertAxisListToTiles';
 
-test('convertAxisListToTiles - invalid code', (t) => {
-  t.is(typeof convertAxisListToTiles(), 'function');
-  t.is(typeof convertAxisListToTiles('wPa2'), 'function');
+test('convertAxisListToTiles', (t) => {
+  t.throws(() => convertAxisListToTiles('wa2', [[0, 0]]));
   t.deepEqual(convertAxisListToTiles('wPa7', [[1, 2]]), []);
-});
-
-test('convertAxisListToTiles - valid code', (t) => {
   t.deepEqual(convertAxisListToTiles('wPa2', [[1, 1]]), ['b3']);
   t.deepEqual(
     convertAxisListToTiles('wPa2', [

@@ -8,6 +8,10 @@ import { Rank, File } from '../presets';
  * @return {Boolean}
  */
 function detectDarkTile(fileName, rankName) {
+  if (!fileName || !rankName) {
+    throw new TypeError(`invalid arguments`);
+  }
+
   const rankIdx = Math.abs(Rank.indexOf(rankName) - 8);
   const fileIdx = File.indexOf(fileName) + 1;
   const isOdd = (rankIdx + fileIdx) & 1; // bit
