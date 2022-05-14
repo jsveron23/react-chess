@@ -34,13 +34,7 @@ function App() {
             <MenuContainer />
           </Box>
 
-          <Box
-            flex="1"
-            overflowY="scroll"
-            margin={20}
-            backgroundColor="#fff"
-            // border="1px solid #cacaca"
-          >
+          <Box flex="1" overflowY="scroll" margin={20} backgroundColor="#fff">
             <SheetContainer />
           </Box>
 

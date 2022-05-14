@@ -1,4 +1,4 @@
-# React Chess &middot; [![MIT license](http://img.shields.io/badge/license-MIT-brightgreen.svg)](LICENSE.md)
+# React Chess 2 &middot; [![MIT license](http://img.shields.io/badge/license-MIT-brightgreen.svg)](LICENSE.md) [![Netlify Status](https://api.netlify.com/api/v1/badges/622d7c96-5d7f-4342-b627-9c18f2166f45/deploy-status)](https://app.netlify.com/sites/react-chess-065995/deploys)
 
 Programs must be written for people to read, and only incidentally for machines to execute.
 
@@ -6,14 +6,15 @@ Programs must be written for people to read, and only incidentally for machines 
 
 ## Thoughts
 
-- Almost same logic but completely redesign functions
-- My goal is never do unit testing for React components (keep it simple)
-- To do that, `Key purpose are decouple components and business logic functions` then test logic functions only
+- Redesign functions
+- Keep it simple
+- Decouple components and business logic functions
 - As functional programming lover, try to be free from side effects
+- Want to write code for human understanding (naming is important)
 
-## Demo
+## Showcase
 
-Soon!
+https://react-chess.app
 
 ## Installation & Start
 
