@@ -8,7 +8,7 @@ const Sheet = ({ data }) => {
   const notationEl = useRef(null);
 
   useEffect(() => {
-    if (notationEl.current) {
+    if (notationEl.current && notationEl.current.lastChild) {
       notationEl.current.lastChild.scrollIntoView({ behavior: 'smooth' });
     }
   }, [data]);

@@ -1,7 +1,7 @@
 import babel from '@rollup/plugin-babel';
 import { nodeResolve } from '@rollup/plugin-node-resolve';
 import reactSvg from 'rollup-plugin-react-svg';
-import uglify from 'rollup-plugin-uglify';
+import { uglify } from 'rollup-plugin-uglify';
 import pkg from './package.json';
 
 /** @see {@link https://github.com/reduxjs/redux/blob/master/rollup.config.js} */

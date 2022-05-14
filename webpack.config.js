@@ -9,8 +9,7 @@ const src = Path.resolve(__dirname, 'src');
 const dist = Path.resolve(__dirname, 'public');
 const assets = Path.resolve(__dirname, 'src', 'assets');
 
-module.exports = function configure(env = {}) {
-  const mode = env.production ? 'production' : 'development';
+module.exports = function configure(env, { mode = 'development' }) {
   const isDev = mode === 'development';
   const config = {
     watchOptions: {
