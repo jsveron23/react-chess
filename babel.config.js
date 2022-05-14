@@ -6,19 +6,21 @@ module.exports = {
         modules: false,
         targets: {
           chrome: '70',
-          ie: '11'
-        }
-      }
+          ie: '11',
+        },
+      },
     ],
-    '@babel/preset-react'
+    [
+      '@babel/preset-react',
+      {
+        runtime: 'automatic',
+      },
+    ],
   ],
   plugins: [
-    'react-hot-loader/babel',
+    '@babel/plugin-transform-runtime',
     '@babel/plugin-proposal-object-rest-spread',
-    '@babel/plugin-syntax-dynamic-import',
-    '@babel/plugin-transform-react-jsx-source',
-    ['@babel/plugin-proposal-decorators', { legacy: true }],
-    ['@babel/plugin-proposal-class-properties', { loose: true }]
+    '@babel/plugin-proposal-class-properties',
   ],
   env: {
     test: {
@@ -26,13 +28,12 @@ module.exports = {
         [
           '@babel/preset-env',
           {
-            targets: {
-              chrome: '70',
-              ie: '11'
-            }
-          }
-        ]
-      ]
-    }
-  }
-}
+            modules: 'commonjs',
+            useBuiltIns: 'usage',
+            corejs: 3,
+          },
+        ],
+      ],
+    },
+  },
+};

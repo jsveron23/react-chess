@@ -1,3 +1,9 @@
 node_modules
 .DS_Store
+*.log
+packages/**/lib
+packages/**/es
+public
 coverage
+.env
+.nyc_output

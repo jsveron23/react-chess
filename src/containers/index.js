@@ -1,5 +1,4 @@
-export { default as LogoContainer } from './Logo'
-export { default as MenuContainer } from './Menu'
-export { default as TurnContainer } from './Turn'
-export { default as ScoreSheetContainer } from './ScoreSheet'
-export { default as DiagramContainer } from './Diagram'
+export { default as MenuContainer } from './MenuContainer';
+export { default as DiagramContainer } from './DiagramContainer';
+export { default as SheetContainer } from './SheetContainer';
+export { default as NotiBarContainer } from './NotiBarContainer';

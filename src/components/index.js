@@ -1,10 +1,4 @@
-export { default as Button } from './Button'
-export { default as Logo } from './Logo'
-export { default as Main } from './Main'
-export { default as Menu } from './Menu'
-export { default as Turn } from './Turn'
-export { default as Diagram } from './Diagram'
-export { default as Rank } from './Rank'
-export { default as File } from './File'
-export { default as ScoreSheet } from './ScoreSheet'
-export { default as Blank } from './Blank'
+export { default as Menu } from './Menu';
+export { default as Diagram } from './Diagram';
+export { default as Sheet } from './Sheet';
+export { default as NotiBar } from './NotiBar';

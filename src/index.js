@@ -1,12 +1,14 @@
-import React from 'react'
-import ReactDOM from 'react-dom'
-import { Provider } from 'react-redux'
-import store from '~/store'
-import App from '~/App'
+import { render } from 'react-dom';
+import { Provider } from 'react-redux';
+import store from '~/store';
+import { ThemeContext, theme } from '~/styles/useTheme';
+import App from './App';
 
-ReactDOM.render(
+render(
   <Provider store={store}>
-    <App />
+    <ThemeContext.Provider value={theme}>
+      <App />
+    </ThemeContext.Provider>
   </Provider>,
   document.getElementById('root')
-)
+);

@@ -1,14 +1,24 @@
-import thunk from 'redux-thunk'
-import * as R from 'ramda'
-import reducers from '~/reducers'
-import createStore from './createStore'
-import composeMiddleware from './composeMiddleware'
+import { applyMiddleware, createStore } from 'redux';
+import thunk from 'redux-thunk';
+import { identity } from 'ramda';
+import { composeWithDevTools } from 'redux-devtools-extension';
+import { isDev } from '~/config';
+import { Storage } from '~/utils';
+import reducers from './reducers';
 
-function configureStore (initialState = {}) {
-  return R.compose(
-    createStore(reducers, initialState),
-    composeMiddleware
-  )(thunk)
+const composeDev = isDev ? composeWithDevTools : identity;
+
+function configureStore(preloadedState) {
+  const parsedData = Storage.getItem('save-game');
+  const middlewareEnhancer = applyMiddleware(thunk);
+  const composedEnhancer = composeDev(middlewareEnhancer);
+  const store = createStore(
+    reducers,
+    parsedData || preloadedState,
+    composedEnhancer
+  );
+
+  return store;
 }
 
-export default configureStore
+export default configureStore;
