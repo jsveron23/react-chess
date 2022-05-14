@@ -17,13 +17,12 @@
     "build:ui": "npm run build -w ui",
     "build:chess:watch": "npm run build:watch -w chess",
     "build:ui:watch": "npm run build:watch -w ui",
-    "build": "webpack --mode production",
+    "build": "npm run build --ws && webpack --mode production",
     "dev": "webpack server --mode development",
     "start": "./start.sh",
     "pretest": "npm run clean:test",
     "test": "npm run clean:test && c8 ava",
-    "test:open": "open ./coverage/index.html",
-    "postinstall": "npm run build --ws"
+    "test:open": "open ./coverage/index.html"
   },
   "keywords": [
     "react",
