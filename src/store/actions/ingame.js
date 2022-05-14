@@ -251,7 +251,7 @@ export function updateCheckState() {
         to: check.attackerCode ? check.kingCode : '',
         from: check.attackerCode || '',
         routes: check.attackerRoutes || [],
-        defenders: check.defender || [],
+        defenders: check.defenders || [],
         defendTiles: check.defendTiles || [],
         dodgeableTiles: check.dodgeableTiles || [],
       },
