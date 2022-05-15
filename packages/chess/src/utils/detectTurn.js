@@ -11,7 +11,7 @@ import { Turn } from '../presets';
  */
 function detectTurn(turn, code) {
   if (!validateCode(code)) {
-    throw new TypeError(`invalid (detectTurn) | code: ${code}`);
+    throw new TypeError('invalid arguments');
   }
 
   const { side } = parseCode(code);

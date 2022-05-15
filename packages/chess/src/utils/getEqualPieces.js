@@ -1,5 +1,5 @@
-import { compose, curry, equals, prop, filter } from 'ramda';
-import parseCode from './parseCode';
+import { curry, filter } from 'ramda';
+import detectPiece from './detectPiece';
 import validateSnapshot from './validateSnapshot';
 
 /**
@@ -10,12 +10,10 @@ import validateSnapshot from './validateSnapshot';
  */
 function getEqualPieces(piece, codeList) {
   if (!validateSnapshot(codeList)) {
-    throw new TypeError(`invalid argument | codeList: ${codeList}`);
+    throw new TypeError('invalid argument');
   }
 
-  const _extractPiece = compose(equals(piece), prop('piece'), parseCode);
-
-  return filter(_extractPiece, codeList);
+  return filter(detectPiece(piece), codeList);
 }
 
 export default curry(getEqualPieces);

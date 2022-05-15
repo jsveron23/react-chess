@@ -10,7 +10,7 @@ const Symbols = {
 };
 
 function parseNotation({ check, from, to }) {
-  const { isCheckmate, isStalemate } = detectCheck(check);
+  const { isCheck, isCheckmate, isStalemate } = detectCheck(check);
   const {
     side: tSide,
     piece: tPiece,
@@ -29,7 +29,7 @@ function parseNotation({ check, from, to }) {
   const isMoved = from.length === 1 && to.length === 1;
   const isCaptured = from.length === 2 && to.length === 1;
   const isCastling = from.length === 2 && to.length === 2;
-  let checkSymbol = check.from ? Symbols.check : '';
+  let checkSymbol = isCheck ? Symbols.check : '';
   let notation = '';
 
   checkSymbol = isCheckmate ? Symbols.checkmate : checkSymbol;

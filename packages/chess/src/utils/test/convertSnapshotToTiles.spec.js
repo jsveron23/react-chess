@@ -9,9 +9,12 @@ const Snapshot = [
   'wRa1', 'wNb1', 'wBc1', 'wQd1', 'wKe1', 'wBf1', 'wNg1', 'wRh1'
 ];
 
-test('convertSnapshotToTiles', (t) => {
-  t.deepEqual(convertSnapshotToTiles(), []);
+test('Should return empty array when given snapshot is not valid', (t) => {
   t.deepEqual(convertSnapshotToTiles([]), []);
+  t.deepEqual(convertSnapshotToTiles(), []);
+});
+
+test('Should return converted tiles as array', (t) => {
   // prettier-ignore
   t.deepEqual(convertSnapshotToTiles(Snapshot), [
     'a8', 'b8', 'c8', 'd8', 'e8', 'f8', 'g8', 'h8',

@@ -10,7 +10,7 @@ import validateSnapshot from './validateSnapshot';
  */
 function filterOpponent(code, snapshot) {
   if (!validateSnapshot(snapshot)) {
-    throw new TypeError(`invalid argument | snapshot: ${snapshot}`);
+    throw new TypeError('invalid argument');
   }
 
   return filter(detectOpponent(code), snapshot);

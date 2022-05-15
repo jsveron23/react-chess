@@ -3,7 +3,7 @@
  * @param  {String} tileName
  * @return {Object}
  */
-export default function parseTile(tileName) {
+function parseTile(tileName) {
   const [fileName, rankName] = tileName.split('');
 
   return {
@@ -12,3 +12,5 @@ export default function parseTile(tileName) {
     rankName,
   };
 }
+
+export default parseTile;

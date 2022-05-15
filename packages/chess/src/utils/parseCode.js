@@ -5,7 +5,7 @@ import validateCode from './validateCode';
  * @param  {String} code
  * @return {Object}
  */
-export default function parseCode(code) {
+function parseCode(code) {
   if (!validateCode(code)) {
     return {};
   }
@@ -22,3 +22,5 @@ export default function parseCode(code) {
     rankName,
   };
 }
+
+export default parseCode;

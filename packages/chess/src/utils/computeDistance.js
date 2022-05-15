@@ -1,16 +1,21 @@
 import { curry } from 'ramda';
 import parseCode from './parseCode';
+import validateCode from './validateCode';
 import computeDistanceByTiles from './computeDistanceByTiles';
 
 /**
  * Compute distance by two different code
- * @param  {String} aCode
- * @param  {String} bCode
+ * @param  {String} codeA
+ * @param  {String} codeB
  * @return {Object}
  */
-function computeDistance(aCode, bCode) {
-  const { tileName: aTileName } = parseCode(aCode);
-  const { tileName: bTilename } = parseCode(bCode);
+function computeDistance(codeA, codeB) {
+  if (!validateCode(codeA) || !validateCode(codeB)) {
+    throw new TypeError('invalid arguments');
+  }
+
+  const { tileName: aTileName } = parseCode(codeA);
+  const { tileName: bTilename } = parseCode(codeB);
 
   return computeDistanceByTiles(aTileName, bTilename);
 }

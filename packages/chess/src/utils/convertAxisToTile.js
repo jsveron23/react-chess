@@ -1,6 +1,6 @@
 import { curry } from 'ramda';
-import getFileNameByIndex from './getFileNameByIndex';
-import getRankNameByIndex from './getRankNameByIndex';
+import getNextFileByIndex from './getNextFileByIndex';
+import getNextRankByIndex from './getNextRankByIndex';
 import parseCode from './parseCode';
 import validateTile from './validateTile';
 import validateCode from './validateCode';
@@ -14,16 +14,16 @@ import { Side } from '../presets';
  */
 function convertAxisToTile(code, axis) {
   if (!validateCode(code)) {
-    throw new TypeError(`invalid (convertAxisToTile) | code: ${code}`);
+    return '';
   }
 
   const { side, fileName, rankName } = parseCode(code);
   const [x, y] = axis;
 
   // axis don't care what file name is
-  const nextFileName = getFileNameByIndex(fileName, x);
+  const nextFileName = getNextFileByIndex(fileName, x);
   // but pawn only care what rank name is
-  const nextRankName = getRankNameByIndex(rankName, side === Side.w ? y : -y);
+  const nextRankName = getNextRankByIndex(rankName, side === Side.w ? y : -y);
 
   // get rid of outside tile from calculation
   if (!validateTile(nextFileName, nextRankName)) {

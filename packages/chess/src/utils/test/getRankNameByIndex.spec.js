@@ -1,8 +1,11 @@
 import test from 'ava';
-import getRankNameByIndex from '../getRankNameByIndex';
+import getNextRankByIndex from '../getNextRankByIndex';
 
-test('getRankNameByIndex', (t) => {
-  t.is(typeof getRankNameByIndex(), 'function');
-  t.is(typeof getRankNameByIndex('2'), 'function');
-  t.deepEqual(getRankNameByIndex('2', 1), 3);
+test('Should return function (curry)', (t) => {
+  t.is(typeof getNextRankByIndex(), 'function');
+  t.is(typeof getNextRankByIndex(null), 'function');
+});
+
+test('Should return next rank of given index', (t) => {
+  t.deepEqual(getNextRankByIndex('2', 1), 3);
 });

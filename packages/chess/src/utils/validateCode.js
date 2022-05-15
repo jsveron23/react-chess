@@ -5,7 +5,7 @@ import { File, Rank, Turn, Movement } from '../presets';
  * @param  {String}  code
  * @return {Boolean}
  */
-export default function validateCode(code) {
+function validateCode(code) {
   if (!code || (code && code.length !== 4)) {
     return false;
   }
@@ -19,3 +19,5 @@ export default function validateCode(code) {
     Rank.indexOf(Number(rankName)) > -1
   );
 }
+
+export default validateCode;

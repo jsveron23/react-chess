@@ -1,5 +1,6 @@
 import { curry } from 'ramda';
 import parseCode from './parseCode';
+import validateCode from './validateCode';
 import { Opponent } from '../presets';
 
 /**
@@ -9,6 +10,10 @@ import { Opponent } from '../presets';
  * @return {Boolean}
  */
 function detectOpponent(codeA, codeB) {
+  if (!validateCode(codeA) || !validateCode(codeB)) {
+    return false;
+  }
+
   const { side: aSide } = parseCode(codeA);
   const { side: bSide } = parseCode(codeB);
 

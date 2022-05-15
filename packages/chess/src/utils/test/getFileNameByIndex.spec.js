@@ -1,8 +1,11 @@
 import test from 'ava';
-import getFileNameByIndex from '../getFileNameByIndex';
+import getNextFileByIndex from '../getNextFileByIndex';
 
-test('getFileNameByIndex', (t) => {
-  t.is(typeof getFileNameByIndex(), 'function');
-  t.is(typeof getFileNameByIndex('a'), 'function');
-  t.deepEqual(getFileNameByIndex('a', 1), 'b');
+test('Should return function (curry)', (t) => {
+  t.is(typeof getNextFileByIndex(), 'function');
+  t.is(typeof getNextFileByIndex(null), 'function');
+});
+
+test('Should return next file of given index', (t) => {
+  t.deepEqual(getNextFileByIndex('a', 1), 'b');
 });

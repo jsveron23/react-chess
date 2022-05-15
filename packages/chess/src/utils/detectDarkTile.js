@@ -9,7 +9,7 @@ import { Rank, File } from '../presets';
  */
 function detectDarkTile(fileName, rankName) {
   if (!fileName || !rankName) {
-    throw new TypeError(`invalid arguments`);
+    throw new TypeError('invalid arguments');
   }
 
   const rankIdx = Math.abs(Rank.indexOf(rankName) - 8);

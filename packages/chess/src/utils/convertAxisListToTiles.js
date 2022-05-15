@@ -10,7 +10,7 @@ import convertAxisToTile from './convertAxisToTile';
  */
 function convertAxisListToTiles(code, axisList) {
   if (!validateCode(code)) {
-    throw new TypeError(`invalid (convertAxisListToTiles) | code: ${code}`);
+    throw new TypeError('invalid arguments');
   }
 
   return compose(filter(Boolean), map(convertAxisToTile(code)))(axisList);

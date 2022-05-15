@@ -1,4 +1,5 @@
 import { curry, equals, find } from 'ramda';
+import validateSnapshot from './validateSnapshot';
 
 /**
  * Find code
@@ -7,6 +8,10 @@ import { curry, equals, find } from 'ramda';
  * @return {String}
  */
 function findCode(snapshot, code) {
+  if (!validateSnapshot(snapshot)) {
+    return '';
+  }
+
   return find(equals(code), snapshot);
 }
 

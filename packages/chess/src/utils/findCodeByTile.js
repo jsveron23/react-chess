@@ -5,15 +5,15 @@ import validateSnapshot from './validateSnapshot';
 /**
  * Find code by tile
  * @param  {Array}  snapshot
- * @param  {String} tileName
+ * @param  {String} tile
  * @return {String}
  */
-function findCodeByTile(snapshot, tileName) {
+function findCodeByTile(snapshot, tile) {
   if (!validateSnapshot(snapshot)) {
     return '';
   }
 
-  return find(compose(equals(tileName), prop('tileName'), parseCode), snapshot);
+  return find(compose(equals(tile), prop('tileName'), parseCode), snapshot);
 }
 
 export default curry(findCodeByTile);
