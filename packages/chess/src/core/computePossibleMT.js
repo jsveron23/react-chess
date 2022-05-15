@@ -5,8 +5,14 @@ import getCastlingTiles from './getCastlingTiles';
 import computeRawMT from './computeRawMT';
 import getAttackerRoutes from './getAttackerRoutes';
 import removePredictTiles from './internal/removePredictTiles';
-import { detectPiece, parseCode, findOpponentKing, pretendTo } from '../utils';
-import { King } from '../presets';
+import {
+  detectPiece,
+  parseCode,
+  findOpponentKing,
+  pretendTo,
+  computeDistance,
+} from '../utils';
+import { King, Pawn, Vertical } from '../presets';
 
 /**
  * Compute possible movable tiles (entry function)
@@ -47,18 +53,24 @@ function computePossibleMT(
   const predictAttacker = predictPossibleCheck(timeline, code);
 
   if (predictAttacker) {
-    const { tileName } = parseCode(predictAttacker);
-    const kingCode = compose(
-      findOpponentKing(predictAttacker),
-      nth(0)
-    )(timeline);
-    const captureRoutes = compose(
-      intersection(mt),
-      getAttackerRoutes(timeline, predictAttacker),
-      pretendTo(kingCode)
-    )(predictAttacker);
+    const isPawn = detectPiece(Pawn, code);
+    const { direction } = computeDistance(predictAttacker, code);
+    const isVertical = direction === Vertical;
 
-    mt = !isEmpty(captureRoutes) ? [tileName, ...captureRoutes] : [];
+    if (isPawn && !isVertical) {
+      const { tileName } = parseCode(predictAttacker);
+      const kingCode = compose(
+        findOpponentKing(predictAttacker),
+        nth(0)
+      )(timeline);
+      const captureRoutes = compose(
+        intersection(mt),
+        getAttackerRoutes(timeline, predictAttacker),
+        pretendTo(kingCode)
+      )(predictAttacker);
+
+      mt = isEmpty(captureRoutes) ? [] : [tileName, ...captureRoutes];
+    }
   }
 
   return _removePredict(code, mt);
