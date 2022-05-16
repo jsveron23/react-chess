@@ -86,6 +86,7 @@
     "ava": "^4.2.0",
     "classnames": "^2.3.1",
     "memoize-one": "^6.0.0",
+    "peerjs": "^1.4.4",
     "prop-types": "^15.8.1",
     "ramda": "^0.28.0",
     "react": "^17.0.2",
