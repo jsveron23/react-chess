@@ -7,10 +7,12 @@ import validateCode from './validateCode';
  * @param  {String} code
  * @return {String}
  */
-export default function convertCodeToTile(code) {
+function convertCodeToTile(code) {
   if (!validateCode(code)) {
-    return [];
+    return '';
   }
 
   return compose(prop('tileName'), parseCode)(code);
 }
+
+export default convertCodeToTile;

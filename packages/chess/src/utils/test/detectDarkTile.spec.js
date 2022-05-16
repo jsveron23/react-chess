@@ -1,11 +1,21 @@
 import test from 'ava';
 import detectDarkTile from '../detectDarkTile';
 
-test('detectDarkTile - invalid code', (t) => {
-  t.is(typeof detectDarkTile(), 'function');
+test('Should throw Error', (t) => {
+  t.throws(() => detectDarkTile('', 2), {
+    instanceOf: TypeError,
+  });
+  t.throws(() => detectDarkTile('a', 0), {
+    instanceOf: TypeError,
+  });
 });
 
-test('detectDarkTile - valid code', (t) => {
+test('Should return function (curry)', (t) => {
+  t.is(typeof detectDarkTile(), 'function');
+  t.is(typeof detectDarkTile('a'), 'function');
+});
+
+test('Should return boolean value', (t) => {
   t.false(detectDarkTile('a', 2));
   t.true(detectDarkTile('a', 3));
 });

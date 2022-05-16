@@ -30,14 +30,18 @@ function mapStateToProps({
     detectOTWByCode: flip(detectTileOnTiles)([selectedCode, ...movableTiles]),
     detectEnPassantTile(tileName) {
       const isPawn = detectPiece(Pawn, selectedCode);
-      const isEnemyTile = compose(
-        includes(tileName),
-        intersection(movableTiles),
-        convertAxisListToTiles(selectedCode)
-      )([
-        [1, 1],
-        [-1, 1],
-      ]);
+      let isEnemyTile = false;
+
+      if (selectedCode) {
+        isEnemyTile = compose(
+          includes(tileName),
+          intersection(movableTiles),
+          convertAxisListToTiles(selectedCode)
+        )([
+          [1, 1],
+          [-1, 1],
+        ]);
+      }
 
       return isPawn && isEnemyTile;
     },

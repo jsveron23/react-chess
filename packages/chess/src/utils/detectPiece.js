@@ -8,7 +8,7 @@ import parseCode from './parseCode';
  * @return {Boolean}
  */
 function detectPiece(piece, code) {
-  return equals(piece, compose(prop('piece'), parseCode)(code));
+  return compose(equals(piece), prop('piece'), parseCode)(code);
 }
 
 export default curry(detectPiece);

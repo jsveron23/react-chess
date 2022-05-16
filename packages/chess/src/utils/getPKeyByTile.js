@@ -5,16 +5,16 @@ import findCodeByTile from './findCodeByTile';
 /**
  * Get pKey by tile
  * @param  {Array}  snapshot
- * @param  {String} tileName
+ * @param  {String} tile
  * @return {String}
  */
-function getPKeyByTile(snapshot, tileName) {
+function getPKeyByTile(snapshot, tile) {
   return compose(
     prop('pKey'),
     parseCode,
     defaultTo(''),
     findCodeByTile(snapshot)
-  )(tileName);
+  )(tile);
 }
 
 export default curry(getPKeyByTile);

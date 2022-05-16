@@ -9,12 +9,16 @@ const Snapshot = [
   'wRa1', 'wNb1', 'wBc1', 'wQd1', 'wKe1', 'wBf1', 'wNg1', 'wRh1'
 ];
 
-test('findCodeByTile - invalid code', (t) => {
+test('Should return function (curry)', (t) => {
   t.is(typeof findCodeByTile(), 'function');
-  t.is(typeof findCodeByTile(Snapshot), 'function');
+  t.is(typeof findCodeByTile(null), 'function');
 });
 
-test('findCodeByTile - valid code', (t) => {
+test('Should return empty string when given snapshot is not valid', (t) => {
+  t.deepEqual(findCodeByTile([], 'd7'), '');
+});
+
+test('Should return single tile as string or undefined', (t) => {
   t.is(findCodeByTile(Snapshot, 'a2'), 'wPa2');
-  t.falsy(findCodeByTile(Snapshot, 'a3'));
+  t.is(findCodeByTile(Snapshot, 'a3'), undefined);
 });

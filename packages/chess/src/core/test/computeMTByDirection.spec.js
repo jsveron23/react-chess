@@ -9,11 +9,15 @@ const Snapshot = [
   'wRa1', 'wNb1', 'wBc1', 'wQd1', 'wKe1', 'wBf1', 'wNg1', 'wRh1'
 ];
 
-test('computeMTByDirection - invalid code', (t) => {
-  t.throws(() => computeMTByDirection('Pa2', Snapshot));
-});
-
-test('computeMTByDirection - valid code', (t) => {
-  t.deepEqual(computeMTByDirection('wPa2', Snapshot), ['a3', 'a4', 'a5', 'a6']);
-  t.deepEqual(computeMTByDirection('wNg1', Snapshot), ['h3', 'f3']);
+test('computeMTByDirection', (t) => {
+  t.throws(() => computeMTByDirection(Snapshot, 'Pa2'));
+  t.deepEqual(computeMTByDirection(Snapshot, 'wPa2'), [
+    'a3',
+    'a4',
+    'a5',
+    'a6',
+    'a7',
+    'a1',
+  ]);
+  t.deepEqual(computeMTByDirection(Snapshot, 'wNg1'), ['h3', 'f3', 'e2']);
 });

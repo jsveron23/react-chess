@@ -1,7 +1,7 @@
 import test from 'ava';
 import validateCode from '../validateCode';
 
-test('validateCode - invalid code', (t) => {
+test('Should return false', (t) => {
   t.false(validateCode());
   t.false(validateCode('wPa'));
   t.false(validateCode('aPa2'));
@@ -10,6 +10,6 @@ test('validateCode - invalid code', (t) => {
   t.false(validateCode('bPa9'));
 });
 
-test('validateCode - valid code', (t) => {
+test('Should return validate result', (t) => {
   t.true(validateCode('wPa2'));
 });

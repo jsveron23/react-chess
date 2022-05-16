@@ -1,5 +1,6 @@
 import { curry } from 'ramda';
 import parseCode from './parseCode';
+import validateCode from './validateCode';
 import { Turn } from '../presets';
 
 /**
@@ -9,6 +10,10 @@ import { Turn } from '../presets';
  * @return {Boolean}
  */
 function detectTurn(turn, code) {
+  if (!validateCode(code)) {
+    throw new TypeError('invalid arguments');
+  }
+
   const { side } = parseCode(code);
 
   return turn === Turn[side];
