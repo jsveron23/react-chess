@@ -8,6 +8,7 @@ import {
   removeCheck,
   removeSelectedCode,
   removeMovableTiles,
+  removeSheetData,
 } from './ingame';
 import {
   UPDATE_MATCH_TYPE,
@@ -29,6 +30,7 @@ export function updateMatchType(key) {
       dispatch(removeSelectedCode());
       dispatch(removeMovableTiles());
       dispatch(removeCheck());
+      dispatch(removeSheetData());
       dispatch(updateTurn(Turn.w));
       dispatch(ActionCreators.clearHistory());
     });
@@ -73,6 +75,7 @@ export function connectedPeerNetwork() {
       dispatch(removeSelectedCode());
       dispatch(removeMovableTiles());
       dispatch(removeCheck());
+      dispatch(removeSheetData());
       dispatch(updateTurn(Turn.w));
       dispatch(ActionCreators.clearHistory());
 
@@ -90,6 +93,7 @@ export function joinNetworkGame(peerId) {
       dispatch(removeSelectedCode());
       dispatch(removeMovableTiles());
       dispatch(removeCheck());
+      dispatch(removeSheetData());
       dispatch(updateTurn(Turn.w));
       dispatch(ActionCreators.clearHistory());
 

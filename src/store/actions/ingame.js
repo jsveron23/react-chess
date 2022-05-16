@@ -221,6 +221,26 @@ export function afterMoving(nextTileName, getNextSnapshot) {
     dispatch(removeSelectedCode());
     dispatch(removeMovableTiles());
     dispatch(updateTurn(Chess.Opponent[turn]));
+    dispatch(updateSheetData());
+  };
+}
+
+export function updateSheetData() {
+  return (dispatch, getState) => {
+    const {
+      ingame: { present, past },
+    } = getState();
+
+    dispatch({
+      type: types.UPDATE_SHEET_DATA,
+      payload: Chess.createSheet(present, past),
+    });
+  };
+}
+
+export function removeSheetData() {
+  return {
+    type: types.REMOVE_SHEET_DATA,
   };
 }
 
