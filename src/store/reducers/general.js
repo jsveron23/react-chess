@@ -10,6 +10,7 @@ import {
 const initialState = {
   matchType: ONE_VS_ONE,
   connected: false,
+  awaiting: false,
   peerId: '',
   lastSaved: null,
 };

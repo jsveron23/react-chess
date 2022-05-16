@@ -1,8 +1,7 @@
 import { memo } from 'react';
 import PropTypes from 'prop-types';
 import { Turn } from 'chess/es';
-import { Flex, Text } from 'ui/es';
-import { toLocaleDate } from '~/utils';
+import { Flex } from 'ui/es';
 
 const ColorSet = {
   [Turn.w]: {
@@ -15,7 +14,7 @@ const ColorSet = {
   },
 };
 
-function NotiBar({ turn, lastSaved }) {
+function NotiBar({ turn }) {
   const cs = ColorSet[turn];
 
   return (
@@ -29,18 +28,13 @@ function NotiBar({ turn, lastSaved }) {
       paddingLeft={10}
       paddingRight={10}
     >
-      {lastSaved && <Text>Last Saved - {toLocaleDate(lastSaved)}</Text>}
+      noti here
     </Flex>
   );
 }
 
 NotiBar.propTypes = {
   turn: PropTypes.string.isRequired,
-  lastSaved: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
-};
-
-NotiBar.defaultProps = {
-  lastSaved: '',
 };
 
 export default memo(NotiBar);

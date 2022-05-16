@@ -1,7 +1,6 @@
 import { connect } from 'react-redux';
 import { ActionTypes } from 'redux-undo';
-import Box from 'ui-box';
-import { Text } from 'ui/es';
+import { FlexRow, Text } from 'ui/es';
 import { Menu } from '~/components';
 import {
   updateMatchType,
@@ -9,10 +8,14 @@ import {
   undo,
   joinNetworkGame,
 } from '~/store/actions';
+import { toLocaleDate } from '~/utils';
 import { ONE_VS_ONE, SAVE, ONLINE } from '~/config';
 
-function mapStateToProps({ general: { connected, peerId }, ingame: { past } }) {
-  return { past, connected, peerId };
+function mapStateToProps({
+  general: { connected, peerId, lastSaved },
+  ingame: { past },
+}) {
+  return { past, connected, peerId, lastSaved };
 }
 
 function mapDispatchToProps(dispatch) {
@@ -22,6 +25,7 @@ function mapDispatchToProps(dispatch) {
 function mergeProps(stateProps, dispatchProps, ownProps) {
   const noUndoYet = stateProps.past.length === 0;
   const isConnected = stateProps.connected;
+  const lastSaved = toLocaleDate(stateProps.lastSaved);
   const { dispatch } = dispatchProps;
 
   return {
@@ -56,7 +60,7 @@ function mergeProps(stateProps, dispatchProps, ownProps) {
       // },
       {
         key: SAVE,
-        title: 'Save',
+        title: `Save ${lastSaved ? `/ ${lastSaved}` : ''}`,
         disabled: noUndoYet || isConnected,
         onClick: () => dispatch(saveGame()),
       },
@@ -72,10 +76,10 @@ function mergeProps(stateProps, dispatchProps, ownProps) {
       // },
       {
         key: ONLINE,
-        title: 'Network',
+        title: 'Network (WebRTC)',
         disabled: isConnected,
         onClick: () => {
-          const id = window.prompt('please input id from friend browser');
+          const id = window.prompt('please input friend peer-id');
 
           if (id) {
             dispatch(joinNetworkGame(id));
@@ -83,10 +87,16 @@ function mergeProps(stateProps, dispatchProps, ownProps) {
         },
         children: () => {
           return (
-            <Box>
-              <Text marginBottom={5}>Peer Id:</Text>
-              {stateProps.peerId && <Text>{stateProps.peerId}</Text>}
-            </Box>
+            <FlexRow paddingLeft={10} paddingRight={10} fontSize="80%">
+              <Text marginBottom={5} fontWeight="bold" flexBasis={60}>
+                Peer Id:
+              </Text>
+              {stateProps.peerId && (
+                <Text flex="1" wordBreak="break-all">
+                  {stateProps.peerId}
+                </Text>
+              )}
+            </FlexRow>
           );
         },
       },

@@ -1,66 +1,35 @@
+import EventEmitter from 'events';
 import { Peer } from 'peerjs';
-import { identity } from 'ramda';
 
-class PeerNetwork {
+class PeerNetwork extends EventEmitter {
   peer = null;
   conn = null;
   peerId = null;
   lastPeerId = null;
 
-  constructor(sendToPeer = identity, getPeerId = identity, getData = identity) {
+  constructor() {
+    super();
+
     this.peer = new Peer();
-    this.sendToPeer = sendToPeer;
-    this.getPeerId = getPeerId;
-    this.getData = getData;
 
-    this.handlePeerOpen = this.handlePeerOpen.bind(this);
-    this.handlePeerConnection = this.handlePeerConnection.bind(this);
-    this.handlePeerDisconnected = this.handlePeerDisconnected.bind(this);
-    this.handlePeerClose = this.handlePeerClose.bind(this);
+    this._handlePeerOpen = this._handlePeerOpen.bind(this);
+    this._handlePeerConnection = this._handlePeerConnection.bind(this);
+    this._handlePeerDisconnected = this._handlePeerDisconnected.bind(this);
+    this._handlePeerClose = this._handlePeerClose.bind(this);
 
-    this.peer.on('open', this.handlePeerOpen);
-    this.peer.on('connection', this.handlePeerConnection);
-    this.peer.on('disconnected', this.handlePeerDisconnected);
-    this.peer.on('close', this.handlePeerClose);
-    this.peer.on('error', console.error);
+    this.peer.on('open', this._handlePeerOpen);
+    this.peer.on('connection', this._handlePeerConnection);
+    this.peer.on('disconnected', this._handlePeerDisconnected);
+    this.peer.on('close', this._handlePeerClose);
+    this.peer.on('error', (err) => this.emit('error', err));
   }
 
-  autoClose(c) {
-    c.send('Already connected to another client');
-
-    setTimeout(c.close(), 500);
-  }
-
-  handlePeerOpen() {
-    if (this.peer.id === null) {
-      this.peer.id = this.lastPeerId;
-    } else {
-      this.lastPeerId = this.peer.id;
-    }
-
-    this.getPeerId(this.peer.id || this.lastPeerId);
-  }
-
-  handlePeerConnection(c) {
-    if (this.conn && this.conn.open) {
-      c.on('open', () => this.autoClose(c));
-
+  send(data) {
+    if (!this.conn) {
       return;
     }
 
-    this.conn = c;
-    this.handleData();
-  }
-
-  handlePeerDisconnected() {
-    this.peer.id = this.lastPeerId;
-    this.peer._lastServerId = this.lastPeerId;
-
-    this.peer.reconnect();
-  }
-
-  handlePeerClose() {
-    this.conn = null;
+    this.conn.send(data);
   }
 
   join(id) {
@@ -72,28 +41,68 @@ class PeerNetwork {
       reliable: true,
     });
 
-    this.conn.on('open', () => {
-      this.conn.send('connected');
-    });
+    this.conn.on('open', () => this.conn.send('online'));
 
-    this.handleData();
+    this._listen();
   }
 
-  handleData() {
+  _listen() {
     this.conn.on('data', (data) => {
       switch (data) {
-        case 'connected': {
-          this.sendToPeer();
+        case 'online': {
+          this.emit('online');
+
           break;
         }
 
         default: {
-          this.getData(data);
+          this.emit('received', data);
         }
       }
     });
 
-    this.conn.on('close', this.handlePeerClose);
+    this.conn.on('close', this._handlePeerClose);
+  }
+
+  _handlePeerOpen() {
+    if (this.peer.id === null) {
+      this.peer.id = this.lastPeerId;
+    } else {
+      this.lastPeerId = this.peer.id;
+    }
+
+    this.emit('booted', this.peer.id);
+  }
+
+  _handlePeerConnection(c) {
+    if (this.conn && this.conn.open) {
+      c.on('open', () => {
+        c.send('Already connected to another client');
+
+        setTimeout(c.close(), 500);
+      });
+
+      return;
+    }
+
+    this.conn = c;
+
+    this._listen();
+  }
+
+  _handlePeerDisconnected() {
+    this.peer.id = this.lastPeerId;
+    this.peer._lastServerId = this.lastPeerId;
+
+    this.peer.reconnect();
+
+    this.emit('disconnected');
+  }
+
+  _handlePeerClose() {
+    this.conn = null;
+
+    this.emit('close');
   }
 }
 

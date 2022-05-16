@@ -1,5 +1,4 @@
 import Box from 'ui-box';
-import { useDispatch } from 'react-redux';
 import { Relative, Flex, FlexCol, Text } from 'ui/es';
 import {
   DiagramContainer,
@@ -8,16 +7,12 @@ import {
   NotiBarContainer,
 } from '~/containers';
 import useTheme from '~/styles/useTheme';
-import { openNetworkGame } from '~/store/actions';
 import Logo from '~/assets/logo.svg';
 import { Viewport, Sidebar } from '~/layout';
 import '~/styles/app.css';
 
 function App() {
   const { diagram, logo } = useTheme();
-  const dispatch = useDispatch();
-
-  dispatch(openNetworkGame());
 
   return (
     <Viewport>
@@ -39,7 +34,13 @@ function App() {
             <MenuContainer />
           </Box>
 
-          <Box flex="1" overflowY="scroll" margin={20} backgroundColor="#fff">
+          <Box
+            flex="1"
+            overflowY="scroll"
+            margin={20}
+            marginTop={0}
+            backgroundColor="#fff"
+          >
             <SheetContainer />
           </Box>
 
