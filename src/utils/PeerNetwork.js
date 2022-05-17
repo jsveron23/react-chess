@@ -4,23 +4,16 @@ import { Peer } from 'peerjs';
 class PeerNetwork extends EventEmitter {
   peer = null;
   conn = null;
-  peerId = null;
   lastPeerId = null;
 
   constructor() {
     super();
 
     this.peer = new Peer();
-
-    this._handlePeerOpen = this._handlePeerOpen.bind(this);
-    this._handlePeerConnection = this._handlePeerConnection.bind(this);
-    this._handlePeerDisconnected = this._handlePeerDisconnected.bind(this);
-    this._handlePeerClose = this._handlePeerClose.bind(this);
-
-    this.peer.on('open', this._handlePeerOpen);
-    this.peer.on('connection', this._handlePeerConnection);
-    this.peer.on('disconnected', this._handlePeerDisconnected);
-    this.peer.on('close', this._handlePeerClose);
+    this.peer.on('open', () => this.#handlePeerOpen());
+    this.peer.on('connection', (c) => this.#handlePeerConnection(c));
+    this.peer.on('disconnected', () => this.#handlePeerDisconnected());
+    this.peer.on('close', () => this.#handlePeerClose());
     this.peer.on('error', (err) => this.emit('error', err));
   }
 
@@ -43,10 +36,10 @@ class PeerNetwork extends EventEmitter {
 
     this.conn.on('open', () => this.conn.send('online'));
 
-    this._listen();
+    this.#listen();
   }
 
-  _listen() {
+  #listen() {
     this.conn.on('data', (data) => {
       switch (data) {
         case 'online': {
@@ -61,10 +54,10 @@ class PeerNetwork extends EventEmitter {
       }
     });
 
-    this.conn.on('close', this._handlePeerClose);
+    this.conn.on('close', () => this.#handlePeerClose());
   }
 
-  _handlePeerOpen() {
+  #handlePeerOpen() {
     if (this.peer.id === null) {
       this.peer.id = this.lastPeerId;
     } else {
@@ -74,7 +67,7 @@ class PeerNetwork extends EventEmitter {
     this.emit('booted', this.peer.id);
   }
 
-  _handlePeerConnection(c) {
+  #handlePeerConnection(c) {
     if (this.conn && this.conn.open) {
       c.on('open', () => {
         c.send('Already connected to another client');
@@ -87,10 +80,10 @@ class PeerNetwork extends EventEmitter {
 
     this.conn = c;
 
-    this._listen();
+    this.#listen();
   }
 
-  _handlePeerDisconnected() {
+  #handlePeerDisconnected() {
     try {
       this.peer.id = this.lastPeerId;
       this.peer._lastServerId = this.lastPeerId;
@@ -103,7 +96,7 @@ class PeerNetwork extends EventEmitter {
     }
   }
 
-  _handlePeerClose() {
+  #handlePeerClose() {
     this.conn = null;
 
     this.emit('close');
