@@ -91,12 +91,16 @@ class PeerNetwork extends EventEmitter {
   }
 
   _handlePeerDisconnected() {
-    this.peer.id = this.lastPeerId;
-    this.peer._lastServerId = this.lastPeerId;
+    try {
+      this.peer.id = this.lastPeerId;
+      this.peer._lastServerId = this.lastPeerId;
 
-    this.peer.reconnect();
-
-    this.emit('disconnected');
+      this.peer.reconnect();
+    } catch (err) {
+      console.error(err);
+    } finally {
+      this.emit('disconnected');
+    }
   }
 
   _handlePeerClose() {
