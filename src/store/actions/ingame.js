@@ -4,6 +4,7 @@ import { compose, reject, equals, clone } from 'ramda';
 import * as Chess from 'chess/es';
 import { ONE_VS_ONE } from '~/config';
 import * as types from '../actionTypes';
+import peerNetwork from '../networkSupport';
 
 export function updateTurn(turn) {
   return {
@@ -76,15 +77,29 @@ export function updateMovableTiles(code) {
 export function capturePiece(pretendCode, nextTileName) {
   return (dispatch, getState) => {
     const {
+      general: { connected },
       ingame: {
         present: { selectedCode, snapshot },
       },
     } = getState();
 
+    if (connected) {
+      peerNetwork.send({
+        command: 'capture',
+        args: {
+          pretendCode,
+          nextTileName,
+          selectedCode,
+          snapshot,
+        },
+      });
+    }
+
     batch(() => {
       dispatch(
         afterMoving(
           nextTileName,
+          selectedCode,
           compose(
             reject(equals(selectedCode)),
             Chess.replaceCode(snapshot, pretendCode)
@@ -98,14 +113,30 @@ export function capturePiece(pretendCode, nextTileName) {
 export function movePiece(nextTileName) {
   return (dispatch, getState) => {
     const {
+      general: { connected },
       ingame: {
         present: { selectedCode, snapshot },
       },
     } = getState();
 
+    if (connected) {
+      peerNetwork.send({
+        command: 'move',
+        args: {
+          nextTileName,
+          selectedCode,
+          snapshot,
+        },
+      });
+    }
+
     batch(() => {
       dispatch(
-        afterMoving(nextTileName, Chess.replaceCode(snapshot, selectedCode))
+        afterMoving(
+          nextTileName,
+          selectedCode,
+          Chess.replaceCode(snapshot, selectedCode)
+        )
       );
     });
   };
@@ -130,11 +161,11 @@ export function undo() {
 }
 
 // before reset
-export function afterMoving(nextTileName, getNextSnapshot) {
+export function afterMoving(nextTileName, selectedCode, getNextSnapshot) {
   return (dispatch, getState) => {
     const {
       ingame: {
-        present: { turn, snapshot, selectedCode },
+        present: { turn, snapshot },
       },
     } = getState();
 
@@ -217,7 +248,7 @@ export function afterMoving(nextTileName, getNextSnapshot) {
     // after `updateSnapshot`
     // before `removeSelectedCode`
     dispatch(updateSnapshot(nextSnapshot));
-    dispatch(updateCheckState());
+    dispatch(updateCheckState(selectedCode));
     dispatch(removeSelectedCode());
     dispatch(removeMovableTiles());
     dispatch(updateTurn(Chess.Opponent[turn]));
@@ -231,9 +262,11 @@ export function updateSheetData() {
       ingame: { present, past },
     } = getState();
 
+    const data = Chess.createSheet(present, past);
+
     dispatch({
       type: types.UPDATE_SHEET_DATA,
-      payload: Chess.createSheet(present, past),
+      payload: data,
     });
   };
 }
@@ -244,14 +277,10 @@ export function removeSheetData() {
   };
 }
 
-export function updateCheckState() {
+export function updateCheckState(selectedCode) {
   return (dispatch, getState) => {
     const {
-      ingame: {
-        present: { selectedCode },
-        present,
-        past,
-      },
+      ingame: { present, past },
     } = getState();
 
     const timeline = Chess.createTimeline(present, past);

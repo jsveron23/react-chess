@@ -5,7 +5,6 @@ import { composeWithDevTools } from 'redux-devtools-extension';
 import { isDev } from '~/config';
 import { Storage } from '~/utils';
 import reducers from './reducers';
-import { networkSupport } from './networkSupport';
 
 const composeDev = isDev ? composeWithDevTools : identity;
 
@@ -19,7 +18,7 @@ function configureStore(preloadedState) {
     composedEnhancer
   );
 
-  return networkSupport(store);
+  return store;
 }
 
 export default configureStore;
