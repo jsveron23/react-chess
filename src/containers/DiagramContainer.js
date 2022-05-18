@@ -22,6 +22,7 @@ function mapStateToProps({
       selectedCode,
       movableTiles,
       snapshot,
+      animate,
     },
   },
 }) {
@@ -51,6 +52,7 @@ function mapStateToProps({
     checkDefenders: defenders,
     preventEvent: connected && awaiting,
     movableTiles,
+    animate,
     turn,
   };
 }

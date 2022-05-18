@@ -4,6 +4,7 @@ import { Rank as Ranks } from 'chess/es';
 import File from './File';
 
 const Rank = ({
+  animate,
   checkCode,
   checkRoute,
   checkDefenders,
@@ -17,6 +18,7 @@ const Rank = ({
     return (
       <FlexRow key={rankName} flex="1">
         <File
+          animate={animate}
           checkCode={checkCode}
           checkRoute={checkRoute}
           checkDefenders={checkDefenders}
@@ -38,6 +40,13 @@ Rank.propTypes = {
   detectEnemy: PropTypes.func.isRequired,
   detectEnPassantTile: PropTypes.func.isRequired,
   onClickTile: PropTypes.func.isRequired,
+  animate: PropTypes.shape({
+    code: PropTypes.string,
+    from: PropTypes.shape({
+      x: PropTypes.number,
+      y: PropTypes.number,
+    }),
+  }).isRequired,
   checkRoute: PropTypes.arrayOf(PropTypes.string),
   checkDefenders: PropTypes.arrayOf(PropTypes.string),
   checkCode: PropTypes.string,

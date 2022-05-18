@@ -6,6 +6,7 @@ import Piece from './Piece';
 import Mask from './Mask';
 
 const Tile = ({
+  animate,
   checkCode,
   checkRoute,
   checkDefenders,
@@ -45,7 +46,7 @@ const Tile = ({
         <Text padding={5}>{tileName}</Text>
       </Absolute>
 
-      <Piece pKey={pKey} />
+      <Piece animate={animate} pKey={pKey} pretendCode={pretendCode} />
     </Relative>
   );
 };
@@ -56,6 +57,13 @@ Tile.propTypes = {
   detectEnPassantTile: PropTypes.func.isRequired,
   onClickTile: PropTypes.func.isRequired,
   tileName: PropTypes.string.isRequired,
+  animate: PropTypes.shape({
+    code: PropTypes.string,
+    from: PropTypes.shape({
+      x: PropTypes.number,
+      y: PropTypes.number,
+    }),
+  }).isRequired,
   checkRoute: PropTypes.arrayOf(PropTypes.string),
   checkDefenders: PropTypes.arrayOf(PropTypes.string),
   checkCode: PropTypes.string,

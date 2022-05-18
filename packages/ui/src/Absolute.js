@@ -1,14 +1,14 @@
-import { memo } from 'react';
+import { memo, forwardRef } from 'react';
 import PropTypes from 'prop-types';
 import Box from 'ui-box';
 
-function Absolute({ children, ...props }) {
+const Absolute = forwardRef(function Absolute({ children, ...props }, ref) {
   return (
-    <Box position="absolute" {...props}>
+    <Box ref={ref} position="absolute" {...props}>
       {children}
     </Box>
   );
-}
+});
 
 Absolute.propTypes = {
   children: PropTypes.node,
