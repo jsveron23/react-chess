@@ -1,72 +1,82 @@
-import { curry, compose, join, prop, equals, nth } from 'ramda';
+import {
+  curry,
+  compose,
+  join,
+  prop,
+  equals,
+  nth,
+  assoc,
+  reduce,
+  flip,
+} from 'ramda';
 import { parseCode, getEqualPieces, detectCheck } from '../utils';
 import { Pawn, Rook } from '../presets';
 
-const Symbols = {
+const SymbolsMap = {
   capture: 'x',
   check: '+',
   checkmate: '#',
   stalemate: '$',
 };
 
+const CastlingMap = {
+  a: 'O-O-O',
+  h: 'O-O',
+};
+
+// source(what `from` tile from?) and capture
+const _clearlySeparate = curry(function _clearlySeparate(side, acc, code) {
+  const key = compose(equals(side), prop('side'), parseCode)(code)
+    ? 'source'
+    : 'capture';
+  const val = parseCode(code);
+
+  return assoc(key, val, acc);
+});
+
+function _getCurrRookFileName(from) {
+  return compose(
+    prop('fileName'),
+    parseCode,
+    nth(0),
+    getEqualPieces(Rook)
+  )(from);
+}
+
 function parseNotation({ check, from, to }) {
   const { isCheck, isCheckmate, isStalemate } = detectCheck(check);
-  const {
-    side: tSide,
-    piece: tPiece,
-    tileName: tTileName,
-  } = compose(parseCode, join(''))(to);
-  const _seperateFromAndCapture = () => {
-    return from.reduce((acc, code) => {
-      const isSource = compose(equals(tSide), prop('side'), parseCode)(code);
-
-      return {
-        ...acc,
-        [isSource ? 'source' : 'capture']: parseCode(code),
-      };
-    }, {});
-  };
+  const { side, piece, tileName } = compose(parseCode, join(''))(to);
+  const isPawn = piece === Pawn;
   const isMoved = from.length === 1 && to.length === 1;
   const isCaptured = from.length === 2 && to.length === 1;
   const isCastling = from.length === 2 && to.length === 2;
-  let checkSymbol = isCheck ? Symbols.check : '';
+  let symbol = isCheck ? SymbolsMap.check : '';
   let notation = '';
 
-  checkSymbol = isCheckmate ? Symbols.checkmate : checkSymbol;
-  checkSymbol = isStalemate ? Symbols.stalemate : checkSymbol;
+  symbol = isCheckmate ? SymbolsMap.checkmate : symbol;
+  symbol = isStalemate ? SymbolsMap.stalemate : symbol;
 
   if (isMoved) {
-    notation = `${tPiece}${tTileName}`;
+    notation = `${piece}${tileName}`;
 
-    if (tPiece === Pawn) {
-      notation = tTileName;
+    if (isPawn) {
+      notation = tileName;
     }
   } else if (isCaptured) {
-    const { source } = _seperateFromAndCapture();
-    let prefix = tPiece;
-    let suffix = tTileName;
+    const { source } = reduce(_clearlySeparate(side), {}, from);
+    let prefix = piece;
+    let suffix = tileName;
 
-    if (tPiece === Pawn) {
+    if (isPawn) {
       prefix = source.fileName;
     }
 
-    notation = `${prefix}${Symbols.capture}${suffix}`;
+    notation = `${prefix}${SymbolsMap.capture}${suffix}`;
   } else if (isCastling) {
-    const fileName = compose(
-      prop('fileName'),
-      parseCode,
-      nth(0),
-      getEqualPieces(Rook)
-    )(from);
-    const castlingMap = {
-      h: 'O-O',
-      a: 'O-O-O',
-    };
-
-    notation = castlingMap[fileName];
+    notation = compose(flip(prop)(CastlingMap), _getCurrRookFileName)(from);
   }
 
-  return `${notation}${checkSymbol}`;
+  return `${notation}${symbol}`;
 }
 
 export default curry(parseNotation);

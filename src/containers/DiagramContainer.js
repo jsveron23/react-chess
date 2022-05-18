@@ -14,6 +14,7 @@ import { Diagram } from '~/components';
 import { updateSelectedCode, movePiece, capturePiece } from '~/store/actions';
 
 function mapStateToProps({
+  network: { connected, awaiting },
   ingame: {
     present: {
       check: { to, routes, defenders },
@@ -48,6 +49,7 @@ function mapStateToProps({
     checkCode: to,
     checkRoute: routes,
     checkDefenders: defenders,
+    preventEvent: connected && awaiting,
     movableTiles,
     turn,
   };
@@ -86,6 +88,10 @@ function mergeProps(stateProps, dispatchProps, ownProps) {
     ...ownProps,
     // this callback has been executed from `<Tile />.onClickTile`
     onClickTile(nextTileName, pretendCode) {
+      if (stateProps.preventEvent) {
+        return;
+      }
+
       // HOF
       dispatchProps.decideAction(
         // get arguments from actual callback

@@ -8,6 +8,7 @@ import {
   removeCheck,
   removeSelectedCode,
   removeMovableTiles,
+  removeSheetData,
 } from './ingame';
 import { UPDATE_MATCH_TYPE, SAVE_TO_LOCALSTORAGE } from '../actionTypes';
 
@@ -22,6 +23,7 @@ export function updateMatchType(key) {
       dispatch(removeSelectedCode());
       dispatch(removeMovableTiles());
       dispatch(removeCheck());
+      dispatch(removeSheetData());
       dispatch(updateTurn(Turn.w));
       dispatch(ActionCreators.clearHistory());
     });

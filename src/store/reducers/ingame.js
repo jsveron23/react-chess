@@ -8,6 +8,8 @@ import {
   REMOVE_CHECK,
   REMOVE_SELECTED_CODE,
   REMOVE_MOVABLE_TILES,
+  UPDATE_SHEET_DATA,
+  REMOVE_SHEET_DATA,
 } from '../actionTypes';
 
 const initialState = {
@@ -15,6 +17,7 @@ const initialState = {
   selectedCode: '',
   movableTiles: [],
   snapshot: Snapshot,
+  sheetData: [],
   check: {
     to: '',
     from: '',
@@ -75,6 +78,20 @@ function reducer(state = initialState, action) {
       return {
         ...state,
         check: payload,
+      };
+    }
+
+    case UPDATE_SHEET_DATA: {
+      return {
+        ...state,
+        sheetData: payload,
+      };
+    }
+
+    case REMOVE_SHEET_DATA: {
+      return {
+        ...state,
+        sheetData: [],
       };
     }
 

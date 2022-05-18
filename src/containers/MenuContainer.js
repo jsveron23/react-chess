@@ -1,11 +1,21 @@
 import { connect } from 'react-redux';
 import { ActionTypes } from 'redux-undo';
+import { FlexRow, Text } from 'ui/es';
 import { Menu } from '~/components';
-import { updateMatchType, saveGame, undo } from '~/store/actions';
-import { ONE_VS_ONE, SAVE } from '~/config';
+import {
+  updateMatchType,
+  saveGame,
+  undo,
+  joinNetworkGame,
+} from '~/store/actions';
+import { toLocaleDate } from '~/utils';
+import { ONE_VS_ONE, SAVE, ONLINE } from '~/config';
 
-function mapStateToProps({ ingame: { past } }) {
-  return { past };
+function mapStateToProps({
+  network: { connected, peerId, lastSaved },
+  ingame: { past },
+}) {
+  return { past, connected, peerId, lastSaved };
 }
 
 function mapDispatchToProps(dispatch) {
@@ -14,6 +24,8 @@ function mapDispatchToProps(dispatch) {
 
 function mergeProps(stateProps, dispatchProps, ownProps) {
   const noUndoYet = stateProps.past.length === 0;
+  const isConnected = stateProps.connected;
+  const lastSaved = toLocaleDate(stateProps.lastSaved);
   const { dispatch } = dispatchProps;
 
   return {
@@ -25,7 +37,7 @@ function mergeProps(stateProps, dispatchProps, ownProps) {
       {
         key: ActionTypes.UNDO,
         title: 'Undo',
-        disabled: noUndoYet,
+        disabled: noUndoYet || isConnected,
         onClick: () => dispatch(undo()),
       },
       // {
@@ -38,7 +50,7 @@ function mergeProps(stateProps, dispatchProps, ownProps) {
       {
         key: ONE_VS_ONE,
         title: '1 vs 1',
-        disabled: false,
+        disabled: isConnected,
         onClick: () => dispatch(updateMatchType(ONE_VS_ONE)),
       },
       // {
@@ -48,8 +60,8 @@ function mergeProps(stateProps, dispatchProps, ownProps) {
       // },
       {
         key: SAVE,
-        title: 'Save',
-        disabled: noUndoYet,
+        title: `Save ${lastSaved ? `/ ${lastSaved}` : ''}`,
+        disabled: noUndoYet || isConnected,
         onClick: () => dispatch(saveGame()),
       },
       // {
@@ -62,11 +74,32 @@ function mergeProps(stateProps, dispatchProps, ownProps) {
       //   title: 'Export',
       //   disabled: true,
       // },
-      // {
-      //   key: ONLINE,
-      //   title: 'Online',
-      //   disabled: true,
-      // },
+      {
+        key: ONLINE,
+        title: 'Network (WebRTC)',
+        disabled: isConnected,
+        onClick: () => {
+          const id = window.prompt('please input friend peer-id');
+
+          if (id) {
+            dispatch(joinNetworkGame(id));
+          }
+        },
+        children: () => {
+          return (
+            <FlexRow paddingLeft={10} paddingRight={10} fontSize="80%">
+              <Text marginBottom={5} fontWeight="bold" flexBasis={60}>
+                Peer Id:
+              </Text>
+              {stateProps.peerId && (
+                <Text flex="1" wordBreak="break-all">
+                  {stateProps.peerId}
+                </Text>
+              )}
+            </FlexRow>
+          );
+        },
+      },
     ],
   };
 }

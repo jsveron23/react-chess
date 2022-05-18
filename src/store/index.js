@@ -1,5 +1,5 @@
+import { compose } from 'ramda';
 import configureStore from './configureStore';
+import { networkSupport } from './networkSupport';
 
-const store = configureStore();
-
-export default store;
+export default compose(networkSupport, configureStore)();
