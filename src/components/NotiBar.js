@@ -15,8 +15,10 @@ const ColorSet = {
   },
 };
 
-function NotiBar({ turn, awaiting }) {
+function NotiBar({ turn, connected, awaiting }) {
   const cs = ColorSet[turn];
+  const isAwaiting = connected && awaiting;
+  const isTurn = connected && !awaiting;
 
   return (
     <Flex
@@ -29,24 +31,25 @@ function NotiBar({ turn, awaiting }) {
       paddingLeft={10}
       paddingRight={10}
     >
-      {awaiting ? (
+      {isAwaiting && (
         <>
-          <Text marginRight={10}>...Awating...</Text>
+          <Text marginRight={10}>...Awaiting...</Text>
           <ClockLoader
             size={20}
             loading={awaiting}
             color={ColorSet[turn].color}
           />
         </>
-      ) : (
-        <Text marginRight={10}>...Your turn...</Text>
       )}
+
+      {isTurn && <Text marginRight={10}>...Your turn...</Text>}
     </Flex>
   );
 }
 
 NotiBar.propTypes = {
   turn: PropTypes.string.isRequired,
+  connected: PropTypes.bool.isRequired,
   awaiting: PropTypes.bool.isRequired,
 };
 

@@ -110,27 +110,27 @@ export function updateMovableTiles(code) {
 export function capturePiece(pretendCode, nextTileName) {
   return (dispatch, getState) => {
     const {
-      network: { connected },
+      network: { connected, awaiting },
       ingame: {
         present: { selectedCode, snapshot },
       },
     } = getState();
 
-    if (connected) {
-      dispatch(toggleAwaiting());
-
-      peerNetwork.send({
-        command: 'capture',
-        args: {
-          pretendCode,
-          nextTileName,
-          selectedCode,
-          snapshot,
-        },
-      });
-    }
-
     batch(() => {
+      if (connected && !awaiting) {
+        peerNetwork.send({
+          command: 'capture',
+          args: {
+            pretendCode,
+            nextTileName,
+            selectedCode,
+            snapshot,
+          },
+        });
+
+        dispatch(toggleAwaiting());
+      }
+
       const getNextSnapshot = compose(
         reject(equals(selectedCode)),
         Chess.replaceCode(snapshot, pretendCode)
@@ -144,26 +144,26 @@ export function capturePiece(pretendCode, nextTileName) {
 export function movePiece(nextTileName) {
   return (dispatch, getState) => {
     const {
-      network: { connected },
+      network: { connected, awaiting },
       ingame: {
         present: { selectedCode, snapshot },
       },
     } = getState();
 
-    if (connected) {
-      dispatch(toggleAwaiting());
-
-      peerNetwork.send({
-        command: 'move',
-        args: {
-          nextTileName,
-          selectedCode,
-          snapshot,
-        },
-      });
-    }
-
     batch(() => {
+      if (connected && !awaiting) {
+        peerNetwork.send({
+          command: 'move',
+          args: {
+            nextTileName,
+            selectedCode,
+            snapshot,
+          },
+        });
+
+        dispatch(toggleAwaiting());
+      }
+
       const getNextSnapshot = Chess.replaceCode(snapshot, selectedCode);
 
       dispatch(afterMoving(nextTileName, selectedCode, getNextSnapshot));

@@ -49,9 +49,8 @@ function mapStateToProps({
     checkCode: to,
     checkRoute: routes,
     checkDefenders: defenders,
+    preventEvent: connected && awaiting,
     movableTiles,
-    connected,
-    awaiting,
     turn,
   };
 }
@@ -89,7 +88,7 @@ function mergeProps(stateProps, dispatchProps, ownProps) {
     ...ownProps,
     // this callback has been executed from `<Tile />.onClickTile`
     onClickTile(nextTileName, pretendCode) {
-      if (stateProps.connected && stateProps.awaiting) {
+      if (stateProps.preventEvent) {
         return;
       }
 

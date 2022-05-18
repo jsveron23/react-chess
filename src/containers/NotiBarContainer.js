@@ -2,13 +2,12 @@ import { connect } from 'react-redux';
 import { NotiBar } from '~/components';
 
 function mapStateToProps({
-  general: { lastSaved },
-  network: { awaiting },
+  network: { connected, awaiting },
   ingame: {
     present: { turn },
   },
 }) {
-  return { turn, lastSaved, awaiting };
+  return { turn, connected, awaiting };
 }
 
 export default connect(mapStateToProps)(NotiBar);

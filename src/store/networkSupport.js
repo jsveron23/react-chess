@@ -28,16 +28,21 @@ export function networkSupport(store) {
   peerNetwork.on('received', (data) => {
     const { command, args } = data;
     const _args = [args.nextTileName, args.selectedCode];
-    const getNextSnapshot = replaceCode(args.snapshot, args.selectedCode);
+    const _replaceCode = replaceCode(args.snapshot);
 
     if (command === 'capture') {
-      _args.push(compose(reject(equals(args.selectedCode)), getNextSnapshot));
+      _args.push(
+        compose(
+          reject(equals(args.selectedCode)),
+          _replaceCode(args.pretendCode)
+        )
+      );
     } else if (command === 'move') {
-      _args.push(getNextSnapshot);
+      _args.push(_replaceCode(args.selectedCode));
     }
 
-    dispatch(toggleAwaiting());
     dispatch(afterMoving(..._args));
+    dispatch(toggleAwaiting());
   });
 
   peerNetwork.on('disconnected', (/* err */) => {
