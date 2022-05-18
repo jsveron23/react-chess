@@ -14,6 +14,7 @@ import {
   UPDATE_MATCH_TYPE,
   SAVE_TO_LOCALSTORAGE,
   OPEN_NETWORK_GAME,
+  CLOSE_NETWORK_GAME,
   JOIN_NETWORK_GAME,
   CONNECTED_PEER_NETWORK,
 } from '../actionTypes';
@@ -65,6 +66,12 @@ export function openNetworkGame(ownId) {
   return {
     type: OPEN_NETWORK_GAME,
     payload: ownId,
+  };
+}
+
+export function closeNetworkGame() {
+  return {
+    type: CLOSE_NETWORK_GAME,
   };
 }
 

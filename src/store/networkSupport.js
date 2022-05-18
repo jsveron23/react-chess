@@ -1,7 +1,12 @@
 import { compose, reject, equals } from 'ramda';
 import { replaceCode } from 'chess/es';
 import { PeerNetwork } from '~/utils';
-import { openNetworkGame, connectedPeerNetwork, afterMoving } from './actions';
+import {
+  openNetworkGame,
+  closeNetworkGame,
+  connectedPeerNetwork,
+  afterMoving,
+} from './actions';
 
 const peerNetwork = new PeerNetwork();
 
@@ -30,8 +35,16 @@ export function networkSupport(store) {
     dispatch(afterMoving(..._args));
   });
 
+  peerNetwork.on('disconnected', (/* err */) => {
+    // dispatch(closeNetworkGame());
+  });
+
+  peerNetwork.on('close', (/* err */) => {
+    dispatch(closeNetworkGame());
+  });
+
   peerNetwork.on('error', (/* err */) => {
-    // TODO dispatch
+    dispatch(closeNetworkGame());
   });
 
   return store;

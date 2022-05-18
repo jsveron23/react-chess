@@ -3,6 +3,7 @@ import {
   UPDATE_MATCH_TYPE,
   SAVE_TO_LOCALSTORAGE,
   OPEN_NETWORK_GAME,
+  CLOSE_NETWORK_GAME,
   JOIN_NETWORK_GAME,
   CONNECTED_PEER_NETWORK,
 } from '../actionTypes';
@@ -37,6 +38,14 @@ function reducer(state = initialState, action) {
       return {
         ...state,
         peerId: payload,
+      };
+    }
+
+    case CLOSE_NETWORK_GAME: {
+      return {
+        ...state,
+        peerId: '',
+        connected: false,
       };
     }
 
