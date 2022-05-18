@@ -12,7 +12,8 @@ import { toLocaleDate } from '~/utils';
 import { ONE_VS_ONE, SAVE, ONLINE } from '~/config';
 
 function mapStateToProps({
-  network: { connected, peerId, lastSaved },
+  general: { lastSaved },
+  network: { connected, peerId },
   ingame: { past },
 }) {
   return { past, connected, peerId, lastSaved };

@@ -12,6 +12,7 @@ const Piece = ({ pKey, animate, pretendCode }) => {
   const [styles, api] = useSpring(() => ({ x: 0, y: 0 }));
   const PieceComponent = getPiece(pKey);
 
+  // TODO remove afterimage
   useEffect(() => {
     if (pretendCode === animate.code) {
       const { x, y } = animate.from;
