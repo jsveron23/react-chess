@@ -3,9 +3,45 @@ import { ActionCreators } from 'redux-undo';
 import { compose, reject, equals, clone } from 'ramda';
 import * as Chess from 'chess/es';
 import { ONE_VS_ONE } from '~/config';
+import { toggleAwaiting } from './network';
 import * as types from '../actionTypes';
 import peerNetwork from '../networkSupport';
 
+/**
+ * Remove selected code (reset)
+ * @return {Object}
+ */
+export function removeSelectedCode() {
+  return {
+    type: types.REMOVE_SELECTED_CODE,
+  };
+}
+
+/**
+ * Remove movable tiles (reset)
+ * @return {Object}
+ */
+export function removeMovableTiles() {
+  return {
+    type: types.REMOVE_MOVABLE_TILES,
+  };
+}
+
+/**
+ * Remove check (reset)
+ * @return {Object}
+ */
+export function removeCheck() {
+  return {
+    type: types.REMOVE_CHECK,
+  };
+}
+
+/**
+ * Update turn literally
+ * @param  {String} turn
+ * @return {Object}
+ */
 export function updateTurn(turn) {
   return {
     type: types.UPDATE_TURN,
@@ -13,28 +49,25 @@ export function updateTurn(turn) {
   };
 }
 
-export function removeSelectedCode() {
-  return {
-    type: types.REMOVE_SELECTED_CODE,
-  };
-}
-
-export function removeMovableTiles() {
-  return {
-    type: types.REMOVE_MOVABLE_TILES,
-  };
-}
-
-export function removeCheck() {
-  return {
-    type: types.REMOVE_CHECK,
-  };
-}
-
+/**
+ * Update snapshot
+ * @param  {String} snapshot
+ * @return {Object}
+ */
 export function updateSnapshot(snapshot) {
   return {
     type: types.UPDATE_SNAPSHOT,
     payload: snapshot,
+  };
+}
+
+/**
+ * Remove sheet data, notation data (reset)
+ * @return {Object}
+ */
+export function removeSheetData() {
+  return {
+    type: types.REMOVE_SHEET_DATA,
   };
 }
 
@@ -77,13 +110,15 @@ export function updateMovableTiles(code) {
 export function capturePiece(pretendCode, nextTileName) {
   return (dispatch, getState) => {
     const {
-      general: { connected },
+      network: { connected },
       ingame: {
         present: { selectedCode, snapshot },
       },
     } = getState();
 
     if (connected) {
+      dispatch(toggleAwaiting());
+
       peerNetwork.send({
         command: 'capture',
         args: {
@@ -96,16 +131,12 @@ export function capturePiece(pretendCode, nextTileName) {
     }
 
     batch(() => {
-      dispatch(
-        afterMoving(
-          nextTileName,
-          selectedCode,
-          compose(
-            reject(equals(selectedCode)),
-            Chess.replaceCode(snapshot, pretendCode)
-          )
-        )
+      const getNextSnapshot = compose(
+        reject(equals(selectedCode)),
+        Chess.replaceCode(snapshot, pretendCode)
       );
+
+      dispatch(afterMoving(nextTileName, selectedCode, getNextSnapshot));
     });
   };
 }
@@ -113,13 +144,15 @@ export function capturePiece(pretendCode, nextTileName) {
 export function movePiece(nextTileName) {
   return (dispatch, getState) => {
     const {
-      general: { connected },
+      network: { connected },
       ingame: {
         present: { selectedCode, snapshot },
       },
     } = getState();
 
     if (connected) {
+      dispatch(toggleAwaiting());
+
       peerNetwork.send({
         command: 'move',
         args: {
@@ -131,13 +164,9 @@ export function movePiece(nextTileName) {
     }
 
     batch(() => {
-      dispatch(
-        afterMoving(
-          nextTileName,
-          selectedCode,
-          Chess.replaceCode(snapshot, selectedCode)
-        )
-      );
+      const getNextSnapshot = Chess.replaceCode(snapshot, selectedCode);
+
+      dispatch(afterMoving(nextTileName, selectedCode, getNextSnapshot));
     });
   };
 }
@@ -148,6 +177,9 @@ export function undo() {
       general: { matchType },
       ingame: { past },
     } = getState();
+
+    // TODO
+    // allow it from white/network
 
     if (matchType !== ONE_VS_ONE) {
       const lastTurn = past.length - 2;
@@ -169,6 +201,24 @@ export function afterMoving(nextTileName, selectedCode, getNextSnapshot) {
       },
     } = getState();
 
+    const CastlingMap = {
+      wKc1: {
+        curr: 'wRa1',
+        next: 'wRd1',
+      },
+      wKg1: {
+        curr: 'wRh1',
+        next: 'wRf1',
+      },
+      bKc8: {
+        curr: 'bRa8',
+        next: 'bRd8',
+      },
+      bKg8: {
+        curr: 'bRh8',
+        next: 'bRf8',
+      },
+    };
     const { side, piece, pKey } = Chess.parseCode(selectedCode);
     const nextCode = `${pKey}${nextTileName}`;
     const mvs = Chess.Special[piece] || [];
@@ -184,33 +234,17 @@ export function afterMoving(nextTileName, selectedCode, getNextSnapshot) {
         case Chess.Castling: {
           const { file } = Chess.computeDistance(selectedCode, nextCode);
 
-          // filter it first, otherwise TypeError(`castlingMap`)
+          // filter it first, otherwise TypeError(`CastlingMap`)
           if (file === 2) {
-            const castlingMap = {
-              wKc1: {
-                curr: 'wRa1',
-                next: 'wRd1',
-              },
-              wKg1: {
-                curr: 'wRh1',
-                next: 'wRf1',
-              },
-              bKc8: {
-                curr: 'bRa8',
-                next: 'bRd8',
-              },
-              bKg8: {
-                curr: 'bRh8',
-                next: 'bRf8',
-              },
-            };
-            const currRookCode = castlingMap[nextCode].curr;
+            const currRookCode = CastlingMap[nextCode].curr;
 
             if (currRookCode) {
+              const nextRookCode = CastlingMap[nextCode].next;
+
               nextSnapshot = Chess.replaceCode(
                 nextSnapshot,
                 currRookCode,
-                castlingMap[nextCode].next
+                nextRookCode
               );
             }
           }
@@ -262,18 +296,10 @@ export function updateSheetData() {
       ingame: { present, past },
     } = getState();
 
-    const data = Chess.createSheet(present, past);
-
     dispatch({
       type: types.UPDATE_SHEET_DATA,
-      payload: data,
+      payload: Chess.createSheet(present, past),
     });
-  };
-}
-
-export function removeSheetData() {
-  return {
-    type: types.REMOVE_SHEET_DATA,
   };
 }
 

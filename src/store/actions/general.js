@@ -10,15 +10,7 @@ import {
   removeMovableTiles,
   removeSheetData,
 } from './ingame';
-import {
-  UPDATE_MATCH_TYPE,
-  SAVE_TO_LOCALSTORAGE,
-  OPEN_NETWORK_GAME,
-  CLOSE_NETWORK_GAME,
-  JOIN_NETWORK_GAME,
-  CONNECTED_PEER_NETWORK,
-} from '../actionTypes';
-import peerNetwork from '../networkSupport';
+import { UPDATE_MATCH_TYPE, SAVE_TO_LOCALSTORAGE } from '../actionTypes';
 
 export function updateMatchType(key) {
   return (dispatch) => {
@@ -58,57 +50,6 @@ export function saveGame() {
     dispatch({
       type: SAVE_TO_LOCALSTORAGE,
       payload: lastSaved,
-    });
-  };
-}
-
-export function openNetworkGame(ownId) {
-  return {
-    type: OPEN_NETWORK_GAME,
-    payload: ownId,
-  };
-}
-
-export function closeNetworkGame() {
-  return {
-    type: CLOSE_NETWORK_GAME,
-  };
-}
-
-export function connectedPeerNetwork() {
-  return (dispatch) => {
-    batch(() => {
-      dispatch(updateSnapshot(Snapshot));
-      dispatch(removeSelectedCode());
-      dispatch(removeMovableTiles());
-      dispatch(removeCheck());
-      dispatch(removeSheetData());
-      dispatch(updateTurn(Turn.w));
-      dispatch(ActionCreators.clearHistory());
-
-      dispatch({
-        type: CONNECTED_PEER_NETWORK,
-      });
-    });
-  };
-}
-
-export function joinNetworkGame(peerId) {
-  return (dispatch) => {
-    batch(() => {
-      dispatch(updateSnapshot(Snapshot));
-      dispatch(removeSelectedCode());
-      dispatch(removeMovableTiles());
-      dispatch(removeCheck());
-      dispatch(removeSheetData());
-      dispatch(updateTurn(Turn.w));
-      dispatch(ActionCreators.clearHistory());
-
-      peerNetwork.join(peerId);
-
-      dispatch({
-        type: JOIN_NETWORK_GAME,
-      });
     });
   };
 }

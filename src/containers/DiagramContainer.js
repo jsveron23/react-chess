@@ -14,7 +14,7 @@ import { Diagram } from '~/components';
 import { updateSelectedCode, movePiece, capturePiece } from '~/store/actions';
 
 function mapStateToProps({
-  general: { connected, awaiting },
+  network: { connected, awaiting },
   ingame: {
     present: {
       check: { to, routes, defenders },

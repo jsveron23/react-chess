@@ -1,11 +1,13 @@
 import { compose, reject, equals } from 'ramda';
-import { replaceCode } from 'chess/es';
+import { replaceCode, Side } from 'chess/es';
 import { PeerNetwork } from '~/utils';
 import {
+  toggleAwaiting,
   openNetworkGame,
   closeNetworkGame,
   connectedPeerNetwork,
   afterMoving,
+  decideSide,
 } from './actions';
 
 const peerNetwork = new PeerNetwork();
@@ -19,6 +21,8 @@ export function networkSupport(store) {
 
   peerNetwork.on('online', () => {
     dispatch(connectedPeerNetwork());
+    dispatch(decideSide(Side.black));
+    dispatch(toggleAwaiting());
   });
 
   peerNetwork.on('received', (data) => {
@@ -32,6 +36,7 @@ export function networkSupport(store) {
       _args.push(getNextSnapshot);
     }
 
+    dispatch(toggleAwaiting());
     dispatch(afterMoving(..._args));
   });
 
