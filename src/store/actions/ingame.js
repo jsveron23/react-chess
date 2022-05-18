@@ -1,6 +1,6 @@
 import { batch } from 'react-redux';
 import { ActionCreators } from 'redux-undo';
-import { compose, reject, equals, clone } from 'ramda';
+import { compose, reject, equals, clone, reverse, nth, prop } from 'ramda';
 import * as Chess from 'chess/es';
 import { ONE_VS_ONE } from '~/config';
 import { toggleAwaiting } from './network';
@@ -293,12 +293,40 @@ export function afterMoving(nextTileName, selectedCode, getNextSnapshot) {
 export function updateSheetData() {
   return (dispatch, getState) => {
     const {
-      ingame: { present, past },
+      ingame: {
+        present: { turn },
+        present,
+        past,
+      },
     } = getState();
 
+    const sheetData = Chess.createSheet(present, past);
+    const sideData = compose(
+      prop(Chess.Opponent[turn]),
+      nth(0),
+      reverse
+    )(sheetData);
+
+    dispatch(measureAxis(sideData));
     dispatch({
       type: types.UPDATE_SHEET_DATA,
-      payload: Chess.createSheet(present, past),
+      payload: sheetData,
+    });
+  };
+}
+
+/**
+ * Measure axis for animation
+ * @param  {Object}  sideData
+ * @return {Boolean}
+ */
+export function measureAxis(sideData) {
+  return (dispatch) => {
+    const { from, to } = sideData;
+
+    dispatch({
+      type: types.MEASURE_AXIS,
+      payload: Chess.getAnimationAxis(from, to),
     });
   };
 }

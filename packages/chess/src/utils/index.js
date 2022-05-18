@@ -20,6 +20,7 @@ export { default as getNextRankByIndex } from './getNextRankByIndex';
 export { default as getPKeyByTile } from './getPKeyByTile';
 export { default as getEqualPieces } from './getEqualPieces';
 export { default as getSymmetryTile } from './getSymmetryTile';
+export { default as getAnimationAxis } from './getAnimationAxis';
 export { default as parseCode } from './parseCode';
 export { default as parseTile } from './parseTile';
 export { default as removeDirection } from './removeDirection';

@@ -3,6 +3,7 @@ import { File as Files, detectDarkTile } from 'chess/es';
 import Tile from './Tile';
 
 const File = ({
+  animate,
   checkCode,
   checkRoute,
   checkDefenders,
@@ -23,6 +24,7 @@ const File = ({
     return (
       <Tile
         key={tileName}
+        animate={animate}
         checkCode={checkCode}
         checkRoute={checkRoute}
         checkDefenders={checkDefenders}
@@ -44,6 +46,13 @@ File.propTypes = {
   detectEnPassantTile: PropTypes.func.isRequired,
   detectEnemy: PropTypes.func.isRequired,
   onClickTile: PropTypes.func.isRequired,
+  animate: PropTypes.shape({
+    code: PropTypes.string,
+    from: PropTypes.shape({
+      x: PropTypes.number,
+      y: PropTypes.number,
+    }),
+  }).isRequired,
   rankName: PropTypes.oneOfType([PropTypes.string, PropTypes.number])
     .isRequired,
   checkRoute: PropTypes.arrayOf(PropTypes.string),

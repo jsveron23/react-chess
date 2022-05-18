@@ -1,14 +1,15 @@
 import { Turn, Snapshot } from 'chess/es';
 import {
+  MEASURE_AXIS,
   UPDATE_TURN,
   UPDATE_SNAPSHOT,
+  UPDATE_SHEET_DATA,
   UPDATE_CHECK_CODE,
   UPDATE_SELECTED_CODE,
   UPDATE_MOVABLE_TILES,
   REMOVE_CHECK,
   REMOVE_SELECTED_CODE,
   REMOVE_MOVABLE_TILES,
-  UPDATE_SHEET_DATA,
   REMOVE_SHEET_DATA,
 } from '../actionTypes';
 
@@ -18,6 +19,13 @@ const initialState = {
   movableTiles: [],
   snapshot: Snapshot,
   sheetData: [],
+  animate: {
+    code: '',
+    from: {
+      x: 0,
+      y: 0,
+    },
+  },
   check: {
     to: '',
     from: '',
@@ -106,6 +114,13 @@ function reducer(state = initialState, action) {
           defendTiles: [],
           dodgeableTiles: [],
         },
+      };
+    }
+
+    case MEASURE_AXIS: {
+      return {
+        ...state,
+        animate: payload,
       };
     }
 

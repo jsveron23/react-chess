@@ -1,14 +1,14 @@
-import { memo } from 'react';
+import { memo, forwardRef } from 'react';
 import PropTypes from 'prop-types';
 import Box from 'ui-box';
 
-const Flex = ({ children, ...props }) => {
+const Flex = forwardRef(function Flex({ children, ...props }, ref) {
   return (
-    <Box display="flex" {...props}>
+    <Box ref={ref} display="flex" {...props}>
       {children}
     </Box>
   );
-};
+});
 
 Flex.propTypes = {
   children: PropTypes.node.isRequired,
