@@ -24,6 +24,7 @@ function mapStateToProps({
       snapshot,
       animate,
     },
+    future,
   },
 }) {
   return {
@@ -51,8 +52,8 @@ function mapStateToProps({
     checkRoute: routes,
     checkDefenders: defenders,
     preventEvent: connected && awaiting,
+    animate: future.length > 0 ? undefined : animate,
     movableTiles,
-    animate,
     turn,
   };
 }
