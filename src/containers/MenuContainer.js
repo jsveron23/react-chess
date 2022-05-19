@@ -7,6 +7,7 @@ import {
   saveGame,
   undo,
   joinNetworkGame,
+  importGame,
   exportGame,
 } from '~/store/actions';
 import { toLocaleDate } from '~/utils';
@@ -71,15 +72,14 @@ function mergeProps(stateProps, dispatchProps, ownProps) {
       {
         key: IMPORT,
         title: 'Import',
-        disabled: true,
+        disabled: isConnected,
+        onClick: () => dispatch(importGame()),
       },
       {
         key: EXPORT,
         title: 'Export',
         disabled: noUndoYet || isConnected,
-        onClick: () => {
-          dispatch(exportGame());
-        },
+        onClick: () => dispatch(exportGame()),
       },
       {
         key: ONLINE,

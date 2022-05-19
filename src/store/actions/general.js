@@ -1,7 +1,7 @@
 import { batch } from 'react-redux';
 import { ActionCreators } from 'redux-undo';
 import { Snapshot, Turn } from 'chess/es';
-import { Storage, compress, decompress } from '~/utils';
+import { Storage, compress } from '~/utils';
 import {
   updateTurn,
   updateSnapshot,
@@ -10,7 +10,12 @@ import {
   removeMovableTiles,
   removeSheetData,
 } from './ingame';
-import { UPDATE_MATCH_TYPE, SAVE_TO_LOCALSTORAGE } from '../actionTypes';
+import {
+  UPDATE_MATCH_TYPE,
+  SAVE_TO_LOCALSTORAGE,
+  IMPORT_GAME,
+  EXPORT_GAME,
+} from '../actionTypes';
 
 export function updateMatchType(key) {
   return (dispatch) => {
@@ -54,6 +59,20 @@ export function saveGame() {
   };
 }
 
+export function importGame() {
+  const data = window.prompt('Paste export data here!');
+
+  if (data) {
+    Storage.setItem('instant-import-data', data);
+
+    window.location.reload();
+  }
+
+  return {
+    type: IMPORT_GAME,
+  };
+}
+
 export function exportGame() {
   return (dispatch, getState) => {
     const { general, ingame } = getState();
@@ -65,17 +84,14 @@ export function exportGame() {
     dispatch(removeSelectedCode());
     dispatch(removeMovableTiles());
 
-    navigator.clipboard
-      .writeText(compress(data))
-      .then(
-        () => alert('copied current playing data to clipboard!'),
-        console.error
-      );
+    // TODO ask save current game before
 
-    // console.log(compress(data), decompress(compress(data)));
+    navigator.clipboard.writeText(compress(data)).then(() => {
+      alert('Copied current playing data to clipboard!');
 
-    dispatch({
-      type: 'EXPORT_GAME',
-    });
+      dispatch({
+        type: EXPORT_GAME,
+      });
+    }, console.error);
   };
 }

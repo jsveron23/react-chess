@@ -14,9 +14,7 @@ export function setItem(key, data) {
 
 export function getItem(key) {
   try {
-    const val = localStorage.getItem(key);
-
-    return JSON.parse(val);
+    return localStorage.getItem(key);
   } catch (err) {
     console.error('localStorage/getItem: ', err);
   }
