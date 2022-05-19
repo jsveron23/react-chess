@@ -31,23 +31,23 @@ import { Rook } from '../presets';
  */
 function getCastlingTiles(timeline, code) {
   const { side, pKey } = parseCode(code);
-  const convertToTiles = convertAxisListToTiles(code);
+  const _convertToTiles = convertAxisListToTiles(code);
   const placedTiles = compose(convertSnapshotToTiles, nth(0))(timeline);
-  const detectIncludes = flip(includes)(placedTiles);
+  const _detectIncludes = flip(includes)(placedTiles);
   const _filterInvalidTiles = compose(
     filter(
       anyPass([
-        detectIncludes,
+        _detectIncludes,
         compose(flip(findAttacker)(timeline), join(''), append(pKey), of),
       ])
     ),
-    convertToTiles
+    _convertToTiles
   );
   const _detectRookMoved = compose(
     detectMoved(timeline),
     join(''),
     prepend(`${side}${Rook}`),
-    convertToTiles
+    _convertToTiles
   );
 
   // prettier-ignore
@@ -62,11 +62,11 @@ function getCastlingTiles(timeline, code) {
   let castlingTiles = [];
 
   if (!isKingMoved && !isLeftRookMoved && isEmpty(invalidLeftTiles)) {
-    castlingTiles = convertToTiles([[-2, 0]]);
+    castlingTiles = _convertToTiles([[-2, 0]]);
   }
 
   if (!isKingMoved && !isRightRookMoved && isEmpty(invalidRightTiles)) {
-    castlingTiles = concat(convertToTiles([[2, 0]]), castlingTiles);
+    castlingTiles = concat(_convertToTiles([[2, 0]]), castlingTiles);
   }
 
   return castlingTiles;

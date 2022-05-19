@@ -264,7 +264,11 @@ export function afterMoving(nextTileName, selectedCode, getNextSnapshot) {
 
         case Chess.Promotion: {
           // TODO apply every kind of piece
-          const queenCode = Chess.getPromotionCode(nextTileName, side);
+          const queenCode = Chess.getPromotionCode(
+            Chess.Queen,
+            nextTileName,
+            side
+          );
 
           if (queenCode) {
             nextSnapshot = Chess.replaceCode(nextSnapshot, nextCode, queenCode);

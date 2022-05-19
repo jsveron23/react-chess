@@ -9,7 +9,15 @@ import {
 } from '../utils';
 import { King } from '../presets';
 
-// TODO for now, King only
+/**
+ * Get dodgeable tiles
+ * TODO for now, King only
+ * @param  {Array}  timeline
+ * @param  {String} attackerCode
+ * @param  {String} defenderCode
+ * @param  {Array}  attackerRoutes
+ * @return {Array}
+ */
 function getDodgeableTiles(
   timeline,
   attackerCode,

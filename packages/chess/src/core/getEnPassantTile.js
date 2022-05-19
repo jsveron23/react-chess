@@ -32,15 +32,16 @@ const RANK_SPOT = {
  */
 function getEnPassantTile(code, timeline) {
   const { side, rankName } = parseCode(code);
+  const isOnTile = RANK_SPOT[side] === Number(rankName);
 
-  if (RANK_SPOT[side] === Number(rankName)) {
+  if (isOnTile) {
     const [snapshot, ...prevTimeline] = timeline;
-    const findCodeBy = findCodeByTile(snapshot);
-    const detectMovedBy = detectMoved(prevTimeline);
-    const parseCodeBy = compose(parseCode, findCodeBy);
+    const _findCodeBy = findCodeByTile(snapshot);
+    const _detectMovedBy = detectMoved(prevTimeline);
+    const _parseCodeBy = compose(parseCode, _findCodeBy);
 
     const _candidateTileToCode = (acc, tN) => {
-      const { code: cd } = parseCodeBy(tN);
+      const { code: cd } = _parseCodeBy(tN);
       const isPawn = detectPiece(Pawn, cd);
       const isEnemy = detectOpponent(code, cd);
 
@@ -51,7 +52,7 @@ function getEnPassantTile(code, timeline) {
       const prevTile = convertAxisToTile(cd, [0, -2]);
       const { pKey } = parseCode(cd);
 
-      return !detectMovedBy(`${pKey}${prevTile}`);
+      return !_detectMovedBy(`${pKey}${prevTile}`);
     };
 
     return compose(

@@ -1,5 +1,6 @@
-import { compose, nth, prop, find, equals, indexOf, curry } from 'ramda';
+import { compose, nth, prop, find, equals, curry } from 'ramda';
 import parseCode from './parseCode';
+import getDistance from './getDistance';
 import { File, Rank } from '../presets';
 
 /**
@@ -14,8 +15,8 @@ function getAnimationAxis(from, to) {
     parseCode,
     find(compose(equals(side), prop('side'), parseCode))
   )(from);
-  const x = indexOf(fFn, File) - indexOf(tFn, File);
-  const y = indexOf(Number(fRn), Rank) - indexOf(Number(tRn), Rank);
+  const x = getDistance(fFn, tFn, File);
+  const y = getDistance(Number(fRn), Number(tRn), Rank);
 
   return {
     code: nth(0, to),

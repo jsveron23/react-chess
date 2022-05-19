@@ -32,8 +32,6 @@ function computePossibleMT(
   const _removePredict = removePredictTiles(timeline);
   let mt = computeRawMT(timeline, code);
 
-  // BUG Pawn diago move, predict atk
-
   // dodge or just movable tiles
   if (isKing) {
     mt = attackerCode
@@ -48,8 +46,7 @@ function computePossibleMT(
     return intersection(mt, attackerRoutes);
   }
 
-  // NOTE if move this piece, it would be Check state?
-  // otherwise, free to move
+  // NOTE is my King safe even if I move to a tile?
   const predictAttacker = predictPossibleCheck(timeline, code);
 
   if (predictAttacker) {
@@ -63,13 +60,15 @@ function computePossibleMT(
         findOpponentKing(predictAttacker),
         nth(0)
       )(timeline);
-      const captureRoutes = compose(
+      const possibleAttackRoutes = compose(
         intersection(mt),
         getAttackerRoutes(timeline, predictAttacker),
         pretendTo(kingCode)
       )(predictAttacker);
 
-      mt = isEmpty(captureRoutes) ? [] : [tileName, ...captureRoutes];
+      mt = isEmpty(possibleAttackRoutes)
+        ? []
+        : [tileName, ...possibleAttackRoutes];
     }
   }
 

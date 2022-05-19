@@ -28,12 +28,12 @@ import { Pawn, King } from '../presets';
 function getDefenders(attackerCode, timeline, routes) {
   const { tileName: attackerTileName } = parseCode(attackerCode);
   const grpList = compose(
-    reduce((acc, cd) => {
-      const mt = computeRawMT(timeline, cd);
+    reduce((acc, code) => {
+      const mt = computeRawMT(timeline, code);
       let defendableTiles = intersection(routes, mt);
 
-      if (detectPiece(Pawn, cd)) {
-        const { fileName } = parseCode(cd);
+      if (detectPiece(Pawn, code)) {
+        const { fileName } = parseCode(code);
 
         // if vertical direction then remove it
         defendableTiles = reject(
@@ -42,12 +42,12 @@ function getDefenders(attackerCode, timeline, routes) {
         );
       }
 
-      return isEmpty(defendableTiles) || detectPiece(King, cd)
+      return isEmpty(defendableTiles) || detectPiece(King, code)
         ? acc
         : [
             ...acc,
             {
-              code: cd, // defender
+              code, // defender
               defendableTiles,
             },
           ];

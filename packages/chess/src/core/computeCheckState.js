@@ -56,7 +56,7 @@ function computeCheckState(opponentCode, timeline) {
   );
 
   return {
-    // this for every piece movable tiles of King side
+    // every pieces movable tiles of King side
     dodgeableTiles: compose(
       concat(dodgeableTiles),
       flatten,

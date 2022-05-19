@@ -1,4 +1,13 @@
-import { compose, curry, reduce, keys, values, map, flatten } from 'ramda';
+import {
+  compose,
+  curry,
+  reduce,
+  keys,
+  values,
+  map,
+  flatten,
+  prop,
+} from 'ramda';
 import removeBlockedTiles from './internal/removeBlockedTiles';
 import groupDirectionTilesByCode from './internal/groupDirectionTilesByCode';
 import { validateCode, validateSnapshot } from '../utils';
@@ -11,13 +20,13 @@ import { validateCode, validateSnapshot } from '../utils';
  */
 function computeMTByDirection(snapshot, code) {
   if (!validateCode(code) || !validateSnapshot(snapshot)) {
-    throw new TypeError(
-      `invalid argument | code: ${code} / snapshot: ${snapshot}`
-    );
+    throw new TypeError('invalid arguments');
   }
 
   // generic direction group (tiles)
   const tilesGrp = groupDirectionTilesByCode(code);
+
+  const _removeBlockedTiles = removeBlockedTiles(snapshot);
 
   return compose(
     flatten,
@@ -25,10 +34,7 @@ function computeMTByDirection(snapshot, code) {
     reduce((acc, key) => {
       return {
         ...acc,
-        [key]: compose(
-          map(removeBlockedTiles(snapshot)),
-          values
-        )(tilesGrp[key]),
+        [key]: compose(map(_removeBlockedTiles), values, prop(key))(tilesGrp),
       };
     }, {}),
     keys

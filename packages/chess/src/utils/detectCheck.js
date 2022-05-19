@@ -1,5 +1,10 @@
 import { isEmpty } from 'ramda';
 
+/**
+ * Detect Check state
+ * @param  {Object} check
+ * @return {Object}
+ */
 function detectCheck(check) {
   if (!check) {
     throw new Error('invalid arguments');

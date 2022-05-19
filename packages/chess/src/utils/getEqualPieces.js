@@ -10,7 +10,7 @@ import validateSnapshot from './validateSnapshot';
  */
 function getEqualPieces(piece, codeList) {
   if (!validateSnapshot(codeList)) {
-    throw new TypeError('invalid argument');
+    throw new TypeError('invalid arguments');
   }
 
   return filter(detectPiece(piece), codeList);

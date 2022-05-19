@@ -1,37 +1,37 @@
-import { curry, difference, reverse, isNil } from 'ramda';
+import { curry, reverse, isNil } from 'ramda';
+import diffSnapshot from './diffSnapshot';
 
-function _getDiff(currSnapshot, prevSnapshot) {
-  return {
-    from: difference(currSnapshot, prevSnapshot),
-    to: difference(prevSnapshot, currSnapshot),
-  };
-}
-
+/**
+ * Create sheet (notation list)
+ * @param  {Object} present
+ * @param  {Array}  past
+ * @return {Array}
+ */
 function createSheet(present, past) {
-  return [...past, present].reduce((acc, state, idx, self) => {
+  return [...past, present].reduce((acc, curr, idx, self) => {
     const [last, ...rest] = reverse(acc);
-    const prevState = self[idx + 1];
+    const prev = self[idx + 1];
 
-    if (!isNil(prevState)) {
-      const { from, to } = _getDiff(state.snapshot, prevState.snapshot);
+    if (!isNil(prev)) {
+      const { from, to } = diffSnapshot(curr.snapshot, prev.snapshot);
+      const { turn: key } = curr;
+      const { check } = prev;
+      const sideData = { [key]: { check, from, to } };
       let o = last || {};
 
       // create new
       if (o.black) {
-        o = {
-          [state.turn]: { check: prevState.check, from, to },
-        };
-
-        return [...acc, o];
+        return [...acc, sideData];
       }
 
       // insert `black` data to `last`
-      o = {
-        ...last,
-        [state.turn]: { check: prevState.check, from, to },
-      };
-
-      return [...reverse(rest), o];
+      return [
+        ...reverse(rest),
+        {
+          ...last,
+          ...sideData,
+        },
+      ];
     }
 
     return acc;

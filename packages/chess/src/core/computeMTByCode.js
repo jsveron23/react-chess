@@ -3,7 +3,7 @@ import { convertAxisToTile, parseCode, validateCode } from '../utils';
 import { Movement } from '../presets';
 
 /**
- * Compute movable tiles (without special movement)
+ * Compute movable tiles for single piece (without special movement)
  * @param  {String} code
  * @return {Array}
  */

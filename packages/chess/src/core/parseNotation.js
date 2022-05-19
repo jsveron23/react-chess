@@ -43,6 +43,13 @@ function _getCurrRookFileName(from) {
   )(from);
 }
 
+/**
+ * Parse notation
+ * @param  {Object} check
+ * @param  {Array}  from
+ * @param  {Array}  to
+ * @return {String}
+ */
 function parseNotation({ check, from, to }) {
   const { isCheck, isCheckmate, isStalemate } = detectCheck(check);
   const { side, piece, tileName } = compose(parseCode, join(''))(to);

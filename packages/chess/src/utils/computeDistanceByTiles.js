@@ -1,18 +1,7 @@
-import {
-  curry,
-  indexOf,
-  flip,
-  keys,
-  filter,
-  nth,
-  compose,
-  defaultTo,
-} from 'ramda';
+import { curry, keys, filter, nth, compose, defaultTo } from 'ramda';
 import parseTile from './parseTile';
+import getDistance from './getDistance';
 import { File, Rank, Diagonal, Vertical, Horizontal } from '../presets';
-
-const _idxOfF = flip(indexOf)(File);
-const _idxOfR = flip(indexOf)(Rank);
 
 /**
  * Compute distance by two different tiles
@@ -23,8 +12,8 @@ const _idxOfR = flip(indexOf)(Rank);
 function computeDistanceByTiles(tileA, tileB) {
   const { fileName: aFn, rankName: aRn } = parseTile(tileA);
   const { fileName: dFn, rankName: dRn } = parseTile(tileB);
-  const file = Math.abs(_idxOfF(aFn) - _idxOfF(dFn));
-  const rank = Math.abs(_idxOfR(Number(aRn)) - _idxOfR(Number(dRn)));
+  const file = Math.abs(getDistance(aFn, dFn, File));
+  const rank = Math.abs(getDistance(Number(aRn), Number(dRn), Rank));
   const directionMap = {
     [Diagonal]: file === rank,
     [Vertical]: rank > 0 && file === 0,

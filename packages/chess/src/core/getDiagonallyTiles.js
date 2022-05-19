@@ -13,7 +13,7 @@ import {
  * @return {Array}
  */
 function getDiagonallyTiles(code, snapshot) {
-  const findCodeBy = findCodeByTile(snapshot);
+  const _findCodeBy = findCodeByTile(snapshot);
 
   return compose(
     reduce((acc, tN) => {
@@ -21,7 +21,7 @@ function getDiagonallyTiles(code, snapshot) {
         detectOpponent(code),
         prop('code'),
         parseCode,
-        findCodeBy
+        _findCodeBy
       )(tN)
         ? [...acc, tN]
         : acc;
