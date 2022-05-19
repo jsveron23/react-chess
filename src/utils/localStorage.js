@@ -1,6 +1,10 @@
 export function setItem(key, data) {
   try {
-    const val = JSON.stringify(data);
+    let val = data;
+
+    if (typeof data !== 'string') {
+      val = JSON.stringify(data);
+    }
 
     localStorage.setItem(key, val);
   } catch (err) {

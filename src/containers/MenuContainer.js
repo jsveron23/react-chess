@@ -7,9 +7,10 @@ import {
   saveGame,
   undo,
   joinNetworkGame,
+  exportGame,
 } from '~/store/actions';
 import { toLocaleDate } from '~/utils';
-import { ONE_VS_ONE, SAVE, ONLINE } from '~/config';
+import { ONE_VS_ONE, SAVE, ONLINE, IMPORT, EXPORT } from '~/config';
 
 function mapStateToProps({
   general: { lastSaved },
@@ -67,16 +68,19 @@ function mergeProps(stateProps, dispatchProps, ownProps) {
         disabled: noUndoYet || isConnected,
         onClick: () => dispatch(saveGame()),
       },
-      // {
-      //   key: IMPORT,
-      //   title: 'Import',
-      //   disabled: true,
-      // },
-      // {
-      //   key: EXPORT,
-      //   title: 'Export',
-      //   disabled: true,
-      // },
+      {
+        key: IMPORT,
+        title: 'Import',
+        disabled: true,
+      },
+      {
+        key: EXPORT,
+        title: 'Export',
+        disabled: noUndoYet || isConnected,
+        onClick: () => {
+          dispatch(exportGame());
+        },
+      },
       {
         key: ONLINE,
         title: 'Network (WebRTC)',

@@ -1,7 +1,7 @@
 import { batch } from 'react-redux';
 import { ActionCreators } from 'redux-undo';
 import { Snapshot, Turn } from 'chess/es';
-import { Storage } from '~/utils';
+import { Storage, compress, decompress } from '~/utils';
 import {
   updateTurn,
   updateSnapshot,
@@ -32,9 +32,6 @@ export function updateMatchType(key) {
 
 export function saveGame() {
   return (dispatch, getState) => {
-    dispatch(removeSelectedCode());
-    dispatch(removeMovableTiles());
-
     const currState = getState();
     const lastSaved = +new Date();
     const data = {
@@ -45,11 +42,40 @@ export function saveGame() {
       },
     };
 
+    dispatch(removeSelectedCode());
+    dispatch(removeMovableTiles());
+
     Storage.setItem('save-game', data);
 
     dispatch({
       type: SAVE_TO_LOCALSTORAGE,
       payload: lastSaved,
+    });
+  };
+}
+
+export function exportGame() {
+  return (dispatch, getState) => {
+    const { general, ingame } = getState();
+    const data = {
+      ingame,
+      general,
+    };
+
+    dispatch(removeSelectedCode());
+    dispatch(removeMovableTiles());
+
+    navigator.clipboard
+      .writeText(compress(data))
+      .then(
+        () => alert('copied current playing data to clipboard!'),
+        console.error
+      );
+
+    // console.log(compress(data), decompress(compress(data)));
+
+    dispatch({
+      type: 'EXPORT_GAME',
     });
   };
 }

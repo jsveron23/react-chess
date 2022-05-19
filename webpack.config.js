@@ -4,6 +4,7 @@ const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const TerserPlugin = require('terser-webpack-plugin');
 const HtmlPlugin = require('html-webpack-plugin');
 const ReactRefreshPlugin = require('@pmmmwh/react-refresh-webpack-plugin');
+const NodePolyfillPlugin = require('node-polyfill-webpack-plugin');
 
 const src = Path.resolve(__dirname, 'src');
 const dist = Path.resolve(__dirname, 'public');
@@ -40,6 +41,7 @@ module.exports = function configure(env, { mode = 'development' }) {
       },
     },
     plugins: [
+      new NodePolyfillPlugin(),
       HtmlPlugin &&
         new HtmlPlugin({
           inject: 'body',
