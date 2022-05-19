@@ -12,6 +12,10 @@ Programs must be written for people to read, and only incidentally for machines 
 - As functional programming lover, try to be free from side effects
 - Want to write code for human understanding (naming is important)
 
+## Milestones
+
+https://github.com/jsveron23/react-chess/milestones
+
 ## Showcase
 
 https://react-chess.app
