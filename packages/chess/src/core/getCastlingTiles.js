@@ -8,7 +8,6 @@ import {
   join,
   prepend,
   flip,
-  append,
   of,
   anyPass,
   concat,
@@ -38,7 +37,7 @@ function getCastlingTiles(timeline, code) {
     filter(
       anyPass([
         _detectIncludes,
-        compose(flip(findAttacker)(timeline), join(''), append(pKey), of),
+        compose(flip(findAttacker)(timeline), join(''), prepend(pKey), of),
       ])
     ),
     _convertToTiles
