@@ -12,12 +12,11 @@ function configureStore(preloadedState) {
   const middlewareEnhancer = applyMiddleware(thunk);
   const composedEnhancer = composeDev(middlewareEnhancer);
   const compressedData = Storage.getItem(INSTANT_IMPORT_DATA);
+  const parsedData = JSON.parse(Storage.getItem(SAVE_GAME));
   let intitalState = preloadedState;
-  let parsedData;
 
   if (compressedData) {
     try {
-      parsedData = JSON.parse(Storage.getItem(SAVE_GAME));
       intitalState = JSON.parse(Compression.decompress(compressedData));
     } catch (err) {
       console.error(err);
