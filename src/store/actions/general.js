@@ -1,7 +1,8 @@
 import { batch } from 'react-redux';
 import { ActionCreators } from 'redux-undo';
 import { Snapshot, Turn } from 'chess/es';
-import { Storage, compress } from '~/utils';
+import { Storage, Compression } from '~/utils';
+import { SAVE_GAME, INSTANT_IMPORT_DATA } from '~/presets';
 import {
   updateTurn,
   updateSnapshot,
@@ -50,7 +51,7 @@ export function saveGame() {
     dispatch(removeSelectedCode());
     dispatch(removeMovableTiles());
 
-    Storage.setItem('save-game', data);
+    Storage.setItem(SAVE_GAME, data);
 
     dispatch({
       type: SAVE_TO_LOCALSTORAGE,
@@ -63,7 +64,7 @@ export function importGame() {
   const data = window.prompt('Paste export data here!');
 
   if (data) {
-    Storage.setItem('instant-import-data', data);
+    Storage.setItem(INSTANT_IMPORT_DATA, data);
 
     window.location.reload();
   }
@@ -86,7 +87,7 @@ export function exportGame() {
 
     // TODO ask save current game before
 
-    navigator.clipboard.writeText(compress(data)).then(() => {
+    navigator.clipboard.writeText(Compression.compress(data)).then(() => {
       alert('Copied current playing data to clipboard!');
 
       dispatch({

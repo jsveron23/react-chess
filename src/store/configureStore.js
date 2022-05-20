@@ -2,26 +2,27 @@ import { applyMiddleware, createStore } from 'redux';
 import thunk from 'redux-thunk';
 import { identity } from 'ramda';
 import { composeWithDevTools } from 'redux-devtools-extension';
-import { isDev } from '~/config';
-import { Storage, decompress } from '~/utils';
+import { IS_DEV, INSTANT_IMPORT_DATA, SAVE_GAME } from '~/presets';
+import { Storage, Compression } from '~/utils';
 import reducers from './reducers';
 
-const composeDev = isDev ? composeWithDevTools : identity;
+const composeDev = IS_DEV ? composeWithDevTools : identity;
 
 function configureStore(preloadedState) {
   const middlewareEnhancer = applyMiddleware(thunk);
   const composedEnhancer = composeDev(middlewareEnhancer);
-  const parsedData = JSON.parse(Storage.getItem('save-game'));
-  const compressedData = Storage.getItem('instant-import-data');
+  const compressedData = Storage.getItem(INSTANT_IMPORT_DATA);
   let intitalState = preloadedState;
+  let parsedData;
 
   if (compressedData) {
     try {
-      intitalState = JSON.parse(decompress(compressedData));
+      parsedData = JSON.parse(Storage.getItem(SAVE_GAME));
+      intitalState = JSON.parse(Compression.decompress(compressedData));
     } catch (err) {
       console.error(err);
     } finally {
-      Storage.removeItem('instant-import-data');
+      Storage.removeItem(INSTANT_IMPORT_DATA);
     }
   }
 

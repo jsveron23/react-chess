@@ -1,4 +1,4 @@
-import { ONE_VS_ONE } from '~/config';
+import { ONE_VS_ONE } from '~/presets';
 import { UPDATE_MATCH_TYPE, SAVE_TO_LOCALSTORAGE } from '../actionTypes';
 
 const initialState = {
