@@ -2,7 +2,7 @@ import { batch } from 'react-redux';
 import { ActionCreators } from 'redux-undo';
 import { compose, reject, equals, clone, reverse, nth, prop } from 'ramda';
 import * as Chess from 'chess/es';
-import { ONE_VS_ONE } from '~/config';
+import { ONE_VS_ONE } from '~/presets';
 import { toggleAwaiting } from './network';
 import * as types from '../actionTypes';
 import peerNetwork from '../networkSupport';

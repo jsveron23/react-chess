@@ -1,7 +1,8 @@
 import { batch } from 'react-redux';
 import { ActionCreators } from 'redux-undo';
 import { Snapshot, Turn } from 'chess/es';
-import { Storage } from '~/utils';
+import { Storage, Compression } from '~/utils';
+import { SAVE_GAME, INSTANT_IMPORT_DATA } from '~/presets';
 import {
   updateTurn,
   updateSnapshot,
@@ -10,7 +11,12 @@ import {
   removeMovableTiles,
   removeSheetData,
 } from './ingame';
-import { UPDATE_MATCH_TYPE, SAVE_TO_LOCALSTORAGE } from '../actionTypes';
+import {
+  UPDATE_MATCH_TYPE,
+  SAVE_TO_LOCALSTORAGE,
+  IMPORT_GAME,
+  EXPORT_GAME,
+} from '../actionTypes';
 
 export function updateMatchType(key) {
   return (dispatch) => {
@@ -32,9 +38,6 @@ export function updateMatchType(key) {
 
 export function saveGame() {
   return (dispatch, getState) => {
-    dispatch(removeSelectedCode());
-    dispatch(removeMovableTiles());
-
     const currState = getState();
     const lastSaved = +new Date();
     const data = {
@@ -45,11 +48,51 @@ export function saveGame() {
       },
     };
 
-    Storage.setItem('save-game', data);
+    dispatch(removeSelectedCode());
+    dispatch(removeMovableTiles());
+
+    Storage.setItem(SAVE_GAME, data);
 
     dispatch({
       type: SAVE_TO_LOCALSTORAGE,
       payload: lastSaved,
     });
+  };
+}
+
+export function importGame() {
+  const data = window.prompt('Paste export data here!');
+
+  if (data) {
+    Storage.setItem(INSTANT_IMPORT_DATA, data);
+
+    window.location.reload();
+  }
+
+  return {
+    type: IMPORT_GAME,
+  };
+}
+
+export function exportGame() {
+  return (dispatch, getState) => {
+    const { general, ingame } = getState();
+    const data = {
+      ingame,
+      general,
+    };
+
+    dispatch(removeSelectedCode());
+    dispatch(removeMovableTiles());
+
+    // TODO ask save current game before
+
+    navigator.clipboard.writeText(Compression.compress(data)).then(() => {
+      alert('Copied current playing data to clipboard!');
+
+      dispatch({
+        type: EXPORT_GAME,
+      });
+    }, console.error);
   };
 }

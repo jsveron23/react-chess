@@ -63,8 +63,10 @@ export function connectedPeerNetwork() {
   };
 }
 
-export function joinNetworkGame(peerId) {
+export function joinNetworkGame() {
   return (dispatch) => {
+    const id = window.prompt('please input friend peer-id');
+
     batch(() => {
       dispatch(updateSnapshot(Snapshot));
       dispatch(removeSelectedCode());
@@ -75,7 +77,7 @@ export function joinNetworkGame(peerId) {
       dispatch(ActionCreators.clearHistory());
       dispatch(decideSide(Side.white));
 
-      peerNetwork.join(peerId);
+      peerNetwork.join(id);
 
       dispatch({
         type: JOIN_NETWORK_GAME,

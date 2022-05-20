@@ -86,7 +86,7 @@ class PeerNetwork extends EventEmitter {
   #handlePeerDisconnected() {
     try {
       this.peer.id = this.lastPeerId;
-      // this.peer._lastServerId = this.lastPeerId;
+      this.peer._lastServerId = this.lastPeerId;
 
       this.peer.reconnect();
     } catch (err) {

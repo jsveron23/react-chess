@@ -7,9 +7,11 @@ import {
   saveGame,
   undo,
   joinNetworkGame,
+  importGame,
+  exportGame,
 } from '~/store/actions';
 import { toLocaleDate } from '~/utils';
-import { ONE_VS_ONE, SAVE, ONLINE } from '~/config';
+import { ONE_VS_ONE, SAVE, ONLINE, IMPORT, EXPORT } from '~/presets';
 
 function mapStateToProps({
   general: { lastSaved },
@@ -27,7 +29,7 @@ function mergeProps(stateProps, dispatchProps, ownProps) {
   const noUndoYet = stateProps.past.length === 0;
   const isConnected = stateProps.connected;
   const lastSaved = stateProps.lastSaved
-    ? toLocaleDate(stateProps.lastSaved)
+    ? `/ ${toLocaleDate(stateProps.lastSaved)}`
     : '';
   const { dispatch } = dispatchProps;
 
@@ -63,31 +65,27 @@ function mergeProps(stateProps, dispatchProps, ownProps) {
       // },
       {
         key: SAVE,
-        title: `Save ${lastSaved ? `/ ${lastSaved}` : ''}`,
+        title: `Save ${lastSaved}`,
         disabled: noUndoYet || isConnected,
         onClick: () => dispatch(saveGame()),
       },
-      // {
-      //   key: IMPORT,
-      //   title: 'Import',
-      //   disabled: true,
-      // },
-      // {
-      //   key: EXPORT,
-      //   title: 'Export',
-      //   disabled: true,
-      // },
+      {
+        key: IMPORT,
+        title: 'Import',
+        disabled: isConnected,
+        onClick: () => dispatch(importGame()),
+      },
+      {
+        key: EXPORT,
+        title: 'Export',
+        disabled: noUndoYet || isConnected,
+        onClick: () => dispatch(exportGame()),
+      },
       {
         key: ONLINE,
         title: 'Network (WebRTC)',
         disabled: isConnected,
-        onClick: () => {
-          const id = window.prompt('please input friend peer-id');
-
-          if (id) {
-            dispatch(joinNetworkGame(id));
-          }
-        },
+        onClick: () => dispatch(joinNetworkGame()),
         children: () => {
           return (
             <FlexRow paddingLeft={10} paddingRight={10} fontSize="80%">
