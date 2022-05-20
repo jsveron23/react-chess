@@ -3,7 +3,7 @@ import predictPossibleCheck from '../predictPossibleCheck';
 import { parseCode } from '../../utils';
 
 /**
- * Remove predict attacking tiles from provided tiles
+ * Remove predict attacking tiles from given tiles
  * @param  {Array}  timeline
  * @param  {String} code
  * @param  {Array}  tiles
@@ -11,8 +11,9 @@ import { parseCode } from '../../utils';
  */
 function removePredictTiles(timeline, code, tiles) {
   const { pKey } = parseCode(code);
+  const _predictPossibleCheck = predictPossibleCheck(timeline);
 
-  return filter((tN) => !predictPossibleCheck(timeline, `${pKey}${tN}`), tiles);
+  return filter((tN) => !_predictPossibleCheck(`${pKey}${tN}`), tiles);
 }
 
 export default curry(removePredictTiles);

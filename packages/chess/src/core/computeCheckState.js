@@ -30,6 +30,8 @@ function computeCheckState(opponentCode, timeline) {
   let defendTiles = [];
   let dodgeableTiles = [];
 
+  // TODO if Pawn promote, can be attacked by 2 pieces
+
   // check
   if (attackerCode) {
     // match same movement of piece but same tile as King

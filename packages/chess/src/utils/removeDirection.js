@@ -12,12 +12,12 @@ import { Vertical, Horizontal } from '../presets';
 function removeDirection(directionName, movableTiles, code) {
   const { fileName, rankName } = parseCode(code);
   // TODO support `Diagonal`
-  const map = {
+  const directionMap = {
     [Vertical]: startsWith(fileName),
     [Horizontal]: endsWith(rankName),
   };
 
-  return reject(map[directionName], movableTiles);
+  return reject(directionMap[directionName], movableTiles);
 }
 
 export default curry(removeDirection);

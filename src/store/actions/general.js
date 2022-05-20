@@ -38,6 +38,9 @@ export function updateMatchType(key) {
 
 export function saveGame() {
   return (dispatch, getState) => {
+    dispatch(removeSelectedCode());
+    dispatch(removeMovableTiles());
+
     const currState = getState();
     const lastSaved = +new Date();
     const data = {
@@ -47,9 +50,6 @@ export function saveGame() {
         ...currState.general,
       },
     };
-
-    dispatch(removeSelectedCode());
-    dispatch(removeMovableTiles());
 
     Storage.setItem(SAVE_GAME, data);
 
@@ -76,14 +76,14 @@ export function importGame() {
 
 export function exportGame() {
   return (dispatch, getState) => {
+    dispatch(removeSelectedCode());
+    dispatch(removeMovableTiles());
+
     const { general, ingame } = getState();
     const data = {
       ingame,
       general,
     };
-
-    dispatch(removeSelectedCode());
-    dispatch(removeMovableTiles());
 
     // TODO ask save current game before
 
