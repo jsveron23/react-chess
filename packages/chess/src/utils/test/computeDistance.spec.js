@@ -23,6 +23,9 @@ test('Should return object of distance data', (t) => {
     direction: 'Vertical',
     rank: 6,
     file: 0,
+    isDiagonal: false,
+    isHorizontal: false,
+    isVertical: true,
   });
 
   t.deepEqual(computeDistance('wKa2', 'bQa3'), {
@@ -30,5 +33,8 @@ test('Should return object of distance data', (t) => {
     rank: 1,
     file: 0,
     direction: 'Vertical',
+    isDiagonal: false,
+    isHorizontal: false,
+    isVertical: true,
   });
 });

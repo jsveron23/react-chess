@@ -1,47 +1,7 @@
-import {
-  curry,
-  compose,
-  join,
-  prop,
-  equals,
-  nth,
-  assoc,
-  reduce,
-  flip,
-} from 'ramda';
+import { curry, compose, join, prop, nth, reduce, flip } from 'ramda';
+import devideSourceCapture from './internal/devideSourceCapture';
 import { parseCode, getEqualPieces, detectCheck } from '../utils';
-import { Pawn, Rook } from '../presets';
-
-const SymbolsMap = {
-  capture: 'x',
-  check: '+',
-  checkmate: '#',
-  stalemate: '$',
-};
-
-const CastlingMap = {
-  a: 'O-O-O',
-  h: 'O-O',
-};
-
-// source(what `from` tile from?) and capture
-const _clearlySeparate = curry(function _clearlySeparate(side, acc, code) {
-  const key = compose(equals(side), prop('side'), parseCode)(code)
-    ? 'source'
-    : 'capture';
-  const val = parseCode(code);
-
-  return assoc(key, val, acc);
-});
-
-function _getCurrRookFileName(from) {
-  return compose(
-    prop('fileName'),
-    parseCode,
-    nth(0),
-    getEqualPieces(Rook)
-  )(from);
-}
+import { Pawn, Rook, Notation } from '../presets';
 
 /**
  * Parse notation
@@ -57,11 +17,11 @@ function parseNotation({ check, from, to }) {
   const isMoved = from.length === 1 && to.length === 1;
   const isCaptured = from.length === 2 && to.length === 1;
   const isCastling = from.length === 2 && to.length === 2;
-  let symbol = isCheck ? SymbolsMap.check : '';
+  let symbol = isCheck ? Notation.check : '';
   let notation = '';
 
-  symbol = isCheckmate ? SymbolsMap.checkmate : symbol;
-  symbol = isStalemate ? SymbolsMap.stalemate : symbol;
+  symbol = isCheckmate ? Notation.checkmate : symbol;
+  symbol = isStalemate ? Notation.stalemate : symbol;
 
   if (isMoved) {
     notation = `${piece}${tileName}`;
@@ -70,7 +30,7 @@ function parseNotation({ check, from, to }) {
       notation = tileName;
     }
   } else if (isCaptured) {
-    const { source } = reduce(_clearlySeparate(side), {}, from);
+    const { source } = reduce(devideSourceCapture(side), {}, from);
     let prefix = piece;
     let suffix = tileName;
 
@@ -78,9 +38,12 @@ function parseNotation({ check, from, to }) {
       prefix = source.fileName;
     }
 
-    notation = `${prefix}${SymbolsMap.capture}${suffix}`;
+    notation = `${prefix}${Notation.capture}${suffix}`;
   } else if (isCastling) {
-    notation = compose(flip(prop)(CastlingMap), _getCurrRookFileName)(from);
+    notation = compose(
+      flip(prop)(Notation),
+      compose(prop('fileName'), parseCode, nth(0), getEqualPieces(Rook))
+    )(from);
   }
 
   return `${notation}${symbol}`;

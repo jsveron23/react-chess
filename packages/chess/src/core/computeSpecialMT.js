@@ -1,13 +1,4 @@
-import {
-  curry,
-  compose,
-  reduce,
-  filter,
-  defaultTo,
-  flip,
-  prop,
-  nth,
-} from 'ramda';
+import { curry, compose, reduce, filter, defaultTo, flip, prop } from 'ramda';
 import getDoubleStepTile from './getDoubleStepTile';
 import getEnPassantTile from './getEnPassantTile';
 import getDiagonallyTiles from './getDiagonallyTiles';
@@ -21,29 +12,22 @@ import { Special, DoubleStep, Diagonally, EnPassant } from '../presets';
  * @return {Array}
  */
 function computeSpecialMT(timeline, code) {
+  const [snapshot] = timeline;
+
   return compose(
     filter(Boolean),
     reduce((acc, mvName) => {
       switch (mvName) {
         case DoubleStep: {
-          const oneMoreTile = getDoubleStepTile(code);
-
-          return [...acc, oneMoreTile];
+          return [...acc, getDoubleStepTile(code)];
         }
 
         case Diagonally: {
-          const capturableTiles = compose(
-            getDiagonallyTiles(code),
-            nth(0)
-          )(timeline);
-
-          return [...acc, ...capturableTiles];
+          return [...acc, ...getDiagonallyTiles(code, snapshot)];
         }
 
         case EnPassant: {
-          const diagonalTile = getEnPassantTile(code, timeline);
-
-          return [...acc, diagonalTile];
+          return [...acc, getEnPassantTile(code, timeline)];
         }
 
         default: {

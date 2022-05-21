@@ -1,5 +1,14 @@
 import * as T from './terms';
 
+export const Notation = {
+  capture: 'x',
+  check: '+',
+  checkmate: '#',
+  stalemate: '$',
+  a: 'O-O-O',
+  h: 'O-O',
+};
+
 export const Turn = {
   w: 'white',
   b: 'black',
@@ -17,6 +26,11 @@ export const Opponent = {
   black: 'white',
   w: 'b',
   b: 'w',
+};
+
+export const EnPassantSpot = {
+  [Side.w]: 5,
+  [Side.b]: 4,
 };
 
 // prettier-ignore

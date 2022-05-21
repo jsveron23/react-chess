@@ -1,15 +1,16 @@
 import { curry, compose, prop } from 'ramda';
 import { parseTile } from '../utils';
-import { Side, Rank } from '../presets';
+import { Side, Rank, Queen, Knight } from '../presets';
 
 /**
  * Get promotion code
+ * TODO apply every kind of piece
  * @param  {String} piece
- * @param  {String} tileName
  * @param  {String} side
+ * @param  {String} tileName
  * @return {String}
  */
-function getPromotionCode(piece, tileName, side) {
+function getPromotionCode(piece, side, tileName) {
   const rankName = compose(Number, prop('rankName'), parseTile)(tileName);
   const rankIdx = Rank.indexOf(rankName);
   const isIt = {
@@ -20,4 +21,9 @@ function getPromotionCode(piece, tileName, side) {
   return isIt[side] ? `${side}${piece}${tileName}` : '';
 }
 
-export default curry(getPromotionCode);
+const _getPromotionCode = curry(getPromotionCode);
+
+_getPromotionCode.Queen = _getPromotionCode(Queen);
+_getPromotionCode.Knight = _getPromotionCode(Knight);
+
+export default _getPromotionCode;

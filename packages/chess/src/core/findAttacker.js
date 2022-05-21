@@ -1,13 +1,11 @@
-import { curry, compose, find, nth } from 'ramda';
+import { curry, compose, find, prop, nth, includes } from 'ramda';
 import computeRawMT from './computeRawMT';
 import {
   filterOpponent,
   parseCode,
-  detectTileOnTiles,
   detectPiece,
   removeDirection,
 } from '../utils';
-import { Pawn, Vertical } from '../presets';
 
 /**
  * Find which piece is attacker to `code`
@@ -16,22 +14,24 @@ import { Pawn, Vertical } from '../presets';
  * @return {String}
  */
 function findAttacker(defenderCode, timeline) {
-  const { tileName } = parseCode(defenderCode);
   const _computeMT = computeRawMT(timeline);
+  const _includesDefenderTile = compose(
+    includes,
+    prop('tileName'),
+    parseCode
+  )(defenderCode);
 
+  // TODO multiple attackers
   return compose(
     find((code) => {
-      const isPawn = detectPiece(Pawn, code);
+      const isPawn = detectPiece.Pawn(code);
       let mt = _computeMT(code);
 
       if (isPawn) {
-        // if Pawn in vertical tiles of `defenderCode`,
-        // remove vertical tiles
-        // - cannot attack by vertical direction
-        mt = removeDirection(Vertical, mt, code);
+        mt = removeDirection.Vertical(mt, code);
       }
 
-      return detectTileOnTiles(tileName, mt);
+      return _includesDefenderTile(mt);
     }),
     filterOpponent(defenderCode),
     nth(0)

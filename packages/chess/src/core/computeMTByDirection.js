@@ -2,11 +2,12 @@ import {
   compose,
   curry,
   reduce,
+  prop,
   keys,
   values,
   map,
+  assoc,
   flatten,
-  prop,
 } from 'ramda';
 import removeBlockedTiles from './internal/removeBlockedTiles';
 import groupDirectionTilesByCode from './internal/groupDirectionTilesByCode';
@@ -23,22 +24,20 @@ function computeMTByDirection(snapshot, code) {
     throw new TypeError('invalid arguments');
   }
 
-  // generic direction group (tiles)
-  const tilesGrp = groupDirectionTilesByCode(code);
-
-  const _removeBlockedTiles = removeBlockedTiles(snapshot);
+  const directionTilesGrp = groupDirectionTilesByCode(code);
+  const _removeBlockedTiles = (key) =>
+    compose(
+      map(removeBlockedTiles(snapshot)),
+      values,
+      prop(key)
+    )(directionTilesGrp);
 
   return compose(
     flatten,
     values,
-    reduce((acc, key) => {
-      return {
-        ...acc,
-        [key]: compose(map(_removeBlockedTiles), values, prop(key))(tilesGrp),
-      };
-    }, {}),
+    reduce((acc, key) => assoc(key, _removeBlockedTiles(key), acc), {}),
     keys
-  )(tilesGrp);
+  )(directionTilesGrp);
 }
 
 export default curry(computeMTByDirection);

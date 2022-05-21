@@ -4,7 +4,6 @@ import {
   filter,
   includes,
   isEmpty,
-  nth,
   join,
   prepend,
   flip,
@@ -25,23 +24,28 @@ import { Rook } from '../presets';
  * Get castling tiles (to avoid circular dependency issue)
  * @param  {Array}  timeline
  * @param  {String} code
- * @param  {String} attackerCode
  * @return {Array}
  */
 function getCastlingTiles(timeline, code) {
+  const [snapshot] = timeline;
   const { side, pKey } = parseCode(code);
   const _convertToTiles = convertAxisListToTiles(code);
-  const placedTiles = compose(convertSnapshotToTiles, nth(0))(timeline);
-  const _detectIncludes = flip(includes)(placedTiles);
+  const placedTiles = convertSnapshotToTiles(snapshot);
+
+  // pretend castling tiles as piece
+  // and checking who possible to attack that tile
+  // also checking whethere blocked or not
   const _filterInvalidTiles = compose(
     filter(
       anyPass([
-        _detectIncludes,
+        flip(includes)(placedTiles),
         compose(flip(findAttacker)(timeline), join(''), prepend(pKey), of),
       ])
     ),
     _convertToTiles
   );
+
+  // check Rook whether moved or not
   const _detectRookMoved = compose(
     detectMoved(timeline),
     join(''),

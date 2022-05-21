@@ -1,4 +1,4 @@
-import { curry, clone, filter } from 'ramda';
+import { curry, clone } from 'ramda';
 import validateCode from './validateCode';
 import validateSnapshot from './validateSnapshot';
 
@@ -28,7 +28,7 @@ function replaceCode(snapshot, currCode, nextCode) {
     }
   }
 
-  return filter(Boolean, cloneSnapshot);
+  return cloneSnapshot.filter(Boolean);
 }
 
 export default curry(replaceCode);

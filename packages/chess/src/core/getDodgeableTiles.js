@@ -1,4 +1,4 @@
-import { curry, compose, intersection, without, concat, nth } from 'ramda';
+import { curry, compose, intersection, without, concat } from 'ramda';
 import computeRawMT from './computeRawMT';
 import {
   detectPiece,
@@ -7,7 +7,6 @@ import {
   getSymmetryTile,
   convertSnapshotToTiles,
 } from '../utils';
-import { King } from '../presets';
 
 /**
  * Get dodgeable tiles
@@ -24,23 +23,24 @@ function getDodgeableTiles(
   defenderCode,
   attackerRoutes
 ) {
+  const [snapshot] = timeline;
   const { contact: isContacted, direction } = computeDistance(
     attackerCode,
     defenderCode
   );
-  const isKing = detectPiece(King, defenderCode);
+  const isKing = detectPiece.King(defenderCode);
   const mt = computeRawMT(timeline, defenderCode);
 
   if (isKing && !isContacted) {
     const placedSideTiles = compose(
       convertSnapshotToTiles,
-      filterOpponent(attackerCode),
-      nth(0)
-    )(timeline);
+      filterOpponent(attackerCode)
+    )(snapshot);
     const [removeTile] = intersection(mt, attackerRoutes);
     const symmetryTile = getSymmetryTile(direction, defenderCode, removeTile);
+    const combinedTiles = concat(placedSideTiles, [removeTile, symmetryTile]);
 
-    return without(concat(placedSideTiles, [removeTile, symmetryTile]), mt);
+    return without(combinedTiles, mt);
   }
 
   return mt;

@@ -7,7 +7,6 @@ import computeRawMT from './computeRawMT';
 import getAttackerRoutes from './getAttackerRoutes';
 import removePredictTiles from './internal/removePredictTiles';
 import { detectPiece, pretendTo, computeDistance } from '../utils';
-import { King, Pawn, Vertical, Horizontal, Diagonal } from '../presets';
 
 /**
  * Compute possible movable tiles (entry function)
@@ -24,9 +23,7 @@ function computePossibleMT(
   timeline
 ) {
   const [snapshot] = timeline;
-  const isKing = detectPiece(King, code);
-  const _removePredict = removePredictTiles(timeline);
-  const _getAttackerRoutes = getAttackerRoutes(timeline);
+  const isKing = detectPiece.King(code);
   let mt = computeRawMT(timeline, code);
 
   // dodge or just movable tiles
@@ -35,7 +32,7 @@ function computePossibleMT(
       ? getDodgeableTiles(timeline, attackerCode, code, attackerRoutes)
       : compose(concat(mt), getCastlingTiles(timeline))(code);
 
-    return _removePredict(code, mt);
+    return removePredictTiles(timeline, code, mt);
   }
 
   // block or capture
@@ -46,41 +43,42 @@ function computePossibleMT(
   // NOTE is my King safe even if I move to a tile?
   const predictAttacker = predictPossibleCheck(timeline, code);
 
-  if (predictAttacker) {
-    if (detectPiece(Pawn, code)) {
-      const { contact: isContacted, direction } = computeDistance(
-        predictAttacker,
-        code
-      );
-      const isByVertical = direction === Vertical;
-      const isByHorizontal = direction === Horizontal;
-      const isByDiagonal = direction === Diagonal;
-
-      if (isByHorizontal || (isByDiagonal && !isContacted)) {
-        return [];
-      }
-
-      const diagonalTile = getDiagonallyTiles(code, snapshot);
-
-      if (isByVertical) {
-        mt = without(diagonalTile, mt);
-      } else if (!isByVertical && isContacted) {
-        mt = diagonalTile;
-      }
-
-      return mt;
-    }
-
-    const possibleAttackRoutes = compose(
-      intersection(mt),
-      _getAttackerRoutes(predictAttacker),
-      pretendTo(code)
-    )(predictAttacker);
-
-    return intersection(possibleAttackRoutes, mt);
+  if (!predictAttacker) {
+    // otherwise, just raw movable tiles
+    return mt;
   }
 
-  return mt;
+  const {
+    contact: isCloseAttacked,
+    isVertical: isVerticalAttacked,
+    isHorizontal: isHorizontalAttacked,
+    isDiagonal: isDiagonalAttacked,
+  } = computeDistance(predictAttacker, code);
+
+  if (detectPiece.Pawn(code)) {
+    const isNotDiagonalCloseAttacked = isDiagonalAttacked && !isCloseAttacked;
+    const diagonalTile = getDiagonallyTiles(code, snapshot);
+
+    if (isHorizontalAttacked || isNotDiagonalCloseAttacked) {
+      return [];
+    }
+
+    if (isVerticalAttacked) {
+      mt = without(diagonalTile, mt);
+    }
+
+    if (!isVerticalAttacked && isCloseAttacked) {
+      mt = diagonalTile;
+    }
+
+    return mt;
+  }
+
+  return compose(
+    intersection(mt),
+    getAttackerRoutes(timeline, predictAttacker),
+    pretendTo(code)
+  )(predictAttacker);
 }
 
 export default curryN(4, computePossibleMT);

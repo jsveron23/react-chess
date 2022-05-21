@@ -6,15 +6,7 @@ import {
   transformInto,
   convertAxisListToTiles,
 } from '../utils';
-import {
-  Knight,
-  Bishop,
-  Rook,
-  Pawn,
-  Diagonal,
-  Vertical,
-  Horizontal,
-} from '../presets';
+import { Knight, Bishop, Rook, Pawn } from '../presets';
 
 /**
  * Get attacker routes
@@ -29,8 +21,19 @@ function getAttackerRoutes(timeline, attackerCode, defenderCode) {
     file: fileDistance,
     rank: rankDistance,
     contact: isContacted,
-    direction,
+    isVertical,
+    isHorizontal,
+    isDiagonal,
   } = computeDistance(attackerCode, defenderCode);
+  const mirrorAxisList = [
+    [fileDistance, rankDistance],
+    [-fileDistance, rankDistance],
+    [fileDistance, -rankDistance],
+    [-fileDistance, -rankDistance],
+  ];
+  const pretendDirectionalCode = isDiagonal
+    ? transformInto(Bishop, defenderCode)
+    : transformInto(Rook, defenderCode);
 
   if (isContacted) {
     return [tileName];
@@ -48,38 +51,22 @@ function getAttackerRoutes(timeline, attackerCode, defenderCode) {
     routes = compose(
       reject((tN) => {
         // extra tiles deletion, not direction
-        switch (direction) {
-          case Vertical: {
-            return !tN.startsWith(fileName);
-          }
-
-          case Horizontal: {
-            return !tN.endsWith(rankName);
-          }
-
-          case Diagonal: {
-            const mirrorTiles = convertAxisListToTiles(defenderCode, [
-              [fileDistance, rankDistance],
-              [-fileDistance, rankDistance],
-              [fileDistance, -rankDistance],
-              [-fileDistance, -rankDistance],
-            ]);
-
-            return includes(tN, mirrorTiles);
-          }
-
-          default: {
-            return false;
-          }
+        if (isVertical) {
+          return !tN.startsWith(fileName);
+        } else if (isHorizontal) {
+          return !tN.endsWith(rankName);
+        } else if (isDiagonal) {
+          return compose(
+            includes(tN),
+            convertAxisListToTiles(defenderCode)
+          )(mirrorAxisList);
         }
+
+        return false;
       }),
       intersection(aMt),
       _computeMT
-    )(
-      direction === Diagonal
-        ? transformInto(Bishop, defenderCode)
-        : transformInto(Rook, defenderCode)
-    );
+    )(pretendDirectionalCode);
   }
 
   return append(tileName, routes);

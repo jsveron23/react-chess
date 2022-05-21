@@ -20,4 +20,8 @@ function removeDirection(directionName, movableTiles, code) {
   return reject(directionMap[directionName], movableTiles);
 }
 
-export default curry(removeDirection);
+const _removeDirection = curry(removeDirection);
+
+_removeDirection.Vertical = _removeDirection(Vertical);
+
+export default _removeDirection;

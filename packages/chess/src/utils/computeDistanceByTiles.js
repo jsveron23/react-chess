@@ -19,18 +19,22 @@ function computeDistanceByTiles(tileA, tileB) {
     [Vertical]: rank > 0 && file === 0,
     [Horizontal]: file > 0 && rank === 0,
   };
+  const direction = compose(
+    defaultTo(''),
+    nth(0),
+    filter((key) => directionMap[key]),
+    keys
+  )(directionMap);
 
   return {
     contact:
       (file === 1 && rank === 1) ||
       (file === 1 && rank === 0) ||
       (file === 0 && rank === 1),
-    direction: compose(
-      defaultTo(''),
-      nth(0),
-      filter((key) => directionMap[key]),
-      keys
-    )(directionMap),
+    isVertical: direction === Vertical,
+    isHorizontal: direction === Horizontal,
+    isDiagonal: direction === Diagonal,
+    direction,
     file,
     rank,
   };

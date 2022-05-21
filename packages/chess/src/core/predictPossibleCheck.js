@@ -1,12 +1,12 @@
-import { curry, compose, equals, prop, find } from 'ramda';
+import { curry } from 'ramda';
 import findAttacker from './findAttacker';
 import {
   replaceCode,
   parseCode,
   detectPiece,
-  removeCodeByTile,
+  removeTileFrom,
+  findKing,
 } from '../utils';
-import { King } from '../presets';
 
 /**
  * Predict possible Check when moving the code
@@ -15,27 +15,19 @@ import { King } from '../presets';
  * @return {String} attacker code
  */
 function predictPossibleCheck(timeline, targetCode) {
-  const { side, tileName } = parseCode(targetCode);
+  const { tileName } = parseCode(targetCode);
   const [snapshot, ...prevSnapshots] = timeline;
-  let kingCode = find(
-    compose(equals(`${side}${King}`), prop('pKey'), parseCode),
-    snapshot
-  );
-  let pretendSnapshot;
+  let kingCode = findKing(targetCode, snapshot);
+  let pretendSnapshot = removeTileFrom(snapshot, tileName);
 
-  if (detectPiece(King, targetCode)) {
-    // NOTE if it's already piece on tile there, remove it
-    const filteredSnapshot = removeCodeByTile(snapshot, tileName);
-
-    // NOTE `targetCode` is not selected code
-    pretendSnapshot = replaceCode(filteredSnapshot, kingCode, targetCode);
+  if (detectPiece.King(targetCode)) {
+    pretendSnapshot = replaceCode(
+      removeTileFrom(snapshot, tileName),
+      kingCode,
+      targetCode
+    );
 
     kingCode = targetCode;
-  } else {
-    // NOTE `targetCode` === `selectedCode`
-
-    // remove `targetCode` from snapshot
-    pretendSnapshot = removeCodeByTile(snapshot, tileName);
   }
 
   return findAttacker(kingCode, [pretendSnapshot, ...prevSnapshots]);

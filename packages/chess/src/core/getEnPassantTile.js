@@ -17,12 +17,7 @@ import {
   detectPiece,
   detectOpponent,
 } from '../utils';
-import { Side, Pawn } from '../presets';
-
-const RANK_SPOT = {
-  [Side.w]: 5,
-  [Side.b]: 4,
-};
+import { EnPassantSpot } from '../presets';
 
 /**
  * Get En-passant tile
@@ -32,20 +27,19 @@ const RANK_SPOT = {
  */
 function getEnPassantTile(code, timeline) {
   const { side, rankName } = parseCode(code);
-  const isOnTile = RANK_SPOT[side] === Number(rankName);
+  const isOnTile = EnPassantSpot[side] === Number(rankName);
 
   if (isOnTile) {
     const [snapshot, ...prevTimeline] = timeline;
-    const _findCodeBy = findCodeByTile(snapshot);
     const _detectMovedBy = detectMoved(prevTimeline);
-    const _parseCodeBy = compose(parseCode, _findCodeBy);
+    const _parseCodeBy = compose(parseCode, findCodeByTile(snapshot));
+    const _detectOpponent = detectOpponent(code);
 
     const _candidateTileToCode = (acc, tN) => {
       const { code: cd } = _parseCodeBy(tN);
-      const isPawn = detectPiece(Pawn, cd);
-      const isEnemy = detectOpponent(code, cd);
+      const isCandidate = detectPiece.Pawn(cd) && _detectOpponent(cd);
 
-      return isPawn && isEnemy ? [...acc, cd] : acc;
+      return isCandidate ? [...acc, cd] : acc;
     };
 
     const _getRidOfMovedCode = (cd) => {

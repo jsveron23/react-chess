@@ -16,7 +16,6 @@ import {
 } from 'ramda';
 import computeRawMT from './computeRawMT';
 import { filterOpponent, parseCode, detectPiece } from '../utils';
-import { Pawn, King } from '../presets';
 
 /**
  * Get defenders for defending attacking routes(+ attacker tile)
@@ -27,22 +26,24 @@ import { Pawn, King } from '../presets';
  */
 function getDefenders(attackerCode, timeline, routes) {
   const { tileName: attackerTileName } = parseCode(attackerCode);
+  const _computeMT = computeRawMT(timeline);
+  const _getDefendableTiles = intersection(routes);
   const grpList = compose(
     reduce((acc, code) => {
-      const mt = computeRawMT(timeline, code);
-      let defendableTiles = intersection(routes, mt);
+      let defendableTiles = compose(_getDefendableTiles, _computeMT)(code);
 
-      if (detectPiece(Pawn, code)) {
-        const { fileName } = parseCode(code);
-
+      if (detectPiece.Pawn(code)) {
         // if vertical direction then remove it
         defendableTiles = reject(
-          allPass([startsWith(fileName), equals(attackerTileName)]),
+          allPass([
+            compose(startsWith, prop('fileName'), parseCode)(code),
+            equals(attackerTileName),
+          ]),
           defendableTiles
         );
       }
 
-      return isEmpty(defendableTiles) || detectPiece(King, code)
+      return isEmpty(defendableTiles) || detectPiece.King(code)
         ? acc
         : [
             ...acc,

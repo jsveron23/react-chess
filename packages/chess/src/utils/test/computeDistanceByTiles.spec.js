@@ -23,6 +23,9 @@ test('Should return object of distance data', (t) => {
     direction: 'Vertical',
     rank: 6,
     file: 0,
+    isDiagonal: false,
+    isHorizontal: false,
+    isVertical: true,
   });
 
   t.deepEqual(computeDistanceByTiles('a2', 'a3'), {
@@ -30,6 +33,9 @@ test('Should return object of distance data', (t) => {
     rank: 1,
     file: 0,
     direction: 'Vertical',
+    isDiagonal: false,
+    isHorizontal: false,
+    isVertical: true,
   });
 
   t.deepEqual(computeDistanceByTiles('a2', 'b2'), {
@@ -37,6 +43,9 @@ test('Should return object of distance data', (t) => {
     rank: 0,
     file: 1,
     direction: 'Horizontal',
+    isDiagonal: false,
+    isHorizontal: true,
+    isVertical: false,
   });
 
   t.deepEqual(computeDistanceByTiles('a2', 'b3'), {
@@ -44,6 +53,9 @@ test('Should return object of distance data', (t) => {
     rank: 1,
     file: 1,
     direction: 'Diagonal',
+    isDiagonal: true,
+    isHorizontal: false,
+    isVertical: false,
   });
 
   t.deepEqual(computeDistanceByTiles('a2', 'h2'), {
@@ -51,6 +63,9 @@ test('Should return object of distance data', (t) => {
     rank: 0,
     file: 7,
     direction: 'Horizontal',
+    isDiagonal: false,
+    isHorizontal: true,
+    isVertical: false,
   });
 });
 

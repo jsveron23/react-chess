@@ -1,4 +1,4 @@
-import { curry, compose, reduce, keys } from 'ramda';
+import { curry, compose, reduce, keys, assoc } from 'ramda';
 import { convertAxisListToTiles } from '../../utils';
 
 /**
@@ -8,13 +8,10 @@ import { convertAxisListToTiles } from '../../utils';
  * @return {Object}
  */
 function convertArrowToTiles(code, arrow) {
+  const _convertToTiles = convertAxisListToTiles(code);
+
   return compose(
-    reduce((acc, key) => {
-      return {
-        ...acc,
-        [key]: convertAxisListToTiles(code, arrow[key]),
-      };
-    }, {}),
+    reduce((acc, key) => assoc(key, _convertToTiles(arrow[key]), acc), {}),
     keys
   )(arrow);
 }

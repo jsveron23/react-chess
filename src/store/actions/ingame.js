@@ -256,19 +256,14 @@ export function afterMoving(nextTileName, selectedCode, getNextSnapshot) {
           const tileName = Chess.getEnPassantTile.after(nextSnapshot, snapshot);
 
           if (tileName) {
-            nextSnapshot = Chess.removeCodeByTile(nextSnapshot, tileName);
+            nextSnapshot = Chess.removeTileFrom(nextSnapshot, tileName);
           }
 
           break;
         }
 
         case Chess.Promotion: {
-          // TODO apply every kind of piece
-          const queenCode = Chess.getPromotionCode(
-            Chess.Queen,
-            nextTileName,
-            side
-          );
+          const queenCode = Chess.getPromotionCode.Queen(side, nextTileName);
 
           if (queenCode) {
             nextSnapshot = Chess.replaceCode(nextSnapshot, nextCode, queenCode);
@@ -351,6 +346,8 @@ export function updateCheckState(selectedCode) {
     } else if (isStalemate) {
       console.log('stalemate!');
     }
+
+    // console.log(check.dodgeableTiles);
 
     dispatch({
       type: types.UPDATE_CHECK_CODE,

@@ -6,7 +6,7 @@ import {
   flatten,
   reject,
   isEmpty,
-  nth,
+  map,
 } from 'ramda';
 import computePossibleMT from './computePossibleMT';
 import getAttackerRoutes from './getAttackerRoutes';
@@ -14,7 +14,12 @@ import findAttacker from './findAttacker';
 import getDefenders from './getDefenders';
 import getDodgeableTiles from './getDodgeableTiles';
 import removePredictTiles from './internal/removePredictTiles';
-import { filterOpponent, findOpponentKing, pretendTo } from '../utils';
+import {
+  filterOpponent,
+  findOpponentKing,
+  pretendTo,
+  convertCodeToTile,
+} from '../utils';
 
 /**
  * Compute whether Check or not (entry function)
@@ -23,18 +28,19 @@ import { filterOpponent, findOpponentKing, pretendTo } from '../utils';
  * @return {Object}
  */
 function computeCheckState(opponentCode, timeline) {
-  const kingCode = compose(findOpponentKing(opponentCode), nth(0))(timeline);
+  const [snapshot] = timeline;
+  const kingCode = findOpponentKing(opponentCode, snapshot);
   const attackerCode = findAttacker(kingCode, timeline);
   let attackerRoutes = [];
   let defenders = [];
   let defendTiles = [];
   let dodgeableTiles = [];
 
-  // TODO if Pawn promote, can be attacked by 2 pieces
-
   // check
   if (attackerCode) {
     // match same movement of piece but same tile as King
+    // King's movement will be attacker movement
+    // TODO optimize it
     attackerRoutes = compose(
       getAttackerRoutes(timeline, attackerCode),
       pretendTo(kingCode)
@@ -53,19 +59,21 @@ function computeCheckState(opponentCode, timeline) {
     defendTiles = grp.tiles;
   }
 
+  // TODO simplify it
   const _getPMT = flip(computePossibleMT(attackerCode, attackerRoutes))(
     timeline
   );
 
   return {
     // every pieces movable tiles of King side
+    // TODO compute wrong
     dodgeableTiles: compose(
       concat(dodgeableTiles),
+      map(convertCodeToTile),
       flatten,
       reject(compose(isEmpty, _getPMT)),
-      filterOpponent(opponentCode), // opponent's opponent
-      nth(0)
-    )(timeline),
+      filterOpponent(opponentCode) // opponent's opponent
+    )(snapshot),
 
     kingCode,
     attackerCode,
