@@ -10,8 +10,9 @@ import {
   of,
   anyPass,
   concat,
+  nth,
 } from 'ramda';
-import findAttacker from './findAttacker';
+import findAttackers from './findAttackers';
 import {
   parseCode,
   detectMoved,
@@ -39,7 +40,13 @@ function getCastlingTiles(timeline, code) {
     filter(
       anyPass([
         flip(includes)(placedTiles),
-        compose(flip(findAttacker)(timeline), join(''), prepend(pKey), of),
+        compose(
+          nth(0),
+          flip(findAttackers)(timeline),
+          join(''),
+          prepend(pKey),
+          of
+        ),
       ])
     ),
     _convertToTiles

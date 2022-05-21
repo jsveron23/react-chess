@@ -1,6 +1,7 @@
 import { curry, compose, join, prop, nth, reduce, flip } from 'ramda';
+import detectCheck from './detectCheck';
 import devideSourceCapture from './internal/devideSourceCapture';
-import { parseCode, getEqualPieces, detectCheck } from '../utils';
+import { parseCode, getEqualPieces } from '../utils';
 import { Pawn, Rook, Notation } from '../presets';
 
 /**

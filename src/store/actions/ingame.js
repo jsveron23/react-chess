@@ -347,8 +347,6 @@ export function updateCheckState(selectedCode) {
       console.log('stalemate!');
     }
 
-    // console.log(check.dodgeableTiles);
-
     dispatch({
       type: types.UPDATE_CHECK_CODE,
       payload: {

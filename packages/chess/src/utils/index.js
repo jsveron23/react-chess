@@ -9,7 +9,6 @@ export { default as detectPiece } from './detectPiece';
 export { default as detectOpponent } from './detectOpponent';
 export { default as detectMoved } from './detectMoved';
 export { default as detectEnemyOnTiles } from './detectEnemyOnTiles';
-export { default as detectCheck } from './detectCheck';
 export { default as detectSide } from './detectSide';
 export { default as detectTurn } from './detectTurn';
 export { default as findCode } from './findCode';

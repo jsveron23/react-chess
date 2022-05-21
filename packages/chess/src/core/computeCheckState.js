@@ -7,10 +7,11 @@ import {
   reject,
   isEmpty,
   map,
+  nth,
 } from 'ramda';
 import computePossibleMT from './computePossibleMT';
 import getAttackerRoutes from './getAttackerRoutes';
-import findAttacker from './findAttacker';
+import findAttackers from './findAttackers';
 import getDefenders from './getDefenders';
 import getDodgeableTiles from './getDodgeableTiles';
 import removePredictTiles from './internal/removePredictTiles';
@@ -30,7 +31,7 @@ import {
 function computeCheckState(opponentCode, timeline) {
   const [snapshot] = timeline;
   const kingCode = findOpponentKing(opponentCode, snapshot);
-  const attackerCode = findAttacker(kingCode, timeline);
+  const attackerCode = compose(nth(0), findAttackers(kingCode))(timeline);
   let attackerRoutes = [];
   let defenders = [];
   let defendTiles = [];
@@ -75,7 +76,6 @@ function computeCheckState(opponentCode, timeline) {
       filterOpponent(opponentCode) // opponent's opponent
     )(snapshot),
 
-    kingCode,
     attackerCode,
     attackerRoutes,
     defendTiles,
