@@ -7,9 +7,9 @@ function parseTile(tileName) {
   const [fileName, rankName] = tileName.split('');
 
   return {
+    rankName: Number(rankName),
     tileName,
     fileName,
-    rankName,
   };
 }
 

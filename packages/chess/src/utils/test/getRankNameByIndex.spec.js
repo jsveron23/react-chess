@@ -7,5 +7,5 @@ test('Should return function (curry)', (t) => {
 });
 
 test('Should return next rank of given index', (t) => {
-  t.deepEqual(getNextRankByIndex('2', 1), 3);
+  t.deepEqual(getNextRankByIndex(2, 1), 3);
 });

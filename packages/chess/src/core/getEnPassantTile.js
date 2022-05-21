@@ -27,7 +27,7 @@ import { EnPassantSpot } from '../presets';
  */
 function getEnPassantTile(code, timeline) {
   const { side, rankName } = parseCode(code);
-  const isOnTile = EnPassantSpot[side] === Number(rankName);
+  const isOnTile = EnPassantSpot[side] === rankName;
 
   if (isOnTile) {
     const [snapshot, ...prevTimeline] = timeline;

@@ -7,7 +7,7 @@ import { curry } from 'ramda';
  * @return {Number}
  */
 function getNextRankByIndex(rankName, y) {
-  return Number(rankName) + y;
+  return rankName + y;
 }
 
 export default curry(getNextRankByIndex);

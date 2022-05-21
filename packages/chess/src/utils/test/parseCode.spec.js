@@ -14,6 +14,6 @@ test('Should return object that parsed given code', (t) => {
     side: 'w',
     piece: 'P',
     fileName: 'a',
-    rankName: '2',
+    rankName: 2,
   });
 });

@@ -13,7 +13,7 @@ function computeDistanceByTiles(tileA, tileB) {
   const { fileName: aFn, rankName: aRn } = parseTile(tileA);
   const { fileName: dFn, rankName: dRn } = parseTile(tileB);
   const file = Math.abs(getDistance(aFn, dFn, File));
-  const rank = Math.abs(getDistance(Number(aRn), Number(dRn), Rank));
+  const rank = Math.abs(getDistance(aRn, dRn, Rank));
   const directionMap = {
     [Diagonal]: file === rank,
     [Vertical]: rank > 0 && file === 0,

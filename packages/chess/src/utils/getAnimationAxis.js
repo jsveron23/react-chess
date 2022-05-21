@@ -16,7 +16,7 @@ function getAnimationAxis(from, to) {
     find(compose(equals(side), prop('side'), parseCode))
   )(from);
   const x = getDistance(fFn, tFn, File);
-  const y = getDistance(Number(fRn), Number(tRn), Rank);
+  const y = getDistance(fRn, tRn, Rank);
 
   return {
     code: nth(0, to),

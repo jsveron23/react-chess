@@ -11,7 +11,7 @@ import { Side, Rank, Queen, Knight } from '../presets';
  * @return {String}
  */
 function getPromotionCode(piece, side, tileName) {
-  const rankName = compose(Number, prop('rankName'), parseTile)(tileName);
+  const rankName = compose(prop('rankName'), parseTile)(tileName);
   const rankIdx = Rank.indexOf(rankName);
   const isIt = {
     [Side.w]: rankIdx === 0,
