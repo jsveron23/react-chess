@@ -1,4 +1,13 @@
-import { curry, compose, equals, find, nth } from 'ramda';
+import {
+  curry,
+  compose,
+  equals,
+  map,
+  filter,
+  length,
+  complement,
+  find,
+} from 'ramda';
 
 /**
  * Detect whether moved or not
@@ -7,17 +16,12 @@ import { curry, compose, equals, find, nth } from 'ramda';
  * @return {Boolean}
  */
 function detectMoved(timeline, code) {
-  const codeList = [];
-
-  for (let i = 0, len = timeline.length; i < len; i++) {
-    const foundCode = compose(find(equals(code)), nth(i))(timeline);
-
-    if (foundCode) {
-      codeList.push(code);
-    }
-  }
-
-  return timeline.length !== codeList.length;
+  return compose(
+    complement(equals)(timeline.length),
+    length,
+    filter(Boolean),
+    map(find(equals(code)))
+  )(timeline);
 }
 
 export default curry(detectMoved);

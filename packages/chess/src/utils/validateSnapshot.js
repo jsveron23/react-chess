@@ -1,4 +1,8 @@
-import { isEmpty } from 'ramda';
+import { allPass, complement, isNil, isEmpty } from 'ramda';
+
+const isNotNil = complement(isNil);
+const isNotEmpty = complement(isEmpty);
+const _isArray = (v) => Array.isArray(v);
 
 /**
  * Validate snapshot
@@ -6,7 +10,7 @@ import { isEmpty } from 'ramda';
  * @return {Boolean}
  */
 function validateSnapshot(snapshot) {
-  return snapshot && Array.isArray(snapshot) && !isEmpty(snapshot);
+  return allPass([isNotNil, isNotEmpty, _isArray], snapshot);
 }
 
 export default validateSnapshot;

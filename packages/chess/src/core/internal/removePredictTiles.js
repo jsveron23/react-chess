@@ -11,9 +11,9 @@ import { parseCode } from '../../utils';
  */
 function removePredictTiles(timeline, code, tiles) {
   const { pKey } = parseCode(code);
-  const _predictPossibleCheck = predictPossibleCheck(timeline);
+  const _predictCheck = predictPossibleCheck(timeline);
 
-  return tiles.filter((tN) => !_predictPossibleCheck(`${pKey}${tN}`));
+  return tiles.filter((tN) => !_predictCheck(`${pKey}${tN}`));
 }
 
 export default curry(removePredictTiles);

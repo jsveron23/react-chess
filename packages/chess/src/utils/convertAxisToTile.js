@@ -19,13 +19,13 @@ function convertAxisToTile(code, axis) {
 
   const { side, fileName, rankName } = parseCode(code);
   const [x, y] = axis;
-
-  // axis don't care what file name is
+  const rankMap = {
+    [Side.w]: y,
+    [Side.b]: -y,
+  };
   const nextFileName = getNextFileByIndex(fileName, x);
-  // but pawn only care what rank name is
-  const nextRankName = getNextRankByIndex(rankName, side === Side.w ? y : -y);
+  const nextRankName = getNextRankByIndex(rankName, rankMap[side]);
 
-  // get rid of outside tile from calculation
   if (!validateTile(nextFileName, nextRankName)) {
     return '';
   }

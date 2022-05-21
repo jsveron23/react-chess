@@ -1,4 +1,4 @@
-import { curry } from 'ramda';
+import { curry, compose, prop } from 'ramda';
 import parseCode from './parseCode';
 import validateCode from './validateCode';
 import computeDistanceByTiles from './computeDistanceByTiles';
@@ -14,10 +14,11 @@ function computeDistance(codeA, codeB) {
     throw new TypeError('invalid arguments');
   }
 
-  const { tileName: aTileName } = parseCode(codeA);
-  const { tileName: bTilename } = parseCode(codeB);
-
-  return computeDistanceByTiles(aTileName, bTilename);
+  return compose(
+    computeDistanceByTiles(compose(prop('tileName'), parseCode)(codeA)),
+    prop('tileName'),
+    parseCode
+  )(codeB);
 }
 
 export default curry(computeDistance);

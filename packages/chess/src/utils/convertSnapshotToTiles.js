@@ -1,4 +1,3 @@
-import { map } from 'ramda';
 import convertCodeToTile from './convertCodeToTile';
 import validateSnapshot from './validateSnapshot';
 
@@ -12,7 +11,7 @@ function convertSnapshotToTiles(snapshot) {
     return [];
   }
 
-  return map(convertCodeToTile, snapshot);
+  return snapshot.map(convertCodeToTile);
 }
 
 export default convertSnapshotToTiles;

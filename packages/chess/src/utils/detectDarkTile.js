@@ -1,4 +1,4 @@
-import { curry } from 'ramda';
+import { curry, compose, indexOf, add, not } from 'ramda';
 import { Rank, File } from '../presets';
 
 /**
@@ -12,11 +12,12 @@ function detectDarkTile(fileName, rankName) {
     throw new TypeError('invalid arguments');
   }
 
-  const rankIdx = Math.abs(Rank.indexOf(rankName) - 8);
-  const fileIdx = File.indexOf(fileName) + 1;
-  const isOdd = (rankIdx + fileIdx) & 1; // bit
-
-  return !isOdd;
+  return not(
+    add(
+      compose(Math.abs, add(-8), indexOf(rankName))(Rank), // rankIdx
+      compose(add(1), indexOf(fileName))(File) // fileIdx
+    ) & 1 // bit
+  );
 }
 
 export default curry(detectDarkTile);

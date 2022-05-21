@@ -1,4 +1,16 @@
-import { curry, compose, map, filter, flatten, nth } from 'ramda';
+import {
+  curry,
+  compose,
+  map,
+  filter,
+  nth,
+  xprod,
+  negate,
+  equals,
+  cond,
+  T,
+  F,
+} from 'ramda';
 import convertAxisToTile from './convertAxisToTile';
 import { Vertical, Horizontal } from '../presets';
 
@@ -10,7 +22,8 @@ import { Vertical, Horizontal } from '../presets';
  * @return {String}
  */
 function getSymmetryTile(direction, centralCode, targetTile) {
-  const convertToTile = convertAxisToTile(centralCode);
+  const _convertToTile = convertAxisToTile(centralCode);
+  const _detectSameAsTarget = compose(equals(targetTile), _convertToTile);
   let startX = [1, -1];
   let startY = [1, -1];
 
@@ -23,19 +36,14 @@ function getSymmetryTile(direction, centralCode, targetTile) {
   return compose(
     nth(0),
     filter(Boolean),
-    flatten,
-
-    // runs only 4(2 x 2) times
-    map((x) =>
-      map((y) => {
-        const tileName = convertToTile([x, y]);
-
-        if (tileName === targetTile) {
-          return convertToTile([-x, -y]);
-        }
-      }, startY)
-    )
-  )(startX);
+    map(
+      cond([
+        [_detectSameAsTarget, compose(_convertToTile, map(negate))],
+        [T, F],
+      ])
+    ),
+    xprod(startX)
+  )(startY);
 }
 
 export default curry(getSymmetryTile);

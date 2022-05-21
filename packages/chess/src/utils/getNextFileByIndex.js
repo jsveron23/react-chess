@@ -1,4 +1,4 @@
-import { curry } from 'ramda';
+import { curry, compose, prop, flip, add, indexOf } from 'ramda';
 import { File } from '../presets';
 
 /**
@@ -8,9 +8,7 @@ import { File } from '../presets';
  * @return {String}
  */
 function getNextFileByIndex(fileName, x) {
-  const fileIdx = File.indexOf(fileName);
-
-  return File[fileIdx + x];
+  return compose(flip(prop)(File), add(x), indexOf(fileName))(File);
 }
 
 export default curry(getNextFileByIndex);

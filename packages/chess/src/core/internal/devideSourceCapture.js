@@ -3,10 +3,11 @@ import { detectSide, parseCode } from '../../utils';
 
 // source(what `from` tile from?) and capture
 function devideSourceCapture(side, acc, code) {
-  const key = detectSide(side, code) ? 'source' : 'capture';
-  const val = parseCode(code);
-
-  return assoc(key, val, acc);
+  return assoc(
+    detectSide(side, code) ? 'source' : 'capture', // key
+    parseCode(code), // val
+    acc
+  );
 }
 
 export default curry(devideSourceCapture);

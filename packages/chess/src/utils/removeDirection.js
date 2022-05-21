@@ -1,4 +1,4 @@
-import { curry, reject, startsWith, endsWith } from 'ramda';
+import { curry, reject, startsWith, endsWith, prop } from 'ramda';
 import parseCode from './parseCode';
 import { Vertical, Horizontal } from '../presets';
 
@@ -11,13 +11,15 @@ import { Vertical, Horizontal } from '../presets';
  */
 function removeDirection(directionName, movableTiles, code) {
   const { fileName, rankName } = parseCode(code);
-  // TODO support `Diagonal`
-  const directionMap = {
-    [Vertical]: startsWith(fileName),
-    [Horizontal]: endsWith(rankName),
-  };
 
-  return reject(directionMap[directionName], movableTiles);
+  // TODO support `Diagonal`
+  return reject(
+    prop(directionName, {
+      [Vertical]: startsWith(fileName),
+      [Horizontal]: endsWith(rankName),
+    }),
+    movableTiles
+  );
 }
 
 const _removeDirection = curry(removeDirection);

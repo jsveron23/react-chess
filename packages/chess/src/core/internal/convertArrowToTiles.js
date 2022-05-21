@@ -8,10 +8,11 @@ import { convertAxisListToTiles } from '../../utils';
  * @return {Object}
  */
 function convertArrowToTiles(code, arrow) {
-  const _convertToTiles = convertAxisListToTiles(code);
-
   return compose(
-    reduce((acc, key) => assoc(key, _convertToTiles(arrow[key]), acc), {}),
+    reduce(
+      (acc, key) => assoc(key, convertAxisListToTiles(code, arrow[key]), acc),
+      {}
+    ),
     keys
   )(arrow);
 }

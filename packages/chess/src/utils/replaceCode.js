@@ -1,4 +1,4 @@
-import { curry, clone } from 'ramda';
+import { curry, update } from 'ramda';
 import validateCode from './validateCode';
 import validateSnapshot from './validateSnapshot';
 
@@ -16,19 +16,9 @@ function replaceCode(snapshot, currCode, nextCode) {
     return snapshot || [];
   }
 
-  const cloneSnapshot = clone(snapshot);
+  const idx = snapshot.indexOf(currCode);
 
-  for (let i = 0, len = cloneSnapshot.length; i < len; i++) {
-    const code = cloneSnapshot[i];
-
-    if (code === currCode) {
-      cloneSnapshot[i] = nextCode;
-
-      break;
-    }
-  }
-
-  return cloneSnapshot.filter(Boolean);
+  return idx > -1 ? update(idx, nextCode, snapshot) : snapshot;
 }
 
 export default curry(replaceCode);

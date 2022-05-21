@@ -11,9 +11,8 @@ import { King } from '../presets';
 function findKing(code, snapshot) {
   const { side } = parseCode(code);
 
-  return find(
-    compose(equals(`${side}${King}`), prop('pKey'), parseCode),
-    snapshot
+  return snapshot.find(
+    compose(equals(`${side}${King}`), prop('pKey'), parseCode)
   );
 }
 

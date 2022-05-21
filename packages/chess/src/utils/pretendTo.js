@@ -1,4 +1,4 @@
-import { curry } from 'ramda';
+import { curry, compose, prop, flip } from 'ramda';
 import parseCode from './parseCode';
 import transformInto from './transformInto';
 
@@ -9,9 +9,11 @@ import transformInto from './transformInto';
  * @return {String}
  */
 function pretendTo(originalCode, targetCode) {
-  const { piece } = parseCode(targetCode);
-
-  return transformInto(piece, originalCode);
+  return compose(
+    flip(transformInto)(originalCode),
+    prop('piece'),
+    parseCode
+  )(targetCode);
 }
 
 export default curry(pretendTo);
