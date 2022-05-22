@@ -11,13 +11,13 @@ const composeDev = IS_DEV ? composeWithDevTools : identity;
 function configureStore(preloadedState) {
   const middlewareEnhancer = applyMiddleware(thunk);
   const composedEnhancer = composeDev(middlewareEnhancer);
-  const compressedData = Storage.getItem(INSTANT_IMPORT_DATA);
-  const parsedData = JSON.parse(Storage.getItem(SAVE_GAME));
-  let intitalState = preloadedState;
+  const importData = Storage.getItem(INSTANT_IMPORT_DATA);
+  const saveData = JSON.parse(Storage.getItem(SAVE_GAME));
+  let intitalState = saveData || preloadedState;
 
-  if (compressedData) {
+  if (importData) {
     try {
-      intitalState = JSON.parse(Compression.decompress(compressedData));
+      intitalState = JSON.parse(Compression.decompress(importData));
     } catch (err) {
       console.error(err);
     } finally {
@@ -25,7 +25,7 @@ function configureStore(preloadedState) {
     }
   }
 
-  return createStore(reducers, parsedData || intitalState, composedEnhancer);
+  return createStore(reducers, intitalState, composedEnhancer);
 }
 
 export default configureStore;
