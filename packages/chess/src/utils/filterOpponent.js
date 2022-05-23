@@ -1,4 +1,4 @@
-import { curry, filter } from 'ramda';
+import { curry } from 'ramda';
 import detectOpponent from './detectOpponent';
 import validateSnapshot from './validateSnapshot';
 
@@ -13,7 +13,7 @@ function filterOpponent(code, snapshot) {
     throw new TypeError('invalid argument');
   }
 
-  return filter(detectOpponent(code), snapshot);
+  return snapshot.filter(detectOpponent(code));
 }
 
 export default curry(filterOpponent);

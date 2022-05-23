@@ -1,4 +1,13 @@
-import { curryN, compose, intersection, concat, without } from 'ramda';
+import {
+  curryN,
+  compose,
+  intersection,
+  concat,
+  without,
+  juxt,
+  props,
+  apply,
+} from 'ramda';
 import predictPossibleCheck from './predictPossibleCheck';
 import getDodgeableTiles from './getDodgeableTiles';
 import getCastlingTiles from './getCastlingTiles';
@@ -13,7 +22,7 @@ import {
   computeDistance,
   detectContacted,
 } from '../utils';
-import { King, Pawn, Vertical, Horizontal, Diagonal } from '../presets';
+import { Vertical, Horizontal, Diagonal } from '../presets';
 
 /**
  * Compute possible movable tiles (entry function)
@@ -30,18 +39,15 @@ function computePossibleMT(
   timeline
 ) {
   const [snapshot] = timeline;
-  const isKing = detectPiece(King, code);
-  const _removePredict = removePredictTiles(timeline);
-  const _getAttackerRoutes = getAttackerRoutes(timeline);
   let mt = computeRawMT(timeline, code);
 
   // dodge or just movable tiles
-  if (isKing) {
+  if (detectPiece.King(code)) {
     mt = attackerCode
       ? getDodgeableTiles(timeline, attackerCode, code, attackerRoutes)
       : compose(concat(mt), getCastlingTiles(timeline))(code);
 
-    return _removePredict(code, mt);
+    return removePredictTiles(timeline, code, mt);
   }
 
   // block or capture
@@ -53,10 +59,12 @@ function computePossibleMT(
   const predictAttacker = predictPossibleCheck(timeline, code);
 
   if (predictAttacker) {
-    if (detectPiece(Pawn, code)) {
-      const { file, rank } = computeDistance(predictAttacker, code);
-      const direction = getDirection(file, rank);
-      const isContacted = detectContacted(file, rank);
+    if (detectPiece.Pawn(code)) {
+      const [direction, isContacted] = compose(
+        juxt([apply(getDirection), apply(detectContacted)]),
+        props(['file', 'rank']),
+        computeDistance(predictAttacker)
+      )(code);
       const isByVertical = direction === Vertical;
       const isByHorizontal = direction === Horizontal;
       const isByDiagonal = direction === Diagonal;
@@ -78,7 +86,7 @@ function computePossibleMT(
 
     const possibleAttackRoutes = compose(
       intersection(mt),
-      _getAttackerRoutes(predictAttacker),
+      getAttackerRoutes(timeline, predictAttacker),
       pretendTo(code)
     )(predictAttacker);
 

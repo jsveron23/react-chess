@@ -1,3 +1,4 @@
+export { default as createSheet } from './createSheet';
 export { default as getAttackerRoutes } from './getAttackerRoutes';
 export { default as getDefenders } from './getDefenders';
 export { default as getPromotionCode } from './getPromotionCode';

@@ -1,4 +1,4 @@
-import { curry, compose, equals, prop, find } from 'ramda';
+import { curry } from 'ramda';
 import findAttacker from './findAttacker';
 import {
   replaceCode,
@@ -17,13 +17,10 @@ import { King } from '../presets';
 function predictPossibleCheck(timeline, targetCode) {
   const { side, tileName } = parseCode(targetCode);
   const [snapshot, ...prevSnapshots] = timeline;
-  let kingCode = find(
-    compose(equals(`${side}${King}`), prop('pKey'), parseCode),
-    snapshot
-  );
+  let kingCode = snapshot.find(parseCode.eq(['pKey', `${side}${King}`]));
   let pretendSnapshot;
 
-  if (detectPiece(King, targetCode)) {
+  if (detectPiece.King(targetCode)) {
     // NOTE if it's already piece on tile there, remove it
     const filteredSnapshot = removeCodeByTile(snapshot, tileName);
 

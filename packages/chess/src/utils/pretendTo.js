@@ -9,9 +9,7 @@ import transformInto from './transformInto';
  * @return {String}
  */
 function pretendTo(originalCode, targetCode) {
-  const { piece } = parseCode(targetCode);
-
-  return transformInto(piece, originalCode);
+  return transformInto(parseCode.prop('piece', targetCode), originalCode);
 }
 
 export default curry(pretendTo);

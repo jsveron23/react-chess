@@ -1,4 +1,4 @@
-import { curry } from 'ramda';
+import { curry, cond, T, always, concat, toString, compose, prop } from 'ramda';
 import getNextFileByIndex from './getNextFileByIndex';
 import getNextRankByIndex from './getNextRankByIndex';
 import parseCode from './parseCode';
@@ -19,18 +19,19 @@ function convertAxisToTile(code, axis) {
 
   const { side, fileName, rankName } = parseCode(code);
   const [x, y] = axis;
-
-  // axis don't care what file name is
   const nextFileName = getNextFileByIndex(fileName, x);
-  // but pawn only care what rank name is
-  const nextRankName = getNextRankByIndex(rankName, side === Side.w ? y : -y);
 
-  // get rid of outside tile from calculation
-  if (!validateTile(nextFileName, nextRankName)) {
-    return '';
-  }
-
-  return `${nextFileName}${nextRankName}`;
+  return compose(
+    cond([
+      [validateTile(nextFileName), compose(concat(nextFileName), toString)],
+      [T, always('')],
+    ]),
+    getNextRankByIndex(rankName),
+    prop(side)
+  )({
+    [Side.w]: y,
+    [Side.b]: -y,
+  });
 }
 
 export default curry(convertAxisToTile);

@@ -1,5 +1,4 @@
-import { map } from 'ramda';
-import convertCodeToTile from './convertCodeToTile';
+import parseCode from './parseCode';
 import validateSnapshot from './validateSnapshot';
 
 /**
@@ -12,7 +11,7 @@ function convertSnapshotToTiles(snapshot) {
     return [];
   }
 
-  return map(convertCodeToTile, snapshot);
+  return snapshot.map(parseCode.prop('tileName'));
 }
 
 export default convertSnapshotToTiles;

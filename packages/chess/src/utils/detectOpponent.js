@@ -1,4 +1,4 @@
-import { curry } from 'ramda';
+import { curry, equals, flip, prop, compose } from 'ramda';
 import parseCode from './parseCode';
 import validateCode from './validateCode';
 import { Opponent } from '../presets';
@@ -14,10 +14,11 @@ function detectOpponent(codeA, codeB) {
     return false;
   }
 
-  const { side: aSide } = parseCode(codeA);
-  const { side: bSide } = parseCode(codeB);
-
-  return aSide === Opponent[bSide];
+  return compose(
+    equals(parseCode.prop('side', codeA)),
+    flip(prop)(Opponent),
+    parseCode.prop('side')
+  )(codeB);
 }
 
 export default curry(detectOpponent);

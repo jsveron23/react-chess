@@ -16,8 +16,7 @@ function computeMTByCode(code) {
     filter(Boolean),
     map(convertAxisToTile(code)),
     flip(prop)(Movement),
-    prop('piece'),
-    parseCode
+    parseCode.prop('piece')
   )(code);
 }
 

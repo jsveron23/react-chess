@@ -53,8 +53,7 @@ function computeSpecialMT(timeline, code) {
     }, []),
     defaultTo([]),
     flip(prop)(Special),
-    prop('piece'),
-    parseCode
+    parseCode.prop('piece')
   )(code);
 }
 

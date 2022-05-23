@@ -4,9 +4,19 @@ import {
   reduce,
   filter,
   nth,
+  T,
+  always,
+  allPass,
+  concat,
+  of,
   flip,
+  cond,
+  prop,
+  not,
+  equals,
   without,
   difference,
+  complement,
 } from 'ramda';
 import {
   parseCode,
@@ -17,7 +27,7 @@ import {
   detectPiece,
   detectOpponent,
 } from '../utils';
-import { Side, Pawn } from '../presets';
+import { Side } from '../presets';
 
 const RANK_SPOT = {
   [Side.w]: 5,
@@ -32,34 +42,36 @@ const RANK_SPOT = {
  */
 function getEnPassantTile(code, timeline) {
   const { side, rankName } = parseCode(code);
-  const isOnTile = RANK_SPOT[side] === Number(rankName);
 
-  if (isOnTile) {
+  if (equals(RANK_SPOT[side], Number(rankName))) {
     const [snapshot, ...prevTimeline] = timeline;
-    const _findCodeBy = findCodeByTile(snapshot);
     const _detectMovedBy = detectMoved(prevTimeline);
-    const _parseCodeBy = compose(parseCode, _findCodeBy);
-
-    const _candidateTileToCode = (acc, tN) => {
-      const { code: cd } = _parseCodeBy(tN);
-      const isPawn = detectPiece(Pawn, cd);
-      const isEnemy = detectOpponent(code, cd);
-
-      return isPawn && isEnemy ? [...acc, cd] : acc;
-    };
-
-    const _getRidOfMovedCode = (cd) => {
-      const prevTile = convertAxisToTile(cd, [0, -2]);
-      const { pKey } = parseCode(cd);
-
-      return !_detectMovedBy(`${pKey}${prevTile}`);
-    };
+    const _parseCodeBy = compose(parseCode, findCodeByTile(snapshot));
 
     return compose(
       flip(convertAxisToTile)([0, -1]),
       nth(0),
-      filter(_getRidOfMovedCode),
-      reduce(_candidateTileToCode, []),
+      filter((cd) => {
+        const prevTile = convertAxisToTile(cd, [0, -2]);
+        const pKey = parseCode.prop('pKey', cd);
+
+        return compose(not, _detectMovedBy)(`${pKey}${prevTile}`);
+      }),
+      reduce(
+        (acc, tN) =>
+          compose(
+            cond([
+              [
+                allPass([detectPiece.Pawn, detectOpponent(code)]),
+                compose(concat(acc), of),
+              ],
+              [T, always(acc)],
+            ]),
+            prop('code'),
+            _parseCodeBy
+          )(tN),
+        []
+      ),
       convertAxisListToTiles(code)
     )([
       [1, 0],
@@ -80,10 +92,11 @@ const _getEnPassantTile = curry(getEnPassantTile);
  */
 _getEnPassantTile.after = curry(function after(nextSnapshot, snapshot) {
   const [beforeCode] = without(nextSnapshot, snapshot);
-  const { fileName: bFileName } = parseCode(beforeCode);
   const [afterCode] = difference(nextSnapshot, snapshot);
-  const { fileName: aFileName } = parseCode(afterCode);
-  const isDiagonalMove = bFileName !== aFileName;
+  const isDiagonalMove = complement(equals)(
+    parseCode.prop('fileName', beforeCode),
+    parseCode.prop('fileName', afterCode)
+  );
   const noCapture = nextSnapshot.length === snapshot.length;
 
   if (isDiagonalMove && noCapture) {

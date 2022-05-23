@@ -1,4 +1,4 @@
-import { compose, prop, defaultTo, curry } from 'ramda';
+import { compose, defaultTo, curry } from 'ramda';
 import parseCode from './parseCode';
 import findCodeByTile from './findCodeByTile';
 
@@ -10,8 +10,7 @@ import findCodeByTile from './findCodeByTile';
  */
 function getPKeyByTile(snapshot, tile) {
   return compose(
-    prop('pKey'),
-    parseCode,
+    parseCode.prop('pKey'),
     defaultTo(''),
     findCodeByTile(snapshot)
   )(tile);

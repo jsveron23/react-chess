@@ -1,4 +1,4 @@
-import { curry } from 'ramda';
+import { curry, flip, indexOf, compose } from 'ramda';
 import memoizeOne from 'memoize-one';
 import { convertSnapshotToTiles } from '../../utils';
 
@@ -15,8 +15,7 @@ const _convertSnapshotToTiles = memoizeOne(convertSnapshotToTiles);
  * @return {Array} removed tiles
  */
 function removeBlockedTiles(snapshot, orderedTiles) {
-  // change all code to tiles
-  const placedTiles = _convertSnapshotToTiles(snapshot);
+  const _indexOfTn = compose(flip(indexOf), _convertSnapshotToTiles)(snapshot);
   let lastIdx = -1;
 
   return orderedTiles.filter((tN) => {
@@ -24,7 +23,7 @@ function removeBlockedTiles(snapshot, orderedTiles) {
     const isBlocked = lastIdx > -1;
 
     if (idxNotDetectedYet) {
-      lastIdx = placedTiles.indexOf(tN);
+      lastIdx = _indexOfTn(tN);
     }
 
     return !isBlocked;

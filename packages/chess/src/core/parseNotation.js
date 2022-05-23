@@ -1,14 +1,5 @@
-import {
-  curry,
-  compose,
-  join,
-  prop,
-  equals,
-  nth,
-  assoc,
-  reduce,
-  flip,
-} from 'ramda';
+import { curry, compose, join, prop, nth, reduce, flip } from 'ramda';
+import devideSourceCapture from './internal/devideSourceCapture';
 import { parseCode, getEqualPieces, detectCheck } from '../utils';
 import { Pawn, Rook } from '../presets';
 
@@ -23,25 +14,6 @@ const CastlingMap = {
   a: 'O-O-O',
   h: 'O-O',
 };
-
-// source(what `from` tile from?) and capture
-const _clearlySeparate = curry(function _clearlySeparate(side, acc, code) {
-  const key = compose(equals(side), prop('side'), parseCode)(code)
-    ? 'source'
-    : 'capture';
-  const val = parseCode(code);
-
-  return assoc(key, val, acc);
-});
-
-function _getCurrRookFileName(from) {
-  return compose(
-    prop('fileName'),
-    parseCode,
-    nth(0),
-    getEqualPieces(Rook)
-  )(from);
-}
 
 /**
  * Parse notation
@@ -70,7 +42,7 @@ function parseNotation({ check, from, to }) {
       notation = tileName;
     }
   } else if (isCaptured) {
-    const { source } = reduce(_clearlySeparate(side), {}, from);
+    const { source } = reduce(devideSourceCapture(side), {}, from);
     let prefix = piece;
     let suffix = tileName;
 
@@ -80,7 +52,10 @@ function parseNotation({ check, from, to }) {
 
     notation = `${prefix}${SymbolsMap.capture}${suffix}`;
   } else if (isCastling) {
-    notation = compose(flip(prop)(CastlingMap), _getCurrRookFileName)(from);
+    notation = compose(
+      flip(prop)(CastlingMap),
+      compose(parseCode.prop('fileName'), nth(0), getEqualPieces(Rook))
+    )(from);
   }
 
   return `${notation}${symbol}`;

@@ -1,4 +1,4 @@
-import { curry } from 'ramda';
+import { curry, and } from 'ramda';
 import { File, Rank } from '../presets';
 
 /**
@@ -8,7 +8,7 @@ import { File, Rank } from '../presets';
  * @return {Boolean}
  */
 function validateTile(fileName, rankName) {
-  return File.indexOf(fileName) > -1 && Rank.indexOf(Number(rankName)) > -1;
+  return and(File.indexOf(fileName) > -1, Rank.indexOf(Number(rankName)) > -1);
 }
 
 export default curry(validateTile);

@@ -1,7 +1,10 @@
 import { compose, reduce, prop, flip } from 'ramda';
 import convertArrowToTiles from './convertArrowToTiles';
 import { parseCode } from '../../utils';
-import { AxisGroupByDirection, DirectionGroupByPiece } from '../../presets';
+import {
+  AxisGroupByDirection as AGBD,
+  DirectionGroupByPiece as DGBP,
+} from '../../presets';
 
 /**
  * Convert all axis to tiles from `DirectionGroupByPiece`
@@ -10,23 +13,18 @@ import { AxisGroupByDirection, DirectionGroupByPiece } from '../../presets';
  * @return {Object} same format as `DirectionGroupByPiece`
  */
 function groupDirectionTilesByCode(code) {
-  const _extractDirection = compose(
-    flip(prop)(DirectionGroupByPiece),
-    prop('piece'),
-    parseCode
-  );
-
-  const _convertToTiles = (acc, directionKey) => {
-    return {
-      ...acc,
-      [directionKey]: compose(
-        convertArrowToTiles(code),
-        prop(directionKey)
-      )(AxisGroupByDirection),
-    };
-  };
-
-  return compose(reduce(_convertToTiles, {}), _extractDirection)(code);
+  return compose(
+    reduce((acc, directionKey) => {
+      return {
+        ...acc,
+        [directionKey]: compose(
+          convertArrowToTiles(code),
+          prop(directionKey)
+        )(AGBD),
+      };
+    }, {}),
+    compose(flip(prop)(DGBP), parseCode.prop('piece'))
+  )(code);
 }
 
 export default groupDirectionTilesByCode;

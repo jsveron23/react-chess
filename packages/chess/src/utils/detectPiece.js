@@ -1,5 +1,6 @@
-import { curry, equals, compose, prop } from 'ramda';
+import { curry } from 'ramda';
 import parseCode from './parseCode';
+import { King, Pawn } from '../presets';
 
 /**
  * Detect expect piece
@@ -8,7 +9,12 @@ import parseCode from './parseCode';
  * @return {Boolean}
  */
 function detectPiece(piece, code) {
-  return compose(equals(piece), prop('piece'), parseCode)(code);
+  return parseCode.eq(['piece', piece], code);
 }
 
-export default curry(detectPiece);
+const _detectPiece = curry(detectPiece);
+
+_detectPiece.King = _detectPiece(King);
+_detectPiece.Pawn = _detectPiece(Pawn);
+
+export default _detectPiece;

@@ -1,4 +1,4 @@
-import { curry, filter } from 'ramda';
+import { curry, compose, concat, not } from 'ramda';
 import predictPossibleCheck from '../predictPossibleCheck';
 import { parseCode } from '../../utils';
 
@@ -10,10 +10,11 @@ import { parseCode } from '../../utils';
  * @return {Array}
  */
 function removePredictTiles(timeline, code, tiles) {
-  const { pKey } = parseCode(code);
-  const _predictPossibleCheck = predictPossibleCheck(timeline);
+  const _predictCheck = predictPossibleCheck(timeline);
 
-  return filter((tN) => !_predictPossibleCheck(`${pKey}${tN}`), tiles);
+  return tiles.filter(
+    compose(not, _predictCheck, concat(parseCode.prop('pKey', code)))
+  );
 }
 
 export default curry(removePredictTiles);

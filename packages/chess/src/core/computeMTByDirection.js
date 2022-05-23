@@ -1,13 +1,4 @@
-import {
-  compose,
-  curry,
-  reduce,
-  keys,
-  values,
-  map,
-  flatten,
-  prop,
-} from 'ramda';
+import { compose, curry, reduce, keys, values, map, flatten } from 'ramda';
 import removeBlockedTiles from './internal/removeBlockedTiles';
 import groupDirectionTilesByCode from './internal/groupDirectionTilesByCode';
 import { validateCode, validateSnapshot } from '../utils';
@@ -34,7 +25,7 @@ function computeMTByDirection(snapshot, code) {
     reduce((acc, key) => {
       return {
         ...acc,
-        [key]: compose(map(_removeBlockedTiles), values, prop(key))(tilesGrp),
+        [key]: compose(map(_removeBlockedTiles), values)(tilesGrp[key]),
       };
     }, {}),
     keys

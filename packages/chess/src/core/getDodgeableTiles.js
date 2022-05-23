@@ -9,7 +9,6 @@ import {
   getSymmetryTile,
   convertSnapshotToTiles,
 } from '../utils';
-import { King } from '../presets';
 
 /**
  * Get dodgeable tiles
@@ -29,7 +28,7 @@ function getDodgeableTiles(
   const { file, rank } = computeDistance(attackerCode, defenderCode);
   const direction = getDirection(file, rank);
   const isContacted = detectContacted(file, rank);
-  const isKing = detectPiece(King, defenderCode);
+  const isKing = detectPiece.King(defenderCode);
   const mt = computeRawMT(timeline, defenderCode);
 
   if (isKing && !isContacted) {

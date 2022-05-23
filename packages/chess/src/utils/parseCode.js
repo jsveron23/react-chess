@@ -1,3 +1,5 @@
+import { compose, prop, equals, curry } from 'ramda';
+import parseTile from './parseTile';
 import validateCode from './validateCode';
 
 /**
@@ -13,14 +15,22 @@ function parseCode(code) {
   const [side, piece, fileName, rankName] = code.split('');
 
   return {
+    ...parseTile(`${fileName}${rankName}`),
     pKey: `${side}${piece}`,
-    tileName: `${fileName}${rankName}`,
     code,
     side,
     piece,
-    fileName,
-    rankName,
   };
 }
+
+parseCode.eq = curry((kV, code) => {
+  const [key, val] = kV;
+
+  return compose(equals(val), prop(key), parseCode)(code);
+});
+
+parseCode.prop = curry((key, code) => {
+  return compose(prop(key), parseCode)(code);
+});
 
 export default parseCode;

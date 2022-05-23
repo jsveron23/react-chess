@@ -1,4 +1,4 @@
-import { curry, equals, find } from 'ramda';
+import { curry, equals } from 'ramda';
 import validateSnapshot from './validateSnapshot';
 
 /**
@@ -12,7 +12,7 @@ function findCode(snapshot, code) {
     return '';
   }
 
-  return find(equals(code), snapshot);
+  return snapshot.find(equals(code));
 }
 
 export default curry(findCode);

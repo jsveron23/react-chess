@@ -5,12 +5,11 @@ import {
   includes,
   isEmpty,
   nth,
-  join,
-  prepend,
+  toString,
   flip,
-  of,
   anyPass,
   concat,
+  join,
 } from 'ramda';
 import findAttacker from './findAttacker';
 import {
@@ -37,15 +36,15 @@ function getCastlingTiles(timeline, code) {
     filter(
       anyPass([
         _detectIncludes,
-        compose(flip(findAttacker)(timeline), join(''), prepend(pKey), of),
+        compose(flip(findAttacker)(timeline), toString, concat(pKey)),
       ])
     ),
     _convertToTiles
   );
   const _detectRookMoved = compose(
     detectMoved(timeline),
+    concat(`${side}${Rook}`),
     join(''),
-    prepend(`${side}${Rook}`),
     _convertToTiles
   );
 
@@ -60,12 +59,14 @@ function getCastlingTiles(timeline, code) {
   const isRightRookMoved = _detectRookMoved([[3, 0]]);
   let castlingTiles = [];
 
-  if (!isKingMoved && !isLeftRookMoved && isEmpty(invalidLeftTiles)) {
-    castlingTiles = _convertToTiles([[-2, 0]]);
-  }
+  if (!isKingMoved) {
+    if (!isLeftRookMoved && isEmpty(invalidLeftTiles)) {
+      castlingTiles = _convertToTiles([[-2, 0]]);
+    }
 
-  if (!isKingMoved && !isRightRookMoved && isEmpty(invalidRightTiles)) {
-    castlingTiles = concat(_convertToTiles([[2, 0]]), castlingTiles);
+    if (!isRightRookMoved && isEmpty(invalidRightTiles)) {
+      castlingTiles = concat(_convertToTiles([[2, 0]]), castlingTiles);
+    }
   }
 
   return castlingTiles;

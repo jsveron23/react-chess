@@ -1,4 +1,4 @@
-import { curry } from 'ramda';
+import { curry, equals, flip, prop, compose } from 'ramda';
 import parseCode from './parseCode';
 import validateCode from './validateCode';
 import { Turn } from '../presets';
@@ -14,9 +14,7 @@ function detectTurn(turn, code) {
     throw new TypeError('invalid arguments');
   }
 
-  const { side } = parseCode(code);
-
-  return turn === Turn[side];
+  return compose(equals(turn), flip(prop)(Turn), parseCode.prop('side'))(code);
 }
 
 export default curry(detectTurn);

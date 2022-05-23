@@ -1,4 +1,4 @@
-import { curry, compose, prop, reject, equals } from 'ramda';
+import { curry, reject } from 'ramda';
 import parseCode from './parseCode';
 
 /**
@@ -8,10 +8,7 @@ import parseCode from './parseCode';
  * @return {Array}
  */
 function removeCodeByTile(snapshot, tileName) {
-  return reject(
-    compose(equals(tileName), prop('tileName'), parseCode),
-    snapshot
-  );
+  return reject(parseCode.eq(['tileName', tileName]), snapshot);
 }
 
 export default curry(removeCodeByTile);
