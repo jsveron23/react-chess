@@ -67,21 +67,23 @@ export function joinNetworkGame() {
   return (dispatch) => {
     const id = window.prompt('please input friend peer-id');
 
-    batch(() => {
-      dispatch(updateSnapshot(Snapshot));
-      dispatch(removeSelectedCode());
-      dispatch(removeMovableTiles());
-      dispatch(removeCheck());
-      dispatch(removeSheetData());
-      dispatch(updateTurn(Turn.w));
-      dispatch(ActionCreators.clearHistory());
-      dispatch(decideSide(Side.white));
+    if (id) {
+      batch(() => {
+        dispatch(updateSnapshot(Snapshot));
+        dispatch(removeSelectedCode());
+        dispatch(removeMovableTiles());
+        dispatch(removeCheck());
+        dispatch(removeSheetData());
+        dispatch(updateTurn(Turn.w));
+        dispatch(ActionCreators.clearHistory());
+        dispatch(decideSide(Side.white));
 
-      peerNetwork.join(id);
+        peerNetwork.join(id);
 
-      dispatch({
-        type: JOIN_NETWORK_GAME,
+        dispatch({
+          type: JOIN_NETWORK_GAME,
+        });
       });
-    });
+    }
   };
 }
