@@ -3,7 +3,9 @@ import computeRawMT from './computeRawMT';
 import {
   parseCode,
   computeDistance,
+  detectContacted,
   transformInto,
+  getDirection,
   convertAxisListToTiles,
 } from '../utils';
 import {
@@ -25,12 +27,9 @@ import {
  */
 function getAttackerRoutes(timeline, attackerCode, defenderCode) {
   const { piece, fileName, rankName, tileName } = parseCode(attackerCode);
-  const {
-    file: fileDistance,
-    rank: rankDistance,
-    contact: isContacted,
-    direction,
-  } = computeDistance(attackerCode, defenderCode);
+  const { file, rank } = computeDistance(attackerCode, defenderCode);
+  const direction = getDirection(file, rank);
+  const isContacted = detectContacted(file, rank);
 
   if (isContacted) {
     return [tileName];
@@ -59,10 +58,10 @@ function getAttackerRoutes(timeline, attackerCode, defenderCode) {
 
           case Diagonal: {
             const mirrorTiles = convertAxisListToTiles(defenderCode, [
-              [fileDistance, rankDistance],
-              [-fileDistance, rankDistance],
-              [fileDistance, -rankDistance],
-              [-fileDistance, -rankDistance],
+              [file, rank],
+              [-file, rank],
+              [file, -rank],
+              [-file, -rank],
             ]);
 
             return includes(tN, mirrorTiles);

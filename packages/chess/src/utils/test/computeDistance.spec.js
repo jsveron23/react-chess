@@ -19,16 +19,12 @@ test('Should return function (curry)', (t) => {
 
 test('Should return object of distance data', (t) => {
   t.deepEqual(computeDistance('wKa2', 'bQa8'), {
-    contact: false,
-    direction: 'Vertical',
     rank: 6,
     file: 0,
   });
 
   t.deepEqual(computeDistance('wKa2', 'bQa3'), {
-    contact: true,
     rank: 1,
     file: 0,
-    direction: 'Vertical',
   });
 });

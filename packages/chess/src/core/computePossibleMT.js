@@ -6,7 +6,13 @@ import getDiagonallyTiles from './getDiagonallyTiles';
 import computeRawMT from './computeRawMT';
 import getAttackerRoutes from './getAttackerRoutes';
 import removePredictTiles from './internal/removePredictTiles';
-import { detectPiece, pretendTo, computeDistance } from '../utils';
+import {
+  detectPiece,
+  pretendTo,
+  getDirection,
+  computeDistance,
+  detectContacted,
+} from '../utils';
 import { King, Pawn, Vertical, Horizontal, Diagonal } from '../presets';
 
 /**
@@ -48,10 +54,9 @@ function computePossibleMT(
 
   if (predictAttacker) {
     if (detectPiece(Pawn, code)) {
-      const { contact: isContacted, direction } = computeDistance(
-        predictAttacker,
-        code
-      );
+      const { file, rank } = computeDistance(predictAttacker, code);
+      const direction = getDirection(file, rank);
+      const isContacted = detectContacted(file, rank);
       const isByVertical = direction === Vertical;
       const isByHorizontal = direction === Horizontal;
       const isByDiagonal = direction === Diagonal;

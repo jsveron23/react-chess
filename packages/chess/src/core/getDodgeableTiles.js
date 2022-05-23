@@ -4,6 +4,8 @@ import {
   detectPiece,
   filterOpponent,
   computeDistance,
+  getDirection,
+  detectContacted,
   getSymmetryTile,
   convertSnapshotToTiles,
 } from '../utils';
@@ -24,10 +26,9 @@ function getDodgeableTiles(
   defenderCode,
   attackerRoutes
 ) {
-  const { contact: isContacted, direction } = computeDistance(
-    attackerCode,
-    defenderCode
-  );
+  const { file, rank } = computeDistance(attackerCode, defenderCode);
+  const direction = getDirection(file, rank);
+  const isContacted = detectContacted(file, rank);
   const isKing = detectPiece(King, defenderCode);
   const mt = computeRawMT(timeline, defenderCode);
 

@@ -4,7 +4,6 @@
     "text"
   ],
   "all": true,
-  "per-file": true,
   "include": ["packages/chess/src/core/**/*", "packages/chess/src/utils/**/*"],
   "exclude": ["packages/ui/src/**/*", "**/index.js", "**/test/**/*"],
   "lines": "95",
