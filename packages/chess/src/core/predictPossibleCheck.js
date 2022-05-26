@@ -1,5 +1,5 @@
-import { curry } from 'ramda';
-import findAttacker from './findAttacker';
+import { curry, compose, nth } from 'ramda';
+import getAttackers from './getAttackers';
 import {
   replaceCode,
   parseCode,
@@ -35,7 +35,10 @@ function predictPossibleCheck(timeline, targetCode) {
     pretendSnapshot = removeCodeByTile(snapshot, tileName);
   }
 
-  return findAttacker(kingCode, [pretendSnapshot, ...prevSnapshots]);
+  return compose(
+    nth(0),
+    getAttackers(kingCode)
+  )([pretendSnapshot, ...prevSnapshots]);
 }
 
 export default curry(predictPossibleCheck);
