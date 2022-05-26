@@ -1,4 +1,4 @@
-import { curry, cond, T, always, concat, toString, compose, prop } from 'ramda';
+import { curry, cond, T, always, concat, compose, prop } from 'ramda';
 import getNextFileByIndex from './getNextFileByIndex';
 import getNextRankByIndex from './getNextRankByIndex';
 import parseCode from './parseCode';
@@ -23,7 +23,7 @@ function convertAxisToTile(code, axis) {
 
   return compose(
     cond([
-      [validateTile(nextFileName), compose(concat(nextFileName), toString)],
+      [validateTile(nextFileName), compose(concat(nextFileName), String)],
       [T, always('')],
     ]),
     getNextRankByIndex(rankName),
