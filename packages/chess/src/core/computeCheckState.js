@@ -8,6 +8,7 @@ import {
   isEmpty,
   head,
   nth,
+  union,
 } from 'ramda';
 import computePossibleMT from './computePossibleMT';
 import getAttackerRoutes from './getAttackerRoutes';
@@ -35,10 +36,13 @@ function computeCheckState(opponentCode, timeline) {
   // check
   if (attackerCode) {
     // match same movement of piece but same tile as King
-    attackerRoutes = compose(
-      getAttackerRoutes(timeline, attackerCode),
-      pretendTo(kingCode)
-    )(attackerCode);
+    attackerRoutes = attackerCodes.reduce((acc, code) => {
+      return compose(
+        union(acc),
+        getAttackerRoutes(timeline, code),
+        pretendTo(kingCode)
+      )(code);
+    }, []);
 
     // King
     dodgeableTiles = compose(
