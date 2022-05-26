@@ -1,5 +1,5 @@
 import test from 'ava';
-import findAttacker from '../findAttacker';
+import getAttackers from '../getAttackers';
 
 // prettier-ignore
 const timeline = [
@@ -24,10 +24,10 @@ const timeline = [
 ]
 
 test('Should be returned function', (t) => {
-  t.is(typeof findAttacker(), 'function');
-  t.is(typeof findAttacker([]), 'function');
+  t.is(typeof getAttackers(), 'function');
+  t.is(typeof getAttackers([]), 'function');
 });
 
-test('Should be returned an attacker', (t) => {
-  t.is(findAttacker('bKe8', timeline), 'wQa4');
+test('Should be returned attackers', (t) => {
+  t.deepEqual(getAttackers('bKe8', timeline), ['wQa4']);
 });

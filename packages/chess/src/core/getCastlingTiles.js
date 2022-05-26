@@ -4,6 +4,7 @@ import {
   filter,
   includes,
   isEmpty,
+  complement,
   nth,
   toString,
   flip,
@@ -11,7 +12,7 @@ import {
   concat,
   join,
 } from 'ramda';
-import findAttacker from './findAttacker';
+import getAttackers from './getAttackers';
 import {
   parseCode,
   detectMoved,
@@ -36,7 +37,12 @@ function getCastlingTiles(timeline, code) {
     filter(
       anyPass([
         _detectIncludes,
-        compose(flip(findAttacker)(timeline), toString, concat(pKey)),
+        compose(
+          complement(isEmpty),
+          flip(getAttackers)(timeline),
+          toString,
+          concat(pKey)
+        ),
       ])
     ),
     _convertToTiles

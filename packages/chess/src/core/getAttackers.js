@@ -1,4 +1,4 @@
-import { curry, compose, find, nth, includes } from 'ramda';
+import { curry, compose, filter, nth, includes } from 'ramda';
 import computeRawMT from './computeRawMT';
 import {
   filterOpponent,
@@ -8,26 +8,22 @@ import {
 } from '../utils';
 
 /**
- * Find which piece is attacker to `code`
+ * Get which pieces are attackers
  * @param  {String} defenderCode
  * @param  {Array}  timeline
  * @return {String}
  */
-function findAttacker(defenderCode, timeline) {
-  const _computeMT = computeRawMT(timeline);
+function getAttackers(defenderCode, timeline) {
   const _includesTn = compose(
     includes,
     parseCode.prop('tileName')
   )(defenderCode);
 
   return compose(
-    find((code) => {
-      let mt = _computeMT(code);
+    filter((code) => {
+      let mt = computeRawMT(timeline, code);
 
       if (detectPiece.Pawn(code)) {
-        // if Pawn in vertical tiles of `defenderCode`,
-        // remove vertical tiles
-        // - cannot attack by vertical direction
         mt = removeDirection.Vertical(mt, code);
       }
 
@@ -38,4 +34,4 @@ function findAttacker(defenderCode, timeline) {
   )(timeline);
 }
 
-export default curry(findAttacker);
+export default curry(getAttackers);

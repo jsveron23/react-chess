@@ -360,10 +360,10 @@ export function updateCheckState(selectedCode) {
       payload: {
         to: check.attackerCode ? check.kingCode : '',
         from: check.attackerCode || '',
-        routes: check.attackerRoutes || [],
-        defenders: check.defenders || [],
-        defendTiles: check.defendTiles || [],
-        dodgeableTiles: check.dodgeableTiles || [],
+        routes: check.attackerRoutes,
+        defenders: check.defenders,
+        defendTiles: check.defendTiles,
+        dodgeableTiles: check.dodgeableTiles,
       },
     });
   };

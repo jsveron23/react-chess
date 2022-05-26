@@ -6,7 +6,7 @@ import { File, Rank, Turn, Movement } from '../presets';
  * @return {Boolean}
  */
 function validateCode(code) {
-  if (!code || (code && code.length !== 4)) {
+  if (!code || (typeof code === 'string' && code.length !== 4)) {
     return false;
   }
 

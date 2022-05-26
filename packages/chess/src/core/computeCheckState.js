@@ -6,11 +6,12 @@ import {
   flatten,
   reject,
   isEmpty,
+  head,
   nth,
 } from 'ramda';
 import computePossibleMT from './computePossibleMT';
 import getAttackerRoutes from './getAttackerRoutes';
-import findAttacker from './findAttacker';
+import getAttackers from './getAttackers';
 import getDefenders from './getDefenders';
 import getDodgeableTiles from './getDodgeableTiles';
 import removePredictTiles from './internal/removePredictTiles';
@@ -24,13 +25,12 @@ import { filterOpponent, findOpponentKing, pretendTo } from '../utils';
  */
 function computeCheckState(opponentCode, timeline) {
   const kingCode = compose(findOpponentKing(opponentCode), nth(0))(timeline);
-  const attackerCode = findAttacker(kingCode, timeline);
+  const attackerCodes = getAttackers(kingCode, timeline);
+  const attackerCode = head(attackerCodes);
   let attackerRoutes = [];
   let defenders = [];
   let defendTiles = [];
   let dodgeableTiles = [];
-
-  // TODO if Pawn promote, can be attacked by 2 pieces
 
   // check
   if (attackerCode) {
@@ -47,10 +47,13 @@ function computeCheckState(opponentCode, timeline) {
     )(attackerRoutes);
 
     // not King (defenders)
-    const grp = getDefenders(attackerCode, timeline, attackerRoutes);
+    // TODO refactoring (legacy)
+    if (attackerCodes.length === 1) {
+      const grp = getDefenders(attackerCode, timeline, attackerRoutes);
 
-    defenders = grp.of;
-    defendTiles = grp.tiles;
+      defenders = grp.of;
+      defendTiles = grp.tiles;
+    }
   }
 
   const _getPMT = flip(computePossibleMT(attackerCode, attackerRoutes))(
@@ -59,6 +62,7 @@ function computeCheckState(opponentCode, timeline) {
 
   return {
     // every pieces movable tiles of King side
+    // TODO compute wrong
     dodgeableTiles: compose(
       concat(dodgeableTiles),
       flatten,
@@ -67,8 +71,8 @@ function computeCheckState(opponentCode, timeline) {
       nth(0)
     )(timeline),
 
+    attackerCode, // NOTE for legacy logic
     kingCode,
-    attackerCode,
     attackerRoutes,
     defendTiles,
     defenders,

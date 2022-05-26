@@ -34,7 +34,7 @@ test('Should be returned an attacker code', (t) => {
 
 test('Should be called functions with', (t) => {
   const spy1 = sinon.spy();
-  predictPossibleCheck.__Rewire__('findAttacker', spy1);
+  predictPossibleCheck.__Rewire__('getAttackers', spy1);
 
   predictPossibleCheck([snapshot2], 'bKe8');
 
