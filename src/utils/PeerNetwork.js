@@ -1,5 +1,6 @@
 import EventEmitter from 'events';
 import { Peer } from 'peerjs';
+import debug from './debug';
 
 class PeerNetwork extends EventEmitter {
   peer = null;
@@ -15,6 +16,10 @@ class PeerNetwork extends EventEmitter {
     this.peer.on('disconnected', () => this.#handlePeerDisconnected());
     this.peer.on('close', () => this.#handlePeerClose());
     this.peer.on('error', (err) => this.emit('error', err));
+  }
+
+  static of() {
+    return new PeerNetwork();
   }
 
   send(data) {
@@ -90,7 +95,7 @@ class PeerNetwork extends EventEmitter {
 
       this.peer.reconnect();
     } catch (err) {
-      console.error(err);
+      debug.err('PeerNetwork - disconnected/reconnect issue: ', err);
     } finally {
       this.emit('disconnected');
     }

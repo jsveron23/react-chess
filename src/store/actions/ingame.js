@@ -3,9 +3,10 @@ import { ActionCreators } from 'redux-undo';
 import { compose, reject, equals, clone, reverse, nth, prop } from 'ramda';
 import * as Chess from 'chess/es';
 import { ONE_VS_ONE } from '~/presets';
+import { debug } from '~/utils';
 import { toggleAwaiting } from './network';
 import * as types from '../actionTypes';
-import peerNetwork from '../networkSupport';
+import peerNetwork from '../../networkSupport';
 
 /**
  * Remove selected code (reset)
@@ -236,10 +237,11 @@ export function afterMoving(nextTileName, selectedCode, getNextSnapshot) {
 
           // filter it first, otherwise TypeError(`CastlingMap`)
           if (file === 2) {
-            const currRookCode = CastlingMap[nextCode].curr;
+            const codeMap = CastlingMap[nextCode];
+            const currRookCode = codeMap.curr;
 
             if (currRookCode) {
-              const nextRookCode = CastlingMap[nextCode].next;
+              const nextRookCode = codeMap.next;
 
               nextSnapshot = Chess.replaceCode(
                 nextSnapshot,
@@ -297,21 +299,12 @@ export function afterMoving(nextTileName, selectedCode, getNextSnapshot) {
 export function updateSheetData() {
   return (dispatch, getState) => {
     const {
-      ingame: {
-        present: { turn },
-        present,
-        past,
-      },
+      ingame: { present, past },
     } = getState();
 
     const sheetData = Chess.createSheet(present, past);
-    const sideData = compose(
-      prop(Chess.Opponent[turn]),
-      nth(0),
-      reverse
-    )(sheetData);
 
-    dispatch(measureAxis(sideData));
+    dispatch(measureAxis(sheetData));
     dispatch({
       type: types.UPDATE_SHEET_DATA,
       payload: sheetData,
@@ -321,12 +314,22 @@ export function updateSheetData() {
 
 /**
  * Measure axis for animation
- * @param  {Object}  sideData
+ * @param  {Array}   sheetData
  * @return {Boolean}
  */
-export function measureAxis(sideData) {
-  return (dispatch) => {
-    const { from, to } = sideData;
+export function measureAxis(sheetData) {
+  return (dispatch, getState) => {
+    const {
+      ingame: {
+        present: { turn },
+      },
+    } = getState();
+
+    const { from, to } = compose(
+      prop(Chess.Opponent[turn]),
+      nth(0),
+      reverse
+    )(sheetData);
 
     dispatch({
       type: types.MEASURE_AXIS,
@@ -347,9 +350,9 @@ export function updateCheckState(selectedCode) {
 
     // TODO dispatch
     if (isCheckmate) {
-      console.log('checkmate!');
+      debug.inline('checkmate!');
     } else if (isStalemate) {
-      console.log('stalemate!');
+      debug.inline('stalemate!');
     }
 
     dispatch({

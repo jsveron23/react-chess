@@ -1,7 +1,7 @@
 import { batch } from 'react-redux';
 import { ActionCreators } from 'redux-undo';
 import { Snapshot, Turn } from 'chess/es';
-import { Storage, Compression } from '~/utils';
+import { Storage, Compression, debug } from '~/utils';
 import { SAVE_GAME, INSTANT_IMPORT_DATA } from '~/presets';
 import {
   updateTurn,
@@ -93,6 +93,6 @@ export function exportGame() {
       dispatch({
         type: EXPORT_GAME,
       });
-    }, console.error);
+    }, debug.err('clipboard issue'));
   };
 }

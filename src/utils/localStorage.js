@@ -1,3 +1,5 @@
+import debug from './debug';
+
 export function setItem(key, data) {
   try {
     let val = data;
@@ -8,7 +10,7 @@ export function setItem(key, data) {
 
     localStorage.setItem(key, val);
   } catch (err) {
-    console.error('localStorage/setItem: ', err);
+    debug.err('localStorage - setItem issue: ', err);
   }
 }
 
@@ -16,7 +18,7 @@ export function getItem(key) {
   try {
     return localStorage.getItem(key);
   } catch (err) {
-    console.error('localStorage/getItem: ', err);
+    debug.err('localStorage - getItem issue: ', err);
   }
 }
 
@@ -24,7 +26,7 @@ export function removeItem(key) {
   try {
     localStorage.removeItem(key);
   } catch (err) {
-    console.error('localStorage/removeItem: ', err);
+    debug.err('localStorage - removeItem issue: ', err);
   }
 }
 
@@ -32,6 +34,6 @@ export function clear() {
   try {
     localStorage.clear();
   } catch (err) {
-    console.error('localStorage/clear: ', err);
+    debug.err('localStorage - clear issue: ', err);
   }
 }

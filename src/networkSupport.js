@@ -8,9 +8,9 @@ import {
   connectedPeerNetwork,
   afterMoving,
   decideSide,
-} from './actions';
+} from '~/store/actions';
 
-const peerNetwork = new PeerNetwork();
+const peerNetwork = PeerNetwork.of();
 
 export function networkSupport(store) {
   const { dispatch } = store;
@@ -27,21 +27,21 @@ export function networkSupport(store) {
 
   peerNetwork.on('received', (data) => {
     const { command, args } = data;
-    const _args = [args.nextTileName, args.selectedCode];
+    const nextArgs = [args.nextTileName, args.selectedCode];
     const _replaceCode = replaceCode(args.snapshot);
 
     if (command === 'capture') {
-      _args.push(
+      nextArgs.push(
         compose(
           reject(equals(args.selectedCode)),
           _replaceCode(args.pretendCode)
         )
       );
     } else if (command === 'move') {
-      _args.push(_replaceCode(args.selectedCode));
+      nextArgs.push(_replaceCode(args.selectedCode));
     }
 
-    dispatch(afterMoving(..._args));
+    dispatch(afterMoving(...nextArgs));
     dispatch(toggleAwaiting());
   });
 

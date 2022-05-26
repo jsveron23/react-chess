@@ -3,7 +3,7 @@ import thunk from 'redux-thunk';
 import { identity } from 'ramda';
 import { composeWithDevTools } from 'redux-devtools-extension';
 import { IS_DEV, INSTANT_IMPORT_DATA, SAVE_GAME } from '~/presets';
-import { Storage, Compression } from '~/utils';
+import { Storage, Compression, debug } from '~/utils';
 import reducers from './reducers';
 
 const composeDev = IS_DEV ? composeWithDevTools : identity;
@@ -19,7 +19,7 @@ function configureStore(preloadedState) {
     try {
       intitalState = JSON.parse(Compression.decompress(importData));
     } catch (err) {
-      console.error(err);
+      debug.err('Redux - intital-state issue: ', err);
     } finally {
       Storage.removeItem(INSTANT_IMPORT_DATA);
     }

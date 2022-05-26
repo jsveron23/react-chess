@@ -1,4 +1,5 @@
 import zlib from 'zlib';
+import debug from './debug';
 
 export function compress(data) {
   let compressedStr;
@@ -8,7 +9,7 @@ export function compress(data) {
 
     compressedStr = zlib.deflateSync(str).toString('base64');
   } catch (err) {
-    console.error(err);
+    debug.err('zlib - compress issue: ', err);
   }
 
   return compressedStr;
@@ -22,7 +23,7 @@ export function decompress(data) {
 
     decompressedStr = zlib.inflateSync(buf).toString();
   } catch (err) {
-    console.error(err);
+    debug.err('zlib - decompress issue: ', err);
   }
 
   return decompressedStr;

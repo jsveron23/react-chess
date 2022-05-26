@@ -17,7 +17,7 @@ import {
   JOIN_NETWORK_GAME,
   CONNECTED_PEER_NETWORK,
 } from '../actionTypes';
-import peerNetwork from '../networkSupport';
+import peerNetwork from '../../networkSupport';
 
 export function openNetworkGame(ownId) {
   return {
