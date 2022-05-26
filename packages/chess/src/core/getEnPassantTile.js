@@ -11,10 +11,11 @@ import {
   of,
   flip,
   cond,
-  prop,
   not,
   equals,
   without,
+  juxt,
+  join,
   difference,
   complement,
 } from 'ramda';
@@ -45,18 +46,18 @@ function getEnPassantTile(code, timeline) {
 
   if (equals(RANK_SPOT[side], Number(rankName))) {
     const [snapshot, ...prevTimeline] = timeline;
-    const _detectMovedBy = detectMoved(prevTimeline);
-    const _parseCodeBy = compose(parseCode, findCodeByTile(snapshot));
 
     return compose(
       flip(convertAxisToTile)([0, -1]),
       nth(0),
-      filter((cd) => {
-        const prevTile = convertAxisToTile(cd, [0, -2]);
-        const pKey = parseCode.prop('pKey', cd);
-
-        return compose(not, _detectMovedBy)(`${pKey}${prevTile}`);
-      }),
+      filter(
+        compose(
+          not,
+          detectMoved(prevTimeline),
+          join(''),
+          juxt([parseCode.prop('pKey'), flip(convertAxisToTile)([0, -2])])
+        ) // get previous code
+      ),
       reduce(
         (acc, tN) =>
           compose(
@@ -67,8 +68,8 @@ function getEnPassantTile(code, timeline) {
               ],
               [T, always(acc)],
             ]),
-            prop('code'),
-            _parseCodeBy
+            parseCode.prop('code'),
+            findCodeByTile(snapshot)
           )(tN),
         []
       ),

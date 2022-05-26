@@ -1,22 +1,10 @@
-import {
-  curry,
-  compose,
-  flip,
-  concat,
-  flatten,
-  reject,
-  isEmpty,
-  head,
-  nth,
-  union,
-} from 'ramda';
-import computePossibleMT from './computePossibleMT';
+import { curry, compose, props, head, union } from 'ramda';
 import getAttackerRoutes from './getAttackerRoutes';
 import getAttackers from './getAttackers';
 import getDefenders from './getDefenders';
 import getDodgeableTiles from './getDodgeableTiles';
 import removePredictTiles from './internal/removePredictTiles';
-import { filterOpponent, findOpponentKing, pretendTo } from '../utils';
+import { findOpponentKing, pretendTo } from '../utils';
 
 /**
  * Compute whether Check or not (entry function)
@@ -25,9 +13,10 @@ import { filterOpponent, findOpponentKing, pretendTo } from '../utils';
  * @return {Object}
  */
 function computeCheckState(opponentCode, timeline) {
-  const kingCode = compose(findOpponentKing(opponentCode), nth(0))(timeline);
+  const kingCode = compose(findOpponentKing(opponentCode), head)(timeline);
   const attackerCodes = getAttackers(kingCode, timeline);
-  const attackerCode = head(attackerCodes);
+  const attackerCode = head(attackerCodes); // one is enough
+  const onlyOneAttacker = attackerCodes.length === 1;
   let attackerRoutes = [];
   let defenders = [];
   let defendTiles = [];
@@ -35,7 +24,6 @@ function computeCheckState(opponentCode, timeline) {
 
   // check
   if (attackerCode) {
-    // match same movement of piece but same tile as King
     attackerRoutes = attackerCodes.reduce((acc, code) => {
       return compose(
         union(acc),
@@ -44,42 +32,28 @@ function computeCheckState(opponentCode, timeline) {
       )(code);
     }, []);
 
-    // King
+    // dodge by King
     dodgeableTiles = compose(
       removePredictTiles(timeline, kingCode),
       getDodgeableTiles(timeline, attackerCode, kingCode)
     )(attackerRoutes);
 
-    // not King (defenders)
-    // TODO refactoring (legacy)
-    if (attackerCodes.length === 1) {
-      const grp = getDefenders(attackerCode, timeline, attackerRoutes);
-
-      defenders = grp.of;
-      defendTiles = grp.tiles;
+    // King defenders
+    if (onlyOneAttacker) {
+      [defenders, defendTiles] = compose(
+        props(['of', 'tiles']),
+        getDefenders(attackerCode, timeline)
+      )(attackerRoutes);
     }
   }
 
-  const _getPMT = flip(computePossibleMT(attackerCode, attackerRoutes))(
-    timeline
-  );
-
   return {
-    // every pieces movable tiles of King side
-    // TODO compute wrong
-    dodgeableTiles: compose(
-      concat(dodgeableTiles),
-      flatten,
-      reject(compose(isEmpty, _getPMT)),
-      filterOpponent(opponentCode), // opponent's opponent
-      nth(0)
-    )(timeline),
-
-    attackerCode, // NOTE for legacy logic
     kingCode,
-    attackerRoutes,
-    defendTiles,
     defenders,
+    defendTiles,
+    attackerCode,
+    attackerRoutes,
+    dodgeableTiles,
   };
 }
 
