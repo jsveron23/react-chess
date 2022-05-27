@@ -1,7 +1,7 @@
 import { render } from 'react-dom';
 import { Provider } from 'react-redux';
 import store from '~/store';
-import { ThemeContext, theme } from '~/styles/useTheme';
+import { ThemeContext, theme } from '~/utils/hooks';
 import App from './App';
 
 render(

@@ -1,13 +1,15 @@
-import { memo, useEffect } from 'react';
+import { useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { useSpring, animated } from 'react-spring';
 import useMeasure from 'react-use-measure';
 import { Flex, Absolute } from 'ui/es';
 import { getPiece } from 'chess/es';
+import { useChess } from '~/utils/hooks';
 
 const Animate = animated(Absolute);
 
-const Piece = ({ pKey, animate, pretendCode }) => {
+const Piece = ({ pKey, pretendCode }) => {
+  const { animate } = useChess();
   const [ref, { width }] = useMeasure();
   const [styles, api] = useSpring(() => {
     let opacity = 1;
@@ -66,13 +68,6 @@ const Piece = ({ pKey, animate, pretendCode }) => {
 Piece.propTypes = {
   pKey: PropTypes.string.isRequired,
   pretendCode: PropTypes.string.isRequired,
-  animate: PropTypes.shape({
-    targetCode: PropTypes.string,
-    from: PropTypes.shape({
-      x: PropTypes.number,
-      y: PropTypes.number,
-    }),
-  }).isRequired,
 };
 
-export default memo(Piece);
+export default Piece;

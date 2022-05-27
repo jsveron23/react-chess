@@ -6,7 +6,7 @@ import {
   SheetContainer,
   NotiBarContainer,
 } from '~/containers';
-import useTheme from '~/styles/useTheme';
+import { useTheme } from '~/utils/hooks';
 import Logo from '~/assets/logo.svg';
 import { Viewport, Sidebar } from '~/layout';
 import '~/styles/app.css';

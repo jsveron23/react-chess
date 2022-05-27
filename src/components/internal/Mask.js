@@ -1,18 +1,17 @@
-import { memo } from 'react';
 import PropTypes from 'prop-types';
 import { equals, includes } from 'ramda';
 import { Absolute } from 'ui/es';
+import { useChess } from '~/utils/hooks';
 
-const Mask = ({
-  checkCode,
-  checkRoute,
-  checkDefenders,
-  tileName,
-  pretendCode,
-  detectOTWByCode,
-  detectEnemy,
-  detectEnPassantTile,
-}) => {
+const Mask = ({ tileName, pretendCode }) => {
+  const {
+    checkCode,
+    checkRoute,
+    checkDefenders,
+    detectEnemy,
+    detectOTWByCode,
+    detectEnPassantTile,
+  } = useChess();
   const isOTW = detectOTWByCode(pretendCode);
   const isDefender = includes(pretendCode, checkDefenders);
   const isRoute = includes(tileName, checkRoute);
@@ -44,20 +43,8 @@ const Mask = ({
 };
 
 Mask.propTypes = {
-  detectOTWByCode: PropTypes.func.isRequired,
-  detectEnemy: PropTypes.func.isRequired,
-  detectEnPassantTile: PropTypes.func.isRequired,
   tileName: PropTypes.string.isRequired,
   pretendCode: PropTypes.string.isRequired,
-  checkRoute: PropTypes.arrayOf(PropTypes.string),
-  checkDefenders: PropTypes.arrayOf(PropTypes.string),
-  checkCode: PropTypes.string,
 };
 
-Mask.defaultProps = {
-  checkCode: '',
-  checkRoute: [],
-  checkDefenders: [],
-};
-
-export default memo(Mask);
+export default Mask;

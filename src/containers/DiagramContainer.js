@@ -1,7 +1,7 @@
 import { connect } from 'react-redux';
 import { compose, flip, intersection, includes } from 'ramda';
+import memoizeOne from 'memoize-one';
 import {
-  Pawn,
   detectEnemyOnTiles,
   validateCode,
   getPKeyByTile,
@@ -11,6 +11,9 @@ import {
 } from 'chess/es';
 import { Diagram } from '~/components';
 import { updateSelectedCode, movePiece, capturePiece } from '~/store/actions';
+
+const convertToTiles = memoizeOne(convertAxisListToTiles);
+const detectPawn = memoizeOne(detectPiece.Pawn);
 
 function mapStateToProps({
   network: { connected, awaiting },
@@ -29,18 +32,15 @@ function mapStateToProps({
   animate,
 }) {
   return {
-    getPKey: getPKeyByTile(snapshot),
-    detectEnemy: detectEnemyOnTiles(movableTiles, selectedCode),
-    detectOTWByCode: flip(includes)([selectedCode, ...movableTiles]),
     detectEnPassantTile(tileName) {
-      const isPawn = detectPiece(Pawn, selectedCode);
+      const isPawn = detectPawn(selectedCode);
       let isEnemyTile = false;
 
       if (selectedCode) {
         isEnemyTile = compose(
           includes(tileName),
           intersection(movableTiles),
-          convertAxisListToTiles(selectedCode)
+          convertToTiles(selectedCode)
         )([
           [1, 1],
           [-1, 1],
@@ -49,6 +49,9 @@ function mapStateToProps({
 
       return isPawn && isEnemyTile;
     },
+    getPKey: getPKeyByTile(snapshot),
+    detectEnemy: detectEnemyOnTiles(movableTiles, selectedCode),
+    detectOTWByCode: flip(includes)([selectedCode, ...movableTiles]),
     checkCode: attackerCode ? kingCode : '',
     checkRoute: attackerRoutes,
     checkDefenders: defenders,
