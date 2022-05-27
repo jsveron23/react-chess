@@ -1,10 +1,15 @@
-import { curry, compose, props, head, union } from 'ramda';
+import { curry, compose, props, head, union, flatten, map } from 'ramda';
+import computePossibleMT from './computePossibleMT';
 import getAttackerRoutes from './getAttackerRoutes';
 import getAttackers from './getAttackers';
 import getDefenders from './getDefenders';
-import getDodgeableTiles from './getDodgeableTiles';
-import removePredictTiles from './internal/removePredictTiles';
-import { findOpponentKing, pretendTo } from '../utils';
+import {
+  findOpponentKing,
+  pretendTo,
+  detectPiece,
+  removeDirection,
+  filterOpponent,
+} from '../utils';
 
 /**
  * Compute whether Check or not (entry function)
@@ -15,14 +20,12 @@ import { findOpponentKing, pretendTo } from '../utils';
 function computeCheckState(opponentCode, timeline) {
   const kingCode = compose(findOpponentKing(opponentCode), head)(timeline);
   const attackerCodes = getAttackers(kingCode, timeline);
-  const attackerCode = head(attackerCodes); // one is enough
+  const attackerCode = head(attackerCodes) || ''; // one is enough
   const onlyOneAttacker = attackerCodes.length === 1;
   let attackerRoutes = [];
   let defenders = [];
   let defendTiles = [];
-  let dodgeableTiles = [];
 
-  // check
   if (attackerCode) {
     attackerRoutes = attackerCodes.reduce((acc, code) => {
       return compose(
@@ -32,12 +35,6 @@ function computeCheckState(opponentCode, timeline) {
       )(code);
     }, []);
 
-    // dodge by King
-    dodgeableTiles = compose(
-      removePredictTiles(timeline, kingCode),
-      getDodgeableTiles(timeline, attackerCode, kingCode)
-    )(attackerRoutes);
-
     // King defenders
     if (onlyOneAttacker) {
       [defenders, defendTiles] = compose(
@@ -46,6 +43,22 @@ function computeCheckState(opponentCode, timeline) {
       )(attackerRoutes);
     }
   }
+
+  // all pieces mt
+  const dodgeableTiles = compose(
+    flatten,
+    map((code) => {
+      let pmt = computePossibleMT(attackerCode, attackerRoutes, code, timeline);
+
+      if (detectPiece.Pawn(code)) {
+        pmt = removeDirection.Vertical(pmt, code);
+      }
+
+      return pmt;
+    }),
+    filterOpponent(opponentCode),
+    head
+  )(timeline);
 
   return {
     kingCode,

@@ -1,6 +1,15 @@
 import { batch } from 'react-redux';
 import { ActionCreators } from 'redux-undo';
-import { compose, reject, equals, clone, reverse, nth, prop } from 'ramda';
+import {
+  compose,
+  reject,
+  equals,
+  clone,
+  reverse,
+  nth,
+  prop,
+  isEmpty,
+} from 'ramda';
 import * as Chess from 'chess/es';
 import { ONE_VS_ONE } from '~/presets';
 import { debug } from '~/utils';
@@ -346,7 +355,8 @@ export function updateCheckState(selectedCode) {
 
     const timeline = Chess.createTimeline(present, past);
     const check = Chess.computeCheckState(selectedCode, timeline);
-    const { isCheckmate, isStalemate } = Chess.detectCheck(check);
+    const { isCheckmate } = Chess.detectCheck(check);
+    const isStalemate = isEmpty(check.dodgeableTiles);
 
     // TODO dispatch
     if (isCheckmate) {
@@ -358,12 +368,16 @@ export function updateCheckState(selectedCode) {
     dispatch({
       type: types.UPDATE_CHECK_CODE,
       payload: {
+        // TODO for refactoring
+        data: check,
+
         to: check.attackerCode ? check.kingCode : '',
         from: check.attackerCode || '',
         routes: check.attackerRoutes,
         defenders: check.defenders,
         defendTiles: check.defendTiles,
         dodgeableTiles: check.dodgeableTiles,
+        isStalemate,
       },
     });
   };

@@ -1,4 +1,4 @@
-import { curry, compose, filter, nth, includes } from 'ramda';
+import { curry, compose, filter, head, includes } from 'ramda';
 import computeRawMT from './computeRawMT';
 import {
   filterOpponent,
@@ -30,7 +30,7 @@ function getAttackers(defenderCode, timeline) {
       return _includesTn(mt);
     }),
     filterOpponent(defenderCode),
-    nth(0)
+    head
   )(timeline);
 }
 

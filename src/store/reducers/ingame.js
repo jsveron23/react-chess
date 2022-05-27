@@ -33,6 +33,9 @@ const initialState = {
     defenders: [],
     defendTiles: [],
     dodgeableTiles: [],
+    isCheck: false,
+    isCheckmate: false,
+    isStalemate: false,
   },
 };
 

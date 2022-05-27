@@ -14,3 +14,4 @@ export { default as computePossibleMT } from './computePossibleMT';
 export { default as getAttackers } from './getAttackers';
 export { default as predictPossibleCheck } from './predictPossibleCheck';
 export { default as parseNotation } from './parseNotation';
+export { default as detectCheck } from './detectCheck';

@@ -2,7 +2,8 @@ import { isEmpty } from 'ramda';
 
 /**
  * Detect Check state
- * @param  {Object} check
+ * @param  {Object}   check
+ * @param  {Function} detectStalemate
  * @return {Object}
  */
 function detectCheck(check) {
@@ -11,14 +12,12 @@ function detectCheck(check) {
   }
 
   const isStuck = isEmpty(check.defenders) && isEmpty(check.defendTiles);
-  const isNotDodgeable = isEmpty(check.dodgeableTiles);
+  const haveNotDodgeable = isEmpty(check.dodgeableTiles);
   const attackerCode = check.attackerCode || check.from;
   const isCheck = !!attackerCode;
-  const isCheckmate = isCheck && isStuck && isNotDodgeable;
-  // const isStalemate = !isCheck && isStuck && isNotDodgeable;
+  const isCheckmate = isCheck && isStuck && haveNotDodgeable;
 
   return {
-    isStalemate: false, // TODO for now
     isCheck,
     isCheckmate,
   };
