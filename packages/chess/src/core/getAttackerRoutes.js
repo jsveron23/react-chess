@@ -35,9 +35,8 @@ function getAttackerRoutes(timeline, attackerCode, defenderCode) {
     return [tileName];
   }
 
-  const _computeMT = computeRawMT(timeline);
-  const aMt = _computeMT(attackerCode);
-  let bMt = _computeMT(defenderCode);
+  const aMt = computeRawMT(timeline, attackerCode);
+  const bMt = computeRawMT(timeline, defenderCode);
   let routes = intersection(aMt, bMt);
 
   // NOTE specific condition, just recalculation
@@ -73,7 +72,7 @@ function getAttackerRoutes(timeline, attackerCode, defenderCode) {
         }
       }),
       intersection(aMt),
-      _computeMT
+      computeRawMT(timeline)
     )(
       direction === Diagonal
         ? transformInto(Bishop, defenderCode)

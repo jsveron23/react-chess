@@ -1,19 +1,11 @@
 import { batch } from 'react-redux';
 import { ActionCreators } from 'redux-undo';
-import {
-  compose,
-  reject,
-  equals,
-  clone,
-  reverse,
-  nth,
-  prop,
-  isEmpty,
-} from 'ramda';
+import { compose, reject, equals, clone } from 'ramda';
 import * as Chess from 'chess/es';
 import { ONE_VS_ONE } from '~/presets';
 import { debug } from '~/utils';
 import { toggleAwaiting } from './network';
+import { measureAxis } from './animate';
 import * as types from '../actionTypes';
 import peerNetwork from '../../networkSupport';
 
@@ -100,7 +92,7 @@ export function updateMovableTiles(code) {
     const {
       ingame: {
         present: {
-          check: { from, routes },
+          checkData: { attackerCode, attackerRoutes },
         },
         present,
         past,
@@ -110,7 +102,7 @@ export function updateMovableTiles(code) {
     dispatch({
       type: types.UPDATE_MOVABLE_TILES,
       payload: compose(
-        Chess.computePossibleMT(from, routes, code),
+        Chess.computePossibleMT(attackerCode, attackerRoutes, code),
         Chess.createTimeline(present)
       )(past),
     });
@@ -305,6 +297,37 @@ export function afterMoving(nextTileName, selectedCode, getNextSnapshot) {
   };
 }
 
+export function updateCheckState(selectedCode) {
+  return (dispatch, getState) => {
+    const {
+      ingame: { present, past },
+    } = getState();
+
+    const timeline = Chess.createTimeline(present, past);
+    const { data, isCheck, isStalemate, isCheckmate } = Chess.computeCheckState(
+      selectedCode,
+      timeline
+    );
+
+    // TODO dispatch
+    if (isCheckmate) {
+      debug.inline('checkmate!');
+    } else if (isStalemate) {
+      debug.inline('stalemate!');
+    }
+
+    dispatch({
+      type: types.UPDATE_CHECK_CODE,
+      payload: {
+        isCheck,
+        isStalemate,
+        isCheckmate,
+        ...data,
+      },
+    });
+  };
+}
+
 export function updateSheetData() {
   return (dispatch, getState) => {
     const {
@@ -317,68 +340,6 @@ export function updateSheetData() {
     dispatch({
       type: types.UPDATE_SHEET_DATA,
       payload: sheetData,
-    });
-  };
-}
-
-/**
- * Measure axis for animation
- * @param  {Array}   sheetData
- * @return {Boolean}
- */
-export function measureAxis(sheetData) {
-  return (dispatch, getState) => {
-    const {
-      ingame: {
-        present: { turn },
-      },
-    } = getState();
-
-    const { from, to } = compose(
-      prop(Chess.Opponent[turn]),
-      nth(0),
-      reverse
-    )(sheetData);
-
-    dispatch({
-      type: types.MEASURE_AXIS,
-      payload: Chess.getAnimationAxis(from, to),
-    });
-  };
-}
-
-export function updateCheckState(selectedCode) {
-  return (dispatch, getState) => {
-    const {
-      ingame: { present, past },
-    } = getState();
-
-    const timeline = Chess.createTimeline(present, past);
-    const check = Chess.computeCheckState(selectedCode, timeline);
-    const { isCheckmate } = Chess.detectCheck(check);
-    const isStalemate = isEmpty(check.dodgeableTiles);
-
-    // TODO dispatch
-    if (isCheckmate) {
-      debug.inline('checkmate!');
-    } else if (isStalemate) {
-      debug.inline('stalemate!');
-    }
-
-    dispatch({
-      type: types.UPDATE_CHECK_CODE,
-      payload: {
-        // TODO for refactoring
-        data: check,
-
-        to: check.attackerCode ? check.kingCode : '',
-        from: check.attackerCode || '',
-        routes: check.attackerRoutes,
-        defenders: check.defenders,
-        defendTiles: check.defendTiles,
-        dodgeableTiles: check.dodgeableTiles,
-        isStalemate,
-      },
     });
   };
 }

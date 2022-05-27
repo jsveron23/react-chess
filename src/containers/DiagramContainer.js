@@ -16,15 +16,15 @@ function mapStateToProps({
   network: { connected, awaiting },
   ingame: {
     present: {
-      check: { to, routes, defenders },
-      turn,
+      checkData: { kingCode, attackerCode, attackerRoutes, defenders },
       selectedCode,
       movableTiles,
       snapshot,
-      animate,
+      turn,
     },
     future,
   },
+  animate,
 }) {
   return {
     getPKey: getPKeyByTile(snapshot),
@@ -47,8 +47,8 @@ function mapStateToProps({
 
       return isPawn && isEnemyTile;
     },
-    checkCode: to,
-    checkRoute: routes,
+    checkCode: attackerCode ? kingCode : '',
+    checkRoute: attackerRoutes,
     checkDefenders: defenders,
     preventEvent: connected && awaiting,
     animate: future.length > 0 ? undefined : animate,

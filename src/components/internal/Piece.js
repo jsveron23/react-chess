@@ -9,17 +9,27 @@ const Animate = animated(Absolute);
 
 const Piece = ({ pKey, animate, pretendCode }) => {
   const [ref, { width }] = useMeasure();
-  const [styles, api] = useSpring(() => ({ x: 0, y: 0 }));
+  const [styles, api] = useSpring(() => {
+    let opacity = 1;
+
+    // normally, opacity = 1, but when a piece moved
+    // previous component will be removed from snapshot and creating a piece again on the tile,
+    // so if targetCode is same as pretendCode, it means it will be animated piece
+    // it will not remove afterimage effect but not perfectly
+    if (animate.targetCode === pretendCode) {
+      opacity = 0;
+    }
+
+    return { x: 0, y: 0, opacity };
+  });
   const PieceComponent = getPiece(pKey);
 
-  // TODO remove afterimage
   useEffect(() => {
-    if (pretendCode === animate.code) {
+    if (pretendCode === animate.targetCode) {
       const { x, y } = animate.from;
 
       api.start({
         from: {
-          opacity: 0,
           x: width * x,
           y: width * y,
         },
@@ -57,7 +67,7 @@ Piece.propTypes = {
   pKey: PropTypes.string.isRequired,
   pretendCode: PropTypes.string.isRequired,
   animate: PropTypes.shape({
-    code: PropTypes.string,
+    targetCode: PropTypes.string,
     from: PropTypes.shape({
       x: PropTypes.number,
       y: PropTypes.number,

@@ -58,7 +58,7 @@ Tile.propTypes = {
   onClickTile: PropTypes.func.isRequired,
   tileName: PropTypes.string.isRequired,
   animate: PropTypes.shape({
-    code: PropTypes.string,
+    targetCode: PropTypes.string,
     from: PropTypes.shape({
       x: PropTypes.number,
       y: PropTypes.number,

@@ -1,4 +1,13 @@
-import { curry, compose, props, head, union, flatten, map } from 'ramda';
+import {
+  curry,
+  compose,
+  props,
+  head,
+  union,
+  flatten,
+  map,
+  isEmpty,
+} from 'ramda';
 import computePossibleMT from './computePossibleMT';
 import getAttackerRoutes from './getAttackerRoutes';
 import getAttackers from './getAttackers';
@@ -25,8 +34,10 @@ function computeCheckState(opponentCode, timeline) {
   let attackerRoutes = [];
   let defenders = [];
   let defendTiles = [];
+  let kingMt = [];
 
   if (attackerCode) {
+    // get all routes
     attackerRoutes = attackerCodes.reduce((acc, code) => {
       return compose(
         union(acc),
@@ -35,7 +46,7 @@ function computeCheckState(opponentCode, timeline) {
       )(code);
     }, []);
 
-    // King defenders
+    // defenders of King
     if (onlyOneAttacker) {
       [defenders, defendTiles] = compose(
         props(['of', 'tiles']),
@@ -44,7 +55,8 @@ function computeCheckState(opponentCode, timeline) {
     }
   }
 
-  // all pieces mt
+  // TODO change name
+  // all King side pieces movable tiles (+King)
   const dodgeableTiles = compose(
     flatten,
     map((code) => {
@@ -54,19 +66,35 @@ function computeCheckState(opponentCode, timeline) {
         pmt = removeDirection.Vertical(pmt, code);
       }
 
+      if (detectPiece.King(code)) {
+        kingMt = pmt;
+      }
+
       return pmt;
     }),
     filterOpponent(opponentCode),
     head
   )(timeline);
 
+  const isStuck = isEmpty(defenders) && isEmpty(defendTiles);
+  const isCheck = !!attackerCode;
+  const isStalemate = !isCheck && isEmpty(dodgeableTiles);
+  const isCheckmate = isCheck && isStuck && isEmpty(kingMt);
+
   return {
-    kingCode,
-    defenders,
-    defendTiles,
-    attackerCode,
-    attackerRoutes,
-    dodgeableTiles,
+    isCheck,
+    isStalemate,
+    isCheckmate,
+
+    // data for renderer
+    data: {
+      kingCode,
+      defenders,
+      defendTiles,
+      attackerCode,
+      attackerRoutes,
+      dodgeableTiles,
+    },
   };
 }
 

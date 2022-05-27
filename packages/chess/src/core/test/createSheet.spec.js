@@ -1,6 +1,8 @@
 import test from 'ava';
 import createSheet from '../createSheet';
 
+// TODO dodgeableTiles data wrong
+
 // prettier-ignore
 const Present = {
   turn: 'black',
@@ -10,12 +12,12 @@ const Present = {
     'bRa8', 'bNb8', 'bBc8', 'bQd8', 'bKe8', 'bBf8', 'bNg8', 'bRh8', 'bPa7', 'bPb7', 'bPc7', 'bPd5', 'bPe7', 'bPf7', 'bPg7', 'bPh7',
     'wPa2', 'wPb2', 'wPc4', 'wPd2', 'wPe2', 'wPf2', 'wPg2', 'wPh2', 'wRa1', 'wNb1', 'wBc1', 'wQa4', 'wKe1', 'wBf1', 'wNg1', 'wRh1',
   ],
-  check: {
-    to: 'bKe8',
-    from: 'wQa4',
-    routes: ['d7', 'c6', 'b5', 'a4'],
+  checkData: {
+    kingCode: 'bKe8',
     defenders: ['bNb8', 'bBc8', 'bQd8', 'bPb7', 'bPc7'],
     defendTiles: ['c6', 'd7', 'b5'],
+    attackerCode: 'wQa4',
+    attackerRoutes: ['d7', 'c6', 'b5', 'a4'],
     dodgeableTiles: ['bNb8', 'bBc8', 'bQd8', 'bPb7', 'bPc7'],
   },
 };
@@ -30,10 +32,10 @@ const Past = [
       'bRa8', 'bNb8', 'bBc8', 'bQd8', 'bKe8', 'bBf8', 'bNg8', 'bRh8', 'bPa7', 'bPb7', 'bPc7', 'bPd7', 'bPe7', 'bPf7', 'bPg7', 'bPh7',
       'wPa2', 'wPb2', 'wPc2', 'wPd2', 'wPe2', 'wPf2', 'wPg2', 'wPh2', 'wRa1', 'wNb1', 'wBc1', 'wQd1', 'wKe1', 'wBf1', 'wNg1', 'wRh1',
     ],
-    check: {
-      to: '',
-      from: '',
-      routes: [],
+    checkData: {
+      kingCode: '',
+      attackerCode: '',
+      attackerRoutes: [],
       defenders: [],
       defendTiles: [],
       dodgeableTiles: [],
@@ -47,10 +49,10 @@ const Past = [
       'bRa8', 'bNb8', 'bBc8', 'bQd8', 'bKe8', 'bBf8', 'bNg8', 'bRh8', 'bPa7', 'bPb7', 'bPc7', 'bPd7', 'bPe7', 'bPf7', 'bPg7', 'bPh7',
       'wPa2', 'wPb2', 'wPc4', 'wPd2', 'wPe2', 'wPf2', 'wPg2', 'wPh2', 'wRa1', 'wNb1', 'wBc1', 'wQd1', 'wKe1', 'wBf1', 'wNg1', 'wRh1',
     ],
-    check: {
-      to: '',
-      from: '',
-      routes: [],
+    checkData: {
+      kingCode: '',
+      attackerCode: '',
+      attackerRoutes: [],
       defenders: [],
       defendTiles: [],
       dodgeableTiles: [
@@ -67,10 +69,10 @@ const Past = [
       'bRa8', 'bNb8', 'bBc8', 'bQd8', 'bKe8', 'bBf8', 'bNg8', 'bRh8', 'bPa7', 'bPb7', 'bPc7', 'bPd5', 'bPe7', 'bPf7', 'bPg7', 'bPh7',
       'wPa2', 'wPb2', 'wPc4', 'wPd2', 'wPe2', 'wPf2', 'wPg2', 'wPh2', 'wRa1', 'wNb1', 'wBc1', 'wQd1', 'wKe1', 'wBf1', 'wNg1', 'wRh1',
     ],
-    check: {
-      to: '',
-      from: '',
-      routes: [],
+    checkData: {
+      kingCode: '',
+      attackerCode: '',
+      attackerRoutes: [],
       defenders: [],
       defendTiles: [],
       dodgeableTiles: [
@@ -90,31 +92,31 @@ test('Should return notation list as array', (t) => {
   t.deepEqual(createSheet(Present, Past), [
     {
       black: {
-        check: {
+        checkData: {
           defendTiles: [],
           defenders: [],
           dodgeableTiles: [
             'wPa2', 'wPb2', 'wPc4', 'wPd2', 'wPe2', 'wPf2', 'wPg2', 'wPh2',
             'wRa1', 'wNb1', 'wBc1', 'wQd1', 'wKe1', 'wBf1', 'wNg1', 'wRh1',
           ],
-          from: '',
-          routes: [],
-          to: '',
+          attackerCode: '',
+          attackerRoutes: [],
+          kingCode: '',
         },
         from: ['bPd7'],
         to: ['bPd5'],
       },
       white: {
-        check: {
+        checkData: {
           defendTiles: [],
           defenders: [],
           dodgeableTiles: [
             'bRa8', 'bNb8', 'bBc8', 'bQd8', 'bKe8', 'bBf8', 'bNg8', 'bRh8',
             'bPa7', 'bPb7', 'bPc7', 'bPd7', 'bPe7', 'bPf7', 'bPg7', 'bPh7',
           ],
-          from: '',
-          routes: [],
-          to: '',
+          attackerCode: '',
+          attackerRoutes: [],
+          kingCode: '',
         },
         from: ['wPc2'],
         to: ['wPc4'],
@@ -122,13 +124,13 @@ test('Should return notation list as array', (t) => {
     },
     {
       white: {
-        check: {
+        checkData: {
           defendTiles: ['c6', 'd7', 'b5'],
           defenders: ['bNb8', 'bBc8', 'bQd8', 'bPb7', 'bPc7'],
           dodgeableTiles: ['bNb8', 'bBc8', 'bQd8', 'bPb7', 'bPc7'],
-          from: 'wQa4',
-          routes: ['d7', 'c6', 'b5', 'a4'],
-          to: 'bKe8',
+          attackerCode: 'wQa4',
+          attackerRoutes: ['d7', 'c6', 'b5', 'a4'],
+          kingCode: 'bKe8',
         },
         from: ['wQd1'],
         to: ['wQa4'],

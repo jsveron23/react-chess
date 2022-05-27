@@ -41,7 +41,7 @@ Rank.propTypes = {
   detectEnPassantTile: PropTypes.func.isRequired,
   onClickTile: PropTypes.func.isRequired,
   animate: PropTypes.shape({
-    code: PropTypes.string,
+    targetCode: PropTypes.string,
     from: PropTypes.shape({
       x: PropTypes.number,
       y: PropTypes.number,

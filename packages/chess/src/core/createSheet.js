@@ -16,7 +16,9 @@ function createSheet(present, past) {
     }
 
     const { from, to } = diffSnapshot(curr.snapshot, prev.snapshot);
-    const sideData = { [curr.turn]: { check: prev.check, from, to } };
+    const sideData = {
+      [curr.turn]: { checkData: prev.checkData, from, to },
+    };
     let o = last(acc) || {};
 
     // create new

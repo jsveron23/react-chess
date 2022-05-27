@@ -1,5 +1,4 @@
 import { curry, compose, join, prop, nth, reduce, flip } from 'ramda';
-import detectCheck from './detectCheck';
 import devideSourceCapture from './internal/devideSourceCapture';
 import { parseCode, getEqualPieces } from '../utils';
 import { Pawn, Rook } from '../presets';
@@ -18,23 +17,30 @@ const CastlingMap = {
 
 /**
  * Parse notation
- * @param  {Object} check
+ * @param  {Object} checkData
  * @param  {Array}  from
  * @param  {Array}  to
  * @return {String}
  */
-function parseNotation({ check, from, to }) {
-  const { isCheck, isCheckmate } = detectCheck(check);
+function parseNotation({
+  checkData = {
+    isCheck: false,
+    isStalemate: false,
+    isCheckmate: false,
+  },
+  from,
+  to,
+}) {
   const { side, piece, tileName } = compose(parseCode, join(''))(to);
   const isPawn = piece === Pawn;
   const isMoved = from.length === 1 && to.length === 1;
   const isCaptured = from.length === 2 && to.length === 1;
   const isCastling = from.length === 2 && to.length === 2;
-  let symbol = isCheck ? SymbolsMap.check : '';
+  let symbol = checkData.isCheck ? SymbolsMap.check : '';
   let notation = '';
 
-  symbol = isCheckmate ? SymbolsMap.checkmate : symbol;
-  symbol = check.isStalemate ? SymbolsMap.stalemate : symbol;
+  symbol = checkData.isCheckmate ? SymbolsMap.checkmate : symbol;
+  symbol = checkData.isStalemate ? SymbolsMap.stalemate : symbol;
 
   if (isMoved) {
     notation = `${piece}${tileName}`;

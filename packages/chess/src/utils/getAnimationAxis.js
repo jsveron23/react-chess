@@ -1,4 +1,4 @@
-import { compose, nth, find, curry } from 'ramda';
+import { compose, head, find, curry } from 'ramda';
 import parseCode from './parseCode';
 import subInBetweenIndexes from './subInBetweenIndexes';
 import { File, Rank } from '../presets';
@@ -10,14 +10,14 @@ import { File, Rank } from '../presets';
  * @return {Object}
  */
 function getAnimationAxis(from, to) {
-  const { side, fileName: tFn, rankName: tRn } = compose(parseCode, nth(0))(to);
+  const { side, fileName: tFn, rankName: tRn } = compose(parseCode, head)(to);
   const { fileName: fFn, rankName: fRn } = compose(
     parseCode,
     find(parseCode.eq(['side', side]))
   )(from);
 
   return {
-    code: nth(0, to),
+    targetCode: head(to),
     from: {
       x: subInBetweenIndexes(fFn, tFn, File),
       y: subInBetweenIndexes(Number(fRn), Number(tRn), Rank),

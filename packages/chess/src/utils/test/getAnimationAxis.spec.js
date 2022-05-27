@@ -8,7 +8,7 @@ test('Should return function (curry)', (t) => {
 
 test('Should return axis object for animation', (t) => {
   t.deepEqual(getAnimationAxis(['bNd7', 'wQd5'], ['wQd7']), {
-    code: 'wQd7',
+    targetCode: 'wQd7',
     from: {
       x: 0,
       y: 2,

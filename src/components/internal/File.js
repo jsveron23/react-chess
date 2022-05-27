@@ -17,8 +17,6 @@ const File = ({
   return Files.map((fileName) => {
     const isDark = detectDarkTile(fileName, rankName);
     const tileName = `${fileName}${rankName}`;
-
-    // get pKey from matched code in snapshot
     const pKey = getPKey(tileName);
 
     return (
@@ -47,7 +45,7 @@ File.propTypes = {
   detectEnemy: PropTypes.func.isRequired,
   onClickTile: PropTypes.func.isRequired,
   animate: PropTypes.shape({
-    code: PropTypes.string,
+    targetCode: PropTypes.string,
     from: PropTypes.shape({
       x: PropTypes.number,
       y: PropTypes.number,
