@@ -4,7 +4,7 @@ function createDebug(options = {}) {
   const mode = options.mode || 'log';
 
   return (label, v) => {
-    console[mode](label, v);
+    console[mode](label, v || '');
 
     return v;
   };

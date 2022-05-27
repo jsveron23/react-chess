@@ -5,11 +5,12 @@ import { composeWithDevTools } from 'redux-devtools-extension';
 import { IS_DEV, INSTANT_IMPORT_DATA, SAVE_GAME } from '~/presets';
 import { Storage, Compression, debug } from '~/utils';
 import reducers from './reducers';
+import crashReporter from './crashReporter';
 
 const composeDev = IS_DEV ? composeWithDevTools : identity;
 
 function configureStore(preloadedState) {
-  const middlewareEnhancer = applyMiddleware(thunk);
+  const middlewareEnhancer = applyMiddleware(thunk, crashReporter);
   const composedEnhancer = composeDev(middlewareEnhancer);
   const importData = Storage.getItem(INSTANT_IMPORT_DATA);
   const saveData = JSON.parse(Storage.getItem(SAVE_GAME));
