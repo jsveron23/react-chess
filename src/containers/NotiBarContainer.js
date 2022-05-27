@@ -4,10 +4,10 @@ import { NotiBar } from '~/components';
 function mapStateToProps({
   network: { connected, awaiting },
   ingame: {
-    present: { turn },
+    present: { turn, checkData },
   },
 }) {
-  return { turn, connected, awaiting };
+  return { turn, connected, awaiting, checkData };
 }
 
 export default connect(mapStateToProps)(NotiBar);
