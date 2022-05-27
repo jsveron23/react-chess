@@ -16,7 +16,9 @@ function mapStateToProps({
   network: { connected, awaiting },
   ingame: {
     present: {
-      checkData: { kingCode, attackerCode, attackerRoutes, defenders },
+      checkData: { kingCode, attackerCode, attackerRoutes, defenders } = {
+        /* NOTE for legacy code */
+      },
       selectedCode,
       movableTiles,
       snapshot,
