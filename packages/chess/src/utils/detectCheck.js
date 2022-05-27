@@ -15,12 +15,12 @@ function detectCheck(check) {
   const attackerCode = check.attackerCode || check.from;
   const isCheck = !!attackerCode;
   const isCheckmate = isCheck && isStuck && isNotDodgeable;
-  const isStalemate = !isCheck && isStuck && isNotDodgeable;
+  // const isStalemate = !isCheck && isStuck && isNotDodgeable;
 
   return {
+    isStalemate: false, // TODO for now
     isCheck,
     isCheckmate,
-    isStalemate,
   };
 }
 
