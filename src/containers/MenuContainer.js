@@ -29,9 +29,7 @@ function mapDispatchToProps(dispatch) {
 function mergeProps(stateProps, dispatchProps, ownProps) {
   const noUndoYet = stateProps.past.length === 0;
   const isConnected = stateProps.connected;
-  const lastSaved = stateProps.lastSaved
-    ? `/ ${toLocaleDate(stateProps.lastSaved)}`
-    : '';
+  const lastSaved = stateProps.lastSaved ? `/ ${toLocaleDate(lastSaved)}` : '';
   const { dispatch } = dispatchProps;
 
   return {

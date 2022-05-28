@@ -6,10 +6,13 @@ import { curry } from 'ramda';
  * @return {Function} curry
  */
 function createDebug(options = {}) {
-  const mode = options.mode || 'log';
+  options = {
+    mode: 'log',
+    ...options,
+  };
 
   return (label, v) => {
-    console[mode](label, v || '');
+    console[options.mode](label, v || '');
 
     return v;
   };

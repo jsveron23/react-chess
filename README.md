@@ -4,14 +4,6 @@ Programs must be written for people to read, and only incidentally for machines 
 
 - Abelson & Sussman, Structure and Interpretation of Computer Programs
 
-## Thoughts
-
-- Redesign functions
-- Keep it simple
-- Decouple components and business logic functions
-- As functional programming lover, try to be free from side effects
-- Want to write code for human understanding (naming is important)
-
 ## Milestones
 
 https://github.com/jsveron23/react-chess/milestones

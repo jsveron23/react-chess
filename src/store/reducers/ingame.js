@@ -6,8 +6,6 @@ const initialState = {
   snapshot: Snapshot,
   selectedCode: '',
   movableTiles: [],
-
-  // TODO reduce save data, move
   sheetData: [],
   checkData: {
     isCheck: false,

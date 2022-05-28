@@ -7,11 +7,11 @@ import animate from './animate';
 import { UPDATE_TURN } from '../actionTypes';
 
 export default combineReducers({
-  general,
-  network,
-  animate,
   ingame: undoable(ingame, {
     limit: false,
     filter: includeAction(UPDATE_TURN),
   }),
+  general,
+  network,
+  animate,
 });
