@@ -1,21 +1,12 @@
-import { memo, useRef, useEffect } from 'react';
+import { memo } from 'react';
 import PropTypes from 'prop-types';
+import { reverse } from 'ramda';
 import equal from 'fast-deep-equal/es6/react';
 import { FlexRow, Text } from 'ui/es';
 import Box from 'ui-box';
 import Notation from './internal/Notation';
 
 const Sheet = ({ data }) => {
-  const notationEl = useRef(null);
-
-  useEffect(() => {
-    if (notationEl.current && notationEl.current.lastChild) {
-      notationEl.current.lastChild.scrollIntoView({
-        behavior: 'smooth',
-      });
-    }
-  }, [data]);
-
   return (
     <Box>
       <Box
@@ -42,8 +33,8 @@ const Sheet = ({ data }) => {
         </FlexRow>
       </Box>
 
-      <Box ref={notationEl}>
-        {data.map(({ white, black }, idx) => {
+      <Box>
+        {reverse(data).map(({ white, black }, idx) => {
           return (
             <FlexRow
               key={idx}
