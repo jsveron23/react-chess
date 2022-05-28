@@ -1,5 +1,10 @@
 import { curry } from 'ramda';
 
+/**
+ * Debug only
+ * @param  {Object}   [options={}]
+ * @return {Function} curry
+ */
 function createDebug(options = {}) {
   const mode = options.mode || 'log';
 

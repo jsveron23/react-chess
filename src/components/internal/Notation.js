@@ -1,4 +1,3 @@
-import { memo } from 'react';
 import PropTypes from 'prop-types';
 import { parseNotation } from 'chess/es';
 import Box from 'ui-box';
@@ -23,7 +22,7 @@ Notation.propTypes = {
     from: PropTypes.arrayOf(PropTypes.string),
     to: PropTypes.arrayOf(PropTypes.string),
     check: PropTypes.shape({
-      from: PropTypes.string,
+      attackerCode: PropTypes.string,
       defenders: PropTypes.arrayOf(PropTypes.string),
       defendTiles: PropTypes.arrayOf(PropTypes.string),
       dodgeableTiles: PropTypes.arrayOf(PropTypes.string),
@@ -35,4 +34,4 @@ Notation.defaultProps = {
   sideData: null,
 };
 
-export default memo(Notation);
+export default Notation;

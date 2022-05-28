@@ -4,12 +4,12 @@ import { useSpring, animated } from 'react-spring';
 import useMeasure from 'react-use-measure';
 import { Flex, Absolute } from 'ui/es';
 import { getPiece } from 'chess/es';
-import { useChess } from '~/utils/hooks';
+import { useDiagram } from '~/hooks';
 
 const Animate = animated(Absolute);
 
 const Piece = ({ pKey, pretendCode }) => {
-  const { animate } = useChess();
+  const { animate } = useDiagram();
   const [ref, { width }] = useMeasure();
   const [styles, api] = useSpring(() => {
     let opacity = 1;

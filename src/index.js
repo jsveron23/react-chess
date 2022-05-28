@@ -1,14 +1,14 @@
 import { render } from 'react-dom';
 import { Provider } from 'react-redux';
 import store from '~/store';
-import { ThemeContext, theme } from '~/utils/hooks';
+import { ThemeProvider, theme } from '~/hooks';
 import App from './App';
 
 render(
   <Provider store={store}>
-    <ThemeContext.Provider value={theme}>
+    <ThemeProvider value={theme}>
       <App />
-    </ThemeContext.Provider>
+    </ThemeProvider>
   </Provider>,
   document.getElementById('root')
 );

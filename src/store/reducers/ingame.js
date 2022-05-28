@@ -4,6 +4,10 @@ import * as types from '../actionTypes';
 const initialState = {
   turn: Turn.w,
   snapshot: Snapshot,
+  selectedCode: '',
+  movableTiles: [],
+
+  // TODO reduce save data, move
   sheetData: [],
   checkData: {
     isCheck: false,
@@ -16,8 +20,6 @@ const initialState = {
     attackerRoutes: [],
     dodgeableTiles: [],
   },
-  selectedCode: '',
-  movableTiles: [],
 };
 
 function reducer(state = initialState, action) {

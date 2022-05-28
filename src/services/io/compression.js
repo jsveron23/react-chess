@@ -1,5 +1,5 @@
 import zlib from 'zlib';
-import debug from './debug';
+import { debug } from '~/utils';
 
 export function compress(data) {
   let compressedStr;

@@ -1,7 +1,9 @@
 import { batch } from 'react-redux';
 import { ActionCreators } from 'redux-undo';
 import { Snapshot, Turn } from 'chess/es';
-import { Storage, Compression, debug } from '~/utils';
+import { debug } from '~/utils';
+import { Compression } from '~/services/io';
+import { Storage } from '~/services/storage';
 import { SAVE_GAME, INSTANT_IMPORT_DATA } from '~/presets';
 import {
   updateTurn,

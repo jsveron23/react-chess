@@ -3,11 +3,10 @@ import { ActionCreators } from 'redux-undo';
 import { compose, reject, equals, clone } from 'ramda';
 import * as Chess from 'chess/es';
 import { ONE_VS_ONE } from '~/presets';
-import { debug } from '~/utils';
 import { toggleAwaiting } from './network';
 import { measureAxis } from './animate';
 import * as types from '../actionTypes';
-import peerNetwork from '../../networkSupport';
+import { peerNetwork } from '~/services/network';
 
 /**
  * Remove selected code (reset)
@@ -308,13 +307,6 @@ export function updateCheckState(selectedCode) {
       selectedCode,
       timeline
     );
-
-    // TODO dispatch
-    if (isCheckmate) {
-      debug.inline('checkmate!');
-    } else if (isStalemate) {
-      debug.inline('stalemate!');
-    }
 
     dispatch({
       type: types.UPDATE_CHECK_CODE,

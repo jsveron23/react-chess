@@ -133,7 +133,6 @@ module.exports = function configure(env, { mode = 'development' }) {
                           'not-pseudo-class': true,
                           'all-property': true,
                           'nesting-rules': true,
-                          // browsers: ['last 2 versions', '> 5%'],
                         },
                       },
                     },

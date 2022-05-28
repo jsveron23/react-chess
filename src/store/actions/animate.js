@@ -1,4 +1,4 @@
-import { compose, reverse, nth, prop } from 'ramda';
+import { compose, last, apply, props, prop } from 'ramda';
 import { getAnimationAxis, Opponent } from 'chess/es';
 import { MEASURE_AXIS } from '../actionTypes';
 
@@ -15,15 +15,14 @@ export function measureAxis(sheetData) {
       },
     } = getState();
 
-    const { from, to } = compose(
-      prop(Opponent[turn]),
-      nth(0),
-      reverse
-    )(sheetData);
-
     dispatch({
       type: MEASURE_AXIS,
-      payload: getAnimationAxis(from, to),
+      payload: compose(
+        apply(getAnimationAxis),
+        props(['from', 'to']),
+        prop(Opponent[turn]),
+        last
+      )(sheetData),
     });
   };
 }

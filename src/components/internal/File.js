@@ -1,10 +1,10 @@
 import PropTypes from 'prop-types';
 import { File as Files, detectDarkTile } from 'chess/es';
 import Tile from './Tile';
-import { useChess } from '~/utils/hooks';
+import { useDiagram } from '~/hooks';
 
 const File = ({ rankName }) => {
-  const { getPKey } = useChess();
+  const { getPKey } = useDiagram();
 
   return Files.map((fileName) => {
     const isDark = detectDarkTile(fileName, rankName);

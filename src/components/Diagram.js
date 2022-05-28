@@ -1,43 +1,43 @@
 import PropTypes from 'prop-types';
 import { FlexCol } from 'ui/es';
 import Rank from './internal/Rank';
-import { ChessProvider } from '~/utils/hooks';
+import { DiagramProvider } from '~/hooks';
 
 const Diagram = ({
   animate,
   getPKey,
+  detectOn,
   checkCode,
   checkRoute,
   detectEnemy,
   onClickTile,
   checkDefenders,
-  detectOTWByCode,
   detectEnPassantTile,
 }) => {
   return (
-    <ChessProvider
+    <DiagramProvider
       value={{
         animate,
         getPKey,
+        detectOn,
         checkCode,
         checkRoute,
         detectEnemy,
         onClickTile,
         checkDefenders,
-        detectOTWByCode,
         detectEnPassantTile,
       }}
     >
       <FlexCol height="100%">
         <Rank />
       </FlexCol>
-    </ChessProvider>
+    </DiagramProvider>
   );
 };
 
 Diagram.propTypes = {
   getPKey: PropTypes.func.isRequired,
-  detectOTWByCode: PropTypes.func.isRequired,
+  detectOn: PropTypes.func.isRequired,
   detectEnemy: PropTypes.func.isRequired,
   detectEnPassantTile: PropTypes.func.isRequired,
   onClickTile: PropTypes.func.isRequired,

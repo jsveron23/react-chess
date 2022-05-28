@@ -1,18 +1,18 @@
 import PropTypes from 'prop-types';
 import { equals, includes } from 'ramda';
 import { Absolute } from 'ui/es';
-import { useChess } from '~/utils/hooks';
+import { useDiagram } from '~/hooks';
 
 const Mask = ({ tileName, pretendCode }) => {
   const {
+    detectOn,
     checkCode,
     checkRoute,
     checkDefenders,
     detectEnemy,
-    detectOTWByCode,
     detectEnPassantTile,
-  } = useChess();
-  const isOTW = detectOTWByCode(pretendCode);
+  } = useDiagram();
+  const isOnMt = detectOn(pretendCode);
   const isDefender = includes(pretendCode, checkDefenders);
   const isRoute = includes(tileName, checkRoute);
   const isEnemy =
@@ -21,10 +21,10 @@ const Mask = ({ tileName, pretendCode }) => {
     equals(checkCode, pretendCode);
 
   let bg = isRoute ? 'rgba(220, 20, 60, 0.1)' : 'auto';
-  bg = isOTW ? 'rgba(200, 200, 200, 1)' : bg;
+  bg = isOnMt ? 'rgba(200, 200, 200, 1)' : bg;
   bg = isEnemy ? 'rgba(220, 20, 60, 1)' : bg;
 
-  let border = isOTW ? '2px solid #aaa' : 'none';
+  let border = isOnMt ? '2px solid #aaa' : 'none';
   border = isDefender ? '2px dotted green' : border;
   border = isEnemy ? '2px solid red' : border;
 

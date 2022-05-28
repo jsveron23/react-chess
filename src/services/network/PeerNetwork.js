@@ -1,6 +1,6 @@
 import EventEmitter from 'events';
 import { Peer } from 'peerjs';
-import debug from './debug';
+import { debug } from '~/utils';
 
 class PeerNetwork extends EventEmitter {
   peer = null;

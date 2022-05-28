@@ -6,9 +6,9 @@ import {
   SheetContainer,
   NotiBarContainer,
 } from '~/containers';
-import { useTheme } from '~/utils/hooks';
+import { Viewport, Sidebar } from '~/components';
+import { useTheme } from '~/hooks';
 import Logo from '~/assets/logo.svg';
-import { Viewport, Sidebar } from '~/layout';
 import '~/styles/app.css';
 
 function App() {

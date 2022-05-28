@@ -1,4 +1,3 @@
-import { memo } from 'react';
 import PropTypes from 'prop-types';
 import { Hr } from 'ui/es';
 import SubMenu from './internal/SubMenu';
@@ -30,4 +29,4 @@ Menu.propTypes = {
   ).isRequired,
 };
 
-export default memo(Menu);
+export default Menu;

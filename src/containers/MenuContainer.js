@@ -1,7 +1,6 @@
 import { connect } from 'react-redux';
 import { ActionTypes } from 'redux-undo';
-import { FlexRow, Text } from 'ui/es';
-import { Menu } from '~/components';
+import { Menu, PeerId } from '~/components';
 import {
   updateMatchType,
   saveGame,
@@ -86,20 +85,7 @@ function mergeProps(stateProps, dispatchProps, ownProps) {
         title: 'Network (WebRTC)',
         disabled: isConnected,
         onClick: () => dispatch(joinNetworkGame()),
-        children: () => {
-          return (
-            <FlexRow paddingLeft={10} paddingRight={10} fontSize="80%">
-              <Text marginBottom={5} fontWeight="bold" flexBasis={60}>
-                Peer Id:
-              </Text>
-              {stateProps.peerId && (
-                <Text flex="1" wordBreak="break-all">
-                  {stateProps.peerId}
-                </Text>
-              )}
-            </FlexRow>
-          );
-        },
+        children: () => <PeerId peerId={stateProps.peerId} />,
       },
     ],
   };

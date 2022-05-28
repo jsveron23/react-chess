@@ -14,13 +14,14 @@ import { updateSelectedCode, movePiece, capturePiece } from '~/store/actions';
 
 const convertToTiles = memoizeOne(convertAxisListToTiles);
 const detectPawn = memoizeOne(detectPiece.Pawn);
+const flippedIncludes = flip(includes);
 
 function mapStateToProps({
   network: { connected, awaiting },
   ingame: {
     present: {
       checkData: { kingCode, attackerCode, attackerRoutes, defenders } = {
-        /* NOTE for legacy code */
+        /* NOTE set default value(empty object) for legacy code */
       },
       selectedCode,
       movableTiles,
@@ -31,9 +32,10 @@ function mapStateToProps({
   },
   animate,
 }) {
+  const isUndoAction = future.length > 0;
+
   return {
     detectEnPassantTile(tileName) {
-      const isPawn = detectPawn(selectedCode);
       let isEnemyTile = false;
 
       if (selectedCode) {
@@ -47,16 +49,16 @@ function mapStateToProps({
         ]);
       }
 
-      return isPawn && isEnemyTile;
+      return detectPawn(selectedCode) && isEnemyTile;
     },
     getPKey: getPKeyByTile(snapshot),
+    detectOn: flippedIncludes([selectedCode, ...movableTiles]),
     detectEnemy: detectEnemyOnTiles(movableTiles, selectedCode),
-    detectOTWByCode: flip(includes)([selectedCode, ...movableTiles]),
     checkCode: attackerCode ? kingCode : '',
     checkRoute: attackerRoutes,
     checkDefenders: defenders,
     preventEvent: connected && awaiting,
-    animate: future.length > 0 ? undefined : animate,
+    animate: isUndoAction ? undefined : animate,
     movableTiles,
     turn,
   };

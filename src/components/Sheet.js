@@ -1,5 +1,6 @@
 import { memo, useRef, useEffect } from 'react';
 import PropTypes from 'prop-types';
+import equal from 'fast-deep-equal/es6/react';
 import { FlexRow, Text } from 'ui/es';
 import Box from 'ui-box';
 import Notation from './internal/Notation';
@@ -9,7 +10,9 @@ const Sheet = ({ data }) => {
 
   useEffect(() => {
     if (notationEl.current && notationEl.current.lastChild) {
-      notationEl.current.lastChild.scrollIntoView({ behavior: 'smooth' });
+      notationEl.current.lastChild.scrollIntoView({
+        behavior: 'smooth',
+      });
     }
   }, [data]);
 
@@ -64,7 +67,7 @@ Sheet.propTypes = {
         from: PropTypes.arrayOf(PropTypes.string),
         to: PropTypes.arrayOf(PropTypes.string),
         check: PropTypes.shape({
-          from: PropTypes.string,
+          attackerCode: PropTypes.string,
           defenders: PropTypes.arrayOf(PropTypes.string),
           defendTiles: PropTypes.arrayOf(PropTypes.string),
           dodgeableTiles: PropTypes.arrayOf(PropTypes.string),
@@ -74,7 +77,7 @@ Sheet.propTypes = {
         from: PropTypes.arrayOf(PropTypes.string),
         to: PropTypes.arrayOf(PropTypes.string),
         check: PropTypes.shape({
-          from: PropTypes.string,
+          attackerCode: PropTypes.string,
           defenders: PropTypes.arrayOf(PropTypes.string),
           defendTiles: PropTypes.arrayOf(PropTypes.string),
           dodgeableTiles: PropTypes.arrayOf(PropTypes.string),
@@ -88,4 +91,4 @@ Sheet.defaultProps = {
   data: [],
 };
 
-export default memo(Sheet);
+export default memo(Sheet, equal);

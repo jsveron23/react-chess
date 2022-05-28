@@ -1,4 +1,4 @@
-import { Fragment, memo } from 'react';
+import { Fragment } from 'react';
 import PropTypes from 'prop-types';
 import { identity } from 'ramda';
 import { FlexCol, Button } from 'ui/es';
@@ -33,4 +33,4 @@ SubMenu.propTypes = {
   ).isRequired,
 };
 
-export default memo(SubMenu);
+export default SubMenu;

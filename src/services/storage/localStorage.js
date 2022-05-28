@@ -1,4 +1,4 @@
-import debug from './debug';
+import { debug } from '~/utils';
 
 export function setItem(key, data) {
   try {

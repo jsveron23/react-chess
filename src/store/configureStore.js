@@ -3,7 +3,9 @@ import thunk from 'redux-thunk';
 import { identity } from 'ramda';
 import { composeWithDevTools } from 'redux-devtools-extension';
 import { IS_DEV, INSTANT_IMPORT_DATA, SAVE_GAME } from '~/presets';
-import { Storage, Compression, debug } from '~/utils';
+import { Compression } from '~/services/io';
+import { Storage } from '~/services/storage';
+import { debug } from '~/utils';
 import reducers from './reducers';
 import crashReporter from './crashReporter';
 

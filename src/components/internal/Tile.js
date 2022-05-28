@@ -1,12 +1,12 @@
 import { useCallback } from 'react';
 import PropTypes from 'prop-types';
 import { Relative, Absolute, Text } from 'ui/es';
-import { useChess, useTheme } from '~/utils/hooks';
+import { useDiagram, useTheme } from '~/hooks';
 import Piece from './Piece';
 import Mask from './Mask';
 
 const Tile = ({ isDark, pKey, tileName }) => {
-  const { onClickTile } = useChess();
+  const { onClickTile } = useDiagram();
   const { tile } = useTheme();
   const pretendCode = `${pKey}${tileName}`;
   const handleClick = useCallback(

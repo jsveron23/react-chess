@@ -1,7 +1,7 @@
 import { memo } from 'react';
 import PropTypes from 'prop-types';
 import { FlexRow } from 'ui/es';
-import { useTheme } from '~/utils/hooks';
+import { useTheme } from '~/hooks';
 
 function Viewport({ children }) {
   const { diagram, sidebar, fh } = useTheme();

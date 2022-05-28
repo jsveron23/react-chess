@@ -1,7 +1,7 @@
 import { memo } from 'react';
 import PropTypes from 'prop-types';
 import Box from 'ui-box';
-import { useTheme } from '~/utils/hooks';
+import { useTheme } from '~/hooks';
 
 function Sidebar({ children, ...props }) {
   const { sidebar, border } = useTheme();

@@ -1,12 +1,10 @@
 import { createContext, useContext } from 'react';
 
-const BORDER_RADIUS = 6;
-
 export const theme = {
   fw: '100vw',
   fh: '100vh',
   border: '1px solid #cacaca',
-  borderRadius: BORDER_RADIUS,
+  borderRadius: 6,
   logo: {
     width: '100px',
     height: '100%',
@@ -31,8 +29,9 @@ export const theme = {
   },
 };
 
-export const ThemeContext = createContext();
+const ThemeContext = createContext();
 
+export const ThemeProvider = ThemeContext.Provider;
 export default function useTheme() {
   return useContext(ThemeContext);
 }
