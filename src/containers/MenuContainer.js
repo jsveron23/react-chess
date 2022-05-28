@@ -1,6 +1,6 @@
 import { connect } from 'react-redux';
 import { ActionTypes } from 'redux-undo';
-import { Menu, PeerId } from '~/components';
+import { Menu } from '~/components';
 import {
   updateMatchType,
   saveGame,
@@ -11,13 +11,15 @@ import {
 } from '~/store/actions';
 import { toLocaleDate } from '~/utils';
 import { ONE_VS_ONE, SAVE, ONLINE, IMPORT, EXPORT } from '~/presets';
+import PeerIdContainer from './PeerIdContainer';
+import ChatContainer from './ChatContainer';
 
 function mapStateToProps({
   general: { lastSaved },
-  network: { connected, peerId },
+  network: { connected },
   ingame: { past },
 }) {
-  return { past, connected, peerId, lastSaved };
+  return { past, connected, lastSaved };
 }
 
 function mapDispatchToProps(dispatch) {
@@ -85,7 +87,13 @@ function mergeProps(stateProps, dispatchProps, ownProps) {
         title: 'Network (WebRTC)',
         disabled: isConnected,
         onClick: () => dispatch(joinNetworkGame()),
-        children: () => <PeerId peerId={stateProps.peerId} />,
+        children: () => {
+          if (isConnected) {
+            return <ChatContainer />;
+          }
+
+          return <PeerIdContainer />;
+        },
       },
     ],
   };

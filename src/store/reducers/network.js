@@ -1,5 +1,7 @@
 import {
   DECIDE_SIDE,
+  SEND_MESSAGE,
+  RECEIVE_MESSAGE,
   TOGGLE_AWAITING,
   OPEN_NETWORK_GAME,
   CLOSE_NETWORK_GAME,
@@ -12,7 +14,7 @@ const initialState = {
   peerId: '', // my id
   connected: false,
   awaiting: false,
-  lastSaved: null,
+  chatData: [],
 };
 
 function reducer(state = initialState, action) {
@@ -53,6 +55,20 @@ function reducer(state = initialState, action) {
       return {
         ...state,
         awaiting: !state.awaiting,
+      };
+    }
+
+    case RECEIVE_MESSAGE:
+    case SEND_MESSAGE: {
+      const chatData =
+        state.chatData ||
+        [
+          /* for legacy */
+        ];
+
+      return {
+        ...state,
+        chatData: [...chatData, payload],
       };
     }
 
