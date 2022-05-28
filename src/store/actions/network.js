@@ -11,6 +11,8 @@ import {
 } from './ingame';
 import {
   DECIDE_SIDE,
+  SEND_MESSAGE,
+  RECEIVE_MESSAGE,
   TOGGLE_AWAITING,
   OPEN_NETWORK_GAME,
   CLOSE_NETWORK_GAME,
@@ -85,5 +87,38 @@ export function joinNetworkGame() {
         });
       });
     }
+  };
+}
+
+export function sendMessage(message) {
+  return (dispatch, getState) => {
+    const {
+      network: { side, connected },
+    } = getState();
+
+    if (connected) {
+      peerNetwork.send({
+        command: 'message',
+        args: {
+          side,
+          message,
+        },
+      });
+    }
+
+    dispatch({
+      type: SEND_MESSAGE,
+      payload: {
+        side,
+        message,
+      },
+    });
+  };
+}
+
+export function receiveMessage(messageData) {
+  return {
+    type: RECEIVE_MESSAGE,
+    payload: messageData,
   };
 }

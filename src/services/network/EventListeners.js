@@ -39,25 +39,48 @@ export default class EventListeners {
   }
 
   #handleReceived(data) {
-    import('~/store/actions').then(({ toggleAwaiting, afterMoving }) => {
-      const { command, args } = data;
-      const nextArgs = [args.nextTileName, args.selectedCode];
-      const _replaceCode = replaceCode(args.snapshot);
+    import('~/store/actions').then(
+      ({ toggleAwaiting, receiveMessage, afterMoving }) => {
+        const { command, args } = data;
 
-      if (command === 'capture') {
-        nextArgs.push(
-          compose(
-            reject(equals(args.selectedCode)),
-            _replaceCode(args.pretendCode)
-          )
-        );
-      } else if (command === 'move') {
-        nextArgs.push(_replaceCode(args.selectedCode));
+        switch (command) {
+          case 'message': {
+            this.dispatch(
+              receiveMessage({
+                side: args.side,
+                message: args.message,
+              })
+            );
+
+            break;
+          }
+
+          case 'move':
+          case 'capture': {
+            const nextArgs = [args.nextTileName, args.selectedCode];
+            const _replaceCode = replaceCode(args.snapshot);
+
+            if (command === 'capture') {
+              nextArgs.push(
+                compose(
+                  reject(equals(args.selectedCode)),
+                  _replaceCode(args.pretendCode)
+                )
+              );
+            } else if (command === 'move') {
+              nextArgs.push(_replaceCode(args.selectedCode));
+            }
+
+            this.dispatch(afterMoving(...nextArgs));
+            this.dispatch(toggleAwaiting());
+
+            break;
+          }
+
+          default:
+        }
       }
-
-      this.dispatch(afterMoving(...nextArgs));
-      this.dispatch(toggleAwaiting());
-    });
+    );
   }
 
   #handleClose() {

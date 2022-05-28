@@ -30,7 +30,7 @@ function App() {
             <Logo width={logo.width} height={logo.height} />
           </Flex>
 
-          <Box padding={20} marginTop={20}>
+          <Box padding={20} paddingTop={0} paddingBottom={10} marginTop={20}>
             <MenuContainer />
           </Box>
 
