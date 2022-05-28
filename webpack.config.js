@@ -71,12 +71,8 @@ module.exports = function configure(env, { mode = 'development' }) {
       minimizer: [
         TerserPlugin &&
           new TerserPlugin({
-            minify: TerserPlugin.uglifyJsMinify,
-            terserOptions: {
-              compress: {
-                drop_console: true,
-              },
-            },
+            minify: TerserPlugin.esbuildMinify,
+            terserOptions: {},
           }),
       ].filter(Boolean),
       splitChunks: {
