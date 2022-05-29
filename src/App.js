@@ -1,26 +1,31 @@
 import Box from 'ui-box';
-import { Relative, Flex, FlexCol, Text } from 'ui/es';
+import { Relative, Flex, FlexRow, FlexCol, Text } from 'ui/es';
 import {
   DiagramContainer,
   MenuContainer,
   SheetContainer,
   NotiBarContainer,
 } from '~/containers';
-import { Viewport, Sidebar } from '~/components';
 import { useTheme } from '~/hooks';
 import Logo from '~/assets/logo.svg';
 import '~/styles/app.css';
 
 function App() {
-  const { diagram, logo } = useTheme();
+  const { diagram, logo, sidebar, fh, border } = useTheme();
+  const minMaxWidth = diagram.width + sidebar.width;
 
   return (
-    <Viewport>
+    <FlexRow height={fh} minWidth={minMaxWidth} maxWidth={minMaxWidth}>
       <Relative flexBasis={diagram.width}>
         <DiagramContainer />
       </Relative>
 
-      <Sidebar>
+      <Box
+        flex="1"
+        backgroundColor={sidebar.bg}
+        borderLeft={border}
+        borderRight={border}
+      >
         <FlexCol height="100%" justifyContent="space-between">
           <Text is="h1" textAlign="center" marginTop={30}>
             React-Chess
@@ -46,8 +51,8 @@ function App() {
 
           <NotiBarContainer />
         </FlexCol>
-      </Sidebar>
-    </Viewport>
+      </Box>
+    </FlexRow>
   );
 }
 
