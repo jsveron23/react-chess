@@ -1,4 +1,4 @@
-import { curry } from 'ramda';
+import { curry, compose } from 'ramda';
 import parseTile from './parseTile';
 import subInBetweenIndexes from './subInBetweenIndexes';
 import { File, Rank } from '../presets';
@@ -14,8 +14,11 @@ function getTilesDifference(tileA, tileB) {
   const { fileName: dFn, rankName: dRn } = parseTile(tileB);
 
   return {
-    file: Math.abs(subInBetweenIndexes(aFn, dFn, File)),
-    rank: Math.abs(subInBetweenIndexes(Number(aRn), Number(dRn), Rank)),
+    file: compose(Math.abs, subInBetweenIndexes(aFn, dFn))(File),
+    rank: compose(
+      Math.abs,
+      subInBetweenIndexes(Number(aRn), Number(dRn))
+    )(Rank),
   };
 }
 

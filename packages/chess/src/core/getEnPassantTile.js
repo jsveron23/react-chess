@@ -3,7 +3,7 @@ import {
   compose,
   reduce,
   filter,
-  nth,
+  head,
   T,
   always,
   allPass,
@@ -35,6 +35,8 @@ const RANK_SPOT = {
   [Side.b]: 4,
 };
 
+const _convertToTiles = flip(convertAxisToTile);
+
 /**
  * Get En-passant tile
  * @param  {String} code
@@ -48,14 +50,14 @@ function getEnPassantTile(code, timeline) {
     const [snapshot, ...prevTimeline] = timeline;
 
     return compose(
-      flip(convertAxisToTile)([0, -1]),
-      nth(0),
+      _convertToTiles([0, -1]),
+      head,
       filter(
         compose(
           not,
           detectMoved(prevTimeline),
           join(''),
-          juxt([parseCode.prop('pKey'), flip(convertAxisToTile)([0, -2])])
+          juxt([parseCode.prop('pKey'), _convertToTiles([0, -2])])
         ) // get previous code
       ),
       reduce(
@@ -68,7 +70,6 @@ function getEnPassantTile(code, timeline) {
               ],
               [T, always(acc)],
             ]),
-            parseCode.prop('code'),
             findCodeByTile(snapshot)
           )(tN),
         []
@@ -84,6 +85,7 @@ function getEnPassantTile(code, timeline) {
 }
 
 const _getEnPassantTile = curry(getEnPassantTile);
+const _getFileName = parseCode.prop('fileName');
 
 /**
  * Get En-passant tile (after move)
@@ -95,8 +97,8 @@ _getEnPassantTile.after = curry(function after(nextSnapshot, snapshot) {
   const [beforeCode] = without(nextSnapshot, snapshot);
   const [afterCode] = difference(nextSnapshot, snapshot);
   const isDiagonalMove = complement(equals)(
-    parseCode.prop('fileName', beforeCode),
-    parseCode.prop('fileName', afterCode)
+    _getFileName(beforeCode),
+    _getFileName(afterCode)
   );
   const noCapture = nextSnapshot.length === snapshot.length;
 

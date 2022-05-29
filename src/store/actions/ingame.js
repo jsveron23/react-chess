@@ -326,7 +326,7 @@ export function updateSheetData() {
       ingame: { present, past },
     } = getState();
 
-    const sheetData = Chess.createSheet(present, past);
+    const sheetData = Chess.createSheetData(present, past);
 
     dispatch(measureAxis(sheetData));
     dispatch({

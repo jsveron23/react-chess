@@ -1,5 +1,5 @@
 import test from 'ava';
-import createSheet from '../createSheet';
+import createSheetData from '../createSheetData';
 
 // TODO dodgeableTiles data wrong
 
@@ -84,12 +84,12 @@ const Past = [
 ];
 
 test('Should return function (curry)', (t) => {
-  t.is(typeof createSheet([]), 'function');
+  t.is(typeof createSheetData([]), 'function');
 });
 
 test('Should return notation list as array', (t) => {
   // prettier-ignore
-  t.deepEqual(createSheet(Present, Past), [
+  t.deepEqual(createSheetData(Present, Past), [
     {
       black: {
         checkData: {

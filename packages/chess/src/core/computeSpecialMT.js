@@ -6,13 +6,15 @@ import {
   defaultTo,
   flip,
   prop,
-  nth,
+  head,
 } from 'ramda';
 import getDoubleStepTile from './getDoubleStepTile';
 import getEnPassantTile from './getEnPassantTile';
 import getDiagonallyTiles from './getDiagonallyTiles';
 import { parseCode } from '../utils';
 import { Special, DoubleStep, Diagonally, EnPassant } from '../presets';
+
+const _prop = flip(prop);
 
 /**
  * Compute special movable tiles
@@ -34,7 +36,7 @@ function computeSpecialMT(timeline, code) {
         case Diagonally: {
           const capturableTiles = compose(
             getDiagonallyTiles(code),
-            nth(0)
+            head
           )(timeline);
 
           return [...acc, ...capturableTiles];
@@ -52,7 +54,7 @@ function computeSpecialMT(timeline, code) {
       }
     }, []),
     defaultTo([]),
-    flip(prop)(Special),
+    _prop(Special),
     parseCode.prop('piece')
   )(code);
 }
