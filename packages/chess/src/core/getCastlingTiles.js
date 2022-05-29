@@ -4,9 +4,7 @@ import {
   filter,
   includes,
   isEmpty,
-  complement,
-  nth,
-  toString,
+  head,
   flip,
   anyPass,
   concat,
@@ -21,6 +19,9 @@ import {
 } from '../utils';
 import { Rook } from '../presets';
 
+const _getAttackers = flip(getAttackers);
+const _includes = flip(includes);
+
 /**
  * Get castling tiles (to avoid circular dependency issue)
  * @param  {Array}  timeline
@@ -31,24 +32,19 @@ import { Rook } from '../presets';
 function getCastlingTiles(timeline, code) {
   const { side, pKey } = parseCode(code);
   const _convertToTiles = convertAxisListToTiles(code);
-  const placedTiles = compose(convertSnapshotToTiles, nth(0))(timeline);
-  const _detectIncludes = flip(includes)(placedTiles);
+  const _detectMoved = detectMoved(timeline);
+  const placedTiles = compose(convertSnapshotToTiles, head)(timeline);
   const _filterInvalidTiles = compose(
     filter(
       anyPass([
-        _detectIncludes,
-        compose(
-          complement(isEmpty),
-          flip(getAttackers)(timeline),
-          toString,
-          concat(pKey)
-        ),
+        _includes(placedTiles),
+        compose(head, _getAttackers(timeline), String, concat(pKey)),
       ])
     ),
     _convertToTiles
   );
   const _detectRookMoved = compose(
-    detectMoved(timeline),
+    _detectMoved,
     concat(`${side}${Rook}`),
     join(''),
     _convertToTiles
@@ -60,7 +56,7 @@ function getCastlingTiles(timeline, code) {
   // prettier-ignore
   const invalidRightTiles = _filterInvalidTiles([[1, 0], [2, 0]]);
 
-  const isKingMoved = detectMoved(timeline, code);
+  const isKingMoved = _detectMoved(code);
   const isLeftRookMoved = _detectRookMoved([[-4, 0]]);
   const isRightRookMoved = _detectRookMoved([[3, 0]]);
   let castlingTiles = [];
