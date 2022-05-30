@@ -21,7 +21,7 @@ function getAnimationAxis(isFlipped, from, to) {
   return {
     targetCode: head(to),
     from: {
-      x: subInBetweenIndexes(fFn, tFn, File),
+      x: _subIdx(fFn, tFn, File),
       y: _subIdx(Number(fRn), Number(tRn), Rank),
     },
   };

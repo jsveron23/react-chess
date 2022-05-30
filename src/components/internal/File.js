@@ -1,12 +1,14 @@
 import PropTypes from 'prop-types';
+import { reverse } from 'ramda';
 import { File as Files, detectDarkTile } from 'chess/es';
 import Tile from './Tile';
 import { useDiagram } from '~/hooks';
 
 const File = ({ rankName }) => {
-  const { getPKey } = useDiagram();
+  const { getPKey, flip } = useDiagram();
+  const fileList = flip ? reverse(Files) : Files;
 
-  return Files.map((fileName) => {
+  return fileList.map((fileName) => {
     const isDark = detectDarkTile(fileName, rankName);
     const tileName = `${fileName}${rankName}`;
     const pKey = getPKey(tileName);
