@@ -1,5 +1,5 @@
 import { compose, last, apply, props, prop } from 'ramda';
-import { getAnimationAxis, Opponent } from 'chess/es';
+import { Side, getAnimationAxis, Opponent } from 'chess/es';
 import { MEASURE_AXIS } from '../actionTypes';
 
 /**
@@ -10,6 +10,7 @@ import { MEASURE_AXIS } from '../actionTypes';
 export function measureAxis(sheetData) {
   return (dispatch, getState) => {
     const {
+      network: { side, connected },
       ingame: {
         present: { turn },
       },
@@ -18,7 +19,7 @@ export function measureAxis(sheetData) {
     dispatch({
       type: MEASURE_AXIS,
       payload: compose(
-        apply(getAnimationAxis),
+        apply(getAnimationAxis(connected && side === Side.black)),
         props(['from', 'to']),
         prop(Opponent[turn]),
         last

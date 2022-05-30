@@ -2,6 +2,7 @@ import { connect } from 'react-redux';
 import { compose, flip, intersection, includes } from 'ramda';
 import memoizeOne from 'memoize-one';
 import {
+  Side,
   detectEnemyOnTiles,
   validateCode,
   getPKeyByTile,
@@ -17,7 +18,7 @@ const detectPawn = memoizeOne(detectPiece.Pawn);
 const flippedIncludes = flip(includes);
 
 function mapStateToProps({
-  network: { connected, awaiting },
+  network: { side, connected, awaiting },
   ingame: {
     present: {
       checkData: { kingCode, attackerCode, attackerRoutes, defenders } = {
@@ -59,6 +60,7 @@ function mapStateToProps({
     checkDefenders: defenders,
     preventEvent: connected && awaiting,
     animate: isUndoAction ? undefined : animate,
+    flip: connected && side === Side.black,
     movableTiles,
     turn,
   };
