@@ -1,5 +1,7 @@
 import { compose, concat, curry, map, prop, of } from 'ramda';
 
+const _propSnapshot = prop('snapshot');
+
 /**
  * Create timeline
  * @param  {Object} present
@@ -8,8 +10,8 @@ import { compose, concat, curry, map, prop, of } from 'ramda';
  */
 function createTimeline(present, past) {
   return compose(
-    compose(concat, of, prop('snapshot'))(present),
-    map(prop('snapshot'))
+    compose(concat, of, _propSnapshot)(present),
+    map(_propSnapshot)
   )(past);
 }
 
