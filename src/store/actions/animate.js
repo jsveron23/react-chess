@@ -10,6 +10,7 @@ import { MEASURE_AXIS } from '../actionTypes';
 export function measureAxis(sheetData) {
   return (dispatch, getState) => {
     const {
+      general: { flip },
       network: { side, connected },
       ingame: {
         present: { turn },
@@ -19,7 +20,7 @@ export function measureAxis(sheetData) {
     dispatch({
       type: MEASURE_AXIS,
       payload: compose(
-        apply(getAnimationAxis(connected && side === Side.black)),
+        apply(getAnimationAxis(flip || (connected && side === Side.black))),
         props(['from', 'to']),
         prop(Opponent[turn]),
         last
