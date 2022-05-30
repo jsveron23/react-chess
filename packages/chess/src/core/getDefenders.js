@@ -3,7 +3,7 @@ import {
   compose,
   reduce,
   isEmpty,
-  nth,
+  head,
   map,
   prop,
   uniq,
@@ -52,7 +52,7 @@ function getDefenders(attackerCode, timeline, routes) {
           ];
     }, []),
     filterOpponent(attackerCode),
-    nth(0)
+    head
   )(timeline);
 
   return {

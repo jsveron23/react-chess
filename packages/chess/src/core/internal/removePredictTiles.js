@@ -10,10 +10,12 @@ import { parseCode } from '../../utils';
  * @return {Array}
  */
 function removePredictTiles(timeline, code, tiles) {
-  const _predictCheck = predictPossibleCheck(timeline);
-
   return tiles.filter(
-    compose(not, _predictCheck, concat(parseCode.prop('pKey', code)))
+    compose(
+      not,
+      predictPossibleCheck(timeline),
+      concat(parseCode.prop('pKey', code))
+    )
   );
 }
 

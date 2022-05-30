@@ -1,10 +1,11 @@
 import { curry, compose, reduce, cond, flip, append, always, T } from 'ramda';
 import {
-  parseCode,
   findCodeByTile,
   convertAxisListToTiles,
   detectOpponent,
 } from '../utils';
+
+const _append = flip(append);
 
 /**
  * Get diagonally forward attack tiles
@@ -18,10 +19,7 @@ function getDiagonallyTiles(code, snapshot) {
   return compose(
     reduce((acc, tN) => {
       return cond([
-        [
-          compose(detectOpponent(code), parseCode.prop('code'), _findCodeBy),
-          flip(append)(acc),
-        ],
+        [compose(detectOpponent(code), _findCodeBy), _append(acc)],
         [T, always(acc)],
       ])(tN);
     }, []),

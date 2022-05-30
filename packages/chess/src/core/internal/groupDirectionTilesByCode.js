@@ -6,6 +6,8 @@ import {
   DirectionGroupByPiece as DGBP,
 } from '../../presets';
 
+const _prop = flip(prop);
+
 /**
  * Convert all axis to tiles from `DirectionGroupByPiece`
  * @see computeMTByDirection.js
@@ -23,7 +25,7 @@ function groupDirectionTilesByCode(code) {
         )(AGBD),
       };
     }, {}),
-    compose(flip(prop)(DGBP), parseCode.prop('piece'))
+    compose(_prop(DGBP), parseCode.prop('piece'))
   )(code);
 }
 

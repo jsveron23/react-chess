@@ -3,6 +3,9 @@ import parseCode from './parseCode';
 import validateCode from './validateCode';
 import { Opponent } from '../presets';
 
+const _prop = flip(prop);
+const _getSide = parseCode.prop('side');
+
 /**
  * Detect opponent side
  * @param  {String}  codeA
@@ -14,11 +17,7 @@ function detectOpponent(codeA, codeB) {
     return false;
   }
 
-  return compose(
-    equals(parseCode.prop('side', codeA)),
-    flip(prop)(Opponent),
-    parseCode.prop('side')
-  )(codeB);
+  return compose(equals(_getSide(codeA)), _prop(Opponent), _getSide)(codeB);
 }
 
 export default curry(detectOpponent);

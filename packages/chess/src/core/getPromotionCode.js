@@ -13,6 +13,8 @@ import {
 import { parseTile } from '../utils';
 import { Side, Rank } from '../presets';
 
+const _indexOf = flip(indexOf);
+
 /**
  * Get promotion code
  * @param  {String} piece
@@ -30,7 +32,7 @@ function getPromotionCode(piece, tileName, side) {
       [Side.w]: equals(0),
       [Side.b]: equals(Rank.length - 1),
     }),
-    flip(indexOf)(Rank),
+    _indexOf(Rank),
     Number,
     prop('rankName'),
     parseTile

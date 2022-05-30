@@ -2,12 +2,12 @@ import { curry, init, last, isNil, nth } from 'ramda';
 import { diffSnapshot } from '../utils';
 
 /**
- * Create sheet (notation list)
+ * Create sheet data (notation list)
  * @param  {Object} present
  * @param  {Array}  past
  * @return {Array}
  */
-function createSheet(present, past) {
+function createSheetData(present, past) {
   return [...past, present].reduce((acc, curr, idx, self) => {
     const prev = nth(idx + 1, self);
 
@@ -37,4 +37,4 @@ function createSheet(present, past) {
   }, []);
 }
 
-export default curry(createSheet);
+export default curry(createSheetData);

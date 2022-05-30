@@ -4,6 +4,7 @@ import Rank from './internal/Rank';
 import { DiagramProvider } from '~/hooks';
 
 const Diagram = ({
+  flip,
   animate,
   getPKey,
   detectOn,
@@ -17,6 +18,7 @@ const Diagram = ({
   return (
     <DiagramProvider
       value={{
+        flip,
         animate,
         getPKey,
         detectOn,
@@ -36,6 +38,7 @@ const Diagram = ({
 };
 
 Diagram.propTypes = {
+  flip: PropTypes.bool.isRequired,
   getPKey: PropTypes.func.isRequired,
   detectOn: PropTypes.func.isRequired,
   detectEnemy: PropTypes.func.isRequired,

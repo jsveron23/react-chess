@@ -1,4 +1,4 @@
-import { curry, compose, join, prop, nth, reduce, flip } from 'ramda';
+import { curry, compose, join, prop, head, reduce, flip } from 'ramda';
 import devideSourceCapture from './internal/devideSourceCapture';
 import { parseCode, getEqualPieces } from '../utils';
 import { Pawn, Rook } from '../presets';
@@ -14,6 +14,8 @@ const CastlingMap = {
   a: 'O-O-O',
   h: 'O-O',
 };
+
+const _prop = flip(prop);
 
 /**
  * Parse notation
@@ -60,8 +62,8 @@ function parseNotation({
     notation = `${prefix}${SymbolsMap.capture}${suffix}`;
   } else if (isCastling) {
     notation = compose(
-      flip(prop)(CastlingMap),
-      compose(parseCode.prop('fileName'), nth(0), getEqualPieces(Rook))
+      _prop(CastlingMap),
+      compose(parseCode.prop('fileName'), head, getEqualPieces(Rook))
     )(from);
   }
 

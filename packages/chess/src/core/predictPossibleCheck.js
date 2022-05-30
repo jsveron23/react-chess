@@ -1,4 +1,4 @@
-import { curry, compose, nth } from 'ramda';
+import { curry, compose, head } from 'ramda';
 import getAttackers from './getAttackers';
 import {
   replaceCode,
@@ -36,7 +36,7 @@ function predictPossibleCheck(timeline, targetCode) {
   }
 
   return compose(
-    nth(0),
+    head,
     getAttackers(kingCode)
   )([pretendSnapshot, ...prevSnapshots]);
 }

@@ -2,15 +2,16 @@ import { connect } from 'react-redux';
 import { ActionTypes } from 'redux-undo';
 import { Menu } from '~/components';
 import {
-  updateMatchType,
-  saveGame,
   undo,
-  joinNetworkGame,
+  saveGame,
   importGame,
   exportGame,
+  toggleFlip,
+  joinNetworkGame,
+  updateMatchType,
 } from '~/store/actions';
 import { toLocaleDate } from '~/utils';
-import { ONE_VS_ONE, SAVE, ONLINE, IMPORT, EXPORT } from '~/presets';
+import { ONE_VS_ONE, SAVE, ONLINE, IMPORT, EXPORT, FLIP } from '~/presets';
 import PeerIdContainer from './PeerIdContainer';
 import ChatContainer from './ChatContainer';
 
@@ -58,6 +59,12 @@ function mergeProps(stateProps, dispatchProps, ownProps) {
         title: '1 vs 1',
         disabled: isConnected,
         onClick: () => dispatch(updateMatchType(ONE_VS_ONE)),
+      },
+      {
+        key: FLIP,
+        title: 'Flip diagram (Up & Down)',
+        disabled: isConnected,
+        onClick: () => dispatch(toggleFlip()),
       },
       // {
       //   key: ONE_VS_CPU,

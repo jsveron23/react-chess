@@ -18,6 +18,7 @@ import {
   SAVE_TO_LOCALSTORAGE,
   IMPORT_GAME,
   EXPORT_GAME,
+  TOGGLE_FLIP,
 } from '../actionTypes';
 
 export function updateMatchType(key) {
@@ -96,5 +97,11 @@ export function exportGame() {
         type: EXPORT_GAME,
       });
     }, debug.err('clipboard issue'));
+  };
+}
+
+export function toggleFlip() {
+  return {
+    type: TOGGLE_FLIP,
   };
 }

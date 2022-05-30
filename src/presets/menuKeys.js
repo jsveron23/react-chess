@@ -4,3 +4,4 @@ export const SAVE = 'save';
 export const IMPORT = 'import';
 export const EXPORT = 'export';
 export const ONLINE = 'online';
+export const FLIP = 'flip';
