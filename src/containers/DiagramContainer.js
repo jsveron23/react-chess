@@ -18,6 +18,7 @@ const detectPawn = memoizeOne(detectPiece.Pawn);
 const flippedIncludes = flip(includes);
 
 function mapStateToProps({
+  general: { flip },
   network: { side, connected, awaiting },
   ingame: {
     present: {
@@ -60,7 +61,7 @@ function mapStateToProps({
     checkDefenders: defenders,
     preventEvent: connected && awaiting,
     animate: isUndoAction ? undefined : animate,
-    flip: connected && side === Side.black,
+    flip: flip || (connected && side === Side.black),
     movableTiles,
     turn,
   };

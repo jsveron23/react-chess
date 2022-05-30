@@ -1,8 +1,13 @@
 import { ONE_VS_ONE } from '~/presets';
-import { UPDATE_MATCH_TYPE, SAVE_TO_LOCALSTORAGE } from '../actionTypes';
+import {
+  UPDATE_MATCH_TYPE,
+  SAVE_TO_LOCALSTORAGE,
+  TOGGLE_FLIP,
+} from '../actionTypes';
 
 const initialState = {
   matchType: ONE_VS_ONE,
+  flip: false,
   lastSaved: 0,
 };
 
@@ -21,6 +26,13 @@ function reducer(state = initialState, action) {
       return {
         ...state,
         lastSaved: payload,
+      };
+    }
+
+    case TOGGLE_FLIP: {
+      return {
+        ...state,
+        flip: !state.flip,
       };
     }
 
