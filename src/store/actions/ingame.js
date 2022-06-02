@@ -2,11 +2,11 @@ import { batch } from 'react-redux';
 import { ActionCreators } from 'redux-undo';
 import { compose, reject, equals, clone } from 'ramda';
 import * as Chess from 'chess/es';
-import { ONE_VS_ONE } from '~/presets';
+import { ONE_VS_ONE, ONE_VS_CPU } from '~/presets';
+import { peerNetwork } from '~/services/network';
 import { toggleAwaiting } from './network';
 import { measureAxis } from './animate';
 import * as types from '../actionTypes';
-import { peerNetwork } from '~/services/network';
 
 /**
  * Remove selected code (reset)
@@ -296,6 +296,59 @@ export function afterMoving(nextTileName, selectedCode, getNextSnapshot) {
   };
 }
 
+export function playCpu() {
+  return (dispatch, getState) => {
+    const {
+      general: { matchType, cpu = Chess.Turn.b },
+      ingame: {
+        present: { snapshot, turn },
+        present,
+        past,
+      },
+    } = getState();
+
+    if (matchType === ONE_VS_CPU && turn === cpu) {
+      const worker = new Worker(
+        new URL('~/services/worker/ai', import.meta.url)
+      );
+
+      worker.postMessage({
+        timeline: Chess.createTimeline(present, past),
+        difficulty: 2,
+        turn,
+      });
+
+      dispatch(toggleThinking());
+
+      worker.onmessage = ({ data: { bestState = {} } }) => {
+        console.log(bestState);
+        const { node = [] } = bestState;
+        const [selectedCode, nextCode] = node;
+        const tileName = Chess.parseCode.prop('tileName', nextCode);
+
+        console.log(tileName, selectedCode);
+
+        dispatch(toggleThinking());
+        dispatch(
+          afterMoving(
+            tileName,
+            selectedCode,
+            Chess.replaceCode(snapshot, selectedCode)
+          )
+        );
+
+        worker.terminate();
+      };
+    }
+  };
+}
+
+export function toggleThinking() {
+  return {
+    type: types.TOGGLE_THINKING,
+  };
+}
+
 export function updateCheckState(selectedCode) {
   return (dispatch, getState) => {
     const {
@@ -333,5 +386,6 @@ export function updateSheetData() {
       type: types.UPDATE_SHEET_DATA,
       payload: sheetData,
     });
+    dispatch(playCpu());
   };
 }

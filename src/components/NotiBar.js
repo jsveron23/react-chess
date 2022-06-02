@@ -17,7 +17,7 @@ const ColorSet = {
   },
 };
 
-function NotiBar({ turn, connected, awaiting }) {
+function NotiBar({ turn, connected, awaiting, thinking }) {
   const cs = ColorSet[turn];
   const isAwaiting = connected && awaiting;
   const isTurn = connected && !awaiting;
@@ -46,6 +46,13 @@ function NotiBar({ turn, connected, awaiting }) {
         paddingLeft={10}
         paddingRight={10}
       >
+        {thinking && (
+          <>
+            <Text marginRight={10}>...Thinking...</Text>
+            <ClockLoader size={20} loading={thinking} />
+          </>
+        )}
+
         {isAwaiting && (
           <>
             <Text marginRight={10}>...Awaiting...</Text>
@@ -63,6 +70,7 @@ NotiBar.propTypes = {
   turn: PropTypes.string.isRequired,
   connected: PropTypes.bool.isRequired,
   awaiting: PropTypes.bool.isRequired,
+  thinking: PropTypes.bool.isRequired,
 };
 
 export default memo(NotiBar);

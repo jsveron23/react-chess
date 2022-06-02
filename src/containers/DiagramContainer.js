@@ -2,6 +2,7 @@ import { connect } from 'react-redux';
 import { compose, flip, intersection, includes } from 'ramda';
 import memoizeOne from 'memoize-one';
 import {
+  Turn,
   Side,
   detectEnemyOnTiles,
   validateCode,
@@ -12,13 +13,14 @@ import {
 } from 'chess/es';
 import { Diagram } from '~/components';
 import { updateSelectedCode, movePiece, capturePiece } from '~/store/actions';
+import { ONE_VS_CPU } from '~/presets';
 
 const convertToTiles = memoizeOne(convertAxisListToTiles);
 const detectPawn = memoizeOne(detectPiece.Pawn);
 const flippedIncludes = flip(includes);
 
 function mapStateToProps({
-  general: { flip },
+  general: { flip = false, matchType, cpu = Turn.b },
   network: { side, connected, awaiting },
   ingame: {
     present: {
@@ -35,6 +37,9 @@ function mapStateToProps({
   animate,
 }) {
   const isUndoAction = future.length > 0;
+  const isAwating = connected && awaiting;
+  const isCpuTurn = matchType === ONE_VS_CPU && turn === cpu;
+  const isBlack = connected && side === Side.black;
 
   return {
     detectEnPassantTile(tileName) {
@@ -59,9 +64,9 @@ function mapStateToProps({
     checkCode: attackerCode ? kingCode : '',
     checkRoute: attackerRoutes,
     checkDefenders: defenders,
-    preventEvent: connected && awaiting,
+    preventEvent: isAwating || isCpuTurn,
     animate: isUndoAction ? undefined : animate,
-    flip: flip || (connected && side === Side.black),
+    flip: flip || isBlack,
     movableTiles,
     turn,
   };

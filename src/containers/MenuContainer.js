@@ -11,7 +11,15 @@ import {
   updateMatchType,
 } from '~/store/actions';
 import { toLocaleDate } from '~/utils';
-import { ONE_VS_ONE, SAVE, ONLINE, IMPORT, EXPORT, FLIP } from '~/presets';
+import {
+  ONE_VS_ONE,
+  SAVE,
+  ONLINE,
+  IMPORT,
+  EXPORT,
+  FLIP,
+  ONE_VS_CPU,
+} from '~/presets';
 import PeerIdContainer from './PeerIdContainer';
 import ChatContainer from './ChatContainer';
 
@@ -61,16 +69,17 @@ function mergeProps(stateProps, dispatchProps, ownProps) {
         onClick: () => dispatch(updateMatchType(ONE_VS_ONE)),
       },
       {
+        key: ONE_VS_CPU,
+        title: '1 vs CPU',
+        disabled: isConnected,
+        onClick: () => dispatch(updateMatchType(ONE_VS_CPU)),
+      },
+      {
         key: FLIP,
         title: 'Flip diagram (Up & Down)',
         disabled: isConnected,
         onClick: () => dispatch(toggleFlip()),
       },
-      // {
-      //   key: ONE_VS_CPU,
-      //   title: '1 vs CPU',
-      //   disabled: true,
-      // },
       {
         key: SAVE,
         title: `Save ${lastSaved}`,

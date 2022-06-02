@@ -1,4 +1,5 @@
 import { ONE_VS_ONE } from '~/presets';
+import { Turn } from 'chess/es';
 import {
   UPDATE_MATCH_TYPE,
   SAVE_TO_LOCALSTORAGE,
@@ -9,6 +10,7 @@ const initialState = {
   matchType: ONE_VS_ONE,
   flip: false,
   lastSaved: 0,
+  cpu: Turn.w,
 };
 
 function reducer(state = initialState, action) {
