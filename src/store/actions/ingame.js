@@ -315,7 +315,7 @@ export function playCpu() {
 
       worker.postMessage({
         timeline: Chess.createTimeline(present, past),
-        depth: 3,
+        depth: 2,
         turn,
       });
 

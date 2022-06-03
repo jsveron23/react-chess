@@ -1,7 +1,8 @@
 import {
   curry,
   compose,
-  reduce,
+  map,
+  flatten,
   filter,
   defaultTo,
   flip,
@@ -14,7 +15,7 @@ import getDiagonallyTiles from './getDiagonallyTiles';
 import { parseCode } from '../utils';
 import { Special, DoubleStep, Diagonally, EnPassant } from '../presets';
 
-const _prop = flip(prop);
+const _propSpecial = flip(prop)(Special);
 
 /**
  * Compute special movable tiles
@@ -25,36 +26,28 @@ const _prop = flip(prop);
 function computeSpecialMT(timeline, code) {
   return compose(
     filter(Boolean),
-    reduce((acc, mvName) => {
+    flatten,
+    map((mvName) => {
       switch (mvName) {
         case DoubleStep: {
-          const oneMoreTile = getDoubleStepTile(code);
-
-          return [...acc, oneMoreTile];
+          return getDoubleStepTile(code);
         }
 
         case Diagonally: {
-          const capturableTiles = compose(
-            getDiagonallyTiles(code),
-            head
-          )(timeline);
-
-          return [...acc, ...capturableTiles];
+          return compose(getDiagonallyTiles(code), head)(timeline);
         }
 
         case EnPassant: {
-          const diagonalTile = getEnPassantTile(code, timeline);
-
-          return [...acc, diagonalTile];
+          return getEnPassantTile(code, timeline);
         }
 
         default: {
-          return acc;
+          return '';
         }
       }
-    }, []),
+    }),
     defaultTo([]),
-    _prop(Special),
+    _propSpecial,
     parseCode.prop('piece')
   )(code);
 }

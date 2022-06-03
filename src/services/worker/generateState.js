@@ -23,6 +23,11 @@ function generateState(timeline, node, code) {
 
       const nextCode = `${pKey}${tN}`;
 
+      // TODO
+      // move | capture | predict attacker | pawn vertical
+      // check | checkmate | stalemate
+
+      // AI.set
       return {
         node: [...node, code, nextCode],
         timeline: compose(

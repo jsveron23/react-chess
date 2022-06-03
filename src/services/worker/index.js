@@ -1,76 +1,5 @@
-import { compose, forEach, filter, startsWith, head } from 'ramda';
-import { Side, Opponent } from 'chess/es';
-import generateState from './generateState';
-
-// TODO optimize it
-
-const ai = (function () {
-  function iterate(
-    {
-      timeline,
-      char,
-      node = [
-        /* initial node */
-      ],
-    },
-    fn
-  ) {
-    compose(
-      forEach(compose(forEach(fn), generateState(timeline, node))),
-      filter(startsWith(char)),
-      head
-    )(timeline);
-  }
-
-  function minimax(state, depth, alpha, beta, isMaximizing) {
-    if (depth === 0) {
-      // TODO evaluateState
-      return {
-        ...state,
-        score: Math.random() * 100,
-      };
-    }
-
-    let bestState = {
-      score: isMaximizing ? -Infinity : Infinity,
-    };
-
-    iterate({ ...state, char: Opponent[state.side] }, (nextState) => {
-      const finalState = minimax(
-        nextState,
-        depth - 1,
-        alpha,
-        beta,
-        !isMaximizing
-      );
-      const cond = isMaximizing
-        ? finalState.score > bestState.score
-        : finalState.score < bestState.score;
-
-      if (cond) {
-        bestState = finalState;
-      }
-
-      if (isMaximizing) {
-        alpha = Math.max(alpha, bestState.score);
-
-        if (bestState.score >= beta) {
-          return bestState;
-        }
-      } else {
-        beta = Math.min(beta, bestState.score);
-
-        if (bestState.score <= alpha) {
-          return bestState;
-        }
-      }
-    });
-
-    return bestState;
-  }
-
-  return { iterate, minimax };
-})();
+import { Side } from 'chess/es';
+import AI from './AI';
 
 self.onmessage = ({ data }) => {
   const { timeline, turn, depth = 2 } = data;
@@ -79,19 +8,22 @@ self.onmessage = ({ data }) => {
   };
 
   console.time('worker');
-  ai.iterate({ timeline, char: Side[turn] }, (nextState) => {
-    const finalState = ai.minimax(
-      nextState,
-      depth - 1,
-      -Infinity,
-      Infinity,
-      false
-    );
+  // prettier-ignore
+  AI
+    .set({ timeline, char: Side[turn] })
+    .run((nextState) => {
+      const finalState = AI.minimax(
+        nextState,
+        depth - 1,
+        -Infinity,
+        Infinity,
+        false
+      );
 
-    if (finalState.score >= bestState.score) {
-      bestState = finalState;
-    }
-  });
+      if (finalState.score >= bestState.score) {
+        bestState = finalState;
+      }
+    });
   console.timeEnd('worker');
 
   self.postMessage({

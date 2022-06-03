@@ -2,7 +2,7 @@ import { compose, flip, prop, map, filter } from 'ramda';
 import { convertAxisToTile, parseCode, validateCode } from '../utils';
 import { Movement } from '../presets';
 
-const _prop = flip(prop);
+const _propMovement = flip(prop)(Movement);
 
 /**
  * Compute movable tiles for single piece (without special movement)
@@ -17,7 +17,7 @@ function computeMTByCode(code) {
   return compose(
     filter(Boolean),
     map(convertAxisToTile(code)),
-    _prop(Movement),
+    _propMovement,
     parseCode.prop('piece')
   )(code);
 }

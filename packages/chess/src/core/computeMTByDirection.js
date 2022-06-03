@@ -14,10 +14,10 @@ function computeMTByDirection(snapshot, code) {
     throw new TypeError('invalid arguments');
   }
 
+  const _removeBlockedTiles = removeBlockedTiles(snapshot);
+
   // generic direction group (tiles)
   const tilesGrp = groupDirectionTilesByCode(code);
-
-  const _removeBlockedTiles = removeBlockedTiles(snapshot);
 
   return compose(
     flatten,

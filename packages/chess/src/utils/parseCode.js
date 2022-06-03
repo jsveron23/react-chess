@@ -1,4 +1,4 @@
-import { compose, prop, equals, curry } from 'ramda';
+import { compose, prop, equals, curry, split } from 'ramda';
 import parseTile from './parseTile';
 import validateCode from './validateCode';
 
@@ -12,7 +12,7 @@ function parseCode(code) {
     return {};
   }
 
-  const [side, piece, fileName, rankName] = code.split('');
+  const [side, piece, fileName, rankName] = split('', code);
 
   return {
     ...parseTile(`${fileName}${rankName}`),
