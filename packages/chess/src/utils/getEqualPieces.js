@@ -1,4 +1,4 @@
-import { curry } from 'ramda';
+import { curry, filter } from 'ramda';
 import detectPiece from './detectPiece';
 import validateSnapshot from './validateSnapshot';
 
@@ -13,7 +13,7 @@ function getEqualPieces(piece, codeList) {
     throw new TypeError('invalid arguments');
   }
 
-  return codeList.filter(detectPiece(piece));
+  return filter(detectPiece(piece), codeList);
 }
 
 export default curry(getEqualPieces);

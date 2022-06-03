@@ -25,7 +25,8 @@ function groupDirectionTilesByCode(code) {
         )(AGBD),
       };
     }, {}),
-    compose(_prop(DGBP), parseCode.prop('piece'))
+    _prop(DGBP),
+    parseCode.prop('piece')
   )(code);
 }
 

@@ -1,5 +1,6 @@
-import { curry, flip, indexOf, compose } from 'ramda';
+import { curry, flip, indexOf, compose, filter } from 'ramda';
 import memoizeOne from 'memoize-one';
+import equal from 'fast-deep-equal';
 import { convertSnapshotToTiles } from '../../utils';
 
 const _indexOf = flip(indexOf);
@@ -8,7 +9,7 @@ const _indexOf = flip(indexOf);
  * Prevent multiple compute by multiple calls
  * @see `computeMTByDirection`
  */
-const _convertSnapshotToTiles = memoizeOne(convertSnapshotToTiles);
+const _convertSnapshotToTiles = memoizeOne(convertSnapshotToTiles, equal);
 
 /**
  * Remove blocked tiles (should be ordered by direction)
@@ -20,7 +21,7 @@ function removeBlockedTiles(snapshot, orderedTiles) {
   const _indexOfTn = compose(_indexOf, _convertSnapshotToTiles)(snapshot);
   let lastIdx = -1;
 
-  return orderedTiles.filter((tN) => {
+  return filter((tN) => {
     const idxNotDetectedYet = lastIdx === -1;
     const isBlocked = lastIdx > -1;
 
@@ -29,7 +30,7 @@ function removeBlockedTiles(snapshot, orderedTiles) {
     }
 
     return !isBlocked;
-  });
+  }, orderedTiles);
 }
 
 export default curry(removeBlockedTiles);

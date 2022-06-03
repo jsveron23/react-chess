@@ -1,9 +1,10 @@
 import { batch } from 'react-redux';
 import { ActionCreators } from 'redux-undo';
-import { compose, reject, equals, clone } from 'ramda';
+import { compose, reject, equals, clone, isEmpty } from 'ramda';
 import * as Chess from 'chess/es';
 import { ONE_VS_ONE, ONE_VS_CPU } from '~/presets';
 import { peerNetwork } from '~/services/network';
+import { debug } from '~/utils';
 import { toggleAwaiting } from './network';
 import { measureAxis } from './animate';
 import * as types from '../actionTypes';
@@ -308,35 +309,40 @@ export function playCpu() {
     } = getState();
 
     if (matchType === ONE_VS_CPU && turn === cpu) {
+      dispatch(toggleThinking());
+
       const worker = new Worker(
         new URL('~/services/worker/ai', import.meta.url)
       );
 
       worker.postMessage({
         timeline: Chess.createTimeline(present, past),
-        difficulty: 2,
+        depth: 2,
         turn,
       });
 
-      dispatch(toggleThinking());
-
       worker.onmessage = ({ data: { bestState = {} } }) => {
-        console.log(bestState);
         const { node = [] } = bestState;
-        const [selectedCode, nextCode] = node;
-        const tileName = Chess.parseCode.prop('tileName', nextCode);
 
-        console.log(tileName, selectedCode);
+        if (!isEmpty(node)) {
+          console.log(bestState);
 
-        dispatch(toggleThinking());
-        dispatch(
-          afterMoving(
-            tileName,
-            selectedCode,
-            Chess.replaceCode(snapshot, selectedCode)
-          )
-        );
+          // TODO move and capture
+          const [selectedCode, nextCode] = node;
+          const tileName = Chess.parseCode.prop('tileName', nextCode);
+          const getNextSnapshot = Chess.replaceCode(snapshot, selectedCode);
 
+          dispatch(toggleThinking());
+          dispatch(afterMoving(tileName, selectedCode, getNextSnapshot));
+        } else {
+          console.log('something went wrong!');
+        }
+
+        worker.terminate();
+      };
+
+      worker.onerror = (evt) => {
+        debug.err('AI error', evt);
         worker.terminate();
       };
     }
