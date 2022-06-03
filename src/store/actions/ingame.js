@@ -311,22 +311,20 @@ export function playCpu() {
     if (matchType === ONE_VS_CPU && turn === cpu) {
       dispatch(toggleThinking());
 
-      const worker = new Worker(
-        new URL('~/services/worker/ai', import.meta.url)
-      );
+      const worker = new Worker(new URL('~/services/worker', import.meta.url));
 
       worker.postMessage({
         timeline: Chess.createTimeline(present, past),
-        depth: 2,
+        depth: 3,
         turn,
       });
 
       worker.onmessage = ({ data: { bestState = {} } }) => {
+        console.log(bestState);
+
         const { node = [] } = bestState;
 
         if (!isEmpty(node)) {
-          console.log(bestState);
-
           // TODO move and capture
           const [selectedCode, nextCode] = node;
           const tileName = Chess.parseCode.prop('tileName', nextCode);

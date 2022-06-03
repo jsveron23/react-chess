@@ -1,6 +1,6 @@
 import { compose, forEach, filter, startsWith, head } from 'ramda';
 import { Side, Opponent } from 'chess/es';
-import computeState from './computeState';
+import generateState from './generateState';
 
 // TODO optimize it
 
@@ -16,15 +16,19 @@ const ai = (function () {
     fn
   ) {
     compose(
-      forEach(compose(forEach(fn), computeState(timeline, node))),
+      forEach(compose(forEach(fn), generateState(timeline, node))),
       filter(startsWith(char)),
       head
     )(timeline);
   }
 
   function minimax(state, depth, alpha, beta, isMaximizing) {
-    if (depth === 0 || state.score > 0) {
-      return state;
+    if (depth === 0) {
+      // TODO evaluateState
+      return {
+        ...state,
+        score: Math.random() * 100,
+      };
     }
 
     let bestState = {
@@ -84,7 +88,7 @@ self.onmessage = ({ data }) => {
       false
     );
 
-    if (finalState.score > bestState.score) {
+    if (finalState.score >= bestState.score) {
       bestState = finalState;
     }
   });
