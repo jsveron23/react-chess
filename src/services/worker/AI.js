@@ -12,7 +12,7 @@ import {
 } from 'ramda';
 import {
   Opponent,
-  computeRawMT,
+  computePossibleMT,
   parseCode,
   replaceCode,
   findCodeByTile,
@@ -25,25 +25,26 @@ const _toSide = parseCode.prop('side');
 class AI {
   // TODO evaluate
   static Scores = {
-    wP: 100,
-    wN: 350,
-    wB: 350,
-    wR: 525,
-    wQ: 1000,
-    wK: 10000,
-    bP: -100,
-    bN: -350,
-    bB: -350,
-    bR: -525,
-    bQ: -1000,
-    bK: -10000,
+    wP: 10,
+    wN: 30,
+    wB: 30,
+    wR: 50,
+    wQ: 90,
+    wK: 900,
+    bP: -10,
+    bN: -30,
+    bB: -30,
+    bR: -50,
+    bQ: -90,
+    bK: -900,
   };
 
   constructor(initialValues) {
     this.timeline = initialValues.timeline;
     this.snapshot = head(this.timeline);
-    this.char = initialValues.char;
+    this.checkData = initialValues.checkData || {};
     this.node = initialValues.node || [];
+    this.char = initialValues.char;
   }
 
   /**
@@ -62,15 +63,11 @@ class AI {
    * @return {Object}
    */
   #computeScenario = (rawState) => {
-    const { currCode, nextCode, tile, isCaptured } = rawState;
+    const { currCode, nextCode, nextTile, isCaptured } = rawState;
     let pretendCode = '';
 
     if (isCaptured) {
-      pretendCode = this.snapshot.find((code) => {
-        const { side, tileName } = parseCode(code);
-
-        return and(equals(Opponent[this.char], side), equals(tile, tileName));
-      });
+      pretendCode = this.#detectPretendCode(nextTile);
     }
 
     return {
@@ -88,6 +85,7 @@ class AI {
    */
   #generateState = (currCode) => {
     const { side, pKey } = parseCode(currCode);
+    const { attackerCode = '', attackerRoutes = [] } = this.checkData;
 
     return compose(
       filter(Boolean),
@@ -103,13 +101,13 @@ class AI {
         return this.#computeScenario({
           isCaptured: !!code && !isSameSidedTile,
           nextCode: `${pKey}${tN}`,
-          tile: tN,
+          nextTile: tN,
           currCode,
           side,
         });
       }),
-      computeRawMT(this.timeline)
-    )(currCode);
+      computePossibleMT(attackerCode, attackerRoutes, currCode)
+    )(this.timeline);
   };
 
   /**
@@ -146,6 +144,19 @@ class AI {
   #filterState = (cb) => forEach(compose(forEach(cb), this.#generateState));
 
   /**
+   * PretendCode === defenderCode when capturing
+   * @param  {String} nextTile
+   * @return {String}
+   */
+  #detectPretendCode = (nextTile) => {
+    return this.snapshot.find((code) => {
+      const { side, tileName } = parseCode(code);
+
+      return and(equals(Opponent[this.char], side), equals(nextTile, tileName));
+    });
+  };
+
+  /**
    * Evaluate state
    * @param  {Object} state
    * @return {Object} state + evaluated state
@@ -153,12 +164,14 @@ class AI {
   static #evaluateState = (state) => {
     const { node = [], pretendCode, isCaptured } = state;
     const [selectedCode] = node;
+    // let penalty = 0;
     let score = -1;
 
     if (isCaptured) {
       const selectedPKey = _toPKey(selectedCode);
       const pretendPKey = _toPKey(pretendCode);
 
+      // TODO better
       score = this.Scores[selectedPKey] - this.Scores[pretendPKey];
     }
 

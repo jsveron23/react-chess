@@ -319,8 +319,9 @@ export function playCpu() {
     const worker = new Worker(new URL('~/services/worker', import.meta.url));
 
     worker.postMessage({
-      timeline: Chess.createTimeline(present, past),
       depth: 2,
+      present,
+      past,
       turn,
     });
 

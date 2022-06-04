@@ -1,8 +1,15 @@
-import { Side } from 'chess/es';
+import { Side, createTimeline } from 'chess/es';
 import AI from './AI';
 
 self.onmessage = ({ data }) => {
-  const { timeline, turn, depth = 2 } = data;
+  const {
+    present: { checkData },
+    present,
+    past,
+    turn,
+    depth = 2,
+  } = data;
+  const timeline = createTimeline(present, past);
   let bestState = {
     score: -Infinity,
   };
@@ -10,7 +17,7 @@ self.onmessage = ({ data }) => {
   console.time('worker');
   // prettier-ignore
   AI
-    .set({ timeline, char: Side[turn] })
+    .set({ timeline, checkData, char: Side[turn] })
     .run((nextState) => {
       const finalState = AI.minimax(
         nextState,
