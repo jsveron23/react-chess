@@ -9,13 +9,19 @@ import {
   flip,
   equals,
   and,
+  apply,
+  props,
 } from 'ramda';
 import {
   Opponent,
-  computePossibleMT,
+  Vertical,
   parseCode,
+  detectPiece,
   replaceCode,
+  getDirection,
   findCodeByTile,
+  computeDistance,
+  computePossibleMT,
 } from 'chess/es';
 
 const _prepend = flip(prepend);
@@ -50,110 +56,77 @@ class AI {
   /**
    * Entry point of this class
    * @see worker
-   * @see AI.set
+   * @see AI.prepare
    * @param {Function} cb
    */
   run(cb) {
-    compose(this.#filterState(cb), this.#filterBySide)();
+    // iterate(cb -> minimax) in iterate(get movable tiles of a code)
+    // until depth is zero
+    compose(
+      forEach(compose(forEach(cb), this.#generateState)),
+      filter(startsWith(this.char))
+    )(this.snapshot);
   }
 
   /**
-   * Compute possible scenario
-   * @param  {Object} rawState
-   * @return {Object}
-   */
-  #computeScenario = (rawState) => {
-    const { currCode, nextCode, nextTile, isCaptured } = rawState;
-    let pretendCode = '';
-
-    if (isCaptured) {
-      pretendCode = this.#detectPretendCode(nextTile);
-    }
-
-    return {
-      node: [...this.node, currCode, nextCode],
-      timeline: this.#generateNextTimeline(currCode, nextCode), // TODO incorrect timeline
-      pretendCode,
-      ...rawState,
-    };
-  };
-
-  /**
-   * Generate state for each depth by code
+   * Generate state for each depth by code, check possible scenario
    * @param  {String} currCode
    * @return {Object} state
    */
   #generateState = (currCode) => {
     const { side, pKey } = parseCode(currCode);
+    const enemySide = Opponent[this.char];
+    const isPawn = detectPiece.Pawn(currCode);
     const { attackerCode = '', attackerRoutes = [] } = this.checkData;
+    const _getDirection = compose(
+      apply(getDirection),
+      props(['file', 'rank']),
+      computeDistance(currCode)
+    );
+    const _getNextTimeline = compose(
+      _prepend(this.timeline),
+      replaceCode(this.snapshot, currCode) // TODO it's only for move (no capturing)
+    );
 
     return compose(
       filter(Boolean),
       map((tN) => {
         const code = findCodeByTile(this.snapshot, tN);
-        const isSameSidedTile = this.#detectPlacedTile(code, side, tN);
+        const isSameSidedTile = compose(equals(side), _toSide)(code);
 
+        // ignore same sided code
         if (isSameSidedTile) {
-          // no need this state
           return;
         }
 
-        return this.#computeScenario({
-          isCaptured: !!code && !isSameSidedTile,
-          nextCode: `${pKey}${tN}`,
-          nextTile: tN,
-          currCode,
+        const isCaptured = !!code && !isSameSidedTile;
+        const nextCode = `${pKey}${tN}`;
+        const direction = _getDirection(nextCode);
+        let pretendCode = '';
+
+        if (isCaptured) {
+          // not possible to capture
+          if (isPawn && direction === Vertical) {
+            return;
+          }
+
+          pretendCode = this.snapshot.find((cd) => {
+            const { side: cdSide, tileName } = parseCode(cd);
+
+            return and(equals(tN, tileName), equals(enemySide, cdSide));
+          });
+        }
+
+        return {
+          node: [...this.node, currCode, nextCode],
+          timeline: _getNextTimeline(nextCode), // TODO incorrect timeline
+          pretendCode,
+          isCaptured,
           side,
-        });
+        };
       }),
       computePossibleMT(attackerCode, attackerRoutes, currCode)
     )(this.timeline);
-  };
-
-  /**
-   * Generate next timeline in state after
-   * @param  {String} currCode
-   * @param  {String} nextCode
-   * @return {Array}
-   */
-  #generateNextTimeline = (currCode, nextCode) =>
-    compose(
-      _prepend(this.timeline),
-      replaceCode(this.snapshot, currCode)
-    )(nextCode);
-
-  /**
-   * Detect placed tile to remove unnecessary case (same sided only)
-   * @param  {String}  code
-   * @param  {String}  side
-   * @return {Boolean}
-   */
-  #detectPlacedTile = (code, side) => compose(equals(side), _toSide)(code);
-
-  /**
-   * Filter snapshot to remove opponent side
-   * @return {Array}
-   */
-  #filterBySide = () => filter(startsWith(this.char), this.snapshot);
-
-  /**
-   * Filter available state (curry)
-   * @param  {Function} cb
-   * @return {Function}
-   */
-  #filterState = (cb) => forEach(compose(forEach(cb), this.#generateState));
-
-  /**
-   * PretendCode === defenderCode when capturing
-   * @param  {String} nextTile
-   * @return {String}
-   */
-  #detectPretendCode = (nextTile) => {
-    return this.snapshot.find((code) => {
-      const { side, tileName } = parseCode(code);
-
-      return and(equals(Opponent[this.char], side), equals(nextTile, tileName));
-    });
   };
 
   /**
@@ -161,7 +134,7 @@ class AI {
    * @param  {Object} state
    * @return {Object} state + evaluated state
    */
-  static #evaluateState = (state) => {
+  static #evaluateState(state) {
     const { node = [], pretendCode, isCaptured } = state;
     const [selectedCode] = node;
     // let penalty = 0;
@@ -181,14 +154,14 @@ class AI {
       ...state,
       score: score > -1 ? score : -Math.floor(Math.random() * 10),
     };
-  };
+  }
 
   /**
    * Create instance
    * @param  {Object} initialValues
    * @return {AI}     instance
    */
-  static set(initialValues) {
+  static prepare(initialValues) {
     return new AI(initialValues);
   }
 
@@ -203,13 +176,13 @@ class AI {
    */
   static minimax(state, depth, alpha, beta, isMaximizing) {
     // TODO check it
-    const isWinning =
+    const inSituation =
       state.isCaptured ||
       state.isCheck ||
       state.isCheckmate ||
       state.isStalemate;
 
-    if (depth === 0 || isWinning) {
+    if (depth === 0 || inSituation) {
       return this.#evaluateState(state);
     }
 
@@ -220,7 +193,7 @@ class AI {
 
     // prettier-ignore
     AI
-      .set({ ...state, char: Opponent[state.side] })
+      .prepare({ ...state, char: Opponent[state.side] })
       .run((filteredState) => {
         const nextState = this.minimax(
           filteredState,

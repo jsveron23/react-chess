@@ -4,10 +4,9 @@ import AI from './AI';
 self.onmessage = ({ data }) => {
   const {
     present: { checkData },
+    depth = 2,
     present,
     past,
-    turn,
-    depth = 2,
   } = data;
   const timeline = createTimeline(present, past);
   let bestState = {
@@ -17,7 +16,7 @@ self.onmessage = ({ data }) => {
   console.time('worker');
   // prettier-ignore
   AI
-    .set({ timeline, checkData, char: Side[turn] })
+    .prepare({ timeline, checkData, char: Side[present.turn] })
     .run((nextState) => {
       const finalState = AI.minimax(
         nextState,

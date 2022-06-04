@@ -322,7 +322,6 @@ export function playCpu() {
       depth: 2,
       present,
       past,
-      turn,
     });
 
     worker.onmessage = ({ data: { bestState = {} } }) => {
