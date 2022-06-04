@@ -1,9 +1,9 @@
-import { curry, compose } from 'ramda';
+import { curry } from 'ramda';
 import parseCode from './parseCode';
 import validateCode from './validateCode';
 import getTilesDifference from './getTilesDifference';
 
-const toTN = parseCode.prop('tileName');
+const _toTN = parseCode.prop('tileName');
 
 /**
  * Compute distance by two different code
@@ -16,7 +16,7 @@ function computeDistance(codeA, codeB) {
     throw new TypeError('invalid arguments');
   }
 
-  return compose(getTilesDifference(toTN(codeA)), toTN)(codeB);
+  return getTilesDifference(_toTN(codeA), _toTN(codeB));
 }
 
 export default curry(computeDistance);
