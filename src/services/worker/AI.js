@@ -8,6 +8,7 @@ import {
   prepend,
   flip,
   equals,
+  and,
 } from 'ramda';
 import {
   Opponent,
@@ -18,6 +19,8 @@ import {
 } from 'chess/es';
 
 const _prepend = flip(prepend);
+const _toPKey = parseCode.prop('pKey');
+const _toSide = parseCode.prop('side');
 
 class AI {
   // TODO evaluate
@@ -54,34 +57,59 @@ class AI {
   }
 
   /**
+   * Compute possible scenario
+   * @param  {Object} rawState
+   * @return {Object}
+   */
+  #computeScenario = (rawState) => {
+    const { currCode, nextCode, tile, isCaptured } = rawState;
+    let pretendCode = '';
+
+    if (isCaptured) {
+      pretendCode = this.snapshot.find((code) => {
+        const { side, tileName } = parseCode(code);
+
+        return and(equals(Opponent[this.char], side), equals(tile, tileName));
+      });
+    }
+
+    return {
+      node: [...this.node, currCode, nextCode],
+      timeline: this.#generateNextTimeline(currCode, nextCode), // TODO incorrect timeline
+      pretendCode,
+      ...rawState,
+    };
+  };
+
+  /**
    * Generate state for each depth by code
-   * @param  {String} code
+   * @param  {String} currCode
    * @return {Object} state
    */
-  #generateState = (code) => {
-    const { side, pKey } = parseCode(code);
+  #generateState = (currCode) => {
+    const { side, pKey } = parseCode(currCode);
 
     return compose(
       filter(Boolean),
       map((tN) => {
-        if (this.#detectPlacedTile(side, tN)) {
+        const code = findCodeByTile(this.snapshot, tN);
+        const isSameSidedTile = this.#detectPlacedTile(code, side, tN);
+
+        if (isSameSidedTile) {
+          // no need this state
           return;
         }
 
-        const nextCode = `${pKey}${tN}`;
-
-        // TODO
-        // move | capture | predict attacker | pawn vertical
-        // check | checkmate | stalemate
-
-        return {
-          node: [...this.node, code, nextCode],
-          timeline: this.#generateNextTimeline(code, nextCode),
+        return this.#computeScenario({
+          isCaptured: !!code && !isSameSidedTile,
+          nextCode: `${pKey}${tN}`,
+          tile: tN,
+          currCode,
           side,
-        };
+        });
       }),
       computeRawMT(this.timeline)
-    )(code);
+    )(currCode);
   };
 
   /**
@@ -98,16 +126,11 @@ class AI {
 
   /**
    * Detect placed tile to remove unnecessary case (same sided only)
+   * @param  {String}  code
    * @param  {String}  side
-   * @param  {String}  tile
    * @return {Boolean}
    */
-  #detectPlacedTile = (side, tile) =>
-    compose(
-      equals(side),
-      parseCode.prop('side'),
-      findCodeByTile(this.snapshot)
-    )(tile);
+  #detectPlacedTile = (code, side) => compose(equals(side), _toSide)(code);
 
   /**
    * Filter snapshot to remove opponent side
@@ -121,6 +144,31 @@ class AI {
    * @return {Function}
    */
   #filterState = (cb) => forEach(compose(forEach(cb), this.#generateState));
+
+  /**
+   * Evaluate state
+   * @param  {Object} state
+   * @return {Object} state + evaluated state
+   */
+  static #evaluateState = (state) => {
+    const { node = [], pretendCode, isCaptured } = state;
+    const [selectedCode] = node;
+    let score = -1;
+
+    if (isCaptured) {
+      const selectedPKey = _toPKey(selectedCode);
+      const pretendPKey = _toPKey(pretendCode);
+
+      score = this.Scores[selectedPKey] - this.Scores[pretendPKey];
+    }
+
+    // TODO more
+
+    return {
+      ...state,
+      score: score > -1 ? score : -Math.floor(Math.random() * 10),
+    };
+  };
 
   /**
    * Create instance
@@ -138,9 +186,10 @@ class AI {
    * @param  {Number}  alpha
    * @param  {Number}  beta
    * @param  {Boolean} isMaximizing
-   * @return {Object}  state + evaluated state
+   * @return {Object}
    */
   static minimax(state, depth, alpha, beta, isMaximizing) {
+    // TODO check it
     const isWinning =
       state.isCaptured ||
       state.isCheck ||
@@ -148,14 +197,11 @@ class AI {
       state.isStalemate;
 
     if (depth === 0 || isWinning) {
-      // TODO evaluateState
-      return {
-        ...state,
-        score: Math.random() * 100,
-      };
+      return this.#evaluateState(state);
     }
 
     let bestState = {
+      ...state,
       score: isMaximizing ? -Infinity : Infinity,
     };
 
@@ -175,7 +221,10 @@ class AI {
           : nextState.score < bestState.score;
 
         if (cond) {
-          bestState = nextState;
+          bestState = {
+            ...nextState,
+            score: nextState.score
+          };
         }
 
         if (isMaximizing) {

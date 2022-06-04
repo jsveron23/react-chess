@@ -294,9 +294,11 @@ export function afterMoving(nextTileName, selectedCode, getNextSnapshot) {
     dispatch(removeMovableTiles());
     dispatch(updateTurn(Chess.Opponent[turn]));
     dispatch(updateSheetData());
+    dispatch(playCpu());
   };
 }
 
+// TODO where
 export function playCpu() {
   return (dispatch, getState) => {
     const {
@@ -308,42 +310,55 @@ export function playCpu() {
       },
     } = getState();
 
-    if (matchType === ONE_VS_CPU && turn === cpu) {
-      dispatch(toggleThinking());
+    if (matchType !== ONE_VS_CPU || turn !== cpu) {
+      return;
+    }
 
-      const worker = new Worker(new URL('~/services/worker', import.meta.url));
+    dispatch(toggleThinking());
 
-      worker.postMessage({
-        timeline: Chess.createTimeline(present, past),
-        depth: 2,
-        turn,
-      });
+    const worker = new Worker(new URL('~/services/worker', import.meta.url));
 
-      worker.onmessage = ({ data: { bestState = {} } }) => {
-        console.log(bestState);
+    worker.postMessage({
+      timeline: Chess.createTimeline(present, past),
+      depth: 2,
+      turn,
+    });
 
-        const { node = [] } = bestState;
+    worker.onmessage = ({ data: { bestState = {} } }) => {
+      debug('result: ', bestState);
 
-        if (!isEmpty(node)) {
-          // TODO move and capture
-          const [selectedCode, nextCode] = node;
-          const tileName = Chess.parseCode.prop('tileName', nextCode);
-          const getNextSnapshot = Chess.replaceCode(snapshot, selectedCode);
+      const { node = [], isCaptured, pretendCode } = bestState;
+      const [selectedCode, nextCode] = node;
 
-          dispatch(toggleThinking());
-          dispatch(afterMoving(tileName, selectedCode, getNextSnapshot));
+      if (!isEmpty(node)) {
+        let getNextSnapshot = snapshot;
+
+        if (isCaptured) {
+          getNextSnapshot = compose(
+            reject(equals(selectedCode)),
+            Chess.replaceCode(snapshot, pretendCode)
+          );
         } else {
-          console.log('something went wrong!');
+          getNextSnapshot = Chess.replaceCode(snapshot, selectedCode);
         }
 
-        worker.terminate();
-      };
+        const tileName = Chess.parseCode.prop('tileName', nextCode);
 
-      worker.onerror = (evt) => {
-        debug.err('AI error', evt);
-        worker.terminate();
-      };
-    }
+        dispatch(afterMoving(tileName, selectedCode, getNextSnapshot));
+        dispatch(toggleThinking());
+      } else {
+        debug('something went wrong!', bestState);
+      }
+
+      worker.terminate();
+    };
+
+    worker.onerror = (evt) => {
+      dispatch(toggleThinking());
+
+      debug.err('AI error', evt);
+      worker.terminate();
+    };
   };
 }
 
@@ -390,6 +405,5 @@ export function updateSheetData() {
       type: types.UPDATE_SHEET_DATA,
       payload: sheetData,
     });
-    dispatch(playCpu());
   };
 }

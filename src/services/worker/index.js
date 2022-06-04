@@ -20,7 +20,7 @@ self.onmessage = ({ data }) => {
         false
       );
 
-      if (finalState.score >= bestState.score) {
+      if (finalState.score > bestState.score) {
         bestState = finalState;
       }
     });
