@@ -1,4 +1,4 @@
-import { curry, keys, filter, nth, compose, defaultTo } from 'ramda';
+import { curry, keys, filter, head, compose, defaultTo } from 'ramda';
 import { Diagonal, Vertical, Horizontal } from '../presets';
 
 /**
@@ -16,7 +16,7 @@ function getDirection(file, rank) {
 
   return compose(
     defaultTo(''),
-    nth(0),
+    head,
     filter((key) => directionMap[key]),
     keys
   )(directionMap);

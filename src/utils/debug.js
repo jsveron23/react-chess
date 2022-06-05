@@ -11,8 +11,8 @@ function createDebug(options = {}) {
     ...options,
   };
 
-  return (label, v) => {
-    console[options.mode](label, v || '');
+  return (label, ...v) => {
+    console[options.mode](label, ...v);
 
     return v;
   };

@@ -9,6 +9,8 @@ import {
   find,
 } from 'ramda';
 
+const _isNotEquals = complement(equals);
+
 /**
  * Detect whether moved or not
  * @param  {Array}   timeline
@@ -17,7 +19,7 @@ import {
  */
 function detectMoved(timeline, code) {
   return compose(
-    complement(equals)(timeline.length),
+    _isNotEquals(timeline.length),
     length,
     filter(Boolean),
     map(find(equals(code)))

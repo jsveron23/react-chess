@@ -14,11 +14,6 @@ import {
  * @return {String}
  */
 function getAttackers(defenderCode, timeline) {
-  const _includesTn = compose(
-    includes,
-    parseCode.prop('tileName')
-  )(defenderCode);
-
   return compose(
     filter((code) => {
       let mt = computeRawMT(timeline, code);
@@ -27,7 +22,7 @@ function getAttackers(defenderCode, timeline) {
         mt = removeDirection.Vertical(mt, code);
       }
 
-      return _includesTn(mt);
+      return includes(parseCode.prop('tileName', defenderCode), mt);
     }),
     filterOpponent(defenderCode),
     head

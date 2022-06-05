@@ -3,7 +3,7 @@ import {
   compose,
   map,
   filter,
-  nth,
+  head,
   xprod,
   negate,
   equals,
@@ -34,7 +34,7 @@ function getSymmetryTile(direction, centralCode, targetTile) {
   }
 
   return compose(
-    nth(0),
+    head,
     filter(Boolean),
     map(
       cond([

@@ -4,6 +4,7 @@ import * as types from '../actionTypes';
 const initialState = {
   turn: Turn.w,
   snapshot: Snapshot,
+  thinking: false,
   selectedCode: '',
   movableTiles: [],
   sheetData: [],
@@ -101,6 +102,13 @@ function reducer(state = initialState, action) {
           attackerRoutes: [],
           dodgeableTiles: [],
         },
+      };
+    }
+
+    case types.TOGGLE_THINKING: {
+      return {
+        ...state,
+        thinking: !state.thinking,
       };
     }
 

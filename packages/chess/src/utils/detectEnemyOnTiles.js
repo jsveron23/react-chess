@@ -4,7 +4,7 @@ import detectPiece from './detectPiece';
 import removeDirection from './removeDirection';
 
 /**
- * Detect eneny on the way
+ * Detect enemy on the way
  * @param  {Array}   movableTiles
  * @param  {String}  selectedCode
  * @param  {String}  targetCode

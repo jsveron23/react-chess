@@ -3,6 +3,8 @@ import parseCode from './parseCode';
 import validateCode from './validateCode';
 import { Turn } from '../presets';
 
+const _prop = flip(prop);
+
 /**
  * Detect turn
  * @param  {String}  turn
@@ -14,7 +16,7 @@ function detectTurn(turn, code) {
     throw new TypeError('invalid arguments');
   }
 
-  return compose(equals(turn), flip(prop)(Turn), parseCode.prop('side'))(code);
+  return compose(equals(turn), _prop(Turn), parseCode.prop('side'))(code);
 }
 
 export default curry(detectTurn);

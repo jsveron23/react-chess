@@ -1,5 +1,4 @@
 import { curry } from 'ramda';
-import parseCode from './parseCode';
 import validateSnapshot from './validateSnapshot';
 
 /**
@@ -13,7 +12,10 @@ function findCodeByTile(snapshot, tile) {
     return '';
   }
 
-  return snapshot.find(parseCode.eq(['tileName', tile]));
+  const strSnapshot = snapshot.join(',');
+  const idx = strSnapshot.indexOf(tile);
+
+  return idx > -1 ? strSnapshot.slice(idx - 2, idx + 2) : undefined;
 }
 
 export default curry(findCodeByTile);

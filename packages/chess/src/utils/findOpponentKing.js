@@ -1,4 +1,4 @@
-import { curry, compose, nth } from 'ramda';
+import { curry, compose, head } from 'ramda';
 import getEqualPieces from './getEqualPieces';
 import filterOpponent from './filterOpponent';
 import { King } from '../presets';
@@ -11,7 +11,7 @@ import { King } from '../presets';
  */
 function findOpponentKing(opponentCode, snapshot) {
   return compose(
-    nth(0),
+    head,
     getEqualPieces(King),
     filterOpponent(opponentCode)
   )(snapshot);

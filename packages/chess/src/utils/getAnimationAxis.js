@@ -1,4 +1,14 @@
-import { compose, head, find, flip, curry } from 'ramda';
+import {
+  compose,
+  head,
+  find,
+  flip,
+  curry,
+  T,
+  cond,
+  always,
+  identity,
+} from 'ramda';
 import parseCode from './parseCode';
 import subInBetweenIndexes from './subInBetweenIndexes';
 import { File, Rank } from '../presets';
@@ -16,7 +26,10 @@ function getAnimationAxis(isFlipped, from, to) {
     parseCode,
     find(parseCode.eq(['side', side]))
   )(from);
-  const _subIdx = isFlipped ? flip(subInBetweenIndexes) : subInBetweenIndexes;
+  const _subIdx = cond([
+    [always(isFlipped), flip],
+    [T, identity],
+  ])(subInBetweenIndexes);
 
   return {
     targetCode: head(to),
