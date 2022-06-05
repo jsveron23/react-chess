@@ -30,7 +30,7 @@ function computeSpecialMT(timeline, code) {
     map((mvName) => {
       switch (mvName) {
         case DoubleStep: {
-          return getDoubleStepTile(code);
+          return compose(getDoubleStepTile(code), head)(timeline);
         }
 
         case Diagonally: {
