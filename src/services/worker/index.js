@@ -2,6 +2,9 @@ import { Side, createTimeline } from 'chess/es';
 import AI from './AI';
 
 self.onmessage = ({ data }) => {
+  // NOTE
+  // first depth for player (not cpu)
+  // but root is for cpu, which mean `bestState` is for cpu
   const {
     present: { checkData },
     depth = 2,

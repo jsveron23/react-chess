@@ -1,159 +1,40 @@
-import {
-  compose,
-  forEach,
-  filter,
-  startsWith,
-  head,
-  map,
-  prepend,
-  flip,
-  equals,
-  and,
-  apply,
-  props,
-} from 'ramda';
-import {
-  Opponent,
-  Vertical,
-  parseCode,
-  detectPiece,
-  replaceCode,
-  getDirection,
-  findCodeByTile,
-  computeDistance,
-  computePossibleMT,
-} from 'chess/es';
+import { compose, forEach, filter, startsWith, head } from 'ramda';
+import { Opponent } from 'chess/es';
+import EvaluateState from './EvaluateState';
+import StateBuilder from './StateBuilder';
 
-const _prepend = flip(prepend);
-const _toPKey = parseCode.prop('pKey');
-const _toSide = parseCode.prop('side');
+class AI extends EvaluateState {
+  constructor(iV) {
+    super();
 
-class AI {
-  // TODO evaluate
-  static Scores = {
-    wP: 10,
-    wN: 30,
-    wB: 30,
-    wR: 50,
-    wQ: 90,
-    wK: 900,
-    bP: -10,
-    bN: -30,
-    bB: -30,
-    bR: -50,
-    bQ: -90,
-    bK: -900,
-  };
-
-  constructor(initialValues) {
-    this.timeline = initialValues.timeline;
+    this.timeline = iV.timeline;
     this.snapshot = head(this.timeline);
-    this.checkData = initialValues.checkData || {};
-    this.node = initialValues.node || [];
-    this.char = initialValues.char;
+    this.checkData = iV.checkData || {};
+    this.node = iV.node || [];
+    this.char = iV.char;
   }
 
   /**
-   * Entry point of this class
-   * @see worker
-   * @see AI.prepare
+   * AI runs with `generated state<StateBuilder>` in each depth
    * @param {Function} cb
    */
   run(cb) {
-    // iterate(cb -> minimax) in iterate(get movable tiles of a code)
-    // until depth is zero
     compose(
-      forEach(compose(forEach(cb), this.#generateState)),
+      forEach((currCode) => {
+        forEach(
+          cb,
+          StateBuilder.prepare({
+            enemySide: Opponent[this.char], // current depth's state enemy
+            timeline: this.timeline,
+            snapshot: this.snapshot,
+            node: this.node,
+            currCode,
+            ...this.checkData,
+          }).build()
+        );
+      }),
       filter(startsWith(this.char))
     )(this.snapshot);
-  }
-
-  /**
-   * Generate state for each depth by code, check possible scenario
-   * @param  {String} currCode
-   * @return {Object} state
-   */
-  #generateState = (currCode) => {
-    const { side, pKey } = parseCode(currCode);
-    const enemySide = Opponent[this.char];
-    const isPawn = detectPiece.Pawn(currCode);
-    const { attackerCode = '', attackerRoutes = [] } = this.checkData;
-    const _getDirection = compose(
-      apply(getDirection),
-      props(['file', 'rank']),
-      computeDistance(currCode)
-    );
-    const _getNextTimeline = compose(
-      _prepend(this.timeline),
-      replaceCode(this.snapshot, currCode) // TODO it's only for move (no capturing)
-    );
-
-    return compose(
-      filter(Boolean),
-      map((tN) => {
-        const code = findCodeByTile(this.snapshot, tN);
-        const isSameSidedTile = compose(equals(side), _toSide)(code);
-
-        // ignore same sided code
-        if (isSameSidedTile) {
-          return;
-        }
-
-        const isCaptured = !!code && !isSameSidedTile;
-        const nextCode = `${pKey}${tN}`;
-        const direction = _getDirection(nextCode);
-        let pretendCode = '';
-
-        if (isCaptured) {
-          // not possible to capture
-          if (isPawn && direction === Vertical) {
-            return;
-          }
-
-          pretendCode = this.snapshot.find((cd) => {
-            const { side: cdSide, tileName } = parseCode(cd);
-
-            return and(equals(tN, tileName), equals(enemySide, cdSide));
-          });
-        }
-
-        return {
-          node: [...this.node, currCode, nextCode],
-          timeline: _getNextTimeline(nextCode), // TODO incorrect timeline
-          pretendCode,
-          isCaptured,
-          side,
-        };
-      }),
-      computePossibleMT(attackerCode, attackerRoutes, currCode)
-    )(this.timeline);
-  };
-
-  /**
-   * Evaluate state
-   * @param  {Object} state
-   * @return {Object} state + evaluated state
-   */
-  static #evaluateState(state) {
-    const { node = [], pretendCode, isCaptured } = state;
-    const [selectedCode] = node;
-    // let penalty = 0;
-    let score = -1;
-
-    if (isCaptured) {
-      const selectedPKey = _toPKey(selectedCode);
-      const pretendPKey = _toPKey(pretendCode);
-
-      // TODO better
-      score = this.Scores[selectedPKey] - this.Scores[pretendPKey];
-    }
-
-    // TODO more
-
-    return {
-      ...state,
-      score: score > -1 ? score : -Math.floor(Math.random() * 10),
-    };
   }
 
   /**
@@ -167,36 +48,36 @@ class AI {
 
   /**
    * Minimax Algorithm
-   * @param  {Object}  state
+   * @param  {Object}  currState
    * @param  {Number}  depth
    * @param  {Number}  alpha
    * @param  {Number}  beta
    * @param  {Boolean} isMaximizing
    * @return {Object}
    */
-  static minimax(state, depth, alpha, beta, isMaximizing) {
+  static minimax(currState, depth, alpha, beta, isMaximizing) {
     // TODO check it
     const inSituation =
-      state.isCaptured ||
-      state.isCheck ||
-      state.isCheckmate ||
-      state.isStalemate;
+      currState.isCaptured ||
+      currState.isCheck ||
+      currState.isCheckmate ||
+      currState.isStalemate;
 
     if (depth === 0 || inSituation) {
-      return this.#evaluateState(state);
+      return super.evaluateState(currState);
     }
 
     let bestState = {
-      ...state,
+      ...currState,
       score: isMaximizing ? -Infinity : Infinity,
     };
 
     // prettier-ignore
     AI
-      .prepare({ ...state, char: Opponent[state.side] })
-      .run((filteredState) => {
+      .prepare({ ...currState, char: Opponent[currState.side] })
+      .run((generatedState) => {
         const nextState = this.minimax(
-          filteredState,
+          generatedState,
           depth - 1,
           alpha,
           beta,

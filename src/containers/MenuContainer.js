@@ -12,6 +12,7 @@ import {
 } from '~/store/actions';
 import { toLocaleDate } from '~/utils';
 import {
+  IS_DEV,
   ONE_VS_ONE,
   SAVE,
   ONLINE,
@@ -71,7 +72,7 @@ function mergeProps(stateProps, dispatchProps, ownProps) {
       {
         key: ONE_VS_CPU,
         title: '1 vs CPU',
-        disabled: isConnected,
+        disabled: isConnected || !IS_DEV,
         onClick: () => dispatch(updateMatchType(ONE_VS_CPU)),
       },
       {
