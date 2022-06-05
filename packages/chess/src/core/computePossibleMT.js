@@ -61,16 +61,16 @@ function computePossibleMT(
   const predictAttacker = predictPossibleCheck(timeline, code);
 
   if (predictAttacker) {
-    const [direction, isContacted] = compose(
-      juxt([apply(getDirection), apply(detectContacted)]),
-      props(['file', 'rank']),
-      computeDistance(predictAttacker)
-    )(code);
-    const isByVertical = direction === Vertical;
-    const isByHorizontal = direction === Horizontal;
-    const isByDiagonal = direction === Diagonal;
-
     if (detectPiece.Pawn(code)) {
+      const [direction, isContacted] = compose(
+        juxt([apply(getDirection), apply(detectContacted)]),
+        props(['file', 'rank']),
+        computeDistance(predictAttacker)
+      )(code);
+      const isByVertical = direction === Vertical;
+      const isByHorizontal = direction === Horizontal;
+      const isByDiagonal = direction === Diagonal;
+
       if (isByHorizontal || (isByDiagonal && !isContacted)) {
         return [];
       }
