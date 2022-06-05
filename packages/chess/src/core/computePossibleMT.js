@@ -7,6 +7,9 @@ import {
   juxt,
   props,
   apply,
+  reject,
+  equals,
+  tail,
 } from 'ramda';
 import predictPossibleCheck from './predictPossibleCheck';
 import getDodgeableTiles from './getDodgeableTiles';
@@ -17,12 +20,12 @@ import getAttackerRoutes from './getAttackerRoutes';
 import removePredictTiles from './internal/removePredictTiles';
 import {
   detectPiece,
-  pretendTo,
+  parseCode,
   getDirection,
   computeDistance,
   detectContacted,
 } from '../utils';
-import { Vertical, Horizontal, Diagonal } from '../presets';
+import { King, Vertical, Horizontal, Diagonal } from '../presets';
 
 /**
  * Compute possible movable tiles (entry function)
@@ -50,7 +53,6 @@ function computePossibleMT(
     return removePredictTiles(timeline, code, mt);
   }
 
-  // block or capture
   if (attackerCode) {
     return intersection(mt, attackerRoutes);
   }
@@ -59,16 +61,16 @@ function computePossibleMT(
   const predictAttacker = predictPossibleCheck(timeline, code);
 
   if (predictAttacker) {
-    if (detectPiece.Pawn(code)) {
-      const [direction, isContacted] = compose(
-        juxt([apply(getDirection), apply(detectContacted)]),
-        props(['file', 'rank']),
-        computeDistance(predictAttacker)
-      )(code);
-      const isByVertical = direction === Vertical;
-      const isByHorizontal = direction === Horizontal;
-      const isByDiagonal = direction === Diagonal;
+    const [direction, isContacted] = compose(
+      juxt([apply(getDirection), apply(detectContacted)]),
+      props(['file', 'rank']),
+      computeDistance(predictAttacker)
+    )(code);
+    const isByVertical = direction === Vertical;
+    const isByHorizontal = direction === Horizontal;
+    const isByDiagonal = direction === Diagonal;
 
+    if (detectPiece.Pawn(code)) {
       if (isByHorizontal || (isByDiagonal && !isContacted)) {
         return [];
       }
@@ -82,15 +84,18 @@ function computePossibleMT(
       }
 
       return mt;
+    } else if (detectPiece.Knight(code)) {
+      return [];
     }
 
-    const possibleAttackRoutes = compose(
-      intersection(mt),
-      getAttackerRoutes(timeline, predictAttacker),
-      pretendTo(code)
-    )(predictAttacker);
+    const { side, tileName } = parseCode(code);
+    const predictSnapshot = reject(equals(code), snapshot);
+    const kingCode = snapshot.find(parseCode.eq(['pKey', `${side}${King}`]));
 
-    return intersection(possibleAttackRoutes, mt);
+    return compose(
+      without(tileName),
+      getAttackerRoutes([predictSnapshot, ...tail(timeline)], predictAttacker)
+    )(kingCode);
   }
 
   return mt;
