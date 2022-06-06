@@ -298,9 +298,8 @@ export function afterMoving(nextTileName, selectedCode, getNextSnapshot) {
   };
 }
 
-// TODO where
 export function playCpu() {
-  return (dispatch, getState) => {
+  return async (dispatch, getState) => {
     const {
       general: { matchType, cpu = Chess.Turn.b },
       ingame: {
@@ -315,6 +314,14 @@ export function playCpu() {
     }
 
     dispatch(toggleThinking());
+
+    try {
+      const lib = await import('#ai');
+      const ai = new lib.AI();
+      console.log(ai);
+    } catch (err) {
+      console.error(err);
+    }
 
     const worker = new Worker(new URL('~/services/worker', import.meta.url));
 

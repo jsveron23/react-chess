@@ -1,0 +1,16 @@
+[package]
+name = "chess_ai"
+version = "0.1.0"
+authors = ["Tony Jin <jsveron23@gmail.com>"]
+edition = "2018"
+
+[lib]
+crate-type = ["cdylib"]
+
+[dependencies]
+wasm-bindgen = "0.2.74"
+web-sys = { version = "0.3.57", features = ['console'] }
+
+[profile.release]
+lto = true
+opt-level = "s"

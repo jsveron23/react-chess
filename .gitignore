@@ -7,3 +7,11 @@ public
 coverage
 .env
 .nyc_output
+
+ai/target
+ai/pkg
+ai/wasm-pack.log
+
+# bug
+# https://github.com/rustwasm/wasm-pack/pull/712
+/pkg

@@ -5,10 +5,13 @@ const TerserPlugin = require('terser-webpack-plugin');
 const HtmlPlugin = require('html-webpack-plugin');
 const ReactRefreshPlugin = require('@pmmmwh/react-refresh-webpack-plugin');
 const NodePolyfillPlugin = require('node-polyfill-webpack-plugin');
+const WasmPackPlugin = require('@wasm-tool/wasm-pack-plugin');
 
 const src = Path.resolve(__dirname, 'src');
 const dist = Path.resolve(__dirname, 'public');
 const assets = Path.resolve(__dirname, 'src', 'assets');
+const ai = Path.resolve(__dirname, 'ai');
+const aiPkg = Path.resolve(__dirname, 'ai', 'pkg');
 
 module.exports = function configure(env, { mode = 'development' }) {
   const isDev = mode === 'development';
@@ -126,9 +129,23 @@ module.exports = function configure(env, { mode = 'development' }) {
       new MiniCssExtractPlugin({
         filename: '[name].[hash].css',
       }),
+    new WasmPackPlugin({
+      crateDirectory: ai,
+      args: '--log-level warn',
+      extraArgs: '--no-typescript --target browser',
+      // The same as the `--out-dir` option for `wasm-pack`
+      // outDir: 'pkg',
+      // The same as the `--out-name` option for `wasm-pack`
+      // outName: "index",
+      forceMode: mode,
+    }),
   ].filter(Boolean);
 
   const config = {
+    experiments: {
+      asyncWebAssembly: true,
+      syncWebAssembly: true,
+    },
     target: 'web',
     context: src,
     devtool: isDev ? 'eval-cheap-source-map' : 'source-map',
@@ -151,7 +168,7 @@ module.exports = function configure(env, { mode = 'development' }) {
       filename: isDev ? '[name].js' : '[name].[contenthash].js',
     },
     resolve: {
-      alias: { '~': src },
+      alias: { '~': src, '#ai': aiPkg },
     },
     module: { rules },
     optimization,
