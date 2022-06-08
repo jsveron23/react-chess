@@ -3,8 +3,8 @@ import { Diagonal, Vertical, Horizontal } from '../presets';
 
 /**
  * Get direction
- * @param  {String} file index
- * @param  {String} rank index
+ * @param  {Number} file index
+ * @param  {Number} rank index
  * @return {String}
  */
 function getDirection(file, rank) {

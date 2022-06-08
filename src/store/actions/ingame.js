@@ -299,7 +299,7 @@ export function afterMoving(nextTileName, selectedCode, getNextSnapshot) {
 }
 
 export function playCpu() {
-  return async (dispatch, getState) => {
+  return (dispatch, getState) => {
     const {
       general: { matchType, cpu = Chess.Turn.b },
       ingame: {
@@ -315,13 +315,17 @@ export function playCpu() {
 
     dispatch(toggleThinking());
 
-    try {
-      const lib = await import('#ai');
-      const ai = new lib.AI();
-      console.log(ai);
-    } catch (err) {
-      console.error(err);
-    }
+    const execWasm = async () => {
+      try {
+        const lib = await import('ai');
+
+        lib.run();
+      } catch (err) {
+        console.error(err);
+      }
+    };
+
+    execWasm();
 
     const worker = new Worker(new URL('~/services/worker', import.meta.url));
 

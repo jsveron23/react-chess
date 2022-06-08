@@ -132,7 +132,7 @@ module.exports = function configure(env, { mode = 'development' }) {
     new WasmPackPlugin({
       crateDirectory: ai,
       args: '--log-level warn',
-      extraArgs: '--no-typescript --target browser',
+      extraArgs: '--no-typescript --target bundler',
       // The same as the `--out-dir` option for `wasm-pack`
       // outDir: 'pkg',
       // The same as the `--out-name` option for `wasm-pack`
@@ -168,7 +168,7 @@ module.exports = function configure(env, { mode = 'development' }) {
       filename: isDev ? '[name].js' : '[name].[contenthash].js',
     },
     resolve: {
-      alias: { '~': src, '#ai': aiPkg },
+      alias: { '~': src, ai: aiPkg },
     },
     module: { rules },
     optimization,

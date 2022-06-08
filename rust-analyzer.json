@@ -1,0 +1,5 @@
+{
+  "rustfmt": {
+    "extraArgs": ["+nightly"]
+  }
+}
