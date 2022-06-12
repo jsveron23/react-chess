@@ -1,4 +1,5 @@
-import { parseCode, getAttackers } from 'chess/es';
+import { getAttackers } from '../core';
+import { parseCode } from '../utils';
 
 const _toPKey = parseCode.prop('pKey');
 

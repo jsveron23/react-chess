@@ -1,5 +1,4 @@
-import { Side, createTimeline } from 'chess/es';
-import AI from './AI';
+import { Side, createTimeline, AI } from 'chess/es';
 
 self.onmessage = ({ data }) => {
   // NOTE

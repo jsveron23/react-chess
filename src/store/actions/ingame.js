@@ -298,7 +298,6 @@ export function afterMoving(nextTileName, selectedCode, getNextSnapshot) {
   };
 }
 
-// TODO where
 export function playCpu() {
   return (dispatch, getState) => {
     const {
@@ -316,7 +315,7 @@ export function playCpu() {
 
     dispatch(toggleThinking());
 
-    const worker = new Worker(new URL('~/services/worker', import.meta.url));
+    const worker = new Worker(new URL('~/services/worker/ai', import.meta.url));
 
     worker.postMessage({
       depth: 2,

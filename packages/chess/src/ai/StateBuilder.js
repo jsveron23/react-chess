@@ -9,16 +9,16 @@ import {
   apply,
   props,
 } from 'ramda';
+import { computePossibleMT } from '../core';
 import {
-  Vertical,
   parseCode,
   detectPiece,
   replaceCode,
   getDirection,
   findCodeByTile,
   computeDistance,
-  computePossibleMT,
-} from 'chess/es';
+} from '../utils';
+import { Vertical } from '../presets';
 
 const _prepend = flip(prepend);
 
