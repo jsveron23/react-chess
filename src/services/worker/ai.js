@@ -19,9 +19,9 @@ self.onmessage = ({ data }) => {
   // prettier-ignore
   AI
     .prepare({ timeline, checkData, char: Side[present.turn] })
-    .run((nextState) => {
+    .run((generatedState) => {
       const finalState = AI.minimax(
-        nextState,
+        generatedState,
         depth - 1,
         -Infinity,
         Infinity,
