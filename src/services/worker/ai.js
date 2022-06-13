@@ -1,5 +1,4 @@
-import { Side, createTimeline } from 'chess/es';
-import AI from './AI';
+import { Side, createTimeline, AI } from 'chess/es';
 
 self.onmessage = ({ data }) => {
   // NOTE
@@ -20,9 +19,9 @@ self.onmessage = ({ data }) => {
   // prettier-ignore
   AI
     .prepare({ timeline, checkData, char: Side[present.turn] })
-    .run((nextState) => {
+    .run((generatedState) => {
       const finalState = AI.minimax(
-        nextState,
+        generatedState,
         depth - 1,
         -Infinity,
         Infinity,

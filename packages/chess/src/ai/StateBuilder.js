@@ -9,16 +9,16 @@ import {
   apply,
   props,
 } from 'ramda';
+import { computePossibleMT } from '../core';
 import {
-  Vertical,
   parseCode,
   detectPiece,
   replaceCode,
   getDirection,
   findCodeByTile,
   computeDistance,
-  computePossibleMT,
-} from 'chess/es';
+} from '../utils';
+import { Vertical } from '../presets';
 
 const _prepend = flip(prepend);
 
@@ -31,52 +31,65 @@ class StateBuilder {
     this.enemySide = iV.enemySide;
     this.attackerCode = iV.attackerCode || '';
     this.attackerRoutes = iV.attackerRoutes || [];
-    this.isPawn = detectPiece.Pawn(this.currCode);
 
+    this.isPawn = detectPiece.Pawn(this.currCode);
+    this.mt = computePossibleMT(
+      this.attackerCode,
+      this.attackerRoutes,
+      this.currCode,
+      this.timeline
+    );
     [this.side, this.pKey] = compose(
       props(['side', 'pKey']),
       parseCode
     )(this.currCode);
   }
 
-  build() {
-    return compose(
-      filter(Boolean),
-      map((tN) => {
-        const code = this.#findCode(tN);
-        const isSameSided = this.#detectSameSide(code);
-
-        // ignore same sided code
-        if (isSameSided) {
-          return;
-        }
-
-        // TODO if captured in different depth, it also said captured
-        const isCaptured = !!code && !isSameSided;
-        const nextCode = `${this.pKey}${tN}`;
-        const direction = this.#getDirection(nextCode);
-        let pretendCode = '';
-
-        if (isCaptured) {
-          // not possible to capture
-          if (this.isPawn && direction === Vertical) {
-            return;
-          }
-
-          pretendCode = this.#getPretendCode(tN);
-        }
-
-        return {
-          node: this.#getNextNode(nextCode),
-          timeline: this.#getNextTimeline(nextCode),
-          side: this.side,
-          pretendCode,
-          isCaptured,
-        };
-      }),
-      computePossibleMT(this.attackerCode, this.attackerRoutes, this.currCode)
-    )(this.timeline);
+  static prepare(iV) {
+    return new StateBuilder(iV);
   }
+
+  /**
+   * Build states
+   * @return {Array} states
+   */
+  build() {
+    return compose(filter(Boolean), map(this.#buildState))(this.mt);
+  }
+
+  #buildState = (tileName) => {
+    const code = this.#findCode(tileName);
+    const isSameSided = this.#detectSameSide(code);
+
+    // ignore same sided code
+    if (isSameSided) {
+      return;
+    }
+
+    // TODO if captured in different depth, it also said captured
+    const isCaptured = !!code && !isSameSided;
+    const nextCode = `${this.pKey}${tileName}`;
+    let pretendCode = '';
+
+    if (isCaptured) {
+      const direction = this.#getDirection(nextCode);
+      const noCapture = this.isPawn && direction === Vertical;
+
+      if (noCapture) {
+        return;
+      }
+
+      pretendCode = this.#getPretendCode(tileName);
+    }
+
+    return {
+      node: this.#getNextNode(nextCode),
+      timeline: this.#getNextTimeline(nextCode),
+      side: this.side,
+      pretendCode,
+      isCaptured,
+    };
+  };
 
   #getNextNode(nextCode) {
     return [...this.node, this.currCode, nextCode];
@@ -113,10 +126,6 @@ class StateBuilder {
       _prepend(this.timeline),
       replaceCode(this.snapshot, this.currCode) // TODO it's only for move (no capturing)
     )(nextCode);
-  }
-
-  static prepare(initialValues) {
-    return new StateBuilder(initialValues);
   }
 }
 
