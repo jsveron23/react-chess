@@ -18,8 +18,8 @@ self.onmessage = ({ data }) => {
   console.time('worker');
   // prettier-ignore
   AI
-    .prepare({ timeline, checkData, char: Side[present.turn] })
-    .run((generatedState) => {
+    .of({ timeline, checkData, side: Side[present.turn] })
+    .iter((generatedState) => {
       const finalState = AI.minimax(
         generatedState,
         depth - 1,

@@ -318,7 +318,7 @@ export function playCpu() {
     const worker = new Worker(new URL('~/services/worker/ai', import.meta.url));
 
     worker.postMessage({
-      depth: 2,
+      depth: 5,
       present,
       past,
     });

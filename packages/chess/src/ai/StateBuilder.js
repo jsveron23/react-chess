@@ -33,16 +33,18 @@ class StateBuilder {
     this.attackerRoutes = iV.attackerRoutes || [];
 
     this.isPawn = detectPiece.Pawn(this.currCode);
+    [this.side, this.pKey] = compose(
+      props(['side', 'pKey']),
+      parseCode
+    )(this.currCode);
+
+    // TODO reduce
     this.mt = computePossibleMT(
       this.attackerCode,
       this.attackerRoutes,
       this.currCode,
       this.timeline
     );
-    [this.side, this.pKey] = compose(
-      props(['side', 'pKey']),
-      parseCode
-    )(this.currCode);
   }
 
   static prepare(iV) {
@@ -58,8 +60,8 @@ class StateBuilder {
   }
 
   #buildState = (tileName) => {
-    const code = this.#findCode(tileName);
-    const isSameSided = this.#detectSameSide(code);
+    const code = findCodeByTile(this.snapshot, tileName);
+    const isSameSided = compose(propEq('side', this.side), parseCode)(code);
 
     // ignore same sided code
     if (isSameSided) {
@@ -83,25 +85,13 @@ class StateBuilder {
     }
 
     return {
-      node: this.#getNextNode(nextCode),
+      node: [...this.node, this.currCode, nextCode],
       timeline: this.#getNextTimeline(nextCode),
       side: this.side,
       pretendCode,
       isCaptured,
     };
   };
-
-  #getNextNode(nextCode) {
-    return [...this.node, this.currCode, nextCode];
-  }
-
-  #findCode(tileName) {
-    return findCodeByTile(this.snapshot, tileName);
-  }
-
-  #detectSameSide(code) {
-    return compose(propEq('side', this.side), parseCode)(code);
-  }
 
   #getPretendCode(tileName) {
     const _allPass = allPass([
