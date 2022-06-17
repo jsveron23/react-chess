@@ -16,6 +16,7 @@ import {
 import {
   UPDATE_MATCH_TYPE,
   SAVE_TO_LOCALSTORAGE,
+  TOGGLE_THINKING,
   IMPORT_GAME,
   EXPORT_GAME,
   TOGGLE_FLIP,
@@ -97,6 +98,12 @@ export function exportGame() {
         type: EXPORT_GAME,
       });
     }, debug.err('clipboard issue'));
+  };
+}
+
+export function toggleThinking() {
+  return {
+    type: TOGGLE_THINKING,
   };
 }
 

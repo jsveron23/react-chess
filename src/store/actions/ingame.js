@@ -5,6 +5,7 @@ import * as Chess from 'chess/es';
 import { ONE_VS_ONE, ONE_VS_CPU } from '~/presets';
 import { peerNetwork } from '~/services/network';
 import { debug } from '~/utils';
+import { toggleThinking } from './general';
 import { toggleAwaiting } from './network';
 import { measureAxis } from './animate';
 import * as types from '../actionTypes';
@@ -318,7 +319,7 @@ export function playCpu() {
     const worker = new Worker(new URL('~/services/worker/ai', import.meta.url));
 
     worker.postMessage({
-      depth: 3,
+      depth: 2,
       present,
       past,
     });
@@ -356,12 +357,6 @@ export function playCpu() {
       debug.err('AI error', evt);
       worker.terminate();
     };
-  };
-}
-
-export function toggleThinking() {
-  return {
-    type: types.TOGGLE_THINKING,
   };
 }
 

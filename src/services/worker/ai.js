@@ -41,7 +41,7 @@ self.onmessage = ({ data }) => {
   }
   console.timeEnd('worker');
 
-  console.log(bestMove, bestState.node);
+  // console.log(bestMove, bestState.node);
   self.postMessage({
     bestState,
   });
