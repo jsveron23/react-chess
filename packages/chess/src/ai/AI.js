@@ -1,166 +1,124 @@
-import { forEach, filter, startsWith, head } from 'ramda';
+import { indexOf, head, filter, forEach, startsWith, reverse } from 'ramda';
 import StateBuilder from './StateBuilder';
-import { getAttackers } from '../core';
 import { parseCode } from '../utils';
-import { Opponent } from '../presets';
-
-const _toPKey = parseCode.prop('pKey');
+import { PST, Side, File, Rank } from '../presets';
 
 class AI {
-  static #Scores = {
-    wP: 10,
-    wN: 30,
-    wB: 30,
-    wR: 50,
-    wQ: 90,
-    wK: 900,
-    bP: -10,
-    bN: -30,
-    bB: -30,
-    bR: -50,
-    bQ: -90,
-    bK: -900,
+  static #PST = {
+    wP: PST.P,
+    bP: reverse(PST.P),
+    N: PST.N,
+    wB: PST.B,
+    bB: reverse(PST.B),
+    wR: PST.R,
+    bR: reverse(PST.R),
+    Q: PST.Q,
+    wK: PST.K,
+    bK: reverse(PST.K),
   };
 
-  constructor(iV) {
-    this.timeline = iV.timeline;
-    this.snapshot = head(this.timeline);
-    this.checkData = iV.checkData || {};
-    this.node = iV.node || [];
-    this.char = iV.char;
-    this.filteredCodeList = filter(startsWith(this.char), this.snapshot);
-  }
-
-  /**
-   * AI runs with `generated state<StateBuilder>` in each depth
-   * @param {Function} cb
-   */
-  run(cb) {
-    const iV = {
-      enemySide: Opponent[this.char], // current depth's state enemy
-      timeline: this.timeline,
-      snapshot: this.snapshot,
-      node: this.node,
-      ...this.checkData,
-    };
-
-    forEach((currCode) => {
-      const generatedStates = StateBuilder.prepare({
-        ...iV,
-        currCode,
-      }).build();
-
-      forEach(cb, generatedStates);
-    }, this.filteredCodeList);
-  }
-
-  /**
-   * Create instance
-   * @param  {Object} iV
-   * @return {AI}     instance
-   */
-  static prepare(iV) {
-    return new AI(iV);
-  }
-
-  /**
-   * Minimax Algorithm
-   * @param  {Object}  currState
-   * @param  {Number}  depth
-   * @param  {Number}  alpha
-   * @param  {Number}  beta
-   * @param  {Boolean} isMaximizing
-   * @return {Object}
-   */
-  static minimax(currState, depth, alpha, beta, isMaximizing) {
-    // TODO check it
-    const inSituation =
-      currState.isCaptured ||
-      currState.isCheck ||
-      currState.isCheckmate ||
-      currState.isStalemate;
-
-    if (depth === 0 || inSituation) {
-      return this.#evaluateState(currState);
-    }
-
-    let bestState = {
-      ...currState,
-      score: isMaximizing ? -Infinity : Infinity,
-    };
-
-    // prettier-ignore
-    AI
-      .prepare({ ...currState, char: Opponent[currState.side] })
-      .run((generatedState) => {
-        const nextState = this.minimax(
-          generatedState,
-          depth - 1,
-          alpha,
-          beta,
-          !isMaximizing
-        );
-        const cond = isMaximizing
-          ? nextState.score > bestState.score
-          : nextState.score < bestState.score;
-
-        if (cond) {
-          bestState = {
-            ...nextState,
-            score: nextState.score
-          };
-        }
-
-        if (isMaximizing) {
-          alpha = Math.max(alpha, bestState.score);
-
-          if (bestState.score >= beta) {
-            return bestState;
-          }
-        } else {
-          beta = Math.min(beta, bestState.score);
-
-          if (bestState.score <= alpha) {
-            return bestState;
-          }
-        }
-      });
-
-    return bestState;
-  }
+  static #Scores = {
+    P: 10,
+    N: 30,
+    B: 30,
+    R: 50,
+    Q: 90,
+    K: 900,
+  };
 
   /**
    * Evaluate state
    * @param  {Object} state
-   * @return {Object} state + evaluated state
+   * @return {Number}
    */
-  static #evaluateState(state) {
-    const { node = [], pretendCode, isCaptured, timeline } = state;
-    const [selectedCode, nextCode] = node;
-    // let penalty = 0;
-    let score = -1;
+  static #evaluate(state) {
+    const { timeline } = state;
+    const snapshot = head(timeline);
+    let totalEvalW = 0;
+    let totalEvalB = 0;
 
-    // TODO not captured not why score 0
-    if (isCaptured) {
-      const selectedPKey = _toPKey(selectedCode);
-      const pretendPKey = _toPKey(pretendCode);
+    forEach((code) => {
+      const { side, piece, pKey, fileName, rankName } = parseCode(code);
+      const rIdx = indexOf(Number(rankName), reverse(Rank));
+      const fIdx = indexOf(fileName, File);
+      const pstProp = this.#PST[pKey] || this.#PST[piece];
+      const pstScore = pstProp[rIdx][fIdx];
+      const score = this.#Scores[piece] + pstScore;
 
-      // TODO not perfect
-      // TODO should be calculated before moving (timeline)
-      const [attackerCode] = getAttackers(nextCode, timeline);
+      if (side === Side.w) {
+        totalEvalW += score;
+      } else {
+        totalEvalB -= score;
+      }
+    }, snapshot);
 
-      // TODO better
-      score = attackerCode
-        ? 0
-        : this.#Scores[pretendPKey] - this.#Scores[selectedPKey];
+    return totalEvalW + totalEvalB;
+  }
+
+  /**
+   * Minimax Algorithm
+   * TODO reduce running time
+   * @param  {Object}  currState
+   * @param  {Number}  depth
+   * @param  {Number}  alpha
+   * @param  {Number}  beta
+   * @param  {Boolean} isMaximisingPlayer
+   * @return {Number}
+   */
+  static minimax(currState, depth, alpha, beta, isMaximisingPlayer) {
+    if (depth === 0) {
+      return -this.#evaluate(currState);
     }
 
-    // TODO more
+    if (isMaximisingPlayer) {
+      const iV = StateBuilder.createInitialV(currState);
+      const codeList = this.createList(iV.side, iV.snapshot);
+      let bestMove = -9999;
 
-    return {
-      ...state,
-      score: score > -1 ? score : Math.floor(Math.random() * 5),
-    };
+      for (let i = 0, len = codeList.length; i < len; i++) {
+        const state = StateBuilder.of(iV).build(codeList[i]);
+
+        for (let j = 0, len = state.length; j < len; j++) {
+          bestMove = Math.max(
+            bestMove,
+            this.minimax(state[j], depth - 1, alpha, beta, !isMaximisingPlayer)
+          );
+          alpha = Math.max(alpha, bestMove);
+
+          if (alpha >= beta) {
+            return bestMove;
+          }
+        }
+      }
+
+      return bestMove;
+    } else {
+      const iV = StateBuilder.createInitialV(currState);
+      const codeList = this.createList(iV.side, iV.snapshot);
+      let bestMove = 9999;
+
+      for (let i = 0, len = codeList.length; i < len; i++) {
+        const state = StateBuilder.of(iV).build(codeList[i]);
+
+        for (let j = 0, len = state.length; j < len; j++) {
+          bestMove = Math.min(
+            bestMove,
+            this.minimax(state[j], depth - 1, alpha, beta, !isMaximisingPlayer)
+          );
+          beta = Math.min(beta, bestMove);
+
+          if (alpha >= beta) {
+            return bestMove;
+          }
+        }
+      }
+
+      return bestMove;
+    }
+  }
+
+  static createList(side, snapshot) {
+    return filter(startsWith(side), snapshot);
   }
 }
 

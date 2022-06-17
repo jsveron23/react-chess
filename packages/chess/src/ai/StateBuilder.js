@@ -8,6 +8,9 @@ import {
   propEq,
   apply,
   props,
+  head,
+  reject,
+  equals,
 } from 'ramda';
 import { computePossibleMT } from '../core';
 import {
@@ -18,55 +21,62 @@ import {
   findCodeByTile,
   computeDistance,
 } from '../utils';
-import { Vertical } from '../presets';
+import { Opponent, Vertical } from '../presets';
 
 const _prepend = flip(prepend);
 
 class StateBuilder {
   constructor(iV) {
-    this.node = iV.node;
     this.timeline = iV.timeline;
     this.snapshot = iV.snapshot;
-    this.currCode = iV.currCode;
     this.enemySide = iV.enemySide;
+    this.node = iV.node || [];
     this.attackerCode = iV.attackerCode || '';
     this.attackerRoutes = iV.attackerRoutes || [];
-
-    this.isPawn = detectPiece.Pawn(this.currCode);
-    this.mt = computePossibleMT(
-      this.attackerCode,
-      this.attackerRoutes,
-      this.currCode,
-      this.timeline
-    );
-    [this.side, this.pKey] = compose(
-      props(['side', 'pKey']),
-      parseCode
-    )(this.currCode);
   }
 
-  static prepare(iV) {
+  static of(iV) {
     return new StateBuilder(iV);
+  }
+
+  static createInitialV(state) {
+    const { timeline, side } = state;
+    const snapshot = head(timeline);
+
+    return {
+      enemySide: Opponent[side],
+      snapshot,
+      ...state,
+    };
   }
 
   /**
    * Build states
    * @return {Array} states
    */
-  build() {
-    return compose(filter(Boolean), map(this.#buildState))(this.mt);
+  build(currCode) {
+    this.currCode = currCode;
+    this.isPawn = detectPiece.Pawn(this.currCode);
+    [this.side, this.pKey] = compose(
+      props(['side', 'pKey']),
+      parseCode
+    )(this.currCode);
+
+    return compose(
+      filter(Boolean),
+      map(this.#buildState),
+      computePossibleMT(this.attackerCode, this.attackerRoutes, this.currCode)
+    )(this.timeline);
   }
 
   #buildState = (tileName) => {
-    const code = this.#findCode(tileName);
-    const isSameSided = this.#detectSameSide(code);
+    const code = findCodeByTile(this.snapshot, tileName);
+    const isSameSided = compose(propEq('side', this.side), parseCode)(code);
 
-    // ignore same sided code
     if (isSameSided) {
       return;
     }
 
-    // TODO if captured in different depth, it also said captured
     const isCaptured = !!code && !isSameSided;
     const nextCode = `${this.pKey}${tileName}`;
     let pretendCode = '';
@@ -83,25 +93,13 @@ class StateBuilder {
     }
 
     return {
-      node: this.#getNextNode(nextCode),
-      timeline: this.#getNextTimeline(nextCode),
+      node: [...this.node, this.currCode, nextCode],
+      timeline: this.#getNextTimeline(nextCode, pretendCode, isCaptured),
       side: this.side,
       pretendCode,
       isCaptured,
     };
   };
-
-  #getNextNode(nextCode) {
-    return [...this.node, this.currCode, nextCode];
-  }
-
-  #findCode(tileName) {
-    return findCodeByTile(this.snapshot, tileName);
-  }
-
-  #detectSameSide(code) {
-    return compose(propEq('side', this.side), parseCode)(code);
-  }
 
   #getPretendCode(tileName) {
     const _allPass = allPass([
@@ -120,12 +118,19 @@ class StateBuilder {
     )(nextCode);
   }
 
-  // TODO incorrect timeline
-  #getNextTimeline(nextCode) {
-    return compose(
-      _prepend(this.timeline),
-      replaceCode(this.snapshot, this.currCode) // TODO it's only for move (no capturing)
-    )(nextCode);
+  #getNextTimeline(nextCode, pretendCode, isCaptured) {
+    let nextSnapshot = this.snapshot;
+
+    if (isCaptured) {
+      nextSnapshot = compose(
+        reject(equals(this.currCode)),
+        replaceCode(this.snapshot, pretendCode)
+      )(nextCode);
+    } else {
+      nextSnapshot = replaceCode(this.snapshot, this.currCode, nextCode);
+    }
+
+    return _prepend(this.timeline, nextSnapshot);
   }
 }
 

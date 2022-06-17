@@ -318,14 +318,12 @@ export function playCpu() {
     const worker = new Worker(new URL('~/services/worker/ai', import.meta.url));
 
     worker.postMessage({
-      depth: 2,
+      depth: 3,
       present,
       past,
     });
 
     worker.onmessage = ({ data: { bestState = {} } }) => {
-      debug('result: ', bestState);
-
       const { node = [], isCaptured, pretendCode } = bestState;
       const [selectedCode, nextCode] = node;
 
@@ -346,7 +344,7 @@ export function playCpu() {
         dispatch(afterMoving(tileName, selectedCode, getNextSnapshot));
         dispatch(toggleThinking());
       } else {
-        debug('something went wrong!', bestState);
+        debug.err('something went wrong!', bestState);
       }
 
       worker.terminate();
