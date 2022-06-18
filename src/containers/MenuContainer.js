@@ -104,7 +104,10 @@ function mergeProps(stateProps, dispatchProps, ownProps) {
         key: ONLINE,
         title: 'Network (WebRTC)',
         disabled: isConnected,
-        onClick: () => dispatch(joinNetworkGame()),
+        onClick: () => {
+          dispatch(updateMatchType(ONLINE));
+          dispatch(joinNetworkGame());
+        },
         children: () => {
           if (isConnected) {
             return <ChatContainer />;

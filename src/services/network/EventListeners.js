@@ -1,5 +1,6 @@
 import { compose, reject, equals } from 'ramda';
 import { replaceCode, Side } from 'chess/es';
+import { ONLINE } from '~/presets';
 import PeerNetwork from './PeerNetwork';
 
 const peerNetwork = PeerNetwork.of();
@@ -29,58 +30,63 @@ export default class EventListeners {
   }
 
   #handleOnline() {
-    import('~/store/actions').then(
-      ({ toggleAwaiting, connectedPeerNetwork, decideSide }) => {
-        this.dispatch(connectedPeerNetwork());
-        this.dispatch(decideSide(Side.black));
-        this.dispatch(toggleAwaiting());
-      }
-    );
+    import('~/store/actions').then((actions) => {
+      const {
+        updateMatchType,
+        toggleAwaiting,
+        connectedPeerNetwork,
+        decideSide,
+      } = actions;
+
+      this.dispatch(updateMatchType(ONLINE));
+      this.dispatch(connectedPeerNetwork());
+      this.dispatch(decideSide(Side.black));
+      this.dispatch(toggleAwaiting());
+    });
   }
 
   #handleReceived(data) {
-    import('~/store/actions').then(
-      ({ toggleAwaiting, receiveMessage, afterMoving }) => {
-        const { command, args } = data;
+    import('~/store/actions').then((actions) => {
+      const { toggleAwaiting, receiveMessage, afterMoving } = actions;
+      const { command, args } = data;
 
-        switch (command) {
-          case 'message': {
-            this.dispatch(
-              receiveMessage({
-                side: args.side,
-                message: args.message,
-              })
-            );
+      switch (command) {
+        case 'message': {
+          this.dispatch(
+            receiveMessage({
+              side: args.side,
+              message: args.message,
+            })
+          );
 
-            break;
-          }
-
-          case 'move':
-          case 'capture': {
-            const nextArgs = [args.nextTileName, args.selectedCode];
-            const _replaceCode = replaceCode(args.snapshot);
-
-            if (command === 'capture') {
-              nextArgs.push(
-                compose(
-                  reject(equals(args.selectedCode)),
-                  _replaceCode(args.pretendCode)
-                )
-              );
-            } else if (command === 'move') {
-              nextArgs.push(_replaceCode(args.selectedCode));
-            }
-
-            this.dispatch(afterMoving(...nextArgs));
-            this.dispatch(toggleAwaiting());
-
-            break;
-          }
-
-          default:
+          break;
         }
+
+        case 'move':
+        case 'capture': {
+          const nextArgs = [args.nextTileName, args.selectedCode];
+          const _replaceCode = replaceCode(args.snapshot);
+
+          if (command === 'capture') {
+            nextArgs.push(
+              compose(
+                reject(equals(args.selectedCode)),
+                _replaceCode(args.pretendCode)
+              )
+            );
+          } else if (command === 'move') {
+            nextArgs.push(_replaceCode(args.selectedCode));
+          }
+
+          this.dispatch(afterMoving(...nextArgs));
+          this.dispatch(toggleAwaiting());
+
+          break;
+        }
+
+        default:
       }
-    );
+    });
   }
 
   #handleClose() {
