@@ -24,7 +24,8 @@ import PeerIdContainer from './PeerIdContainer';
 import ChatContainer from './ChatContainer';
 
 function mapStateToProps({
-  general: { lastSaved, thinking },
+  ai: { thinking },
+  general: { lastSaved },
   network: { connected },
   ingame: { past },
 }) {

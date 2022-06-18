@@ -70,9 +70,10 @@ class AI {
       return -this.#evaluate(currState);
     }
 
+    const iV = StateBuilder.createInitialV(currState);
+    const codeList = this.createList(iV.side, iV.snapshot);
+
     if (isMaximisingPlayer) {
-      const iV = StateBuilder.createInitialV(currState);
-      const codeList = this.createList(iV.side, iV.snapshot);
       let bestMove = -9999;
 
       for (let i = 0, len = codeList.length; i < len; i++) {
@@ -93,8 +94,6 @@ class AI {
 
       return bestMove;
     } else {
-      const iV = StateBuilder.createInitialV(currState);
-      const codeList = this.createList(iV.side, iV.snapshot);
       let bestMove = 9999;
 
       for (let i = 0, len = codeList.length; i < len; i++) {

@@ -5,7 +5,7 @@ import * as Chess from 'chess/es';
 import { ONE_VS_ONE, ONE_VS_CPU } from '~/presets';
 import { peerNetwork } from '~/services/network';
 import { debug } from '~/utils';
-import { toggleThinking } from './general';
+import { toggleThinking } from './ai';
 import { toggleAwaiting } from './network';
 import { measureAxis } from './animate';
 import * as types from '../actionTypes';
@@ -302,7 +302,8 @@ export function afterMoving(nextTileName, selectedCode, getNextSnapshot) {
 export function playCpu() {
   return (dispatch, getState) => {
     const {
-      general: { matchType, cpu = Chess.Turn.b },
+      ai: { cpuTurn, depth },
+      general: { matchType },
       ingame: {
         present: { snapshot, turn },
         present,
@@ -310,7 +311,7 @@ export function playCpu() {
       },
     } = getState();
 
-    if (matchType !== ONE_VS_CPU || turn !== cpu) {
+    if (matchType !== ONE_VS_CPU || turn !== cpuTurn) {
       return;
     }
 
@@ -319,7 +320,7 @@ export function playCpu() {
     const worker = new Worker(new URL('~/services/worker/ai', import.meta.url));
 
     worker.postMessage({
-      depth: 2,
+      depth,
       present,
       past,
     });

@@ -1,9 +1,7 @@
 import { ONE_VS_ONE } from '~/presets';
-import { Turn } from 'chess/es';
 import {
   UPDATE_MATCH_TYPE,
   SAVE_TO_LOCALSTORAGE,
-  TOGGLE_THINKING,
   TOGGLE_FLIP,
 } from '../actionTypes';
 
@@ -11,8 +9,6 @@ const initialState = {
   matchType: ONE_VS_ONE,
   flip: false,
   lastSaved: 0,
-  cpu: Turn.b,
-  thinking: false,
 };
 
 function reducer(state = initialState, action) {
@@ -23,7 +19,6 @@ function reducer(state = initialState, action) {
       return {
         ...state,
         matchType: payload,
-        thinking: false,
       };
     }
 
@@ -38,13 +33,6 @@ function reducer(state = initialState, action) {
       return {
         ...state,
         flip: !state.flip,
-      };
-    }
-
-    case TOGGLE_THINKING: {
-      return {
-        ...state,
-        thinking: !state.thinking,
       };
     }
 

@@ -2,7 +2,6 @@ import { connect } from 'react-redux';
 import { compose, flip, intersection, includes } from 'ramda';
 import memoizeOne from 'memoize-one';
 import {
-  Turn,
   Side,
   detectEnemyOnTiles,
   validateCode,
@@ -20,7 +19,8 @@ const detectPawn = memoizeOne(detectPiece.Pawn);
 const flippedIncludes = flip(includes);
 
 function mapStateToProps({
-  general: { flip = false, matchType, cpu = Turn.b },
+  ai: { cpuTurn },
+  general: { flip, matchType },
   network: { side, connected, awaiting },
   ingame: {
     present: {
@@ -38,7 +38,7 @@ function mapStateToProps({
 }) {
   const isUndoAction = future.length > 0;
   const isAwating = connected && awaiting;
-  const isCpuTurn = matchType === ONE_VS_CPU && turn === cpu;
+  const isCpuTurn = matchType === ONE_VS_CPU && turn === cpuTurn;
   const isBlack = connected && side === Side.black;
 
   return {

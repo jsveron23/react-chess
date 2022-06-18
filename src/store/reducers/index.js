@@ -4,6 +4,7 @@ import general from './general';
 import ingame from './ingame';
 import network from './network';
 import animate from './animate';
+import ai from './ai';
 import { UPDATE_TURN } from '../actionTypes';
 
 export default combineReducers({
@@ -14,4 +15,5 @@ export default combineReducers({
   general,
   network,
   animate,
+  ai,
 });

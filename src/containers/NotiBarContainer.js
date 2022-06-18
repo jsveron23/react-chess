@@ -2,7 +2,7 @@ import { connect } from 'react-redux';
 import { NotiBar } from '~/components';
 
 function mapStateToProps({
-  general: { thinking = false },
+  ai: { thinking },
   network: { connected, awaiting },
   ingame: {
     present: { turn, checkData },
