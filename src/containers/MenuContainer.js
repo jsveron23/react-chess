@@ -24,11 +24,11 @@ import PeerIdContainer from './PeerIdContainer';
 import ChatContainer from './ChatContainer';
 
 function mapStateToProps({
-  general: { lastSaved },
+  general: { lastSaved, thinking },
   network: { connected },
   ingame: { past },
 }) {
-  return { past, connected, lastSaved };
+  return { past, connected, lastSaved, thinking };
 }
 
 function mapDispatchToProps(dispatch) {
@@ -38,6 +38,7 @@ function mapDispatchToProps(dispatch) {
 function mergeProps(stateProps, dispatchProps, ownProps) {
   const noUndoYet = stateProps.past.length === 0;
   const isConnected = stateProps.connected;
+  const thinking = stateProps.thinking;
   const lastSaved = stateProps.lastSaved
     ? `/ ${toLocaleDate(stateProps.lastSaved)}`
     : '';
@@ -83,7 +84,7 @@ function mergeProps(stateProps, dispatchProps, ownProps) {
       {
         key: SAVE,
         title: `Save ${lastSaved}`,
-        disabled: noUndoYet || isConnected,
+        disabled: thinking || noUndoYet || isConnected,
         onClick: () => dispatch(saveGame()),
       },
       {
