@@ -14,10 +14,13 @@ const Piece = ({ pKey, pretendCode }) => {
   const [styles, api] = useSpring(() => {
     let opacity = 1;
 
-    // normally, opacity = 1, but when a piece moved
-    // previous component will be removed from snapshot and creating a piece again on the tile,
-    // so if targetCode is same as pretendCode, it means it will be animated piece
-    // it will not remove afterimage effect but not perfectly
+    // mostly, it has to be set to opacity = 1,
+    // but when a piece moved, it has to be set to opacity = 0
+    // because previous component is removed because of snapshot changed
+    // and creating a piece component new (not update),
+    // so if `targetCode` is same as `pretendCode`,
+    // it means, it is removed piece and to be animated component
+    // TODO it will not remove afterimage effect not perfectly
     if (animate.targetCode === pretendCode) {
       opacity = 0;
     }

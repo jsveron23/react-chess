@@ -1,10 +1,10 @@
 import PropTypes from 'prop-types';
 import { parseNotation } from 'chess/es';
-import Box from 'ui-box';
+import { Text } from 'ui/es';
 
 const Notation = ({ sideData, ...props }) => {
   return (
-    <Box
+    <Text
       flex="1"
       textAlign="center"
       backgroundColor="#white"
@@ -13,7 +13,7 @@ const Notation = ({ sideData, ...props }) => {
       {...props}
     >
       {sideData && parseNotation(sideData)}
-    </Box>
+    </Text>
   );
 };
 

@@ -2,19 +2,14 @@ import { memo } from 'react';
 import PropTypes from 'prop-types';
 import { reverse } from 'ramda';
 import equal from 'fast-deep-equal/es6/react';
-import { FlexRow, Text } from 'ui/es';
+import { FlexRow, Text, Sticky } from 'ui/es';
 import Box from 'ui-box';
 import Notation from './internal/Notation';
 
 const Sheet = ({ data }) => {
   return (
-    <Box>
-      <Box
-        position="sticky"
-        top={0}
-        borderBottom="1px solid #cacaca"
-        backgroundColor="#fff"
-      >
+    <>
+      <Sticky borderBottom="1px solid #cacaca" backgroundColor="#fff">
         <FlexRow justifyContent="space-between">
           {['White', 'Black'].map((side) => {
             return (
@@ -31,7 +26,7 @@ const Sheet = ({ data }) => {
             );
           })}
         </FlexRow>
-      </Box>
+      </Sticky>
 
       <Box>
         {reverse(data).map(({ white, black }, idx) => {
@@ -47,7 +42,7 @@ const Sheet = ({ data }) => {
           );
         })}
       </Box>
-    </Box>
+    </>
   );
 };
 

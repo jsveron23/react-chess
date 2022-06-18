@@ -1,8 +1,8 @@
 import { memo } from 'react';
 import PropTypes from 'prop-types';
-import ClockLoader from 'react-spinners/ClockLoader';
+// import ClockLoader from 'react-spinners/ClockLoader';
 import { Turn, Side } from 'chess/es';
-import { Flex, FlexRow, Text } from 'ui/es';
+import { Flex, FlexRow, Text, Loading } from 'ui/es';
 
 const ColorSet = {
   [Turn.w]: {
@@ -46,19 +46,8 @@ function NotiBar({ turn, connected, awaiting, thinking }) {
         paddingLeft={10}
         paddingRight={10}
       >
-        {thinking && (
-          <>
-            <Text marginRight={10}>...Thinking...</Text>
-            <ClockLoader size={20} loading={thinking} />
-          </>
-        )}
-
-        {isAwaiting && (
-          <>
-            <Text marginRight={10}>...Awaiting...</Text>
-            <ClockLoader size={20} loading={awaiting} />
-          </>
-        )}
+        <Loading text="...Thinking..." size={20} loading={thinking} />
+        <Loading text="...Awaiting..." size={20} loading={isAwaiting} />
 
         {isTurn && <Text marginRight={10}>...Your turn...</Text>}
       </Flex>

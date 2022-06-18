@@ -2,7 +2,7 @@ import { memo, useState } from 'react';
 import PropTypes from 'prop-types';
 import { reverse } from 'ramda';
 import Box from 'ui-box';
-import { FlexCol } from 'ui/es';
+import { FlexCol, TextBox, Text } from 'ui/es';
 import { Turn } from 'chess/es';
 
 const Chat = ({ data, sendMessage }) => {
@@ -10,8 +10,7 @@ const Chat = ({ data, sendMessage }) => {
 
   return (
     <FlexCol width="100%">
-      <Box
-        is="input"
+      <TextBox
         flex="1"
         placeholder="leave message here!"
         padding={5}
@@ -35,7 +34,9 @@ const Chat = ({ data, sendMessage }) => {
         {reverse(data).map(({ side, message }, idx) => {
           return (
             <Box is="li" key={idx}>
-              [{Turn[side]}] {message}
+              <Text>
+                [{Turn[side]}] {message}
+              </Text>
             </Box>
           );
         })}
