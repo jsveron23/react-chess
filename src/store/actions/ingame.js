@@ -1,6 +1,6 @@
 import { batch } from 'react-redux';
 import { ActionCreators } from 'redux-undo';
-import { compose, reject, equals, clone, isEmpty } from 'ramda';
+import { compose, reject, equals, clone, isEmpty, head } from 'ramda';
 import * as Chess from 'chess/es';
 import { ONE_VS_ONE, ONE_VS_CPU } from '~/presets';
 import { peerNetwork } from '~/services/network';
@@ -230,6 +230,8 @@ export function afterMoving(nextTileName, selectedCode, getNextSnapshot) {
     if (typeof getNextSnapshot === 'function') {
       // default snapshot before appying special movement
       nextSnapshot = getNextSnapshot(nextCode);
+    } else {
+      nextSnapshot = getNextSnapshot; // array
     }
 
     mvs.forEach((mvName) => {
@@ -305,7 +307,7 @@ export function playCpu() {
       ai: { cpuTurn, depth },
       general: { matchType },
       ingame: {
-        present: { snapshot, turn },
+        present: { turn },
         present,
         past,
       },
@@ -317,6 +319,7 @@ export function playCpu() {
 
     dispatch(toggleThinking());
 
+    // TODO create worker class
     const worker = new Worker(new URL('~/services/worker/ai', import.meta.url));
 
     worker.postMessage({
@@ -326,24 +329,13 @@ export function playCpu() {
     });
 
     worker.onmessage = ({ data: { bestState = {} } }) => {
-      const { node = [], isCaptured, pretendCode } = bestState;
+      const { node = [], timeline: nextTimeline } = bestState;
       const [selectedCode, nextCode] = node;
 
       if (!isEmpty(node)) {
-        let getNextSnapshot = snapshot;
-
-        if (isCaptured) {
-          getNextSnapshot = compose(
-            reject(equals(selectedCode)),
-            Chess.replaceCode(snapshot, pretendCode)
-          );
-        } else {
-          getNextSnapshot = Chess.replaceCode(snapshot, selectedCode);
-        }
-
         const tileName = Chess.parseCode.prop('tileName', nextCode);
 
-        dispatch(afterMoving(tileName, selectedCode, getNextSnapshot));
+        dispatch(afterMoving(tileName, selectedCode, head(nextTimeline)));
         dispatch(toggleThinking());
       } else {
         debug.err('something went wrong!', bestState);

@@ -93,8 +93,8 @@ class StateBuilder {
     }
 
     return {
-      node: [...this.node, this.currCode, nextCode],
       timeline: this.#getNextTimeline(nextCode, pretendCode, isCaptured),
+      node: [...this.node, this.currCode, nextCode],
       side: this.side,
       pretendCode,
       isCaptured,
@@ -119,18 +119,18 @@ class StateBuilder {
   }
 
   #getNextTimeline(nextCode, pretendCode, isCaptured) {
-    let nextSnapshot = this.snapshot;
+    let getNextSnapshot = null;
 
     if (isCaptured) {
-      nextSnapshot = compose(
+      getNextSnapshot = compose(
         reject(equals(this.currCode)),
         replaceCode(this.snapshot, pretendCode)
-      )(nextCode);
+      );
     } else {
-      nextSnapshot = replaceCode(this.snapshot, this.currCode, nextCode);
+      getNextSnapshot = replaceCode(this.snapshot, this.currCode);
     }
 
-    return _prepend(this.timeline, nextSnapshot);
+    return compose(_prepend(this.timeline), getNextSnapshot)(nextCode);
   }
 }
 

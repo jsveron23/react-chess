@@ -35,14 +35,17 @@ function getAttackerRoutes(timeline, attackerCode, defenderCode) {
     return [tileName];
   }
 
-  const aMt = computeRawMT(timeline, attackerCode);
-  const bMt = computeRawMT(timeline, defenderCode);
+  const _computeRawMT = computeRawMT(timeline);
+  const aMt = _computeRawMT(attackerCode);
+  const bMt = _computeRawMT(defenderCode);
   let routes = intersection(aMt, bMt);
 
   // NOTE specific condition, just recalculation
   // its because of remove another direction
   // eg, if Rook attack by Vertical direction then remove Horizontal
   if (!includes(piece, [Knight, Pawn])) {
+    const isDiagonal = direction === Diagonal;
+
     routes = compose(
       reject((tN) => {
         // extra tiles deletion, not direction
@@ -72,12 +75,9 @@ function getAttackerRoutes(timeline, attackerCode, defenderCode) {
         }
       }),
       intersection(aMt),
-      computeRawMT(timeline)
-    )(
-      direction === Diagonal
-        ? transformInto(Bishop, defenderCode)
-        : transformInto(Rook, defenderCode)
-    );
+      _computeRawMT,
+      transformInto(isDiagonal ? Bishop : Rook)
+    )(defenderCode);
   }
 
   return append(tileName, routes);

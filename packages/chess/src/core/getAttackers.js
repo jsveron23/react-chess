@@ -11,7 +11,7 @@ import {
  * Get which pieces are attackers
  * @param  {String} defenderCode
  * @param  {Array}  timeline
- * @return {String}
+ * @return {Array}
  */
 function getAttackers(defenderCode, timeline) {
   return compose(

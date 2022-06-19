@@ -1,7 +1,20 @@
-import { indexOf, head, filter, forEach, startsWith, reverse } from 'ramda';
+import {
+  indexOf,
+  head,
+  filter,
+  forEach,
+  startsWith,
+  reverse,
+  isEmpty,
+} from 'ramda';
 import StateBuilder from './StateBuilder';
 import { parseCode } from '../utils';
 import { PST, Side, File, Rank } from '../presets';
+
+// TODO
+// bestway for boosting performance
+// 1. go rust
+// 2. implement core functions to another ways
 
 class AI {
   static #PST = {
@@ -72,23 +85,30 @@ class AI {
 
     const iV = StateBuilder.createInitialV(currState);
     const codeList = this.createList(iV.side, iV.snapshot);
+    const stateList = [];
+
+    for (let i = 0, len = codeList.length; i < len; i++) {
+      // TODO StateBuilder spent time that calculating movable tiles
+      const generatedStates = StateBuilder.of(iV).build(codeList[i]);
+
+      if (!isEmpty(generatedStates)) {
+        stateList.push(...generatedStates);
+      }
+    }
+
+    const _minimax = (state) => {
+      return this.minimax(state, depth - 1, alpha, beta, !isMaximisingPlayer);
+    };
 
     if (isMaximisingPlayer) {
       let bestMove = -9999;
 
-      for (let i = 0, len = codeList.length; i < len; i++) {
-        const state = StateBuilder.of(iV).build(codeList[i]);
+      for (let i = 0, len = stateList.length; i < len; i++) {
+        bestMove = Math.max(bestMove, _minimax(stateList[i]));
+        alpha = Math.max(alpha, bestMove);
 
-        for (let j = 0, len = state.length; j < len; j++) {
-          bestMove = Math.max(
-            bestMove,
-            this.minimax(state[j], depth - 1, alpha, beta, !isMaximisingPlayer)
-          );
-          alpha = Math.max(alpha, bestMove);
-
-          if (alpha >= beta) {
-            return bestMove;
-          }
+        if (alpha >= beta) {
+          return bestMove;
         }
       }
 
@@ -96,19 +116,12 @@ class AI {
     } else {
       let bestMove = 9999;
 
-      for (let i = 0, len = codeList.length; i < len; i++) {
-        const state = StateBuilder.of(iV).build(codeList[i]);
+      for (let i = 0, len = stateList.length; i < len; i++) {
+        bestMove = Math.min(bestMove, _minimax(stateList[i]));
+        beta = Math.min(beta, bestMove);
 
-        for (let j = 0, len = state.length; j < len; j++) {
-          bestMove = Math.min(
-            bestMove,
-            this.minimax(state[j], depth - 1, alpha, beta, !isMaximisingPlayer)
-          );
-          beta = Math.min(beta, bestMove);
-
-          if (alpha >= beta) {
-            return bestMove;
-          }
+        if (alpha >= beta) {
+          return bestMove;
         }
       }
 

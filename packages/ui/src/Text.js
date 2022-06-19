@@ -11,7 +11,11 @@ function Text({ children, ...props }) {
 }
 
 Text.propTypes = {
-  children: PropTypes.node.isRequired,
+  children: PropTypes.node,
+};
+
+Text.defaultProps = {
+  children: '',
 };
 
 export default memo(Text);

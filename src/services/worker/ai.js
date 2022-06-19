@@ -18,30 +18,28 @@ self.onmessage = ({ data }) => {
   let bestState = null;
 
   console.time('worker');
+  const stateList = [];
+
   for (let i = 0, len = codeList.length; i < len; i++) {
     const generatedStates = StateBuilder.of(iV).build(codeList[i]);
 
     if (!isEmpty(generatedStates)) {
-      for (let j = 0, len = generatedStates.length; j < len; j++) {
-        const generatedState = generatedStates[j];
-        const score = AI.minimax(
-          generatedState,
-          depth - 1,
-          -10000,
-          10000,
-          false
-        );
+      stateList.push(...generatedStates);
+    }
+  }
 
-        if (score >= bestMove) {
-          bestMove = score;
-          bestState = generatedState;
-        }
-      }
+  for (let i = 0, len = stateList.length; i < len; i++) {
+    const generatedState = stateList[i];
+    const score = AI.minimax(generatedState, depth - 1, -10000, 10000, false);
+
+    if (score >= bestMove) {
+      bestMove = score;
+      bestState = generatedState;
     }
   }
   console.timeEnd('worker');
 
-  // console.log(bestMove, bestState.node);
+  console.log(bestMove, bestState.node);
   self.postMessage({
     bestState,
   });
