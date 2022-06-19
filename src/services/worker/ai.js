@@ -14,27 +14,26 @@ self.onmessage = ({ data }) => {
     ...checkData,
   });
   const codeList = AI.createList(iV.side, iV.snapshot);
+  const stateList = [];
   let bestMove = -9999;
   let bestState = null;
 
   console.time('worker');
-  const stateList = [];
-
   for (let i = 0, len = codeList.length; i < len; i++) {
-    const generatedStates = StateBuilder.of(iV).build(codeList[i]);
+    const state = StateBuilder.of(iV).build(codeList[i]);
 
-    if (!isEmpty(generatedStates)) {
-      stateList.push(...generatedStates);
+    if (!isEmpty(state)) {
+      stateList.push(...state);
     }
   }
 
   for (let i = 0, len = stateList.length; i < len; i++) {
-    const generatedState = stateList[i];
-    const score = AI.minimax(generatedState, depth - 1, -10000, 10000, false);
+    const state = stateList[i];
+    const score = AI.minimax(state, depth - 1, -10000, 10000, false);
 
     if (score >= bestMove) {
       bestMove = score;
-      bestState = generatedState;
+      bestState = state;
     }
   }
   console.timeEnd('worker');

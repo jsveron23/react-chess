@@ -4,7 +4,7 @@ import { UPDATE_MATCH_TYPE, TOGGLE_THINKING } from '../actionTypes';
 const initialState = {
   cpuTurn: Turn.b,
   thinking: false,
-  depth: 2,
+  depth: 3,
 };
 
 function reducer(state = initialState, action) {
