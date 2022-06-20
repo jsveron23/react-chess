@@ -1,6 +1,7 @@
 import { connect } from 'react-redux';
 import { ActionTypes } from 'redux-undo';
 import { Menu } from '~/components';
+import worker from '~/services/worker/AIWorker';
 import {
   undo,
   saveGame,
@@ -68,13 +69,19 @@ function mergeProps(stateProps, dispatchProps, ownProps) {
         key: ONE_VS_ONE,
         title: '1 vs 1',
         disabled: isConnected,
-        onClick: () => dispatch(updateMatchType(ONE_VS_ONE)),
+        onClick: () => {
+          worker.close();
+          dispatch(updateMatchType(ONE_VS_ONE));
+        },
       },
       {
         key: ONE_VS_CPU,
         title: '1 vs CPU (Alpha)',
         disabled: isConnected,
-        onClick: () => dispatch(updateMatchType(ONE_VS_CPU)),
+        onClick: () => {
+          worker.close();
+          dispatch(updateMatchType(ONE_VS_CPU));
+        },
       },
       {
         key: FLIP,
@@ -91,13 +98,13 @@ function mergeProps(stateProps, dispatchProps, ownProps) {
       {
         key: IMPORT,
         title: 'Import',
-        disabled: isConnected,
+        disabled: thinking || isConnected,
         onClick: () => dispatch(importGame()),
       },
       {
         key: EXPORT,
         title: 'Export',
-        disabled: noUndoYet || isConnected,
+        disabled: thinking || noUndoYet || isConnected,
         onClick: () => dispatch(exportGame()),
       },
       {

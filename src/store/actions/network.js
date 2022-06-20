@@ -1,6 +1,8 @@
 import { batch } from 'react-redux';
 import { ActionCreators } from 'redux-undo';
 import { Snapshot, Turn, Side } from 'chess/es';
+import { peerNetwork } from '~/services/network';
+import worker from '~/services/worker/AIWorker';
 import {
   updateTurn,
   updateSnapshot,
@@ -19,7 +21,6 @@ import {
   JOIN_NETWORK_GAME,
   CONNECTED_PEER_NETWORK,
 } from '../actionTypes';
-import { peerNetwork } from '~/services/network';
 
 export function openNetworkGame(ownId) {
   return {
@@ -71,6 +72,8 @@ export function joinNetworkGame() {
 
     if (id) {
       batch(() => {
+        worker.close();
+
         dispatch(updateSnapshot(Snapshot));
         dispatch(removeSelectedCode());
         dispatch(removeMovableTiles());

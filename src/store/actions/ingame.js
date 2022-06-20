@@ -4,6 +4,7 @@ import { compose, reject, equals, clone, isEmpty, head } from 'ramda';
 import * as Chess from 'chess/es';
 import { ONE_VS_ONE, ONE_VS_CPU } from '~/presets';
 import { peerNetwork } from '~/services/network';
+import worker from '~/services/worker/AIWorker';
 import { debug } from '~/utils';
 import { toggleThinking } from './ai';
 import { toggleAwaiting } from './network';
@@ -319,37 +320,27 @@ export function playCpu() {
 
     dispatch(toggleThinking());
 
-    // TODO create worker class
-    const worker = new Worker(new URL('~/services/worker/ai', import.meta.url));
+    worker.task(
+      {
+        depth,
+        present,
+        past,
+      },
+      ({ bestState = {} }) => {
+        const { node = [], timeline: nextTimeline } = bestState;
+        const [selectedCode, nextCode] = node;
 
-    worker.postMessage({
-      depth,
-      present,
-      past,
-    });
+        if (!isEmpty(node)) {
+          const tileName = Chess.parseCode.prop('tileName', nextCode);
 
-    worker.onmessage = ({ data: { bestState = {} } }) => {
-      const { node = [], timeline: nextTimeline } = bestState;
-      const [selectedCode, nextCode] = node;
-
-      if (!isEmpty(node)) {
-        const tileName = Chess.parseCode.prop('tileName', nextCode);
-
-        dispatch(afterMoving(tileName, selectedCode, head(nextTimeline)));
-        dispatch(toggleThinking());
-      } else {
-        debug.err('something went wrong!', bestState);
-      }
-
-      worker.terminate();
-    };
-
-    worker.onerror = (evt) => {
-      dispatch(toggleThinking());
-
-      debug.err('AI error', evt);
-      worker.terminate();
-    };
+          dispatch(afterMoving(tileName, selectedCode, head(nextTimeline)));
+          dispatch(toggleThinking());
+        } else {
+          debug.err('something went wrong!', bestState);
+        }
+      },
+      () => dispatch(toggleThinking())
+    );
   };
 }
 
