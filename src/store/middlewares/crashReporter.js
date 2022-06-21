@@ -4,7 +4,7 @@ const crashReporter = (/* store */) => (next) => (action) => {
   try {
     return next(action);
   } catch (err) {
-    debug.err('Caught an exception!', err);
+    debug.err('caught an exception!', err);
 
     throw err;
   }

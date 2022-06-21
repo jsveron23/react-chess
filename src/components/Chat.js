@@ -5,7 +5,12 @@ import Box from 'ui-box';
 import { FlexCol, TextBox, Text } from 'ui/es';
 import { Turn } from 'chess/es';
 
+const KeyCode = {
+  enter: 13,
+};
+
 const Chat = ({ data, sendMessage }) => {
+  // TODO use redux
   const [text, setText] = useState('');
 
   return (
@@ -17,7 +22,7 @@ const Chat = ({ data, sendMessage }) => {
         value={text}
         onChange={(evt) => setText(evt.target.value)}
         onKeyDown={(evt) => {
-          if (evt.keyCode === 13) {
+          if (evt.keyCode === KeyCode.enter) {
             sendMessage(text, +new Date());
             setText('');
           }
@@ -32,6 +37,7 @@ const Chat = ({ data, sendMessage }) => {
         overflow="scroll"
       >
         {reverse(data).map(({ side, message }, idx) => {
+          // TODO color
           return (
             <Box is="li" key={idx}>
               <Text>

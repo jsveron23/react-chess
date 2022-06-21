@@ -70,6 +70,7 @@ export function joinNetworkGame() {
   return (dispatch) => {
     const id = window.prompt('please input friend peer-id');
 
+    // TODO check same id
     if (id) {
       batch(() => {
         worker.close();

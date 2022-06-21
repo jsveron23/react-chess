@@ -1,8 +1,8 @@
 import { curry } from 'ramda';
-
+import { IS_DEV } from '~/presets';
 /**
  * Debug only
- * @param  {Object}   [options={}]
+ * @param  {Object?}  [options={}]
  * @return {Function} curry
  */
 function createDebug(options = {}) {
@@ -11,8 +11,15 @@ function createDebug(options = {}) {
     ...options,
   };
 
+  /**
+   * @param  {String} label
+   * @param  {...*}   v
+   * @return {*}
+   */
   return (label, ...v) => {
-    console[options.mode](label, ...v);
+    if (IS_DEV) {
+      console[options.mode](label, ...v);
+    }
 
     return v;
   };

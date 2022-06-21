@@ -10,26 +10,28 @@ import reducers from './reducers';
 import { crashReporter } from './middlewares';
 
 const composeDev = IS_DEV ? composeWithDevTools : identity;
+const _applyMiddleware = apply(applyMiddleware);
 
 function configureStore(preloadedState) {
-  const importData = Storage.getItem(INSTANT_IMPORT_DATA);
-  const saveData = JSON.parse(Storage.getItem(SAVE_GAME));
-  let intitalState = saveData || preloadedState;
+  let intitalState = preloadedState;
 
-  if (importData) {
-    try {
-      intitalState = JSON.parse(Compression.decompress(importData));
-    } catch (err) {
-      debug.err('Redux - intital-state issue: ', err);
-    } finally {
-      Storage.removeItem(INSTANT_IMPORT_DATA);
-    }
+  try {
+    const importData = Storage.getItem(INSTANT_IMPORT_DATA);
+    const saveData = JSON.parse(Storage.getItem(SAVE_GAME));
+
+    intitalState = importData
+      ? JSON.parse(Compression.decompress(importData))
+      : saveData || preloadedState;
+  } catch (err) {
+    debug.err('Redux - intital-state issue: ', err);
+  } finally {
+    Storage.removeItem(INSTANT_IMPORT_DATA);
   }
 
   return createStore(
     reducers,
     intitalState,
-    compose(composeDev, apply(applyMiddleware))([thunk, crashReporter])
+    compose(composeDev, _applyMiddleware)([thunk, crashReporter])
   );
 }
 
