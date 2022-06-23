@@ -1,19 +1,19 @@
 import PropTypes from 'prop-types';
 import { parseNotation } from 'chess/es';
-import { Text } from 'ui/es';
+import { FlexOne, Text } from 'ui/es';
 
 const Notation = ({ sideData, ...props }) => {
   return (
-    <Text
-      flex="1"
+    <FlexOne
+      is={Text}
       textAlign="center"
-      backgroundColor="#white"
+      backgroundColor="white"
       color="#000"
       padding={5}
       {...props}
     >
       {sideData && parseNotation(sideData)}
-    </Text>
+    </FlexOne>
   );
 };
 

@@ -2,7 +2,7 @@ import { memo } from 'react';
 import PropTypes from 'prop-types';
 import { reverse } from 'ramda';
 import equal from 'fast-deep-equal/es6/react';
-import { FlexRow, Text, Sticky } from 'ui/es';
+import { FlexRow, FlexOne, Text, Sticky } from 'ui/es';
 import Box from 'ui-box';
 import Notation from './internal/Notation';
 
@@ -13,16 +13,15 @@ const Sheet = ({ data }) => {
         <FlexRow justifyContent="space-between">
           {['White', 'Black'].map((side) => {
             return (
-              <Box
+              <FlexOne
                 key={side}
-                flex="1"
                 textAlign="center"
                 backgroundColor={side === 'White' ? '#fff' : '#000'}
                 color={side === 'White' ? '#000' : '#fff'}
                 padding={5}
               >
                 <Text fontWeight="bold">{side}</Text>
-              </Box>
+              </FlexOne>
             );
           })}
         </FlexRow>

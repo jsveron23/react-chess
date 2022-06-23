@@ -1,6 +1,6 @@
 import { memo } from 'react';
 import PropTypes from 'prop-types';
-import { FlexRow, Text } from 'ui/es';
+import { FlexRow, FlexOne, Text } from 'ui/es';
 
 const PeerId = ({ peerId }) => {
   return (
@@ -9,9 +9,9 @@ const PeerId = ({ peerId }) => {
         Peer Id:
       </Text>
       {peerId && (
-        <Text flex="1" wordBreak="break-all">
+        <FlexOne is={Text} wordBreak="break-all">
           {peerId}
-        </Text>
+        </FlexOne>
       )}
     </FlexRow>
   );

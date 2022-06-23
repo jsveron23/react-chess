@@ -2,7 +2,7 @@ import { memo, useState } from 'react';
 import PropTypes from 'prop-types';
 import { reverse } from 'ramda';
 import Box from 'ui-box';
-import { FlexCol, TextBox, Text } from 'ui/es';
+import { FlexCol, FlexOne, TextBox, Text, Scroll } from 'ui/es';
 import { Turn } from 'chess/es';
 
 const KeyCode = {
@@ -15,8 +15,8 @@ const Chat = ({ data, sendMessage }) => {
 
   return (
     <FlexCol width="100%">
-      <TextBox
-        flex="1"
+      <FlexOne
+        is={TextBox}
         placeholder="leave message here!"
         padding={5}
         value={text}
@@ -28,14 +28,7 @@ const Chat = ({ data, sendMessage }) => {
           }
         }}
       />
-      <Box
-        is="ul"
-        height={60}
-        margin={10}
-        padding={0}
-        listStyle="none"
-        overflow="scroll"
-      >
+      <Scroll is="ul" height={60} margin={10} padding={0} listStyle="none">
         {reverse(data).map(({ side, message }, idx) => {
           // TODO color
           return (
@@ -46,7 +39,7 @@ const Chat = ({ data, sendMessage }) => {
             </Box>
           );
         })}
-      </Box>
+      </Scroll>
     </FlexCol>
   );
 };

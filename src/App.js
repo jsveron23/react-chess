@@ -1,5 +1,5 @@
 import Box from 'ui-box';
-import { Relative, Flex, FlexRow, FlexCol, Text } from 'ui/es';
+import { Relative, Flex, FlexOne, FlexRow, FlexCol, Text, Scroll } from 'ui/es';
 import {
   DiagramContainer,
   MenuContainer,
@@ -20,8 +20,7 @@ function App() {
         <DiagramContainer />
       </Relative>
 
-      <Box
-        flex="1"
+      <FlexOne
         backgroundColor={sidebar.bg}
         borderLeft={border}
         borderRight={border}
@@ -39,19 +38,13 @@ function App() {
             <MenuContainer />
           </Box>
 
-          <Box
-            flex="1"
-            overflowY="scroll"
-            margin={20}
-            marginTop={0}
-            backgroundColor="#fff"
-          >
+          <Scroll is={FlexOne} margin={20} marginTop={0} backgroundColor="#fff">
             <SheetContainer />
-          </Box>
+          </Scroll>
 
           <NotiBarContainer />
         </FlexCol>
-      </Box>
+      </FlexOne>
     </FlexRow>
   );
 }

@@ -1,6 +1,6 @@
-import { FlexRow } from 'ui/es';
 import { reverse, compose, map, cond, always, T, identity } from 'ramda';
 import { Rank as Ranks } from 'chess/es';
+import { FlexRow, FlexOne } from 'ui/es';
 import { useDiagram } from '~/hooks';
 import File from './File';
 
@@ -10,9 +10,9 @@ const Rank = () => {
   return compose(
     map((rankName) => {
       return (
-        <FlexRow key={rankName} flex="1">
+        <FlexOne is={FlexRow} key={rankName}>
           <File rankName={rankName} />
-        </FlexRow>
+        </FlexOne>
       );
     }),
     cond([

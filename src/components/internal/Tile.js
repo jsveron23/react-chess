@@ -1,6 +1,6 @@
 import { useCallback } from 'react';
 import PropTypes from 'prop-types';
-import { Relative, Absolute, Text } from 'ui/es';
+import { Relative, Absolute, Text, FlexOne } from 'ui/es';
 import { useDiagram, useTheme } from '~/hooks';
 import Piece from './Piece';
 import Mask from './Mask';
@@ -15,8 +15,8 @@ const Tile = ({ isDark, pKey, tileName }) => {
   );
 
   return (
-    <Relative
-      flex="1"
+    <FlexOne
+      is={Relative}
       backgroundColor={isDark ? tile.dark : tile.light}
       onClick={handleClick}
     >
@@ -27,7 +27,7 @@ const Tile = ({ isDark, pKey, tileName }) => {
       </Absolute>
 
       <Piece pKey={pKey} pretendCode={pretendCode} />
-    </Relative>
+    </FlexOne>
   );
 };
 
