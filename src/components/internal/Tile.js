@@ -7,7 +7,7 @@ import Mask from './Mask';
 
 const Tile = ({ isDark, pKey, tileName }) => {
   const { onClickTile } = useDiagram();
-  const { tile } = useTheme();
+  const { color } = useTheme();
   const pretendCode = `${pKey}${tileName}`;
   const handleClick = useCallback(
     (/* evt */) => onClickTile(tileName, pretendCode),
@@ -17,12 +17,12 @@ const Tile = ({ isDark, pKey, tileName }) => {
   return (
     <FlexOne
       is={Relative}
-      backgroundColor={isDark ? tile.dark : tile.light}
+      backgroundColor={isDark ? color.dark : color.light}
       onClick={handleClick}
     >
       <Mask pretendCode={pretendCode} tileName={tileName} />
 
-      <Absolute color={tile.text}>
+      <Absolute color={color.gray2}>
         <Text padding={5}>{tileName}</Text>
       </Absolute>
 

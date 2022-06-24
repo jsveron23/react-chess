@@ -6,22 +6,23 @@ import {
   SheetContainer,
   NotiBarContainer,
 } from '~/containers';
-import { useTheme } from '~/hooks';
+import { useTheme, useWindowSize } from '~/hooks';
 import Logo from '~/assets/logo.svg';
 import '~/styles/app.css';
 
 function App() {
-  const { diagram, logo, sidebar, fh, border } = useTheme();
-  const minMaxWidth = diagram.width + sidebar.width;
+  const [, height] = useWindowSize();
+  const { sidebar, fh, border, color } = useTheme();
+  const minMaxWidth = height + sidebar.width;
 
   return (
     <FlexRow height={fh} minWidth={minMaxWidth} maxWidth={minMaxWidth}>
-      <Relative flexBasis={diagram.width}>
+      <Relative flexBasis={height}>
         <DiagramContainer />
       </Relative>
 
       <FlexOne
-        backgroundColor={sidebar.bg}
+        backgroundColor={color.gray1}
         borderLeft={border}
         borderRight={border}
       >
@@ -31,14 +32,19 @@ function App() {
           </Text>
 
           <Flex is="figure" justifyContent="center">
-            <Logo width={logo.width} height={logo.height} />
+            <Logo width="100px" height="100%" />
           </Flex>
 
           <Box padding={20} paddingTop={0} paddingBottom={10} marginTop={20}>
             <MenuContainer />
           </Box>
 
-          <Scroll is={FlexOne} margin={20} marginTop={0} backgroundColor="#fff">
+          <Scroll
+            is={FlexOne}
+            backgroundColor={color.white}
+            margin={20}
+            marginTop={0}
+          >
             <SheetContainer />
           </Scroll>
 

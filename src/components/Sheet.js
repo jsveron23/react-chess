@@ -2,22 +2,27 @@ import { memo } from 'react';
 import PropTypes from 'prop-types';
 import { reverse } from 'ramda';
 import equal from 'fast-deep-equal/es6/react';
-import { FlexRow, FlexOne, Text, Sticky } from 'ui/es';
 import Box from 'ui-box';
+import { FlexRow, FlexOne, Text, Sticky } from 'ui/es';
+import { useTheme } from '~/hooks';
 import Notation from './internal/Notation';
 
 const Sheet = ({ data }) => {
+  const { border, color } = useTheme();
+
   return (
     <>
-      <Sticky borderBottom="1px solid #cacaca" backgroundColor="#fff">
+      <Sticky borderBottom={border} backgroundColor={color.white}>
         <FlexRow justifyContent="space-between">
           {['White', 'Black'].map((side) => {
+            const reColor = color.reflect[side.toLowerCase()];
+
             return (
               <FlexOne
                 key={side}
                 textAlign="center"
-                backgroundColor={side === 'White' ? '#fff' : '#000'}
-                color={side === 'White' ? '#000' : '#fff'}
+                backgroundColor={reColor.bgColor}
+                color={reColor.color}
                 padding={5}
               >
                 <Text fontWeight="bold">{side}</Text>
@@ -33,10 +38,14 @@ const Sheet = ({ data }) => {
             <FlexRow
               key={idx}
               justifyContent="space-between"
-              borderBottom="1px solid #cacaca"
+              borderBottom={border}
             >
               <Notation sideData={white} />
-              <Notation sideData={black} backgroundColor="#000" color="#fff" />
+              <Notation
+                sideData={black}
+                backgroundColor={color.black}
+                color={color.white}
+              />
             </FlexRow>
           );
         })}

@@ -1,31 +1,38 @@
 import { createContext, useContext } from 'react';
+import { Turn, Side } from 'chess/es';
+
+const ColorSet = {
+  white: '#fff',
+  black: '#000',
+  light: '#fff',
+  dark: '#eaeaea',
+  gray1: '#e1e1e1',
+  gray2: '#ccc',
+  gray3: '#cacaca',
+  gray4: '#aaa',
+  reflect: {
+    // TODO remove text
+    [Turn.w]: {
+      bgColor: '#fff',
+      color: '#000',
+      text: Side[Turn.w],
+    },
+    [Turn.b]: {
+      bgColor: '#000',
+      color: '#fff',
+      text: Side[Turn.b],
+    },
+  },
+};
 
 export const theme = {
+  color: ColorSet,
   fw: '100vw',
   fh: '100vh',
-  border: '1px solid #cacaca',
+  border: `1px solid ${ColorSet.gray3}`,
   borderRadius: 6,
-  logo: {
-    width: '100px',
-    height: '100%',
-  },
-  diagram: {
-    width: window.innerHeight,
-  },
-  tile: {
-    text: '#ccc',
-    dark: '#eaeaea',
-    light: '#fff',
-  },
   sidebar: {
     width: 300,
-    bg: '#e1e1e1',
-  },
-  overlay: {
-    bg: 'rgba(200, 200, 200, .8)',
-    modal: {
-      bg: '#eaeaea',
-    },
   },
 };
 

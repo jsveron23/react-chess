@@ -1,14 +1,17 @@
 import PropTypes from 'prop-types';
 import { parseNotation } from 'chess/es';
 import { FlexOne, Text } from 'ui/es';
+import { useTheme } from '~/hooks';
 
 const Notation = ({ sideData, ...props }) => {
+  const { color } = useTheme();
+
   return (
     <FlexOne
       is={Text}
       textAlign="center"
-      backgroundColor="white"
-      color="#000"
+      backgroundColor={color.white}
+      color={color.black}
       padding={5}
       {...props}
     >

@@ -1,28 +1,16 @@
 import { memo } from 'react';
 import PropTypes from 'prop-types';
-import { Turn, Side } from 'chess/es';
 import { Flex, FlexOne, FlexRow, Text, Loading } from 'ui/es';
-
-const ColorSet = {
-  [Turn.w]: {
-    bgColor: '#fff',
-    color: '#000',
-    text: Side[Turn.w],
-  },
-  [Turn.b]: {
-    bgColor: '#000',
-    color: '#fff',
-    text: Side[Turn.b],
-  },
-};
+import { useTheme } from '~/hooks';
 
 function NotiBar({ turn, connected, awaiting, thinking }) {
-  const cs = ColorSet[turn];
+  const { border, color } = useTheme();
+  const cs = color.reflect[turn];
   const isAwaiting = connected && awaiting;
   const isTurn = connected && !awaiting;
 
   return (
-    <FlexRow borderTop="1px solid #cacaca">
+    <FlexRow borderTop={border}>
       <Flex
         flexBasis={30}
         alignItems="center"
@@ -31,7 +19,7 @@ function NotiBar({ turn, connected, awaiting, thinking }) {
         color={cs.color}
         textTransform="uppercase"
         fontWeight="bold"
-        borderRight="1px solid #cacaca"
+        borderRight={border}
       >
         {cs.text}
       </Flex>
@@ -40,8 +28,8 @@ function NotiBar({ turn, connected, awaiting, thinking }) {
         is={Flex}
         alignItems="center"
         justifyContent="flex-start"
-        backgroundColor="#cacaca"
-        color="#000"
+        backgroundColor={color.gray3}
+        color={color.black}
         height={40}
         paddingLeft={10}
         paddingRight={10}

@@ -1,5 +1,6 @@
 import { curry } from 'ramda';
 import { IS_DEV } from '~/presets';
+
 /**
  * Debug only
  * @param  {Object?}  [options={}]
