@@ -21,13 +21,13 @@ const Mask = ({ tileName, pretendCode }) => {
     detectEnPassantTile(tileName) ||
     equals(checkCode, pretendCode);
 
-  let bg = isRoute ? 'rgba(220, 20, 60, 0.1)' : 'auto';
-  bg = isOnMt ? 'rgba(200, 200, 200, 1)' : bg;
-  bg = isEnemy ? 'rgba(220, 20, 60, 1)' : bg;
+  let bg = isRoute ? color.crimson_light : 'auto';
+  bg = isOnMt ? color.gray5 : bg;
+  bg = isEnemy ? color.crimson : bg;
 
   let border = isOnMt ? `2px solid ${color.gray4}` : 'none';
-  border = isDefender ? '2px dotted green' : border;
-  border = isEnemy ? '2px solid red' : border;
+  border = isDefender ? `2px dotted ${color.green}` : border;
+  border = isEnemy ? `2px solid ${color.red}` : border;
 
   return (
     <Absolute

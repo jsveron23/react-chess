@@ -4,7 +4,7 @@ import { Flex, FlexOne, FlexRow, FlexMiddle, Text, Loading } from 'ui/es';
 import { useTheme } from '~/hooks';
 
 function NotiBar({ turn, connected, awaiting, thinking }) {
-  const { border, color } = useTheme();
+  const { border, color, weight } = useTheme();
   const cs = color.invert[turn];
   const isAwaiting = connected && awaiting;
   const isTurn = connected && !awaiting;
@@ -16,7 +16,7 @@ function NotiBar({ turn, connected, awaiting, thinking }) {
         backgroundColor={cs.bgColor}
         color={cs.color}
         textTransform="uppercase"
-        fontWeight="bold"
+        fontWeight={weight.bold}
         borderRight={border}
       >
         {turn.substring(0, 1)}

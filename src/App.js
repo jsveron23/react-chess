@@ -12,7 +12,7 @@ import '~/styles/app.css';
 
 function App() {
   const [, height] = useWindowSize();
-  const { sidebar, fh, border, color } = useTheme();
+  const { sidebar, logo, fh, border, color } = useTheme();
   const minMaxWidth = height + sidebar.width;
 
   return (
@@ -32,7 +32,7 @@ function App() {
           </Text>
 
           <Flex is="figure" justifyContent="center">
-            <Logo width="100px" height="100%" />
+            <Logo width={logo.width} height={logo.height} />
           </Flex>
 
           <Box padding={20} paddingTop={0} paddingBottom={10} marginTop={20}>
