@@ -8,6 +8,7 @@ const PeerId = ({ peerId }) => {
       <Text marginBottom={5} fontWeight="bold" flexBasis={60}>
         Peer Id:
       </Text>
+
       {peerId && (
         <FlexOne is={Text} wordBreak="break-all">
           {peerId}

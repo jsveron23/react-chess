@@ -1,13 +1,13 @@
 import PropTypes from 'prop-types';
 import { Hr } from 'ui/es';
-import SubMenu from './internal/SubMenu';
+import MenuItems from './menu/MenuItems';
 
 const Menu = ({ ingameMenu, mainMenu }) => {
   return (
     <>
-      <SubMenu data={ingameMenu} />
+      <MenuItems data={ingameMenu} />
       <Hr is="p" marginTop={10} marginBottom={10} />
-      <SubMenu data={mainMenu} />
+      <MenuItems data={mainMenu} />
     </>
   );
 };

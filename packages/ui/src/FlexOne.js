@@ -13,11 +13,12 @@ const FlexOne = forwardRef(function FlexOne({ children, is, ...props }, ref) {
 });
 
 FlexOne.propTypes = {
-  children: PropTypes.node.isRequired,
+  children: PropTypes.node,
   is: PropTypes.elementType,
 };
 
 FlexOne.defaultProps = {
+  children: '',
   is: '',
 };
 

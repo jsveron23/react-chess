@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types';
 import { FlexCol } from 'ui/es';
-import Rank from './internal/Rank';
+import Rank from './diagram/Rank';
 import { DiagramProvider } from '~/hooks';
 
 const Diagram = ({

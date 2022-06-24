@@ -14,7 +14,7 @@ const Piece = ({ pKey, pretendCode }) => {
   const [styles, api] = useSpring(() => {
     let opacity = 1;
 
-    // mostly, it has to be set to opacity = 1,
+    // mostly, it has to be setted as opacity = 1,
     // but when a piece moved, it has to be set to opacity = 0
     // because previous component is removed because of snapshot changed
     // and creating a piece component new (not update),

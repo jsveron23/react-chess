@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { identity } from 'ramda';
 import { FlexCol, Button } from 'ui/es';
 
-const SubMenu = ({ data }) => {
+const MenuItems = ({ data }) => {
   return (
     <FlexCol gap={10} alignItems="center">
       {data.map(
@@ -23,14 +23,16 @@ const SubMenu = ({ data }) => {
   );
 };
 
-SubMenu.propTypes = {
+MenuItems.propTypes = {
   data: PropTypes.arrayOf(
     PropTypes.shape({
       key: PropTypes.string,
       title: PropTypes.string,
+      onClick: PropTypes.func,
       disabled: PropTypes.bool,
+      children: PropTypes.elementType,
     })
   ).isRequired,
 };
 
-export default SubMenu;
+export default MenuItems;

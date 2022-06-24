@@ -1,28 +1,26 @@
 import { memo } from 'react';
 import PropTypes from 'prop-types';
-import { Flex, FlexOne, FlexRow, Text, Loading } from 'ui/es';
+import { Flex, FlexOne, FlexRow, FlexMiddle, Text, Loading } from 'ui/es';
 import { useTheme } from '~/hooks';
 
 function NotiBar({ turn, connected, awaiting, thinking }) {
   const { border, color } = useTheme();
-  const cs = color.reflect[turn];
+  const cs = color.invert[turn];
   const isAwaiting = connected && awaiting;
   const isTurn = connected && !awaiting;
 
   return (
     <FlexRow borderTop={border}>
-      <Flex
+      <FlexMiddle
         flexBasis={30}
-        alignItems="center"
-        justifyContent="center"
         backgroundColor={cs.bgColor}
         color={cs.color}
         textTransform="uppercase"
         fontWeight="bold"
         borderRight={border}
       >
-        {cs.text}
-      </Flex>
+        {turn.substring(0, 1)}
+      </FlexMiddle>
 
       <FlexOne
         is={Flex}

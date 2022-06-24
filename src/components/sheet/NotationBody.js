@@ -1,37 +1,30 @@
-import { memo } from 'react';
 import PropTypes from 'prop-types';
-import { reverse } from 'ramda';
-import equal from 'fast-deep-equal/es6/react';
+import Box from 'ui-box';
+import { FlexRow } from 'ui/es';
 import { useTheme } from '~/hooks';
-import NotationHeader from './sheet/NotationHeader';
-import NotationBody from './sheet/NotationBody';
-import Notation from './sheet/Notation';
 
-const Sheet = ({ data }) => {
-  const { color } = useTheme();
+const NotationBody = ({ data, children }) => {
+  const { border } = useTheme();
 
   return (
-    <>
-      <NotationHeader data={['White', 'Black']} />
-      <NotationBody data={reverse(data)}>
-        {({ white, black }) => {
-          return (
-            <>
-              <Notation sideData={white} />
-              <Notation
-                sideData={black}
-                backgroundColor={color.black}
-                color={color.white}
-              />
-            </>
-          );
-        }}
-      </NotationBody>
-    </>
+    <Box>
+      {data.map((item, idx) => {
+        return (
+          <FlexRow
+            key={idx}
+            justifyContent="space-between"
+            borderBottom={border}
+          >
+            {children(item)}
+          </FlexRow>
+        );
+      })}
+    </Box>
   );
 };
 
-Sheet.propTypes = {
+NotationBody.propTypes = {
+  children: PropTypes.func.isRequired,
   data: PropTypes.arrayOf(
     PropTypes.shape({
       white: PropTypes.shape({
@@ -58,8 +51,8 @@ Sheet.propTypes = {
   ),
 };
 
-Sheet.defaultProps = {
-  data: [],
+NotationBody.defaultProps = {
+  sideData: null,
 };
 
-export default memo(Sheet, equal);
+export default NotationBody;

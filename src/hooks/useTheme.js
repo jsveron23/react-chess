@@ -1,5 +1,5 @@
 import { createContext, useContext } from 'react';
-import { Turn, Side } from 'chess/es';
+import { Turn } from 'chess/es';
 
 const ColorSet = {
   white: '#fff',
@@ -10,17 +10,15 @@ const ColorSet = {
   gray2: '#ccc',
   gray3: '#cacaca',
   gray4: '#aaa',
-  reflect: {
-    // TODO remove text
+  // TODO https://developer.mozilla.org/en-US/docs/Web/CSS/mix-blend-mode
+  invert: {
     [Turn.w]: {
       bgColor: '#fff',
       color: '#000',
-      text: Side[Turn.w],
     },
     [Turn.b]: {
       bgColor: '#000',
       color: '#fff',
-      text: Side[Turn.b],
     },
   },
 };
