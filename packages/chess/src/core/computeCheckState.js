@@ -57,10 +57,20 @@ function computeCheckState(opponentCode, timeline) {
 
   // TODO change name
   // all King side pieces movable tiles (+King)
+  // NOTE hasAnyMove tracks all legal moves (incl. pawn forward) for stalemate detection.
+  // dodgeableTiles strips pawn vertical moves because pawns only *attack* diagonally,
+  // but a pawn moving forward is still a legal move that prevents stalemate.
+  let hasAnyMove = false;
   const dodgeableTiles = compose(
     flatten,
     map((code) => {
-      let pmt = computePossibleMT(attackerCode, attackerRoutes, code, timeline);
+      const allPmt = computePossibleMT(attackerCode, attackerRoutes, code, timeline);
+
+      if (!isEmpty(allPmt)) {
+        hasAnyMove = true;
+      }
+
+      let pmt = allPmt;
 
       if (detectPiece.Pawn(code)) {
         pmt = removeDirection.Vertical(pmt, code);
@@ -78,7 +88,7 @@ function computeCheckState(opponentCode, timeline) {
 
   const isStuck = isEmpty(defenders) && isEmpty(defendTiles);
   const isCheck = !!attackerCode;
-  const isStalemate = !isCheck && isEmpty(dodgeableTiles);
+  const isStalemate = !isCheck && !hasAnyMove;
   const isCheckmate = isCheck && isStuck && isEmpty(kingMt);
 
   return {
