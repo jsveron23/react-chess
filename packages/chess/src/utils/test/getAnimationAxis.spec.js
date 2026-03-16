@@ -1,13 +1,13 @@
-import test from 'ava';
+import { test, expect } from 'bun:test';
 import getAnimationAxis from '../getAnimationAxis';
 
-test('Should return function (curry)', (t) => {
-  t.is(typeof getAnimationAxis(), 'function');
-  t.is(typeof getAnimationAxis([]), 'function');
+test('Should return function (curry)', () => {
+  expect(typeof getAnimationAxis()).toBe('function');
+  expect(typeof getAnimationAxis([])).toBe('function');
 });
 
-test('Should return axis object for animation', (t) => {
-  t.deepEqual(getAnimationAxis(false, ['bNd7', 'wQd5'], ['wQd7']), {
+test('Should return axis object for animation', () => {
+  expect(getAnimationAxis(false, ['bNd7', 'wQd5'], ['wQd7'])).toEqual({
     targetCode: 'wQd7',
     from: {
       x: 0,
@@ -15,7 +15,7 @@ test('Should return axis object for animation', (t) => {
     },
   });
 
-  t.deepEqual(getAnimationAxis(true, ['bNd7', 'wQd5'], ['wQd7']), {
+  expect(getAnimationAxis(true, ['bNd7', 'wQd5'], ['wQd7'])).toEqual({
     targetCode: 'wQd7',
     from: {
       x: 0,

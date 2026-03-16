@@ -1,14 +1,14 @@
-import test from 'ava';
+import { test, expect } from 'bun:test';
 import computeMTByCode from '../computeMTByCode';
 
-test('Should be returned empty array', (t) => {
-  t.deepEqual(computeMTByCode(), []);
-  t.deepEqual(computeMTByCode(''), []);
-  t.deepEqual(computeMTByCode(3), []);
-  t.deepEqual(computeMTByCode('a5wQ'), []);
+test('Should be returned empty array', () => {
+  expect(computeMTByCode()).toEqual([]);
+  expect(computeMTByCode('')).toEqual([]);
+  expect(computeMTByCode(3)).toEqual([]);
+  expect(computeMTByCode('a5wQ')).toEqual([]);
 });
 
-test('Should be returned movable tiles', (t) => {
-  t.deepEqual(computeMTByCode('wPa2'), ['a3']);
-  t.deepEqual(computeMTByCode('wNg1'), ['f3', 'h3', 'e2']);
+test('Should be returned movable tiles', () => {
+  expect(computeMTByCode('wPa2')).toEqual(['a3']);
+  expect(computeMTByCode('wNg1')).toEqual(['f3', 'h3', 'e2']);
 });

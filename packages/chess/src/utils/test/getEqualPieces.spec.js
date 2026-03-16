@@ -1,4 +1,4 @@
-import test from 'ava';
+import { test, expect } from 'bun:test';
 import getEqualPieces from '../getEqualPieces';
 
 // prettier-ignore
@@ -9,19 +9,17 @@ const Snapshot = [
   'wRa1', 'wNb1', 'wBc1', 'wQd1', 'wKe1', 'wBf1', 'wNg1', 'wRh1'
 ];
 
-test('Should throw TypeError', (t) => {
-  t.throws(() => getEqualPieces('K', []), {
-    instanceOf: TypeError,
-  });
+test('Should throw TypeError', () => {
+  expect(() => getEqualPieces('K', [])).toThrow(TypeError);
 });
 
-test('Should return function (curry)', (t) => {
-  t.is(typeof getEqualPieces(), 'function');
-  t.is(typeof getEqualPieces(null), 'function');
+test('Should return function (curry)', () => {
+  expect(typeof getEqualPieces()).toBe('function');
+  expect(typeof getEqualPieces(null)).toBe('function');
 });
 
-test('Should return match code list', (t) => {
-  t.deepEqual(getEqualPieces('P', Snapshot), [
+test('Should return match code list', () => {
+  expect(getEqualPieces('P', Snapshot)).toEqual([
     'bPa7',
     'bPb7',
     'bPc7',
@@ -39,5 +37,5 @@ test('Should return match code list', (t) => {
     'wPg2',
     'wPh2',
   ]);
-  t.deepEqual(getEqualPieces('Q', Snapshot), ['bQd8', 'wQd1']);
+  expect(getEqualPieces('Q', Snapshot)).toEqual(['bQd8', 'wQd1']);
 });

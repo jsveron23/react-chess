@@ -1,38 +1,30 @@
-import test from 'ava';
+import { test, expect } from 'bun:test';
 import convertAxisListToTiles from '../convertAxisListToTiles';
 
-test('Should throw TypeError', (t) => {
-  t.throws(() => convertAxisListToTiles('wa2', [[0, 0]]), {
-    instanceOf: TypeError,
-  });
+test('Should throw TypeError', () => {
+  expect(() => convertAxisListToTiles('wa2', [[0, 0]])).toThrow(TypeError);
 });
 
-test('Should return function (curry)', (t) => {
-  t.is(typeof convertAxisListToTiles(''), 'function');
-  t.is(typeof convertAxisListToTiles('wPa2'), 'function');
+test('Should return function (curry)', () => {
+  expect(typeof convertAxisListToTiles('')).toBe('function');
+  expect(typeof convertAxisListToTiles('wPa2')).toBe('function');
 });
 
-test('Should return empty array when given axis is outside of diagram', (t) => {
-  t.deepEqual(convertAxisListToTiles('wPa7', [[1, 2]]), []);
+test('Should return empty array when given axis is outside of diagram', () => {
+  expect(convertAxisListToTiles('wPa7', [[1, 2]])).toEqual([]);
 });
 
-test('Should return tile list as array', (t) => {
-  t.deepEqual(convertAxisListToTiles('wPa2', [[1, 1]]), ['b3']);
-  t.deepEqual(
-    convertAxisListToTiles('wPa2', [
+test('Should return tile list as array', () => {
+  expect(convertAxisListToTiles('wPa2', [[1, 1]])).toEqual(['b3']);
+  expect(convertAxisListToTiles('wPa2', [
       [1, 1],
       [1, 2],
       [1, 3],
-    ]),
-    ['b3', 'b4', 'b5']
-  );
-  t.deepEqual(
-    convertAxisListToTiles('wKa7', [
+    ])).toEqual(['b3', 'b4', 'b5']);
+  expect(convertAxisListToTiles('wKa7', [
       [1, 1],
       [1, 2],
       [1, 3],
-    ]),
-    ['b8']
-  );
-  t.deepEqual(convertAxisListToTiles('bPa7', [[1, 1]]), ['b6']);
+    ])).toEqual(['b8']);
+  expect(convertAxisListToTiles('bPa7', [[1, 1]])).toEqual(['b6']);
 });

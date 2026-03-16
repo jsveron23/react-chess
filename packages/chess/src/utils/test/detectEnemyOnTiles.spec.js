@@ -1,14 +1,14 @@
-import test from 'ava';
+import { test, expect } from 'bun:test';
 import detectEnemyOnTiles from '../detectEnemyOnTiles';
 
-test('Should return function (curry)', (t) => {
-  t.is(typeof detectEnemyOnTiles(), 'function');
-  t.is(typeof detectEnemyOnTiles(null, null), 'function');
-  t.is(typeof detectEnemyOnTiles(null, null, null), 'function');
+test('Should return function (curry)', () => {
+  expect(typeof detectEnemyOnTiles()).toBe('function');
+  expect(typeof detectEnemyOnTiles(null)).toBe('function');
+  expect(typeof detectEnemyOnTiles(null, null)).toBe('function');
 });
 
-test('Should return boolean value', (t) => {
-  t.true(
+test('Should return boolean value', () => {
+  expect(
     detectEnemyOnTiles(
       [
         'a5',
@@ -29,7 +29,7 @@ test('Should return boolean value', (t) => {
       'bPa7',
       'a7'
     )
-  );
+  ).toBe(true);
 
-  t.true(detectEnemyOnTiles(['a3', 'a4', 'b4'], 'wPa2', 'bPa4', 'b4'));
+  expect(detectEnemyOnTiles(['a3', 'a4', 'b4'], 'wPa2', 'bPa4', 'b4')).toBe(true);
 });

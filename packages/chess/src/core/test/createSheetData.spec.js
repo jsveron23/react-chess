@@ -1,4 +1,4 @@
-import test from 'ava';
+import { test, expect } from 'bun:test';
 import createSheetData from '../createSheetData';
 
 // TODO dodgeableTiles data wrong
@@ -83,13 +83,13 @@ const Past = [
   },
 ];
 
-test('Should return function (curry)', (t) => {
-  t.is(typeof createSheetData([]), 'function');
+test('Should return function (curry)', () => {
+  expect(typeof createSheetData([])).toBe('function');
 });
 
-test('Should return notation list as array', (t) => {
+test('Should return notation list as array', () => {
   // prettier-ignore
-  t.deepEqual(createSheetData(Present, Past), [
+  expect(createSheetData(Present, Past)).toEqual([
     {
       black: {
         checkData: {

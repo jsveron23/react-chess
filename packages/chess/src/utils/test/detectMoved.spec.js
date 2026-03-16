@@ -1,14 +1,14 @@
-import test from 'ava';
+import { test, expect } from 'bun:test';
 import detectMoved from '../detectMoved';
 
-test('Should return function (curry)', (t) => {
-  t.is(typeof detectMoved(), 'function');
-  t.is(typeof detectMoved(null), 'function');
+test('Should return function (curry)', () => {
+  expect(typeof detectMoved()).toBe('function');
+  expect(typeof detectMoved(null)).toBe('function');
 });
 
-test('Should return boolean value', (t) => {
+test('Should return boolean value', () => {
   // prettier-ignore
-  t.true(
+  expect(
     detectMoved(
       [
         [
@@ -30,5 +30,5 @@ test('Should return boolean value', (t) => {
       ],
       'wQa4'
     )
-  );
+  ).toBe(true);
 });

@@ -1,15 +1,15 @@
-import test from 'ava';
+import { test, expect } from 'bun:test';
 import validateCode from '../validateCode';
 
-test('Should return false', (t) => {
-  t.false(validateCode());
-  t.false(validateCode('wPa'));
-  t.false(validateCode('aPa2'));
-  t.false(validateCode('bAa2'));
-  t.false(validateCode('bPj2'));
-  t.false(validateCode('bPa9'));
+test('Should return false', () => {
+  expect(validateCode()).toBe(false);
+  expect(validateCode('wPa')).toBe(false);
+  expect(validateCode('aPa2')).toBe(false);
+  expect(validateCode('bAa2')).toBe(false);
+  expect(validateCode('bPj2')).toBe(false);
+  expect(validateCode('bPa9')).toBe(false);
 });
 
-test('Should return validate result', (t) => {
-  t.true(validateCode('wPa2'));
+test('Should return validate result', () => {
+  expect(validateCode('wPa2')).toBe(true);
 });

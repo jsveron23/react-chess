@@ -1,4 +1,4 @@
-import test from 'ava';
+import { test, expect } from 'bun:test';
 import validateSnapshot from '../validateSnapshot';
 
 // prettier-ignore
@@ -7,10 +7,10 @@ const Snapshot = [
   'wPa2', 'wPb2', 'wPc4', 'wPd2', 'wPe2', 'wPf2', 'wPg2', 'wPh2', 'wRa1', 'wNb1', 'wBc1', 'wQa4', 'wKe1', 'wBf1', 'wNg1', 'wRh1',
 ]
 
-test('Should return false', (t) => {
-  t.false(validateSnapshot([]));
+test('Should return false', () => {
+  expect(validateSnapshot([])).toBe(false);
 });
 
-test('Should return validate result', (t) => {
-  t.true(validateSnapshot(Snapshot));
+test('Should return validate result', () => {
+  expect(validateSnapshot(Snapshot)).toBe(true);
 });

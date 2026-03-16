@@ -1,21 +1,17 @@
-import test from 'ava';
+import { test, expect } from 'bun:test';
 import detectDarkTile from '../detectDarkTile';
 
-test('Should throw Error', (t) => {
-  t.throws(() => detectDarkTile('', 2), {
-    instanceOf: TypeError,
-  });
-  t.throws(() => detectDarkTile('a', 0), {
-    instanceOf: TypeError,
-  });
+test('Should throw Error', () => {
+  expect(() => detectDarkTile('', 2)).toThrow(TypeError);
+  expect(() => detectDarkTile('a', 0)).toThrow(TypeError);
 });
 
-test('Should return function (curry)', (t) => {
-  t.is(typeof detectDarkTile(), 'function');
-  t.is(typeof detectDarkTile('a'), 'function');
+test('Should return function (curry)', () => {
+  expect(typeof detectDarkTile()).toBe('function');
+  expect(typeof detectDarkTile('a')).toBe('function');
 });
 
-test('Should return boolean value', (t) => {
-  t.false(detectDarkTile('a', 2));
-  t.true(detectDarkTile('a', 3));
+test('Should return boolean value', () => {
+  expect(detectDarkTile('a', 2)).toBe(false);
+  expect(detectDarkTile('a', 3)).toBe(true);
 });

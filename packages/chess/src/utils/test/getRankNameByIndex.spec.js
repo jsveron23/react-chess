@@ -1,11 +1,11 @@
-import test from 'ava';
+import { test, expect } from 'bun:test';
 import getNextRankByIndex from '../getNextRankByIndex';
 
-test('Should return function (curry)', (t) => {
-  t.is(typeof getNextRankByIndex(), 'function');
-  t.is(typeof getNextRankByIndex(null), 'function');
+test('Should return function (curry)', () => {
+  expect(typeof getNextRankByIndex()).toBe('function');
+  expect(typeof getNextRankByIndex(null)).toBe('function');
 });
 
-test('Should return next rank of given index', (t) => {
-  t.deepEqual(getNextRankByIndex('2', 1), 3);
+test('Should return next rank of given index', () => {
+  expect(getNextRankByIndex('2', 1)).toEqual(3);
 });

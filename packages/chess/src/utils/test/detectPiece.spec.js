@@ -1,12 +1,12 @@
-import test from 'ava';
+import { test, expect } from 'bun:test';
 import detectPiece from '../detectPiece';
 
-test('Should return function (curry)', (t) => {
-  t.is(typeof detectPiece(), 'function');
-  t.is(typeof detectPiece(null), 'function');
+test('Should return function (curry)', () => {
+  expect(typeof detectPiece()).toBe('function');
+  expect(typeof detectPiece(null)).toBe('function');
 });
 
-test('Should return boolean value', (t) => {
-  t.true(detectPiece('R', 'wRc4'));
-  t.true(detectPiece('Q', 'bQc4'));
+test('Should return boolean value', () => {
+  expect(detectPiece('R', 'wRc4')).toBe(true);
+  expect(detectPiece('Q', 'bQc4')).toBe(true);
 });

@@ -1,4 +1,4 @@
-import test from 'ava';
+import { test, expect } from 'bun:test';
 // import sinon from 'sinon';
 import predictPossibleCheck from '../predictPossibleCheck';
 
@@ -18,28 +18,28 @@ const snapshot2 = [
   'wRa1', 'wNb1', 'wBc1', 'wQa4', 'wKe1', 'wBf1', 'wNg1', 'wRh1'
 ];
 
-test('Should be returned function', (t) => {
-  t.is(typeof predictPossibleCheck(), 'function');
-  t.is(typeof predictPossibleCheck([]), 'function');
+test('Should be returned function', () => {
+  expect(typeof predictPossibleCheck()).toBe('function');
+  expect(typeof predictPossibleCheck([])).toBe('function');
 });
 
-test('Should be returned falsy value (no attacker)', (t) => {
-  t.falsy(predictPossibleCheck([snapshot1], 'wPb2'));
-  t.falsy(predictPossibleCheck([snapshot1], 'wQd1'));
+test('Should be returned falsy value (no attacker)', () => {
+  expect(predictPossibleCheck([snapshot1], 'wPb2')).toBeFalsy();
+  expect(predictPossibleCheck([snapshot1], 'wQd1')).toBeFalsy();
 });
 
-test('Should be returned an attacker code', (t) => {
-  t.is(predictPossibleCheck([snapshot2], 'bKe8'), 'wQa4');
+test('Should be returned an attacker code', () => {
+  expect(predictPossibleCheck([snapshot2], 'bKe8')).toBe('wQa4');
 });
 
 // TODO investigate
-// test('Should be called functions with', (t) => {
+// test('Should be called functions with', () => {
 //   const spy1 = sinon.spy();
 //   predictPossibleCheck.__Rewire__('getAttackers', spy1);
 //
 //   predictPossibleCheck([snapshot2], 'bKe8');
 //
-//   t.true(spy1.called);
+//   expect(spy1.called).toBe(true);
 //
 //   sinon.restore();
 // });

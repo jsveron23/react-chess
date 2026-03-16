@@ -1,15 +1,15 @@
-import test from 'ava';
+import { test, expect } from 'bun:test';
 import detectContacted from '../detectContacted';
 
-test('Should be returned function', (t) => {
-  t.is(typeof detectContacted(), 'function');
-  t.is(typeof detectContacted(null), 'function');
+test('Should be returned function', () => {
+  expect(typeof detectContacted()).toBe('function');
+  expect(typeof detectContacted(null)).toBe('function');
 });
 
-test('Should be returned whether contacted or not', (t) => {
-  t.true(detectContacted(1, 1));
-  t.true(detectContacted(1, 0));
-  t.true(detectContacted(0, 1));
-  t.false(detectContacted(3, 1));
-  t.false(detectContacted(3, 3));
+test('Should be returned whether contacted or not', () => {
+  expect(detectContacted(1, 1)).toBe(true);
+  expect(detectContacted(1, 0)).toBe(true);
+  expect(detectContacted(0, 1)).toBe(true);
+  expect(detectContacted(3, 1)).toBe(false);
+  expect(detectContacted(3, 3)).toBe(false);
 });

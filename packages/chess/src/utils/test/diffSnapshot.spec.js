@@ -1,4 +1,4 @@
-import test from 'ava';
+import { test, expect } from 'bun:test';
 import diffSnapshot from '../diffSnapshot';
 
 // prettier-ignore
@@ -17,13 +17,13 @@ const snapshot2 = [
   'wRa1', 'wNb1', 'wBc1', 'wQd1', 'wKe1', 'wBf1', 'wNg1', 'wRh1'
 ];
 
-test('Should be returned function', (t) => {
-  t.is(typeof diffSnapshot(), 'function');
-  t.is(typeof diffSnapshot(null), 'function');
+test('Should be returned function', () => {
+  expect(typeof diffSnapshot()).toBe('function');
+  expect(typeof diffSnapshot(null)).toBe('function');
 });
 
-test('Should be returned direction string', (t) => {
-  t.deepEqual(diffSnapshot(snapshot1, snapshot2), {
+test('Should be returned direction string', () => {
+  expect(diffSnapshot(snapshot1, snapshot2)).toEqual({
     from: ['wPc2'],
     to: ['wPc4'],
   });

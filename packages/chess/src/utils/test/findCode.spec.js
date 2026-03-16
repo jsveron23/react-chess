@@ -1,4 +1,4 @@
-import test from 'ava';
+import { test, expect } from 'bun:test';
 import findCode from '../findCode';
 
 // prettier-ignore
@@ -9,11 +9,11 @@ const Snapshot = [
   'wRa1', 'wNb1', 'wBc1', 'wQd1', 'wKe1', 'wBf1', 'wNg1', 'wRh1'
 ];
 
-test('Should return empty string', (t) => {
-  t.is(findCode([], 'bRa8'), '');
-  t.is(findCode(Snapshot, 'bQa4'));
+test('Should return empty string', () => {
+  expect(findCode([], 'bRa8')).toBe('');
+  expect(findCode(Snapshot, 'bQa4')).toBeFalsy();
 });
 
-test('Should return found string', (t) => {
-  t.is(findCode(Snapshot, 'wPa2'), 'wPa2');
+test('Should return found string', () => {
+  expect(findCode(Snapshot, 'wPa2')).toBe('wPa2');
 });

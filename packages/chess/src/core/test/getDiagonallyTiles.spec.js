@@ -1,4 +1,4 @@
-import test from 'ava';
+import { test, expect } from 'bun:test';
 import getDiagonallyTiles from '../getDiagonallyTiles';
 
 // prettier-ignore
@@ -9,17 +9,17 @@ const snapshot = [
     'wRa1', 'wNb1', 'wBc1', 'wQa4', 'wKe1', 'wBf1', 'wNg1', 'wRh1'
   ]
 
-test('Should be returned function', (t) => {
-  t.is(typeof getDiagonallyTiles(), 'function');
-  t.is(typeof getDiagonallyTiles(null), 'function');
+test('Should be returned function', () => {
+  expect(typeof getDiagonallyTiles()).toBe('function');
+  expect(typeof getDiagonallyTiles(null)).toBe('function');
 });
 
-test('Should be returned empty value', (t) => {
-  t.deepEqual(getDiagonallyTiles('wPa2', snapshot), []);
-  t.deepEqual(getDiagonallyTiles('bPh7', snapshot), []);
+test('Should be returned empty value', () => {
+  expect(getDiagonallyTiles('wPa2', snapshot)).toEqual([]);
+  expect(getDiagonallyTiles('bPh7', snapshot)).toEqual([]);
 });
 
-test('Should be returned diagonally forward tiles', (t) => {
-  t.deepEqual(getDiagonallyTiles('wPc4', snapshot), ['d5']);
-  t.deepEqual(getDiagonallyTiles('bPd5', snapshot), ['c4']);
+test('Should be returned diagonally forward tiles', () => {
+  expect(getDiagonallyTiles('wPc4', snapshot)).toEqual(['d5']);
+  expect(getDiagonallyTiles('bPd5', snapshot)).toEqual(['c4']);
 });

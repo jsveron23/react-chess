@@ -1,4 +1,4 @@
-import test from 'ava';
+import { test, expect } from 'bun:test';
 import getPKeyByTile from '../getPKeyByTile';
 
 // prettier-ignore
@@ -9,15 +9,15 @@ const Snapshot = [
   'wRa1', 'wNb1', 'wBc1', 'wQd1', 'wKe1', 'wBf1', 'wNg1', 'wRh1'
 ];
 
-test('Should return function (curry)', (t) => {
-  t.is(typeof getPKeyByTile(), 'function');
-  t.is(typeof getPKeyByTile(null), 'function');
+test('Should return function (curry)', () => {
+  expect(typeof getPKeyByTile()).toBe('function');
+  expect(typeof getPKeyByTile(null)).toBe('function');
 });
 
-test('Should return falsy value if given tile is not in snapshot', (t) => {
-  t.falsy(getPKeyByTile(Snapshot, 'd4'));
+test('Should return falsy value if given tile is not in snapshot', () => {
+  expect(getPKeyByTile(Snapshot, 'd4')).toBeFalsy();
 });
 
-test('Should return pKey', (t) => {
-  t.is(getPKeyByTile(Snapshot, 'd1'), 'wQ');
+test('Should return pKey', () => {
+  expect(getPKeyByTile(Snapshot, 'd1')).toBe('wQ');
 });

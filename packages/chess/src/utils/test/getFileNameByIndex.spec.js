@@ -1,11 +1,11 @@
-import test from 'ava';
+import { test, expect } from 'bun:test';
 import getNextFileByIndex from '../getNextFileByIndex';
 
-test('Should return function (curry)', (t) => {
-  t.is(typeof getNextFileByIndex(), 'function');
-  t.is(typeof getNextFileByIndex(null), 'function');
+test('Should return function (curry)', () => {
+  expect(typeof getNextFileByIndex()).toBe('function');
+  expect(typeof getNextFileByIndex(null)).toBe('function');
 });
 
-test('Should return next file of given index', (t) => {
-  t.deepEqual(getNextFileByIndex('a', 1), 'b');
+test('Should return next file of given index', () => {
+  expect(getNextFileByIndex('a', 1)).toEqual('b');
 });

@@ -1,4 +1,4 @@
-import test from 'ava';
+import { test, expect } from 'bun:test';
 import getAttackers from '../getAttackers';
 
 // prettier-ignore
@@ -23,11 +23,11 @@ const timeline = [
   ]
 ]
 
-test('Should be returned function', (t) => {
-  t.is(typeof getAttackers(), 'function');
-  t.is(typeof getAttackers([]), 'function');
+test('Should be returned function', () => {
+  expect(typeof getAttackers()).toBe('function');
+  expect(typeof getAttackers([])).toBe('function');
 });
 
-test('Should be returned attackers', (t) => {
-  t.deepEqual(getAttackers('bKe8', timeline), ['wQa4']);
+test('Should be returned attackers', () => {
+  expect(getAttackers('bKe8', timeline)).toEqual(['wQa4']);
 });

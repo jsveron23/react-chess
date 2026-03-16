@@ -1,4 +1,4 @@
-import test from 'ava';
+import { test, expect } from 'bun:test';
 import computeMTByDirection from '../computeMTByDirection';
 
 // prettier-ignore
@@ -9,28 +9,22 @@ const snapshot = [
   'wRa1', 'wNb1', 'wBc1', 'wQa4', 'wKe1', 'wBf1', 'wNg1', 'wRh1'
 ];
 
-test('Should be thrown errors', (t) => {
-  t.throws(() => computeMTByDirection(snapshot, 'Pa2'));
-  t.throws(() => computeMTByDirection({}, 'wPa2'));
-  t.throws(() => computeMTByDirection(null, 'wPa2'));
+test('Should be thrown errors', () => {
+  expect(() => computeMTByDirection(snapshot, 'Pa2')).toThrow();
+  expect(() => computeMTByDirection({}, 'wPa2')).toThrow();
+  expect(() => computeMTByDirection(null, 'wPa2')).toThrow();
 });
 
-test('Should be returned movable tiles that excludes blocked tiles', (t) => {
+test('Should be returned movable tiles that excludes blocked tiles', () => {
   // prettier-ignore
-  t.deepEqual(
-    computeMTByDirection(snapshot, 'wQc3').sort(),
-    [
+  expect(computeMTByDirection(snapshot, 'wQc3').sort()).toEqual([
       'c4', 'b4', 'a5', 'b3', 'a3', 'b2', 'c2', 'c1', 'd2',
       'd3', 'e3', 'f3', 'g3', 'h3', 'd4', 'e5', 'f6', 'g7',
-    ].sort()
-  );
+    ].sort());
 
   // prettier-ignore
-  t.deepEqual(
-    computeMTByDirection(snapshot, 'wQa4').sort(),
-    [
+  expect(computeMTByDirection(snapshot, 'wQa4').sort()).toEqual([
       'a5', 'a6', 'a7', 'b5', 'c6', 'b4',
       'c4', 'b3', 'c2', 'd1', 'a3', 'a2',
-    ].sort()
-  );
+    ].sort());
 });

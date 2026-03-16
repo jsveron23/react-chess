@@ -1,15 +1,13 @@
-import test from 'ava';
+import { test, expect } from 'bun:test';
 import detectTurn from '../detectTurn';
 
-test('Should throw TypeError', (t) => {
-  t.throws(() => detectTurn('w', 'Pa2'), {
-    instanceOf: TypeError,
-  });
+test('Should throw TypeError', () => {
+  expect(() => detectTurn('w', 'Pa2')).toThrow(TypeError);
 });
 
-test('Should return boolean value', (t) => {
-  t.true(detectTurn('white', 'wPa2'));
-  t.false(detectTurn('white', 'bPa7'));
-  t.true(detectTurn('black', 'bPa7'));
-  t.false(detectTurn('black', 'wPa2'));
+test('Should return boolean value', () => {
+  expect(detectTurn('white', 'wPa2')).toBe(true);
+  expect(detectTurn('white', 'bPa7')).toBe(false);
+  expect(detectTurn('black', 'bPa7')).toBe(true);
+  expect(detectTurn('black', 'wPa2')).toBe(false);
 });

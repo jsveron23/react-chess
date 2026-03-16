@@ -1,4 +1,4 @@
-import test from 'ava';
+import { test, expect } from 'bun:test';
 import filterOpponent from '../filterOpponent';
 
 // prettier-ignore
@@ -7,19 +7,17 @@ const Snapshot = [
   'wPa2', 'wPb2', 'wPc4', 'wPd2', 'wPe2', 'wPf2', 'wPg2', 'wPh2', 'wRa1', 'wNb1', 'wBc1', 'wQa4', 'wKe1', 'wBf1', 'wNg1', 'wRh1',
 ]
 
-test('Should throw Error', (t) => {
-  t.throws(() => filterOpponent('bRa8', []), {
-    instanceOf: TypeError,
-  });
+test('Should throw Error', () => {
+  expect(() => filterOpponent('bRa8', [])).toThrow(TypeError);
 });
 
-test('Should return function (curry)', (t) => {
-  t.is(typeof filterOpponent(), 'function');
-  t.is(typeof filterOpponent(null), 'function');
+test('Should return function (curry)', () => {
+  expect(typeof filterOpponent()).toBe('function');
+  expect(typeof filterOpponent(null)).toBe('function');
 });
 
-test('Should return opponent code list', (t) => {
-  t.deepEqual(filterOpponent('bRa8', Snapshot), [
+test('Should return opponent code list', () => {
+  expect(filterOpponent('bRa8', Snapshot)).toEqual([
     'wPa2',
     'wPb2',
     'wPc4',

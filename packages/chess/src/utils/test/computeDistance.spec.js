@@ -1,29 +1,29 @@
-import test from 'ava';
+import { test, expect } from 'bun:test';
 import computeDistance from '../computeDistance';
 
-test('Should throw TypeError', (t) => {
+test('Should throw TypeError', () => {
   const typeError = {
     instanceOf: TypeError,
   };
 
-  t.throws(() => computeDistance('', ''), typeError);
-  t.throws(() => computeDistance('abc', ''), typeError);
-  t.throws(() => computeDistance('abc', 'def'), typeError);
-  t.throws(() => computeDistance('abc', 'def'), typeError);
+  expect(() => computeDistance('', '')).toThrow();
+  expect(() => computeDistance('abc', '')).toThrow();
+  expect(() => computeDistance('abc', 'def')).toThrow();
+  expect(() => computeDistance('abc', 'def')).toThrow();
 });
 
-test('Should return function (curry)', (t) => {
-  t.is(typeof computeDistance(''), 'function');
-  t.is(typeof computeDistance('abc'), 'function');
+test('Should return function (curry)', () => {
+  expect(typeof computeDistance('')).toBe('function');
+  expect(typeof computeDistance('abc')).toBe('function');
 });
 
-test('Should return object of distance data', (t) => {
-  t.deepEqual(computeDistance('wKa2', 'bQa8'), {
+test('Should return object of distance data', () => {
+  expect(computeDistance('wKa2', 'bQa8')).toEqual({
     rank: 6,
     file: 0,
   });
 
-  t.deepEqual(computeDistance('wKa2', 'bQa3'), {
+  expect(computeDistance('wKa2', 'bQa3')).toEqual({
     rank: 1,
     file: 0,
   });

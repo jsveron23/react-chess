@@ -1,4 +1,4 @@
-import test from 'ava';
+import { test, expect } from 'bun:test';
 import computePossibleMT from '../computePossibleMT';
 
 // prettier-ignore
@@ -47,6 +47,6 @@ const timeline = [
   ]
 ]
 
-test('Should be returned movable tiles', (t) => {
-  t.deepEqual(computePossibleMT('', [], 'wQc3', timeline), ['d2', 'b4']);
+test('Should be returned movable tiles', () => {
+  expect(computePossibleMT('', [], 'wQc3', timeline)).toEqual(['d2', 'b4']);
 });

@@ -1,13 +1,13 @@
-import test from 'ava';
+import { test, expect } from 'bun:test';
 import removeDirection from '../removeDirection';
 
-test('Should return function (curry)', (t) => {
-  t.is(typeof removeDirection(), 'function');
-  t.is(typeof removeDirection(null), 'function');
-  t.is(typeof removeDirection(null, null), 'function');
+test('Should return function (curry)', () => {
+  expect(typeof removeDirection()).toBe('function');
+  expect(typeof removeDirection(null)).toBe('function');
+  expect(typeof removeDirection(null, null)).toBe('function');
 });
 
-test('Should return movable tiles that removed direction code', (t) => {
+test('Should return movable tiles that removed direction code', () => {
   // TODO more test case
-  t.deepEqual(removeDirection('Vertical', ['e5', 'e6'], 'bPe7'), []);
+  expect(removeDirection('Vertical', ['e5', 'e6'], 'bPe7')).toEqual([]);
 });

@@ -1,4 +1,4 @@
-import test from 'ava';
+import { test, expect } from 'bun:test';
 import findOpponentKing from '../findOpponentKing';
 
 // prettier-ignore
@@ -9,12 +9,12 @@ const Snapshot = [
   'wRa1', 'wNb1', 'wBc1', 'wQd1', 'wKe1', 'wBf1', 'wNg1', 'wRh1'
 ];
 
-test('Should return function (curry)', (t) => {
-  t.is(typeof findOpponentKing(), 'function');
-  t.is(typeof findOpponentKing(null), 'function');
+test('Should return function (curry)', () => {
+  expect(typeof findOpponentKing()).toBe('function');
+  expect(typeof findOpponentKing(null)).toBe('function');
 });
 
-test('Should return King code', (t) => {
-  t.is(findOpponentKing('bPb7', Snapshot), 'wKe1');
-  t.is(findOpponentKing('wQd1', Snapshot), 'bKe8');
+test('Should return King code', () => {
+  expect(findOpponentKing('bPb7', Snapshot)).toBe('wKe1');
+  expect(findOpponentKing('wQd1', Snapshot)).toBe('bKe8');
 });
