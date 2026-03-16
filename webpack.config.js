@@ -151,7 +151,11 @@ module.exports = function configure(env, { mode = 'development' }) {
       filename: isDev ? '[name].js' : '[name].[contenthash].js',
     },
     resolve: {
-      alias: { '~': src },
+      alias: {
+        '~': src,
+        'chess/es': Path.resolve(__dirname, 'packages/chess/es'),
+        'ui/es': Path.resolve(__dirname, 'packages/ui/es'),
+      },
     },
     module: { rules },
     optimization,

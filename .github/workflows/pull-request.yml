@@ -14,17 +14,17 @@ jobs:
           ref: ${{ github.event.pull_request.head.sha }}
           fetch-depth: 0
 
-      - uses: actions/setup-node@v2
+      - uses: oven-sh/setup-bun@v2
         with:
-          node-version: 15
+          bun-version: latest
 
-      - name: Install Node.js dependencies
-        run: npm ci
+      - name: Install dependencies with bun
+        run: bun install
 
       - name: Lint & Prettier
         run: |
-          npm run lint
-          npm run prettier
+          bun run lint
+          bun run prettier
 
       - name: Unit-testing
-        run: npm test
+        run: bun test

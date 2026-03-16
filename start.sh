@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-./node_modules/.bin/concurrently \
+bunx concurrently \
   -n CHESS,UI,DEV-SERVER \
   -c "bgWhite.bold.black,bgGreen.bold.black,bgRed.bold.white" \
-  "npm run build:chess:watch" "npm run build:ui:watch" "npm run dev"
+  "bun run build:chess:watch" "bun run build:ui:watch" "bun run dev"

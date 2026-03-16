@@ -4,8 +4,7 @@
   "description": "Chess game",
   "main": "index.js",
   "engines": {
-    "npm": ">=8.5.0",
-    "node": ">=14.0.0"
+    "bun": ">=1.0.0"
   },
   "private": true,
   "scripts": {
@@ -13,17 +12,17 @@
     "prettier": "prettier -c **/src/**/*.js",
     "clean": "rimraf public",
     "clean:test": "rimraf coverage",
-    "build:chess": "npm run build -w chess",
-    "build:ui": "npm run build -w ui",
-    "build:chess:watch": "npm run build:watch -w chess",
-    "build:ui:watch": "npm run build:watch -w ui",
-    "build": "npm run build --ws && webpack --mode production",
+    "build:chess": "bun run --filter chess build",
+    "build:ui": "bun run --filter ui build",
+    "build:chess:watch": "bun run --filter chess build:watch",
+    "build:ui:watch": "bun run --filter ui build:watch",
+    "build": "bun run build --ws && webpack --mode production",
     "dev": "webpack server --mode development",
-    "prod": "npm run clean && npm run build && http-server",
-    "prod:open": "npm run prod -- -o",
+    "prod": "bun run clean && bun run build && http-server",
+    "prod:open": "bun run prod -- -o",
     "start": "./start.sh",
-    "pretest": "npm run clean:test",
-    "test": "npm run clean:test && c8 ava",
+    "pretest": "bun run clean:test",
+    "test": "bun run clean:test && c8 ava",
     "test:open": "open ./coverage/index.html"
   },
   "keywords": [
@@ -88,6 +87,7 @@
     "webpack-dev-server": "^4.7.4"
   },
   "dependencies": {
+    "@babel/runtime": "^7.17.0",
     "ava": "^4.2.0",
     "classnames": "^2.3.1",
     "fast-deep-equal": "^3.1.3",
