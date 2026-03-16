@@ -3,7 +3,7 @@ import { debug } from '~/utils';
 class AIWorker {
   task(v, cb, errCb) {
     this.close();
-    this.worker = new Worker(new URL('./ai', import.meta.url));
+    this.worker = new Worker(new URL('./ai.js', import.meta.url));
     this.worker.postMessage(v);
 
     if (typeof cb === 'function') {

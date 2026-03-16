@@ -17,19 +17,21 @@ import { PST, Side, File, Rank } from '../presets';
 // 1. go rust
 // 2. implement core functions to another ways
 
-const _indexOfRank = flip(indexOf)(reverse(Rank));
+const _indexOfRank = flip(indexOf)(Rank);
 const _indexOfFile = flip(indexOf)(File);
 
 class AI {
   static #PST = {
     wP: PST.P,
     bP: reverse(PST.P),
-    N: PST.N,
+    wN: PST.N,
+    bN: PST.N,           // Knight PST is vertically symmetric — same for both sides
     wB: PST.B,
     bB: reverse(PST.B),
     wR: PST.R,
     bR: reverse(PST.R),
-    Q: PST.Q,
+    wQ: PST.Q,
+    bQ: reverse(PST.Q),  // Queen PST rows 4-6 are asymmetric — mirror for black
     wK: PST.K,
     bK: reverse(PST.K),
   };
@@ -43,31 +45,15 @@ class AI {
     K: 20000,
   };
 
-  static #evalCaptureScore(state) {
-    const { side, pretendCode } = state;
-    const piece = parseCode.prop('piece', pretendCode);
-    const cScore = this.#Scores[piece];
-
-    if (side === Side.w) {
-      return cScore;
-    } else {
-      return -cScore;
-    }
-  }
-
   /**
-   * Evaluate state
+   * Evaluate state (absolute: positive = white winning, negative = black winning)
    * @param  {Object} state
    * @return {Number}
    */
   static #evaluate(state) {
-    const { timeline, isCaptured } = state;
+    const { timeline } = state;
     const snapshot = head(timeline);
     let totalEvaluation = 0;
-
-    if (isCaptured) {
-      totalEvaluation += this.#evalCaptureScore(state);
-    }
 
     forEach((code) => {
       const { side, piece, pKey, fileName, rankName } = parseCode(code);
@@ -94,8 +80,8 @@ class AI {
    * @return {Number}
    */
   static minimax(currState, depth, alpha, beta, isMaximisingPlayer) {
-    if (depth === 0 || currState.isCaptured) {
-      return -this.#evaluate(currState);
+    if (depth === 0) {
+      return this.#evaluate(currState);
     }
 
     const iV = StateBuilder.createInitialV(currState);

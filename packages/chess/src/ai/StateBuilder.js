@@ -95,7 +95,7 @@ class StateBuilder {
     return {
       timeline: this.#getNextTimeline(nextCode, pretendCode, isCaptured),
       node: [...this.node, this.currCode, nextCode],
-      side: this.side,
+      side: Opponent[this.side],
       pretendCode,
       isCaptured,
     };

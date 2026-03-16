@@ -13,9 +13,10 @@ self.onmessage = ({ data }) => {
     side: Side[present.turn],
     ...checkData,
   });
+  const isAIMaximizer = iV.side === Side.w;
   const codeList = AI.createList(iV.side, iV.snapshot);
   const stateList = [];
-  let bestMove = -9999;
+  let bestMove = isAIMaximizer ? -9999 : 9999;
   let bestState = null;
 
   console.time('worker');
@@ -29,9 +30,9 @@ self.onmessage = ({ data }) => {
 
   for (let i = 0, len = stateList.length; i < len; i++) {
     const state = stateList[i];
-    const score = AI.minimax(state, depth - 1, -10000, 10000, false);
+    const score = AI.minimax(state, depth - 1, -10000, 10000, !isAIMaximizer);
 
-    if (score >= bestMove) {
+    if (isAIMaximizer ? score >= bestMove : score <= bestMove) {
       bestMove = score;
       bestState = state;
     }

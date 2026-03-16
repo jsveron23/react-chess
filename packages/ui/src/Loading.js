@@ -1,6 +1,7 @@
 import { memo } from 'react';
 import PropTypes from 'prop-types';
-import ClockLoader from 'react-spinners/ClockLoader';
+import _ClockLoader from 'react-spinners/ClockLoader';
+const ClockLoader = _ClockLoader?.default ?? _ClockLoader;
 import Text from './Text';
 
 const Loading = ({ loading = false, text = '', size = 10, ...props }) => {
