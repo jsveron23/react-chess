@@ -34,6 +34,7 @@ function getCastlingTiles(timeline, code) {
   const _convertToTiles = convertAxisListToTiles(code);
   const _detectMoved = detectMoved(timeline);
   const placedTiles = compose(convertSnapshotToTiles, head)(timeline);
+  // Tiles invalid if occupied OR king would be in check there (squares king passes through)
   const _filterInvalidTiles = compose(
     filter(
       anyPass([
@@ -41,6 +42,11 @@ function getCastlingTiles(timeline, code) {
         compose(head, _getAttackers(timeline), String, concat(pKey)),
       ])
     ),
+    _convertToTiles
+  );
+  // Tiles invalid if occupied only (squares rook passes through but king does not)
+  const _filterOccupiedTiles = compose(
+    filter(_includes(placedTiles)),
     _convertToTiles
   );
   const _detectRookMoved = compose(
@@ -51,7 +57,12 @@ function getCastlingTiles(timeline, code) {
   );
 
   // prettier-ignore
-  const invalidLeftTiles = _filterInvalidTiles([[-1, 0], [-2, 0], [-3, 0]]);
+  // d/c: king passes through → check occupation + attack
+  // b: only rook passes through → check occupation only
+  const invalidLeftTiles = [
+    ..._filterInvalidTiles([[-1, 0], [-2, 0]]),
+    ..._filterOccupiedTiles([[-3, 0]]),
+  ];
 
   // prettier-ignore
   const invalidRightTiles = _filterInvalidTiles([[1, 0], [2, 0]]);

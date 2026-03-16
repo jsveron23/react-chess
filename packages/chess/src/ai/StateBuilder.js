@@ -119,6 +119,14 @@ class StateBuilder {
   }
 
   #getNextTimeline(nextCode, pretendCode, isCaptured) {
+    // Castling map: king destination → rook (curr → next)
+    const CastlingMap = {
+      wKc1: { curr: 'wRa1', next: 'wRd1' },
+      wKg1: { curr: 'wRh1', next: 'wRf1' },
+      bKc8: { curr: 'bRa8', next: 'bRd8' },
+      bKg8: { curr: 'bRh8', next: 'bRf8' },
+    };
+
     let getNextSnapshot = null;
 
     if (isCaptured) {
@@ -130,7 +138,22 @@ class StateBuilder {
       getNextSnapshot = replaceCode(this.snapshot, this.currCode);
     }
 
-    return compose(_prepend(this.timeline), getNextSnapshot)(nextCode);
+    let nextSnapshot = getNextSnapshot(nextCode);
+
+    // If king castled (moved 2 files), also reposition the rook
+    if (detectPiece.King(this.currCode)) {
+      const { file } = computeDistance(this.currCode, nextCode);
+
+      if (file === 2) {
+        const codeMap = CastlingMap[nextCode];
+
+        if (codeMap) {
+          nextSnapshot = replaceCode(nextSnapshot, codeMap.curr, codeMap.next);
+        }
+      }
+    }
+
+    return _prepend(this.timeline)(nextSnapshot);
   }
 }
 
