@@ -1,0 +1,15 @@
+[build]
+entrypoints = ["src/index.js"]
+outdir = "public"
+target = "browser"
+format = "esm"
+splitting = false
+minify = false
+sourcemap = "external"
+
+[build.define]
+"process.env" = "{}"
+
+# Path aliases matching jsconfig.json
+[resolve]
+alias = { "~" = "src", "chess/es" = "packages/chess/src", "ui/es" = "packages/ui/src" }

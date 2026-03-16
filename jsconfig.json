@@ -1,0 +1,23 @@
+{
+  "compilerOptions": {
+    "target": "ES2020",
+    "module": "ESNext",
+    "moduleResolution": "node",
+    "jsx": "react-jsx",
+    "allowJs": true,
+    "strict": false,
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true,
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "baseUrl": ".",
+    "paths": {
+      "~/*": ["src/*"],
+      "chess/es": ["packages/chess/src"],
+      "ui/es": ["packages/ui/src"]
+    }
+  },
+  "include": ["src/**/*", "packages/**/*"],
+  "exclude": ["node_modules", "packages/*/es", "packages/*/lib", "public"]
+}

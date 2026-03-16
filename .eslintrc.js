@@ -1,31 +1,20 @@
 module.exports = {
   env: {
     browser: true,
-    es2021: true,
+    es2020: true,
     node: true,
   },
   extends: ['eslint:recommended', 'plugin:react/recommended'],
-  parser: '@babel/eslint-parser',
   parserOptions: {
     ecmaFeatures: {
       jsx: true,
-      globalReturn: false,
     },
-    ecmaVersion: 13,
+    ecmaVersion: 2020,
     sourceType: 'module',
-    allowImportExportEverywhere: false,
-    babelOptions: {
-      configFile: './babel.config.js',
-    },
   },
   settings: {
     react: {
       version: 'detect',
-    },
-    'import/resolver': {
-      webpack: {
-        config: `${__dirname}/webpack.config.js`,
-      },
     },
   },
   plugins: ['node', 'react', 'react-hooks'],

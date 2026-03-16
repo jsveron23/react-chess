@@ -32,7 +32,13 @@ function App() {
           </Text>
 
           <Flex is="figure" justifyContent="center">
-            <Logo width={logo.width} height={logo.height} />
+            <img
+              src={Logo}
+              alt="React-Chess Logo"
+              width={logo.width}
+              height={logo.height}
+              style={{ maxWidth: '100%', height: 'auto' }}
+            />
           </Flex>
 
           <Box padding={20} paddingTop={0} paddingBottom={10} marginTop={20}>

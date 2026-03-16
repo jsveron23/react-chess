@@ -27,7 +27,7 @@ const Piece = ({ pKey, pretendCode }) => {
 
     return { x: 0, y: 0, opacity };
   });
-  const PieceComponent = getPiece(pKey);
+  const pieceSvg = getPiece(pKey);
 
   useEffect(() => {
     if (pretendCode === animate.targetCode) {
@@ -47,7 +47,7 @@ const Piece = ({ pKey, pretendCode }) => {
     }
   }, [api, pKey, width, animate, pretendCode]);
 
-  if (!pKey) {
+  if (!pKey || !pieceSvg) {
     return '';
   }
 
@@ -62,7 +62,11 @@ const Piece = ({ pKey, pretendCode }) => {
       style={styles}
     >
       <Flex width="100%" height="100%" justifyContent="center">
-        <PieceComponent width="57%" />
+        <img
+          src={pieceSvg}
+          alt={pKey}
+          style={{ width: '57%', height: 'auto' }}
+        />
       </Flex>
     </Animate>
   );
