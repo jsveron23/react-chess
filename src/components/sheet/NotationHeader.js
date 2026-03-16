@@ -32,6 +32,5 @@ NotationHeader.propTypes = {
   data: PropTypes.arrayOf(PropTypes.oneOf(['White', 'Black'])).isRequired,
 };
 
-NotationHeader.defaultProps = {};
 
 export default NotationHeader;

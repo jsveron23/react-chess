@@ -1,9 +1,9 @@
 import { memo } from 'react';
 import PropTypes from 'prop-types';
 import { identity } from 'ramda';
-import Box from 'ui-box';
+import Box from './Box';
 
-const TextBox = ({ value, placeholder, onChange, onKeyDown, ...props }) => {
+const TextBox = ({ value = '', placeholder = '', onChange, onKeyDown = identity, ...props }) => {
   return (
     <Box
       is="input"
@@ -23,10 +23,5 @@ TextBox.propTypes = {
   placeholder: PropTypes.string,
 };
 
-TextBox.defaultProps = {
-  value: '',
-  placeholder: '',
-  onKeyDown: identity,
-};
 
 export default memo(TextBox);

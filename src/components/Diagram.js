@@ -5,14 +5,14 @@ import { DiagramProvider } from '~/hooks';
 
 const Diagram = ({
   flip,
-  animate,
+  animate = { targetCode: '', from: { x: 0, y: 0 } },
   getPKey,
   detectOn,
-  checkCode,
-  checkRoute,
+  checkCode = '',
+  checkRoute = [],
   detectEnemy,
   onClickTile,
-  checkDefenders,
+  checkDefenders = [],
   detectEnPassantTile,
 }) => {
   return (
@@ -56,17 +56,5 @@ Diagram.propTypes = {
   checkCode: PropTypes.string,
 };
 
-Diagram.defaultProps = {
-  checkCode: '',
-  checkRoute: [],
-  checkDefenders: [],
-  animate: {
-    targetCode: '',
-    from: {
-      x: 0,
-      y: 0,
-    },
-  },
-};
 
 export default Diagram;

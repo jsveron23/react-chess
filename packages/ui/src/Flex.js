@@ -1,6 +1,6 @@
 import { memo, forwardRef } from 'react';
 import PropTypes from 'prop-types';
-import Box from 'ui-box';
+import Box from './Box';
 
 const Flex = forwardRef(function Flex({ children, ...props }, ref) {
   return (

@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types';
-import Box from 'ui-box';
-import { FlexRow } from 'ui/es';
+
+import { Box, FlexRow } from 'ui/es';
 import { useTheme } from '~/hooks';
 
 const NotationBody = ({ data, children }) => {
@@ -51,8 +51,5 @@ NotationBody.propTypes = {
   ),
 };
 
-NotationBody.defaultProps = {
-  sideData: null,
-};
 
 export default NotationBody;

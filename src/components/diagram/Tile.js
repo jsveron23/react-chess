@@ -5,7 +5,7 @@ import { useDiagram, useTheme } from '~/hooks';
 import Piece from './Piece';
 import Mask from './Mask';
 
-const Tile = ({ isDark, pKey, tileName }) => {
+const Tile = ({ isDark = false, pKey = '', tileName }) => {
   const { onClickTile } = useDiagram();
   const { color } = useTheme();
   const pretendCode = `${pKey}${tileName}`;
@@ -35,11 +35,6 @@ Tile.propTypes = {
   tileName: PropTypes.string.isRequired,
   pKey: PropTypes.string,
   isDark: PropTypes.bool,
-};
-
-Tile.defaultProps = {
-  pKey: '',
-  isDark: false,
 };
 
 export default Tile;

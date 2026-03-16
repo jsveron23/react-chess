@@ -3,7 +3,7 @@ import { parseNotation } from 'chess/es';
 import { FlexOne, Text } from 'ui/es';
 import { useTheme } from '~/hooks';
 
-const Notation = ({ sideData, ...props }) => {
+const Notation = ({ sideData = null, ...props }) => {
   const { color } = useTheme();
 
   return (
@@ -33,8 +33,5 @@ Notation.propTypes = {
   }),
 };
 
-Notation.defaultProps = {
-  sideData: null,
-};
 
 export default Notation;

@@ -1,8 +1,8 @@
 import { memo } from 'react';
 import PropTypes from 'prop-types';
-import Box from 'ui-box';
+import Box from './Box';
 
-const Button = ({ children, disabled, ...props }) => {
+const Button = ({ children, disabled = false, ...props }) => {
   return (
     <Box
       is="button"
@@ -21,8 +21,5 @@ Button.propTypes = {
   disabled: PropTypes.bool,
 };
 
-Button.defaultProps = {
-  disabled: false,
-};
 
 export default memo(Button);

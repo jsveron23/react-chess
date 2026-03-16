@@ -1,12 +1,12 @@
 import { memo, useState, useCallback } from 'react';
 import PropTypes from 'prop-types';
 import { reverse } from 'ramda';
-import Box from 'ui-box';
-import { FlexCol, FlexOne, TextBox, Text, Scroll } from 'ui/es';
+
+import { Box, FlexCol, FlexOne, TextBox, Text, Scroll } from 'ui/es';
 import { Turn } from 'chess/es';
 import { KeyCode } from '~/presets';
 
-const Chat = ({ data, sendMessage }) => {
+const Chat = ({ data = [], sendMessage }) => {
   // TODO use redux
   const [text, setText] = useState('');
 
@@ -58,8 +58,5 @@ Chat.propTypes = {
   ),
 };
 
-Chat.defaultProps = {
-  data: [],
-};
 
 export default memo(Chat);

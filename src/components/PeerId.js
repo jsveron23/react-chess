@@ -25,8 +25,5 @@ PeerId.propTypes = {
   peerId: PropTypes.string,
 };
 
-PeerId.defaultProps = {
-  peerId: '',
-};
 
 export default memo(PeerId);

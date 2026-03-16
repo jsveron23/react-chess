@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import ClockLoader from 'react-spinners/ClockLoader';
 import Text from './Text';
 
-const Loading = ({ loading, text, size, ...props }) => {
+const Loading = ({ loading = false, text = '', size = 10, ...props }) => {
   if (!loading) {
     return '';
   }
@@ -24,10 +24,5 @@ Loading.propTypes = {
   size: PropTypes.number,
 };
 
-Loading.defaultProps = {
-  loading: false,
-  text: '',
-  size: 10,
-};
 
 export default memo(Loading);

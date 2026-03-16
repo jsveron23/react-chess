@@ -1,6 +1,6 @@
 import { memo } from 'react';
 import PropTypes from 'prop-types';
-import Box from 'ui-box';
+import Box from './Box';
 
 const FlexRow = ({ children, ...props }) => {
   return (

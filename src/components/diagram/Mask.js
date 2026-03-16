@@ -21,7 +21,7 @@ const Mask = ({ tileName, pretendCode }) => {
     detectEnPassantTile(tileName) ||
     equals(checkCode, pretendCode);
 
-  let bg = isRoute ? color.crimson_light : 'auto';
+  let bg = isRoute ? color.crimson_light : 'transparent';
   bg = isOnMt ? color.gray5 : bg;
   bg = isEnemy ? color.crimson : bg;
 

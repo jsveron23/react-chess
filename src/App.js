@@ -1,5 +1,13 @@
-import Box from 'ui-box';
-import { Relative, Flex, FlexOne, FlexRow, FlexCol, Text, Scroll } from 'ui/es';
+import {
+  Box,
+  Relative,
+  Flex,
+  FlexOne,
+  FlexRow,
+  FlexCol,
+  Text,
+  Scroll,
+} from 'ui/es';
 import {
   DiagramContainer,
   MenuContainer,

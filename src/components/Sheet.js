@@ -58,8 +58,5 @@ Sheet.propTypes = {
   ),
 };
 
-Sheet.defaultProps = {
-  data: [],
-};
 
 export default memo(Sheet, equal);
