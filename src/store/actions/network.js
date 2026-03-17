@@ -2,7 +2,7 @@ import { batch } from 'react-redux';
 import { ActionCreators } from 'redux-undo';
 import { Snapshot, Turn, Side } from 'chess/es';
 import { peerNetwork } from '~/services/network';
-import worker from '~/services/worker/AIWorker';
+import { worker } from '~/services/worker/ai-worker';
 import {
   updateTurn,
   updateSnapshot,
@@ -20,8 +20,13 @@ import {
   CLOSE_NETWORK_GAME,
   JOIN_NETWORK_GAME,
   CONNECTED_PEER_NETWORK,
-} from '../actionTypes';
+} from '../action-types';
 
+/**
+ * Open network game with own peer ID
+ * @param {string} ownId - Own peer ID
+ * @return {object} Action
+ */
 export function openNetworkGame(ownId) {
   return {
     type: OPEN_NETWORK_GAME,
@@ -29,12 +34,21 @@ export function openNetworkGame(ownId) {
   };
 }
 
+/**
+ * Close network game
+ * @return {object} Action
+ */
 export function closeNetworkGame() {
   return {
     type: CLOSE_NETWORK_GAME,
   };
 }
 
+/**
+ * Decide network side
+ * @param {string} side - Side identifier
+ * @return {object} Action
+ */
 export function decideSide(side) {
   return {
     type: DECIDE_SIDE,
@@ -42,12 +56,20 @@ export function decideSide(side) {
   };
 }
 
+/**
+ * Toggle awaiting state
+ * @return {object} Action
+ */
 export function toggleAwaiting() {
   return {
     type: TOGGLE_AWAITING,
   };
 }
 
+/**
+ * Handle connected peer network and reset game state
+ * @return {Function} Thunk
+ */
 export function connectedPeerNetwork() {
   return (dispatch) => {
     batch(() => {
@@ -66,6 +88,10 @@ export function connectedPeerNetwork() {
   };
 }
 
+/**
+ * Join network game by peer ID prompt
+ * @return {Function} Thunk
+ */
 export function joinNetworkGame() {
   return (dispatch) => {
     const id = window.prompt('please input friend peer-id');
@@ -94,6 +120,11 @@ export function joinNetworkGame() {
   };
 }
 
+/**
+ * Send chat message to peer
+ * @param {string} message - Message text
+ * @return {Function} Thunk
+ */
 export function sendMessage(message) {
   return (dispatch, getState) => {
     const {
@@ -120,6 +151,11 @@ export function sendMessage(message) {
   };
 }
 
+/**
+ * Receive message from peer
+ * @param {object} messageData - Message data
+ * @return {object} Action
+ */
 export function receiveMessage(messageData) {
   return {
     type: RECEIVE_MESSAGE,

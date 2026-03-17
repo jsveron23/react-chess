@@ -1,1 +1,1 @@
-export * as Storage from './localStorage';
+export * as Storage from './local-storage';

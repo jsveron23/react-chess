@@ -1,5 +1,5 @@
 import { Turn, Snapshot } from 'chess/es';
-import * as types from '../actionTypes';
+import * as types from '../action-types';
 
 const initialState = {
   turn: Turn.w,
@@ -20,7 +20,13 @@ const initialState = {
   },
 };
 
-function reducer(state = initialState, action) {
+/**
+ * Ingame reducer
+ * @param {object} state - Current state
+ * @param {object} action - Dispatched action
+ * @return {object} Next state
+ */
+const ingameReducer = (state = initialState, action) => {
   const { type, payload } = action;
 
   switch (type) {
@@ -108,6 +114,6 @@ function reducer(state = initialState, action) {
       return state;
     }
   }
-}
+};
 
-export default reducer;
+export { ingameReducer };

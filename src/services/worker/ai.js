@@ -19,7 +19,6 @@ self.onmessage = ({ data }) => {
   let bestMove = isAIMaximizer ? -9999 : 9999;
   let bestState = null;
 
-  console.time('worker');
   for (let i = 0, len = codeList.length; i < len; i++) {
     const state = StateBuilder.of(iV).build(codeList[i]);
 
@@ -44,9 +43,7 @@ self.onmessage = ({ data }) => {
     if (isAIMaximizer) alpha = Math.max(alpha, bestMove);
     else beta = Math.min(beta, bestMove);
   }
-  console.timeEnd('worker');
 
-  console.log(bestMove, bestState.node);
   self.postMessage({
     bestState,
   });

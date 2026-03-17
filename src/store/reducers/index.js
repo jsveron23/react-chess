@@ -1,19 +1,21 @@
 import { combineReducers } from 'redux';
 import undoable, { includeAction } from 'redux-undo';
-import general from './general';
-import ingame from './ingame';
-import network from './network';
-import animate from './animate';
-import ai from './ai';
-import { UPDATE_TURN } from '../actionTypes';
+import { generalReducer } from './general';
+import { ingameReducer } from './ingame';
+import { networkReducer } from './network';
+import { animateReducer } from './animate';
+import { aiReducer } from './ai';
+import { UPDATE_TURN } from '../action-types';
 
-export default combineReducers({
-  ingame: undoable(ingame, {
+const rootReducer = combineReducers({
+  ingame: undoable(ingameReducer, {
     limit: false,
     filter: includeAction(UPDATE_TURN),
   }),
-  general,
-  network,
-  animate,
-  ai,
+  general: generalReducer,
+  network: networkReducer,
+  animate: animateReducer,
+  ai: aiReducer,
 });
+
+export { rootReducer };

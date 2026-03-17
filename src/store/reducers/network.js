@@ -7,7 +7,7 @@ import {
   CLOSE_NETWORK_GAME,
   JOIN_NETWORK_GAME,
   CONNECTED_PEER_NETWORK,
-} from '../actionTypes';
+} from '../action-types';
 
 const initialState = {
   side: '',
@@ -17,7 +17,13 @@ const initialState = {
   chatData: [],
 };
 
-function reducer(state = initialState, action) {
+/**
+ * Network reducer
+ * @param {object} state - Current state
+ * @param {object} action - Dispatched action
+ * @return {object} Next state
+ */
+const networkReducer = (state = initialState, action) => {
   const { type, payload } = action;
 
   switch (type) {
@@ -76,6 +82,6 @@ function reducer(state = initialState, action) {
       return state;
     }
   }
-}
+};
 
-export default reducer;
+export { networkReducer };

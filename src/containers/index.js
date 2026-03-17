@@ -1,6 +1,6 @@
-export { default as MenuContainer } from './MenuContainer';
-export { default as DiagramContainer } from './DiagramContainer';
-export { default as SheetContainer } from './SheetContainer';
-export { default as NotiBarContainer } from './NotiBarContainer';
-export { default as PeerIdContainer } from './PeerIdContainer';
-export { default as ChatContainer } from './ChatContainer';
+export { MenuContainer } from './menu-container';
+export { DiagramContainer } from './diagram-container';
+export { SheetContainer } from './sheet-container';
+export { NotiBarContainer } from './noti-bar-container';
+export { PeerIdContainer } from './peer-id-container';
+export { ChatContainer } from './chat-container';

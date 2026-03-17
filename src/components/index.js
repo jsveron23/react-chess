@@ -1,6 +1,6 @@
-export { default as Menu } from './Menu';
-export { default as Diagram } from './Diagram';
-export { default as Sheet } from './Sheet';
-export { default as NotiBar } from './NotiBar';
-export { default as PeerId } from './PeerId';
-export { default as Chat } from './Chat';
+export { Menu } from './Menu';
+export { Diagram } from './Diagram';
+export { Sheet } from './Sheet';
+export { NotiBar } from './noti-bar';
+export { PeerId } from './peer-id';
+export { Chat } from './Chat';

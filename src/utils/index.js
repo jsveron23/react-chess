@@ -1,2 +1,2 @@
-export { default as toLocaleDate } from './toLocaleDate';
-export { default as debug } from './debug';
+export { toLocaleDate } from './to-locale-date';
+export { debug } from './debug';

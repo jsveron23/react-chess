@@ -1,4 +1,4 @@
-import { MEASURE_AXIS } from '../actionTypes';
+import { MEASURE_AXIS } from '../action-types';
 
 const initialState = {
   targetCode: '',
@@ -8,7 +8,13 @@ const initialState = {
   },
 };
 
-function reducer(state = initialState, action) {
+/**
+ * Animate reducer
+ * @param {object} state - Current state
+ * @param {object} action - Dispatched action
+ * @return {object} Next state
+ */
+const animateReducer = (state = initialState, action) => {
   const { type, payload } = action;
 
   switch (type) {
@@ -23,6 +29,6 @@ function reducer(state = initialState, action) {
       return state;
     }
   }
-}
+};
 
-export default reducer;
+export { animateReducer };

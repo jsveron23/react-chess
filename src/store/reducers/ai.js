@@ -1,5 +1,5 @@
 import { Turn } from 'chess/es';
-import { UPDATE_MATCH_TYPE, TOGGLE_THINKING } from '../actionTypes';
+import { UPDATE_MATCH_TYPE, TOGGLE_THINKING } from '../action-types';
 
 const initialState = {
   cpuTurn: Turn.b,
@@ -7,7 +7,13 @@ const initialState = {
   depth: 3,
 };
 
-function reducer(state = initialState, action) {
+/**
+ * AI reducer
+ * @param {object} state - Current state
+ * @param {object} action - Dispatched action
+ * @return {object} Next state
+ */
+const aiReducer = (state = initialState, action) => {
   const { type } = action;
 
   switch (type) {
@@ -29,6 +35,6 @@ function reducer(state = initialState, action) {
       return state;
     }
   }
-}
+};
 
-export default reducer;
+export { aiReducer };

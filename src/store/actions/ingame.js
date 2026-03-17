@@ -4,12 +4,12 @@ import { compose, reject, equals, clone, isEmpty, head } from 'ramda';
 import * as Chess from 'chess/es';
 import { ONE_VS_ONE, ONE_VS_CPU } from '~/presets';
 import { peerNetwork } from '~/services/network';
-import worker from '~/services/worker/AIWorker';
+import { worker } from '~/services/worker/ai-worker';
 import { debug } from '~/utils';
 import { toggleThinking } from './ai';
 import { toggleAwaiting } from './network';
 import { measureAxis } from './animate';
-import * as types from '../actionTypes';
+import * as types from '../action-types';
 
 /**
  * Remove selected code (reset)
@@ -75,6 +75,11 @@ export function removeSheetData() {
   };
 }
 
+/**
+ * Update selected code and compute movable tiles
+ * @param {string} code - Piece code
+ * @return {Function} Thunk
+ */
 export function updateSelectedCode(code) {
   return (dispatch) => {
     batch(() => {
@@ -88,6 +93,11 @@ export function updateSelectedCode(code) {
   };
 }
 
+/**
+ * Update movable tiles for a given code
+ * @param {string} code - Piece code
+ * @return {Function} Thunk
+ */
 // before moving, selected
 export function updateMovableTiles(code) {
   return (dispatch, getState) => {
@@ -111,6 +121,12 @@ export function updateMovableTiles(code) {
   };
 }
 
+/**
+ * Capture a piece on the board
+ * @param {string} pretendCode - Attacker code
+ * @param {string} nextTileName - Target tile
+ * @return {Function} Thunk
+ */
 export function capturePiece(pretendCode, nextTileName) {
   return (dispatch, getState) => {
     const {
@@ -145,6 +161,11 @@ export function capturePiece(pretendCode, nextTileName) {
   };
 }
 
+/**
+ * Move a piece to the next tile
+ * @param {string} nextTileName - Target tile name
+ * @return {Function} Thunk
+ */
 export function movePiece(nextTileName) {
   return (dispatch, getState) => {
     const {
@@ -175,6 +196,10 @@ export function movePiece(nextTileName) {
   };
 }
 
+/**
+ * Undo last move
+ * @return {Function} Thunk
+ */
 export function undo() {
   return (dispatch, getState) => {
     const {
@@ -196,6 +221,13 @@ export function undo() {
   };
 }
 
+/**
+ * Handle after-move actions
+ * @param {string} nextTileName - Target tile name
+ * @param {string} selectedCode - Moving piece code
+ * @param {Function|Array} getNextSnapshot - Snapshot getter or array
+ * @return {Function} Thunk
+ */
 // before reset
 export function afterMoving(nextTileName, selectedCode, getNextSnapshot) {
   return (dispatch, getState) => {
@@ -302,6 +334,10 @@ export function afterMoving(nextTileName, selectedCode, getNextSnapshot) {
   };
 }
 
+/**
+ * Play CPU move if applicable
+ * @return {Function} Thunk
+ */
 export function playCpu() {
   return (dispatch, getState) => {
     const {
@@ -344,6 +380,11 @@ export function playCpu() {
   };
 }
 
+/**
+ * Update check state after move
+ * @param {string} selectedCode - Moving piece code
+ * @return {Function} Thunk
+ */
 export function updateCheckState(selectedCode) {
   return (dispatch, getState) => {
     const {
@@ -368,6 +409,10 @@ export function updateCheckState(selectedCode) {
   };
 }
 
+/**
+ * Update sheet/notation data
+ * @return {Function} Thunk
+ */
 export function updateSheetData() {
   return (dispatch, getState) => {
     const {

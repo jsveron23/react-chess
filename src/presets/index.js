@@ -1,6 +1,6 @@
 export * from './env';
-export * from './menuKeys';
-export * from './storageKeys';
+export * from './menu-keys';
+export * from './storage-keys';
 
 export const KeyCode = {
   enter: 13,

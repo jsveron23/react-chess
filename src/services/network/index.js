@@ -1,2 +1,2 @@
-export { default as PeerNetwork } from './PeerNetwork';
-export { default as EventListeners, peerNetwork } from './EventListeners';
+export { PeerNetwork } from './peer-network';
+export { EventListeners, peerNetwork } from './event-listeners';

@@ -3,32 +3,34 @@ import { IS_DEV } from '~/presets';
 
 /**
  * Debug only
- * @param  {Object?}  [options={}]
+ * @param  {Object?}  [options={}] - Options for debug output
  * @return {Function} curry
  */
-function createDebug(options = {}) {
-  options = {
+const createDebug = (options = {}) => {
+  const mergedOptions = {
     mode: 'log',
     ...options,
   };
 
   /**
-   * @param  {String} label
-   * @param  {...*}   v
-   * @return {*}
+   * Log a debug message in development
+   * @param  {String} label - Log label
+   * @param  {...*}   v - Values to log
+   * @return {*} Passed values
    */
   return (label, ...v) => {
     if (IS_DEV) {
-      console[options.mode](label, ...v);
+      // eslint-disable-next-line no-console
+      console[mergedOptions.mode](label, ...v);
     }
 
     return v;
   };
-}
+};
 
 const debug = curry(createDebug());
 
 debug.err = curry(createDebug({ mode: 'error' }));
 debug.inline = createDebug();
 
-export default debug;
+export { debug };

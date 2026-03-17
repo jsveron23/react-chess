@@ -1,5 +1,7 @@
 import { compose } from 'ramda';
 import { EventListeners } from '~/services/network';
-import configureStore from './configureStore';
+import { configureStore } from './configure-store';
 
-export default compose(EventListeners.of, configureStore)();
+const store = compose(EventListeners.of, configureStore)();
+
+export { store };

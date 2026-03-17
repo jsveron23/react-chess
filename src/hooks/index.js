@@ -1,3 +1,3 @@
-export { default as useDiagram, DiagramProvider } from './useDiagram';
-export { default as useTheme, ThemeProvider, theme } from './useTheme';
-export { default as useWindowSize } from './useWindowSize';
+export { useDiagram, DiagramProvider } from './use-diagram';
+export { useTheme, ThemeProvider, theme } from './use-theme';
+export { useWindowSize } from './use-window-size';

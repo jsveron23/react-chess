@@ -19,8 +19,13 @@ import {
   IMPORT_GAME,
   EXPORT_GAME,
   TOGGLE_FLIP,
-} from '../actionTypes';
+} from '../action-types';
 
+/**
+ * Update match type and reset game state
+ * @param {string} key - Match type key
+ * @return {Function} Thunk
+ */
 export function updateMatchType(key) {
   return (dispatch) => {
     batch(() => {
@@ -39,6 +44,10 @@ export function updateMatchType(key) {
   };
 }
 
+/**
+ * Save game to localStorage
+ * @return {Function} Thunk
+ */
 export function saveGame() {
   return (dispatch, getState) => {
     dispatch(removeSelectedCode());
@@ -63,6 +72,10 @@ export function saveGame() {
   };
 }
 
+/**
+ * Import game from clipboard paste
+ * @return {object} Action
+ */
 export function importGame() {
   const data = window.prompt('Paste export data here!');
 
@@ -77,6 +90,10 @@ export function importGame() {
   };
 }
 
+/**
+ * Export game state to clipboard
+ * @return {Function} Thunk
+ */
 export function exportGame() {
   return (dispatch, getState) => {
     dispatch(removeSelectedCode());
@@ -100,6 +117,10 @@ export function exportGame() {
   };
 }
 
+/**
+ * Toggle board flip
+ * @return {object} Action
+ */
 export function toggleFlip() {
   return {
     type: TOGGLE_FLIP,

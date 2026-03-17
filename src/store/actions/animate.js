@@ -1,6 +1,6 @@
 import { compose, last, apply, props, prop } from 'ramda';
 import { Side, getAnimationAxis, Opponent } from 'chess/es';
-import { MEASURE_AXIS } from '../actionTypes';
+import { MEASURE_AXIS } from '../action-types';
 
 /**
  * Measure axis for animation

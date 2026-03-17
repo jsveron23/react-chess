@@ -3,7 +3,7 @@ import {
   UPDATE_MATCH_TYPE,
   SAVE_TO_LOCALSTORAGE,
   TOGGLE_FLIP,
-} from '../actionTypes';
+} from '../action-types';
 
 const initialState = {
   matchType: ONE_VS_ONE,
@@ -11,7 +11,13 @@ const initialState = {
   lastSaved: 0,
 };
 
-function reducer(state = initialState, action) {
+/**
+ * General reducer
+ * @param {object} state - Current state
+ * @param {object} action - Dispatched action
+ * @return {object} Next state
+ */
+const generalReducer = (state = initialState, action) => {
   const { type, payload } = action;
 
   switch (type) {
@@ -40,6 +46,6 @@ function reducer(state = initialState, action) {
       return state;
     }
   }
-}
+};
 
-export default reducer;
+export { generalReducer };
