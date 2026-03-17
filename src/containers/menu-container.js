@@ -10,6 +10,7 @@ import {
   toggleFlip,
   joinNetworkGame,
   updateMatchType,
+  playCpu,
 } from '~/store/actions';
 import { toLocaleDate } from '~/utils';
 import {
@@ -23,6 +24,8 @@ import {
 } from '~/presets';
 import { PeerIdContainer } from './peer-id-container';
 import { ChatContainer } from './chat-container';
+import { CpuSideSelectorContainer } from './cpu-side-selector-container';
+import { OneVsOneSideSelectorContainer } from './one-vs-one-side-selector-container';
 
 const mapStateToProps = ({
   ai: { thinking },
@@ -64,6 +67,7 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => {
           worker.close();
           dispatch(updateMatchType(ONE_VS_ONE));
         },
+        children: () => <OneVsOneSideSelectorContainer />,
       },
       {
         key: ONE_VS_CPU,
@@ -72,7 +76,11 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => {
         onClick: () => {
           worker.close();
           dispatch(updateMatchType(ONE_VS_CPU));
+          // If the player had previously chosen Black, the CPU (White) goes first.
+          // playCpu guards itself and does nothing when it's not the CPU's turn.
+          dispatch(playCpu());
         },
+        children: () => <CpuSideSelectorContainer />,
       },
       {
         key: FLIP,
