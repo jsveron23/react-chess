@@ -80,7 +80,9 @@ class StateBuilder {
     // Keep only tiles that have an enemy piece (potential captures)
     const captureTiles = rawTiles.filter((tile) => {
       const code = findCodeByTile(this.snapshot, tile);
-      if (!code) return false;
+      if (!code) {
+        return false;
+      }
       const { side } = parseCode(code);
 
       return side !== this.side;

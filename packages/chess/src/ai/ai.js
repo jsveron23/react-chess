@@ -37,8 +37,7 @@ class AI {
       m[String(r)] = i;
     });
 
-    
-return m;
+    return m;
   })();
 
   // File array is ['a','b',...,'h'] so file 'a' → index 0, 'h' → index 7.
@@ -48,8 +47,7 @@ return m;
       m[f] = i;
     });
 
-    
-return m;
+    return m;
   })();
 
   // ── Transposition Table ────────────────────────────────────────────────────
@@ -101,15 +99,22 @@ return m;
    * @return {number}
    */
   static #killerScore(state, depth) {
-    if (depth < 0) return 0;
+    if (depth < 0) {
+      return 0;
+    }
     const killers = this.#killers[depth];
-    if (!killers) return 0;
+    if (!killers) {
+      return 0;
+    }
     const moveId = this.#getMoveId(state);
-    if (killers[0] === moveId) return 900;
-    if (killers[1] === moveId) return 800;
+    if (killers[0] === moveId) {
+      return 900;
+    }
+    if (killers[1] === moveId) {
+      return 800;
+    }
 
-    
-return 0;
+    return 0;
   }
 
   /**
@@ -118,9 +123,13 @@ return 0;
    * @param {number} depth
    */
   static #storeKiller(state, depth) {
-    if (state.isCaptured) return; // only quiet moves serve as killers
+    if (state.isCaptured) {
+      return; // only quiet moves serve as killers
+    }
     const moveId = this.#getMoveId(state);
-    if (!this.#killers[depth]) this.#killers[depth] = [null, null];
+    if (!this.#killers[depth]) {
+      this.#killers[depth] = [null, null];
+    }
     const killers = this.#killers[depth];
     if (killers[0] !== moveId) {
       killers[1] = killers[0];
@@ -141,8 +150,7 @@ return 0;
     const attackerCode = state.node[state.node.length - 2];
     const { piece: attackerPiece } = parseCode(attackerCode);
 
-    
-return this.#Scores[victimPiece] - this.#Scores[attackerPiece];
+    return this.#Scores[victimPiece] - this.#Scores[attackerPiece];
   }
 
   /**
@@ -161,8 +169,7 @@ return this.#Scores[victimPiece] - this.#Scores[attackerPiece];
         ? 2000 + this.#mvvLva(b)
         : this.#killerScore(b, depth);
 
-      
-return bScore - aScore;
+      return bScore - aScore;
     });
   }
 
@@ -203,13 +210,17 @@ return bScore - aScore;
       const rankNum = +rank;
 
       // Doubled pawn
-      if (wFileCount[file] > 1) score -= 10;
+      if (wFileCount[file] > 1) {
+        score -= 10;
+      }
 
       // Isolated pawn (no friendly pawn on adjacent files)
       const hasNeighbor =
         (fIdx > 0 && wFileCount[files[fIdx - 1]]) ||
         (fIdx < 7 && wFileCount[files[fIdx + 1]]);
-      if (!hasNeighbor) score -= 10;
+      if (!hasNeighbor) {
+        score -= 10;
+      }
 
       // Passed pawn: no black pawn on same or adjacent file ahead of this pawn
       let isBlocked = false;
@@ -221,7 +232,9 @@ return bScore - aScore;
           break;
         }
       }
-      if (!isBlocked) score += 10 + (rankNum - 2) * 5;
+      if (!isBlocked) {
+        score += 10 + (rankNum - 2) * 5;
+      }
     }
 
     // Black pawns (mirror; subtract from score because negative = good for black)
@@ -231,13 +244,17 @@ return bScore - aScore;
       const rankNum = +rank;
 
       // Doubled pawn
-      if (bFileCount[file] > 1) score += 10;
+      if (bFileCount[file] > 1) {
+        score += 10;
+      }
 
       // Isolated pawn
       const hasNeighbor =
         (fIdx > 0 && bFileCount[files[fIdx - 1]]) ||
         (fIdx < 7 && bFileCount[files[fIdx + 1]]);
-      if (!hasNeighbor) score += 10;
+      if (!hasNeighbor) {
+        score += 10;
+      }
 
       // Passed pawn: no white pawn on same or adjacent file ahead of this pawn
       // "ahead" for black means lower rank number
@@ -249,7 +266,9 @@ return bScore - aScore;
           break;
         }
       }
-      if (!isBlocked) score -= 10 + (7 - rankNum) * 5;
+      if (!isBlocked) {
+        score -= 10 + (7 - rankNum) * 5;
+      }
     }
 
     return score;
@@ -291,17 +310,20 @@ return bScore - aScore;
 
       if (side === 'w') {
         totalEvaluation += score;
-        if (piece === 'P') wPawns.push({ file, rank });
+        if (piece === 'P') {
+          wPawns.push({ file, rank });
+        }
       } else {
         totalEvaluation -= score;
-        if (piece === 'P') bPawns.push({ file, rank });
+        if (piece === 'P') {
+          bPawns.push({ file, rank });
+        }
       }
     }
 
     totalEvaluation += this.#evalPawnStructure(wPawns, bPawns);
 
-    
-return totalEvaluation;
+    return totalEvaluation;
   }
 
   // ── Quiescence search ──────────────────────────────────────────────────────
@@ -324,14 +346,24 @@ return totalEvaluation;
 
     // Stand-pat pruning: if the static eval already beats the window, cut off.
     if (isMaximisingPlayer) {
-      if (standPat >= localBeta) return standPat;
-      if (standPat > localAlpha) localAlpha = standPat;
+      if (standPat >= localBeta) {
+        return standPat;
+      }
+      if (standPat > localAlpha) {
+        localAlpha = standPat;
+      }
     } else {
-      if (standPat <= localAlpha) return standPat;
-      if (standPat < localBeta) localBeta = standPat;
+      if (standPat <= localAlpha) {
+        return standPat;
+      }
+      if (standPat < localBeta) {
+        localBeta = standPat;
+      }
     }
 
-    if (qDepth >= MAX_Q_DEPTH) return standPat;
+    if (qDepth >= MAX_Q_DEPTH) {
+      return standPat;
+    }
 
     // Generate captures only (uses fast pseudo-legal computeRawMT).
     const iV = StateBuilder.createInitialV(currState);
@@ -340,10 +372,14 @@ return totalEvaluation;
 
     for (let i = 0, len = codeList.length; i < len; i++) {
       const states = StateBuilder.of(iV).buildCaptures(codeList[i]);
-      if (states.length > 0) captureList.push(...states);
+      if (states.length > 0) {
+        captureList.push(...states);
+      }
     }
 
-    if (captureList.length === 0) return standPat;
+    if (captureList.length === 0) {
+      return standPat;
+    }
 
     const ordered = this.orderMoves(captureList);
 
@@ -357,11 +393,19 @@ return totalEvaluation;
       );
 
       if (isMaximisingPlayer) {
-        if (score >= localBeta) return score;
-        if (score > localAlpha) localAlpha = score;
+        if (score >= localBeta) {
+          return score;
+        }
+        if (score > localAlpha) {
+          localAlpha = score;
+        }
       } else {
-        if (score <= localAlpha) return score;
-        if (score < localBeta) localBeta = score;
+        if (score <= localAlpha) {
+          return score;
+        }
+        if (score < localBeta) {
+          localBeta = score;
+        }
       }
     }
 
@@ -404,16 +448,28 @@ return totalEvaluation;
 
     if (ttEntry !== undefined && ttEntry.depth >= depth) {
       const s = ttEntry.score;
-      if (ttEntry.flag === this.#TT_EXACT) return s;
+      if (ttEntry.flag === this.#TT_EXACT) {
+        return s;
+      }
       if (ttEntry.flag === this.#TT_LOWERBOUND) {
-        if (s >= localBeta) return s;
-        if (s > localAlpha) localAlpha = s;
+        if (s >= localBeta) {
+          return s;
+        }
+        if (s > localAlpha) {
+          localAlpha = s;
+        }
       } else {
         // TT_UPPERBOUND
-        if (s <= localAlpha) return s;
-        if (s < localBeta) localBeta = s;
+        if (s <= localAlpha) {
+          return s;
+        }
+        if (s < localBeta) {
+          localBeta = s;
+        }
       }
-      if (localAlpha >= localBeta) return s;
+      if (localAlpha >= localBeta) {
+        return s;
+      }
     }
 
     // ── Move generation ───────────────────────────────────────────────────────
@@ -424,7 +480,9 @@ return totalEvaluation;
 
     for (let i = 0, len = codeList.length; i < len; i++) {
       const state = StateBuilder.of(iV).build(codeList[i]);
-      if (state.length > 0) stateList.push(...state);
+      if (state.length > 0) {
+        stateList.push(...state);
+      }
     }
 
     if (stateList.length === 0) {
@@ -448,11 +506,19 @@ return totalEvaluation;
       );
 
       if (isMaximisingPlayer) {
-        if (score > bestMove) bestMove = score;
-        if (bestMove > localAlpha) localAlpha = bestMove;
+        if (score > bestMove) {
+          bestMove = score;
+        }
+        if (bestMove > localAlpha) {
+          localAlpha = bestMove;
+        }
       } else {
-        if (score < bestMove) bestMove = score;
-        if (bestMove < localBeta) localBeta = bestMove;
+        if (score < bestMove) {
+          bestMove = score;
+        }
+        if (bestMove < localBeta) {
+          localBeta = bestMove;
+        }
       }
 
       if (localAlpha >= localBeta) {
@@ -469,9 +535,13 @@ return totalEvaluation;
     // ── TT store ─────────────────────────────────────────────────────────────
     // Determine flag: fail-high → lower-bound, fail-low → upper-bound, else exact.
     let flag;
-    if (bestMove >= beta) flag = this.#TT_LOWERBOUND;
-    else if (bestMove <= origAlpha) flag = this.#TT_UPPERBOUND;
-    else flag = this.#TT_EXACT;
+    if (bestMove >= beta) {
+      flag = this.#TT_LOWERBOUND;
+    } else if (bestMove <= origAlpha) {
+      flag = this.#TT_UPPERBOUND;
+    } else {
+      flag = this.#TT_EXACT;
+    }
 
     if (this.#tt.size < this.#TT_MAX_SIZE) {
       this.#tt.set(ttKey, { score: bestMove, depth, flag });
