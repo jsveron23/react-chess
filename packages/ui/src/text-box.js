@@ -1,9 +1,9 @@
 import { memo } from 'react';
 import PropTypes from 'prop-types';
 import { identity } from 'ramda';
-import Box from './Box';
+import { Box } from './box';
 
-const TextBox = ({ value = '', placeholder = '', onChange, onKeyDown = identity, ...props }) => {
+const TextBox = memo(function TextBox({ value = '', placeholder = '', onChange, onKeyDown = identity, ...props }) {
   return (
     <Box
       is="input"
@@ -14,7 +14,7 @@ const TextBox = ({ value = '', placeholder = '', onChange, onKeyDown = identity,
       {...props}
     />
   );
-};
+});
 
 TextBox.propTypes = {
   onChange: PropTypes.func.isRequired,
@@ -23,5 +23,4 @@ TextBox.propTypes = {
   placeholder: PropTypes.string,
 };
 
-
-export default memo(TextBox);
+export { TextBox };

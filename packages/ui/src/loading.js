@@ -1,10 +1,11 @@
 import { memo } from 'react';
 import PropTypes from 'prop-types';
 import _ClockLoader from 'react-spinners/ClockLoader';
-const ClockLoader = _ClockLoader?.default ?? _ClockLoader;
-import Text from './Text';
+import { Text } from './text';
 
-const Loading = ({ loading = false, text = '', size = 10, ...props }) => {
+const ClockLoader = _ClockLoader?.default ?? _ClockLoader;
+
+const Loading = memo(function Loading({ loading = false, text = '', size = 10, ...props }) {
   if (!loading) {
     return '';
   }
@@ -17,7 +18,7 @@ const Loading = ({ loading = false, text = '', size = 10, ...props }) => {
       <ClockLoader size={size} loading={loading} />
     </>
   );
-};
+});
 
 Loading.propTypes = {
   loading: PropTypes.bool,
@@ -25,5 +26,4 @@ Loading.propTypes = {
   size: PropTypes.number,
 };
 
-
-export default memo(Loading);
+export { Loading };

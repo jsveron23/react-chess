@@ -32,7 +32,11 @@ const HTML_ATTRS = new Set([
   'step',
 ]);
 
-// props를 HTML 속성과 CSS style로 분리
+/**
+ * Split component props into HTML attributes and CSS style properties.
+ * @param {object} props - Component props to split
+ * @return {{ htmlProps: object, styleProps: object }} Separated props
+ */
 function splitProps(props) {
   const htmlProps = {};
   const styleProps = {};
@@ -64,6 +68,7 @@ const Box = forwardRef(function Box(
   // Tag가 컴포넌트이면 props를 그대로 전달 (컴포넌트가 처리)
   if (typeof Tag === 'string') {
     const { htmlProps, styleProps } = splitProps(rest);
+
     return (
       <Tag ref={ref} style={{ ...styleProps, ...styleProp }} {...htmlProps}>
         {children}
@@ -79,4 +84,4 @@ const Box = forwardRef(function Box(
   );
 });
 
-export default Box;
+export { Box };

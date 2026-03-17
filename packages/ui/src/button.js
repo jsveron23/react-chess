@@ -1,8 +1,8 @@
 import { memo } from 'react';
 import PropTypes from 'prop-types';
-import Box from './Box';
+import { Box } from './box';
 
-const Button = ({ children, disabled = false, ...props }) => {
+const Button = memo(function Button({ children, disabled = false, ...props }) {
   return (
     <Box
       is="button"
@@ -14,12 +14,11 @@ const Button = ({ children, disabled = false, ...props }) => {
       {children}
     </Box>
   );
-};
+});
 
 Button.propTypes = {
   children: PropTypes.node.isRequired,
   disabled: PropTypes.bool,
 };
 
-
-export default memo(Button);
+export { Button };

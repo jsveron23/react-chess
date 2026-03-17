@@ -1,17 +1,17 @@
 import { memo } from 'react';
 import PropTypes from 'prop-types';
-import Box from './Box';
+import { Box } from './box';
 
-const FlexRow = ({ children, ...props }) => {
+const FlexRow = memo(function FlexRow({ children, ...props }) {
   return (
     <Box display="flex" flexDirection="row" {...props}>
       {children}
     </Box>
   );
-};
+});
 
 FlexRow.propTypes = {
   children: PropTypes.node.isRequired,
 };
 
-export default memo(FlexRow);
+export { FlexRow };

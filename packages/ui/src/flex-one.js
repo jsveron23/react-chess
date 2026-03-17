@@ -1,8 +1,8 @@
 import { memo, forwardRef } from 'react';
 import PropTypes from 'prop-types';
-import Box from './Box';
+import { Box } from './box';
 
-const FlexOne = forwardRef(function FlexOne({ children = '', is, ...props }, ref) {
+const FlexOne = memo(forwardRef(function FlexOne({ children = '', is, ...props }, ref) {
   const C = is || Box;
 
   return (
@@ -10,12 +10,11 @@ const FlexOne = forwardRef(function FlexOne({ children = '', is, ...props }, ref
       {children}
     </C>
   );
-});
+}));
 
 FlexOne.propTypes = {
   children: PropTypes.node,
   is: PropTypes.elementType,
 };
 
-
-export default memo(FlexOne);
+export { FlexOne };

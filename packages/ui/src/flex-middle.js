@@ -1,17 +1,17 @@
 import { memo } from 'react';
 import PropTypes from 'prop-types';
-import Flex from './Flex';
+import { Flex } from './flex';
 
-const FlexMiddle = ({ children, ...props }) => {
+const FlexMiddle = memo(function FlexMiddle({ children, ...props }) {
   return (
     <Flex justifyContent="center" alignItems="center" {...props}>
       {children}
     </Flex>
   );
-};
+});
 
 FlexMiddle.propTypes = {
   children: PropTypes.node.isRequired,
 };
 
-export default memo(FlexMiddle);
+export { FlexMiddle };

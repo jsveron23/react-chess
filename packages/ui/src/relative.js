@@ -1,18 +1,17 @@
 import { memo } from 'react';
 import PropTypes from 'prop-types';
-import Box from './Box';
+import { Box } from './box';
 
-function Relative({ children = '', ...props }) {
+const Relative = memo(function Relative({ children = '', ...props }) {
   return (
     <Box position="relative" {...props}>
       {children}
     </Box>
   );
-}
+});
 
 Relative.propTypes = {
   children: PropTypes.node,
 };
 
-
-export default memo(Relative);
+export { Relative };
