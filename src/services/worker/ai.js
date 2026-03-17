@@ -8,6 +8,11 @@ self.onmessage = ({ data }) => {
     present,
     past,
   } = data;
+
+  // Clear transposition table and killer moves from any previous search.
+  // (Each worker message is a fresh CPU turn, so we start with a clean slate.)
+  AI.clearSearchState();
+
   const iV = StateBuilder.createInitialV({
     timeline: createTimeline(present, past),
     side: Side[present.turn],
