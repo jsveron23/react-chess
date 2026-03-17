@@ -4,8 +4,6 @@ import {
   map,
   prepend,
   flip,
-  allPass,
-  propEq,
   apply,
   props,
   head,
@@ -14,11 +12,9 @@ import {
 } from 'ramda';
 import { computePossibleMT, computeRawMT } from '../core';
 import {
-  parseCode,
   detectPiece,
   replaceCode,
   getDirection,
-  findCodeByTile,
   computeDistance,
 } from '../utils';
 import { Opponent, Vertical } from '../presets';
@@ -29,6 +25,7 @@ class StateBuilder {
   constructor(iV) {
     this.timeline = iV.timeline;
     this.snapshot = iV.snapshot;
+    this.tileMap = iV.tileMap;
     this.enemySide = iV.enemySide;
     this.node = iV.node || [];
     this.attackerCode = iV.attackerCode || '';
@@ -52,10 +49,12 @@ class StateBuilder {
   static createInitialV(state) {
     const { timeline, side } = state;
     const snapshot = head(timeline);
+    const tileMap = new Map(snapshot.map((code) => [code.slice(2), code]));
 
     return {
       enemySide: Opponent[side],
       snapshot,
+      tileMap,
       ...state,
     };
   }
@@ -69,25 +68,18 @@ class StateBuilder {
   buildCaptures(currCode) {
     this.currCode = currCode;
     this.isPawn = detectPiece.Pawn(this.currCode);
-    [this.side, this.pKey] = compose(
-      props(['side', 'pKey']),
-      parseCode
-    )(this.currCode);
+    this.side = currCode[0];
+    this.pKey = currCode.slice(0, 2);
 
     // computeRawMT: fast move generation without pin/check detection
     const rawTiles = computeRawMT(this.timeline, this.currCode);
 
     // Keep only tiles that have an enemy piece (potential captures)
     const captureTiles = rawTiles.filter((tile) => {
-      const code = findCodeByTile(this.snapshot, tile);
-      if (!code) {
-        return false;
-      }
-      const { side } = parseCode(code);
+      const code = this.tileMap.get(tile);
 
-      return side !== this.side;
+      return code !== undefined && code[0] !== this.side;
     });
-
 
     return compose(filter(Boolean), map(this.#buildState))(captureTiles);
   }
@@ -100,10 +92,8 @@ class StateBuilder {
   build(currCode) {
     this.currCode = currCode;
     this.isPawn = detectPiece.Pawn(this.currCode);
-    [this.side, this.pKey] = compose(
-      props(['side', 'pKey']),
-      parseCode
-    )(this.currCode);
+    this.side = currCode[0];
+    this.pKey = currCode.slice(0, 2);
 
     return compose(
       filter(Boolean),
@@ -113,14 +103,13 @@ class StateBuilder {
   }
 
   #buildState = (tileName) => {
-    const code = findCodeByTile(this.snapshot, tileName);
-    const isSameSided = compose(propEq('side', this.side), parseCode)(code);
+    const code = this.tileMap.get(tileName);
 
-    if (isSameSided) {
+    if (code && code[0] === this.side) {
       return;
     }
 
-    const isCaptured = !!code && !isSameSided;
+    const isCaptured = !!code;
     const nextCode = `${this.pKey}${tileName}`;
     let pretendCode = '';
 
@@ -150,12 +139,7 @@ class StateBuilder {
    * @return {string} Pretend piece code
    */
   #getPretendCode(tileName) {
-    const _allPass = allPass([
-      propEq('side', this.enemySide),
-      propEq('tileName', tileName),
-    ]);
-
-    return this.snapshot.find(compose(_allPass, parseCode));
+    return this.tileMap.get(tileName);
   }
 
   /**

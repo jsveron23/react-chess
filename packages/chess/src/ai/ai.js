@@ -1,7 +1,6 @@
 import { filter, startsWith, reverse } from 'ramda';
 import { StateBuilder } from './state-builder';
-import { parseCode } from '../utils';
-import { PST, File, Rank } from '../presets';
+import { PST, File, Rank, Opponent } from '../presets';
 
 class AI {
   static #PST = {
@@ -67,6 +66,12 @@ class AI {
   // killers[depth] = [primaryKillerId, secondaryKillerId]
   static #killers = [];
 
+  // ── History Heuristic ──────────────────────────────────────────────────────
+  // Tracks how often a quiet move caused a beta-cutoff across all depths.
+  // Used to boost ordering of quiet moves that historically cut well.
+  // Key: moveId (e.g. "e2e4"), Value: accumulated score
+  static #history = {};
+
   /**
    * Reset all search-specific state.
    * Call once at the beginning of each CPU turn (before kicking off minimax).
@@ -74,6 +79,7 @@ class AI {
   static clearSearchState() {
     this.#tt.clear();
     this.#killers = [];
+    this.#history = {};
   }
 
   // ── Killer helpers ─────────────────────────────────────────────────────────
@@ -135,6 +141,8 @@ class AI {
       killers[1] = killers[0];
       killers[0] = moveId;
     }
+    // History heuristic: accumulate score for moves that cause cutoffs
+    this.#history[moveId] = (this.#history[moveId] || 0) + depth * depth;
   }
 
   // ── MVV-LVA ────────────────────────────────────────────────────────────────
@@ -146,9 +154,8 @@ class AI {
    * @return {number}
    */
   static #mvvLva(state) {
-    const { piece: victimPiece } = parseCode(state.pretendCode);
-    const attackerCode = state.node[state.node.length - 2];
-    const { piece: attackerPiece } = parseCode(attackerCode);
+    const victimPiece = state.pretendCode[1];
+    const attackerPiece = state.node[state.node.length - 2][1];
 
     return this.#Scores[victimPiece] - this.#Scores[attackerPiece];
   }
@@ -161,13 +168,14 @@ class AI {
    * @return {Array}
    */
   static orderMoves(stateList, depth = -1) {
+    const history = this.#history;
     return [...stateList].sort((a, b) => {
       const aScore = a.isCaptured
         ? 2000 + this.#mvvLva(a)
-        : this.#killerScore(a, depth);
+        : this.#killerScore(a, depth) + (history[this.#getMoveId(a)] || 0);
       const bScore = b.isCaptured
         ? 2000 + this.#mvvLva(b)
-        : this.#killerScore(b, depth);
+        : this.#killerScore(b, depth) + (history[this.#getMoveId(b)] || 0);
 
       return bScore - aScore;
     });
@@ -382,10 +390,22 @@ class AI {
     }
 
     const ordered = this.orderMoves(captureList);
+    const DELTA_MARGIN = 200;
 
     for (let i = 0, len = ordered.length; i < len; i++) {
+      const capture = ordered[i];
+
+      // Delta pruning: skip captures whose best-case gain still can't reach alpha/beta.
+      const victimValue = this.#Scores[capture.pretendCode[1]];
+      if (isMaximisingPlayer && standPat + victimValue + DELTA_MARGIN <= localAlpha) {
+        continue;
+      }
+      if (!isMaximisingPlayer && standPat - victimValue - DELTA_MARGIN >= localBeta) {
+        continue;
+      }
+
       const score = this.#quiescence(
-        ordered[i],
+        capture,
         localAlpha,
         localBeta,
         !isMaximisingPlayer,
@@ -472,6 +492,76 @@ class AI {
       }
     }
 
+    // ── Null Move Pruning ─────────────────────────────────────────────────────
+    // Skip a turn (null move) and search at reduced depth. If the result still
+    // exceeds beta, the position is so good that we can prune without searching.
+    // Skipped when: depth < 3, king is in check (attackerCode set at root only,
+    // but we guard anyway), or side has only king + pawns (zugzwang risk).
+    if (depth >= 3 && !currState.attackerCode) {
+      // Zugzwang guard: skip NMP if the side to move has only king + pawns
+      const snapshot = currState.timeline[0];
+      const side = currState.side;
+      let hasMinorOrMajor = false;
+      for (let i = 0, len = snapshot.length; i < len; i++) {
+        if (snapshot[i][0] === side) {
+          const piece = snapshot[i][1];
+          if (piece !== 'P' && piece !== 'K') {
+            hasMinorOrMajor = true;
+            break;
+          }
+        }
+      }
+      if (hasMinorOrMajor) {
+        const nullState = {
+          timeline: currState.timeline,
+          node: currState.node,
+          side: Opponent[side],
+          pretendCode: '',
+          isCaptured: false,
+        };
+        if (isMaximisingPlayer) {
+          // Maximizing: if passing the turn still beats beta, prune.
+          const nullScore = this.minimax(
+            nullState,
+            depth - 3,
+            localBeta - 1,
+            localBeta,
+            false
+          );
+          if (nullScore >= localBeta) {
+            return localBeta;
+          }
+        } else {
+          // Minimizing: if passing the turn still falls below alpha, prune.
+          const nullScore = this.minimax(
+            nullState,
+            depth - 3,
+            localAlpha,
+            localAlpha + 1,
+            true
+          );
+          if (nullScore <= localAlpha) {
+            return localAlpha;
+          }
+        }
+      }
+    }
+
+    // ── Razoring ──────────────────────────────────────────────────────────────
+    // At shallow depth, if the static eval is far below the search window the
+    // position is almost certainly hopeless — drop straight into quiescence
+    // rather than doing a full minimax expansion.
+    if (depth <= 2 && !currState.attackerCode) {
+      const RAZOR_MARGIN = depth === 1 ? 300 : 600;
+      const staticEval = this.#evaluate(currState);
+      if (isMaximisingPlayer && staticEval + RAZOR_MARGIN <= localAlpha) {
+        return this.#quiescence(currState, localAlpha, localBeta, true);
+      }
+      if (!isMaximisingPlayer && staticEval - RAZOR_MARGIN >= localBeta) {
+        return this.#quiescence(currState, localAlpha, localBeta, false);
+      }
+    }
+
     // ── Move generation ───────────────────────────────────────────────────────
     const iV = StateBuilder.createInitialV(currState);
     const codeList = this.createList(iV.side, iV.snapshot);
@@ -495,15 +585,47 @@ class AI {
 
     // ── Alpha-beta search ─────────────────────────────────────────────────────
     let cutoffState = null;
+    const FUTILITY_MARGIN = 150;
 
     for (let i = 0, len = orderedList.length; i < len; i++) {
-      const score = this.minimax(
-        orderedList[i],
-        depth - 1,
-        localAlpha,
-        localBeta,
-        !isMaximisingPlayer
-      );
+      const child = orderedList[i];
+
+      // Futility pruning at depth ≤ 2: quiet moves whose static eval + margin
+      // can't reach alpha/beta are unlikely to be best — skip them.
+      // depth=1 margin=150, depth=2 margin=300 (larger window needed further out).
+      if (depth <= 2 && !child.isCaptured) {
+        const futilityMargin = depth === 1 ? FUTILITY_MARGIN : 300;
+        const futilityEval = this.#evaluate(child);
+        if (isMaximisingPlayer && futilityEval + futilityMargin <= localAlpha) {
+          continue;
+        }
+        if (!isMaximisingPlayer && futilityEval - futilityMargin >= localBeta) {
+          continue;
+        }
+      }
+
+      let score;
+
+      if (i === 0) {
+        // PVS: first move gets the full window to establish the principal variation.
+        score = this.minimax(child, depth - 1, localAlpha, localBeta, !isMaximisingPlayer);
+      } else {
+        // PVS null window for all subsequent moves.
+        // Also applies LMR for late quiet moves: reduced depth on the first probe.
+        const pvAlpha = isMaximisingPlayer ? localAlpha : localBeta - 1;
+        const pvBeta  = isMaximisingPlayer ? localAlpha + 1 : localBeta;
+        const isLateQuiet = i >= 4 && !child.isCaptured && depth >= 3;
+        const searchDepth = isLateQuiet ? depth - 2 : depth - 1;
+
+        score = this.minimax(child, searchDepth, pvAlpha, pvBeta, !isMaximisingPlayer);
+
+        // If the null-window (or reduced-depth) search improved alpha, the move
+        // is potentially better than expected — re-search at full depth + full window.
+        const failsHigh = isMaximisingPlayer ? score > localAlpha : score < localBeta;
+        if (failsHigh) {
+          score = this.minimax(child, depth - 1, localAlpha, localBeta, !isMaximisingPlayer);
+        }
+      }
 
       if (isMaximisingPlayer) {
         if (score > bestMove) {
@@ -522,7 +644,7 @@ class AI {
       }
 
       if (localAlpha >= localBeta) {
-        cutoffState = orderedList[i];
+        cutoffState = child;
         break;
       }
     }

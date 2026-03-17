@@ -1,6 +1,6 @@
 import { ONE_VS_CPU } from '~/presets';
 import { updateMatchType } from './general';
-import { TOGGLE_THINKING, UPDATE_CPU_SIDE, UPDATE_PLAYER_SIDE } from '../action-types';
+import { TOGGLE_THINKING, UPDATE_CPU_SIDE, UPDATE_PLAYER_SIDE, UPDATE_DEPTH } from '../action-types';
 
 /**
  * Toggle AI thinking state
@@ -38,5 +38,17 @@ export function setPlayerSide(side) {
   return {
     type: UPDATE_PLAYER_SIDE,
     payload: side,
+  };
+}
+
+/**
+ * Update AI search depth (difficulty)
+ * @param {number} depth
+ * @return {object} Action
+ */
+export function updateDepth(depth) {
+  return {
+    type: UPDATE_DEPTH,
+    payload: depth,
   };
 }

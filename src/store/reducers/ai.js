@@ -4,6 +4,7 @@ import {
   TOGGLE_THINKING,
   UPDATE_CPU_SIDE,
   UPDATE_PLAYER_SIDE,
+  UPDATE_DEPTH,
 } from '../action-types';
 
 const initialState = {
@@ -54,6 +55,13 @@ const aiReducer = (state = initialState, action) => {
       return {
         ...state,
         thinking: !state.thinking,
+      };
+    }
+
+    case UPDATE_DEPTH: {
+      return {
+        ...state,
+        depth: payload,
       };
     }
 

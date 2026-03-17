@@ -30,6 +30,7 @@ import { PeerIdContainer } from './peer-id-container';
 import { ChatContainer } from './chat-container';
 import { CpuSideSelectorContainer } from './cpu-side-selector-container';
 import { OneVsOneSideSelectorContainer } from './one-vs-one-side-selector-container';
+import { DifficultySelectorContainer } from './difficulty-selector-container';
 
 const mapStateToProps = ({
   ai: { thinking },
@@ -84,7 +85,12 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => {
           // playCpu guards itself and does nothing when it's not the CPU's turn.
           dispatch(playCpu());
         },
-        children: () => <CpuSideSelectorContainer />,
+        children: () => (
+          <>
+            <CpuSideSelectorContainer />
+            <DifficultySelectorContainer />
+          </>
+        ),
       },
       {
         key: FLIP,
