@@ -1,5 +1,4 @@
 import { memo, forwardRef } from 'react';
-import PropTypes from 'prop-types';
 import { Box } from './box';
 
 const Absolute = memo(forwardRef(function Absolute(
@@ -13,8 +12,5 @@ const Absolute = memo(forwardRef(function Absolute(
   );
 }));
 
-Absolute.propTypes = {
-  children: PropTypes.node,
-};
 
 export { Absolute };

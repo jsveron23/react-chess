@@ -1,5 +1,4 @@
 import { useCallback } from 'react';
-import PropTypes from 'prop-types';
 import { Relative, Absolute, Text, FlexOne } from 'ui/es';
 import { useDiagram, useTheme } from '~/hooks';
 import { Piece } from './piece';
@@ -31,10 +30,5 @@ const Tile = ({ isDark = false, pKey = '', tileName }) => {
   );
 };
 
-Tile.propTypes = {
-  tileName: PropTypes.string.isRequired,
-  pKey: PropTypes.string,
-  isDark: PropTypes.bool,
-};
 
 export { Tile };

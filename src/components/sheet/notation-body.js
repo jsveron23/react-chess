@@ -1,5 +1,3 @@
-import PropTypes from 'prop-types';
-
 import { Box, FlexRow } from 'ui/es';
 import { useTheme } from '~/hooks';
 
@@ -23,32 +21,5 @@ const NotationBody = ({ data, children }) => {
   );
 };
 
-NotationBody.propTypes = {
-  children: PropTypes.func.isRequired,
-  data: PropTypes.arrayOf(
-    PropTypes.shape({
-      white: PropTypes.shape({
-        from: PropTypes.arrayOf(PropTypes.string),
-        to: PropTypes.arrayOf(PropTypes.string),
-        check: PropTypes.shape({
-          attackerCode: PropTypes.string,
-          defenders: PropTypes.arrayOf(PropTypes.string),
-          defendTiles: PropTypes.arrayOf(PropTypes.string),
-          dodgeableTiles: PropTypes.arrayOf(PropTypes.string),
-        }),
-      }),
-      black: PropTypes.shape({
-        from: PropTypes.arrayOf(PropTypes.string),
-        to: PropTypes.arrayOf(PropTypes.string),
-        check: PropTypes.shape({
-          attackerCode: PropTypes.string,
-          defenders: PropTypes.arrayOf(PropTypes.string),
-          defendTiles: PropTypes.arrayOf(PropTypes.string),
-          dodgeableTiles: PropTypes.arrayOf(PropTypes.string),
-        }),
-      }),
-    })
-  ),
-};
 
 export { NotationBody };

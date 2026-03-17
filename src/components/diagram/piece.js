@@ -1,5 +1,4 @@
 import { useEffect } from 'react';
-import PropTypes from 'prop-types';
 import { useSpring, animated } from 'react-spring';
 import useMeasure from 'react-use-measure';
 import { Flex, Absolute } from 'ui/es';
@@ -72,9 +71,5 @@ const Piece = ({ pKey, pretendCode }) => {
   );
 };
 
-Piece.propTypes = {
-  pKey: PropTypes.string.isRequired,
-  pretendCode: PropTypes.string.isRequired,
-};
 
 export { Piece };

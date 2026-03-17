@@ -1,5 +1,4 @@
 import { memo } from 'react';
-import PropTypes from 'prop-types';
 import { FlexRow, FlexOne, Text } from 'ui/es';
 import { useTheme } from '~/hooks';
 
@@ -21,8 +20,5 @@ const PeerId = memo(({ peerId }) => {
   );
 });
 
-PeerId.propTypes = {
-  peerId: PropTypes.string,
-};
 
 export { PeerId };

@@ -1,4 +1,3 @@
-import PropTypes from 'prop-types';
 import { Hr } from 'ui/es';
 import { MenuItems } from './menu/menu-items';
 
@@ -12,21 +11,5 @@ const Menu = ({ ingameMenu, mainMenu }) => {
   );
 };
 
-Menu.propTypes = {
-  ingameMenu: PropTypes.arrayOf(
-    PropTypes.shape({
-      key: PropTypes.string,
-      title: PropTypes.string,
-      disabled: PropTypes.bool,
-    })
-  ).isRequired,
-  mainMenu: PropTypes.arrayOf(
-    PropTypes.shape({
-      key: PropTypes.string,
-      title: PropTypes.string,
-      disabled: PropTypes.bool,
-    })
-  ).isRequired,
-};
 
 export { Menu };

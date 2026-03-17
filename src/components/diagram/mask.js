@@ -1,4 +1,3 @@
-import PropTypes from 'prop-types';
 import { equals, includes } from 'ramda';
 import { Absolute } from 'ui/es';
 import { useTheme, useDiagram } from '~/hooks';
@@ -43,9 +42,5 @@ const Mask = ({ tileName, pretendCode }) => {
   );
 };
 
-Mask.propTypes = {
-  tileName: PropTypes.string.isRequired,
-  pretendCode: PropTypes.string.isRequired,
-};
 
 export { Mask };

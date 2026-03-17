@@ -1,5 +1,4 @@
 import { memo } from 'react';
-import PropTypes from 'prop-types';
 import { Box } from './box';
 
 const FlexCol = memo(function FlexCol({ children, ...props }) {
@@ -10,8 +9,5 @@ const FlexCol = memo(function FlexCol({ children, ...props }) {
   );
 });
 
-FlexCol.propTypes = {
-  children: PropTypes.node.isRequired,
-};
 
 export { FlexCol };

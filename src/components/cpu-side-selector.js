@@ -1,5 +1,4 @@
 import { memo } from 'react';
-import PropTypes from 'prop-types';
 import { FlexRow, Text, Button } from 'ui/es';
 
 const CpuSideSelector = memo(({ playerSide, onSelect }) => {
@@ -42,9 +41,5 @@ const CpuSideSelector = memo(({ playerSide, onSelect }) => {
 
 CpuSideSelector.displayName = 'CpuSideSelector';
 
-CpuSideSelector.propTypes = {
-  playerSide: PropTypes.oneOf(['w', 'b']).isRequired,
-  onSelect: PropTypes.func.isRequired,
-};
 
 export { CpuSideSelector };

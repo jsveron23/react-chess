@@ -1,5 +1,4 @@
 import { memo } from 'react';
-import PropTypes from 'prop-types';
 import { Box } from './box';
 
 const Relative = memo(function Relative({ children = '', ...props }) {
@@ -10,8 +9,5 @@ const Relative = memo(function Relative({ children = '', ...props }) {
   );
 });
 
-Relative.propTypes = {
-  children: PropTypes.node,
-};
 
 export { Relative };

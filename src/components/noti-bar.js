@@ -1,5 +1,4 @@
 import { memo } from 'react';
-import PropTypes from 'prop-types';
 import { Flex, FlexOne, FlexRow, FlexMiddle, Text, Loading } from 'ui/es';
 import { useTheme } from '~/hooks';
 
@@ -41,11 +40,5 @@ const NotiBar = memo(({ turn, connected, awaiting, thinking }) => {
   );
 });
 
-NotiBar.propTypes = {
-  turn: PropTypes.string.isRequired,
-  connected: PropTypes.bool.isRequired,
-  awaiting: PropTypes.bool.isRequired,
-  thinking: PropTypes.bool.isRequired,
-};
 
 export { NotiBar };

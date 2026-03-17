@@ -1,5 +1,4 @@
 import { memo } from 'react';
-import PropTypes from 'prop-types';
 import { Flex } from './flex';
 
 const FlexMiddle = memo(function FlexMiddle({ children, ...props }) {
@@ -10,8 +9,5 @@ const FlexMiddle = memo(function FlexMiddle({ children, ...props }) {
   );
 });
 
-FlexMiddle.propTypes = {
-  children: PropTypes.node.isRequired,
-};
 
 export { FlexMiddle };

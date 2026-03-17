@@ -1,5 +1,4 @@
 import { memo } from 'react';
-import PropTypes from 'prop-types';
 import { reverse } from 'ramda';
 import equal from 'fast-deep-equal/es6/react';
 import { useTheme } from '~/hooks';
@@ -31,31 +30,5 @@ const Sheet = memo(({ data }) => {
   );
 }, equal);
 
-Sheet.propTypes = {
-  data: PropTypes.arrayOf(
-    PropTypes.shape({
-      white: PropTypes.shape({
-        from: PropTypes.arrayOf(PropTypes.string),
-        to: PropTypes.arrayOf(PropTypes.string),
-        check: PropTypes.shape({
-          attackerCode: PropTypes.string,
-          defenders: PropTypes.arrayOf(PropTypes.string),
-          defendTiles: PropTypes.arrayOf(PropTypes.string),
-          dodgeableTiles: PropTypes.arrayOf(PropTypes.string),
-        }),
-      }),
-      black: PropTypes.shape({
-        from: PropTypes.arrayOf(PropTypes.string),
-        to: PropTypes.arrayOf(PropTypes.string),
-        check: PropTypes.shape({
-          attackerCode: PropTypes.string,
-          defenders: PropTypes.arrayOf(PropTypes.string),
-          defendTiles: PropTypes.arrayOf(PropTypes.string),
-          dodgeableTiles: PropTypes.arrayOf(PropTypes.string),
-        }),
-      }),
-    })
-  ),
-};
 
 export { Sheet };

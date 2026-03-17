@@ -1,5 +1,4 @@
 import { memo, forwardRef } from 'react';
-import PropTypes from 'prop-types';
 import { Box } from './box';
 
 const Sticky = memo(forwardRef(function Sticky({ children = '', ...props }, ref) {
@@ -10,8 +9,5 @@ const Sticky = memo(forwardRef(function Sticky({ children = '', ...props }, ref)
   );
 }));
 
-Sticky.propTypes = {
-  children: PropTypes.node,
-};
 
 export { Sticky };

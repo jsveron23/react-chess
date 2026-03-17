@@ -1,5 +1,4 @@
 import { memo, forwardRef } from 'react';
-import PropTypes from 'prop-types';
 import { Box } from './box';
 
 const Flex = memo(forwardRef(function Flex({ children, ...props }, ref) {
@@ -10,8 +9,5 @@ const Flex = memo(forwardRef(function Flex({ children, ...props }, ref) {
   );
 }));
 
-Flex.propTypes = {
-  children: PropTypes.node.isRequired,
-};
 
 export { Flex };

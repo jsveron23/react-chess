@@ -1,4 +1,3 @@
-import PropTypes from 'prop-types';
 import { FlexCol } from 'ui/es';
 import { DiagramProvider } from '~/hooks';
 import { Rank } from './diagram/rank';
@@ -37,23 +36,5 @@ const Diagram = ({
   );
 };
 
-Diagram.propTypes = {
-  flip: PropTypes.bool.isRequired,
-  getPKey: PropTypes.func.isRequired,
-  detectOn: PropTypes.func.isRequired,
-  detectEnemy: PropTypes.func.isRequired,
-  detectEnPassantTile: PropTypes.func.isRequired,
-  onClickTile: PropTypes.func.isRequired,
-  animate: PropTypes.shape({
-    targetCode: PropTypes.string,
-    from: PropTypes.shape({
-      x: PropTypes.number,
-      y: PropTypes.number,
-    }),
-  }),
-  checkRoute: PropTypes.arrayOf(PropTypes.string),
-  checkDefenders: PropTypes.arrayOf(PropTypes.string),
-  checkCode: PropTypes.string,
-};
 
 export { Diagram };

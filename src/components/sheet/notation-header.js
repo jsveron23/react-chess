@@ -1,4 +1,3 @@
-import PropTypes from 'prop-types';
 import { FlexRow, FlexOne, Sticky, Text } from 'ui/es';
 import { useTheme } from '~/hooks';
 
@@ -28,8 +27,5 @@ const NotationHeader = ({ data }) => {
   );
 };
 
-NotationHeader.propTypes = {
-  data: PropTypes.arrayOf(PropTypes.oneOf(['White', 'Black'])).isRequired,
-};
 
 export { NotationHeader };

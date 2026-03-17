@@ -1,5 +1,4 @@
 import { memo, useState, useCallback } from 'react';
-import PropTypes from 'prop-types';
 import { reverse } from 'ramda';
 
 import { Box, FlexCol, FlexOne, TextBox, Text, Scroll } from 'ui/es';
@@ -48,14 +47,5 @@ const Chat = memo(({ data = [], sendMessage }) => {
   );
 });
 
-Chat.propTypes = {
-  sendMessage: PropTypes.func.isRequired,
-  data: PropTypes.arrayOf(
-    PropTypes.shape({
-      side: PropTypes.string,
-      message: PropTypes.string,
-    })
-  ),
-};
 
 export { Chat };

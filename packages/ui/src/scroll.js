@@ -1,5 +1,4 @@
 import { memo, forwardRef } from 'react';
-import PropTypes from 'prop-types';
 import { Box } from './box';
 
 const Scroll = memo(forwardRef(function Scroll({ children = '', is, ...props }, ref) {
@@ -12,9 +11,5 @@ const Scroll = memo(forwardRef(function Scroll({ children = '', is, ...props }, 
   );
 }));
 
-Scroll.propTypes = {
-  children: PropTypes.node,
-  is: PropTypes.elementType,
-};
 
 export { Scroll };

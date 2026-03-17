@@ -1,4 +1,3 @@
-import PropTypes from 'prop-types';
 import { reverse, map, compose, T, cond, always, identity } from 'ramda';
 import { File as Files, detectDarkTile } from 'chess/es';
 import { useDiagram } from '~/hooks';
@@ -24,9 +23,5 @@ const File = ({ rankName }) => {
   )(Files);
 };
 
-File.propTypes = {
-  rankName: PropTypes.oneOfType([PropTypes.string, PropTypes.number])
-    .isRequired,
-};
 
 export { File };

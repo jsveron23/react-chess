@@ -1,5 +1,4 @@
 import { memo } from 'react';
-import PropTypes from 'prop-types';
 import _ClockLoader from 'react-spinners/ClockLoader';
 import { Text } from './text';
 
@@ -20,10 +19,5 @@ const Loading = memo(function Loading({ loading = false, text = '', size = 10, .
   );
 });
 
-Loading.propTypes = {
-  loading: PropTypes.bool,
-  text: PropTypes.string,
-  size: PropTypes.number,
-};
 
 export { Loading };

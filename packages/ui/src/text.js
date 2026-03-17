@@ -1,5 +1,4 @@
 import { memo } from 'react';
-import PropTypes from 'prop-types';
 import { Box } from './box';
 
 const Text = memo(function Text({ children = '', ...props }) {
@@ -10,8 +9,5 @@ const Text = memo(function Text({ children = '', ...props }) {
   );
 });
 
-Text.propTypes = {
-  children: PropTypes.node,
-};
 
 export { Text };

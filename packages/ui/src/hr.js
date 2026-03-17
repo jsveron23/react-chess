@@ -1,4 +1,3 @@
-import PropTypes from 'prop-types';
 import { Box } from './box';
 
 const Hr = ({ color = '#cacaca', ...props }) => {
@@ -7,8 +6,5 @@ const Hr = ({ color = '#cacaca', ...props }) => {
   );
 };
 
-Hr.propTypes = {
-  color: PropTypes.string,
-};
 
 export { Hr };
