@@ -208,6 +208,7 @@ export function undo() {
       const pastTurn = lastTurn < 0 ? 0 : lastTurn;
 
       dispatch(ActionCreators.jumpToPast(pastTurn));
+      dispatch(playCpu());
     } else {
       dispatch(ActionCreators.undo());
     }

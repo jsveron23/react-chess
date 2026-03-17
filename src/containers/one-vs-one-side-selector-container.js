@@ -1,4 +1,5 @@
 import { connect } from 'react-redux';
+import { ActionCreators } from 'redux-undo';
 import { Turn } from 'chess/es';
 import { CpuSideSelector } from '~/components';
 import { worker } from '~/services/worker/ai-worker';
@@ -15,8 +16,10 @@ const mapDispatchToProps = (dispatch) => ({
     // Reset board; updateMatchType always initialises the turn to White.
     dispatch(updateMatchType(ONE_VS_ONE));
     // When the player wants Black to go first, override the starting turn.
+    // Clear history so the white-turn state doesn't become an undo entry.
     if (side === 'b') {
       dispatch(updateTurn(Turn.b));
+      dispatch(ActionCreators.clearHistory());
     }
   },
 });
