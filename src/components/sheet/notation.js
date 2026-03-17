@@ -1,5 +1,5 @@
 import { parseNotation } from 'chess/es';
-import { FlexOne, Text } from 'ui/es';
+import { FlexOne, Flex, Text } from 'ui/es';
 import { useTheme } from '~/hooks';
 
 const Notation = ({ sideData = null, ...props }) => {
@@ -7,14 +7,19 @@ const Notation = ({ sideData = null, ...props }) => {
 
   return (
     <FlexOne
-      is={Text}
-      textAlign="center"
+      is={Flex}
+      flexDirection="row"
+      alignItems="center"
+      justifyContent="center"
       backgroundColor={color.white}
       color={color.black}
       padding={5}
       {...props}
     >
-      {sideData && parseNotation(sideData)}
+      {sideData && <Text>{parseNotation(sideData)}</Text>}
+      {sideData?.thinkingTime != null && (
+        <Text fontSize={10} color={color.gray2} marginLeft={4}>{sideData.thinkingTime}s</Text>
+      )}
     </FlexOne>
   );
 };

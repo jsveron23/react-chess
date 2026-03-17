@@ -223,7 +223,7 @@ export function undo() {
  * @return {Function} Thunk
  */
 // before reset
-export function afterMoving(nextTileName, selectedCode, getNextSnapshot) {
+export function afterMoving(nextTileName, selectedCode, getNextSnapshot, thinkingTime = null) {
   return (dispatch, getState) => {
     const {
       ingame: {
@@ -323,7 +323,7 @@ export function afterMoving(nextTileName, selectedCode, getNextSnapshot) {
     dispatch(removeSelectedCode());
     dispatch(removeMovableTiles());
     dispatch(updateTurn(Chess.Opponent[turn]));
-    dispatch(updateSheetData());
+    dispatch(updateSheetData(thinkingTime));
     dispatch(playCpu());
   };
 }
@@ -350,6 +350,8 @@ export function playCpu() {
 
     dispatch(toggleThinking());
 
+    const startTime = Date.now();
+
     worker.task(
       {
         depth,
@@ -362,8 +364,9 @@ export function playCpu() {
 
         if (!isEmpty(node)) {
           const tileName = Chess.parseCode.prop('tileName', nextCode);
+          const thinkingTime = Math.round((Date.now() - startTime) / 1000);
 
-          dispatch(afterMoving(tileName, selectedCode, head(nextTimeline)));
+          dispatch(afterMoving(tileName, selectedCode, head(nextTimeline), thinkingTime));
           dispatch(toggleThinking());
         } else {
           debug.err('something went wrong!', bestState);
@@ -407,13 +410,41 @@ export function updateCheckState(selectedCode) {
  * Update sheet/notation data
  * @return {Function} Thunk
  */
-export function updateSheetData() {
+export function updateSheetData(thinkingTime = null) {
   return (dispatch, getState) => {
     const {
-      ingame: { present, past },
+      ingame: { present, past, present: { sheetData: prevSheetData } },
     } = getState();
 
-    const sheetData = Chess.createSheetData(present, past);
+    let sheetData = Chess.createSheetData(present, past);
+
+    // Preserve thinkingTime from previous sheetData entries
+    sheetData = sheetData.map((row, idx) => {
+      const prev = prevSheetData[idx];
+      if (!prev) return row;
+      const merged = { ...row };
+      ['white', 'black'].forEach((side) => {
+        if (merged[side] && prev[side]?.thinkingTime != null) {
+          merged[side] = { ...merged[side], thinkingTime: prev[side].thinkingTime };
+        }
+      });
+      return merged;
+    });
+
+    // Attach new thinkingTime to the last entry
+    if (thinkingTime !== null && sheetData.length > 0) {
+      const lastIdx = sheetData.length - 1;
+      const lastRow = sheetData[lastIdx];
+      const lastSide = lastRow.black ? 'black' : 'white';
+
+      sheetData = [
+        ...sheetData.slice(0, lastIdx),
+        {
+          ...lastRow,
+          [lastSide]: { ...lastRow[lastSide], thinkingTime },
+        },
+      ];
+    }
 
     dispatch(measureAxis(sheetData));
     dispatch({
