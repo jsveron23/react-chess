@@ -7,6 +7,8 @@ import {
   saveGame,
   importGame,
   exportGame,
+  exportGameAsPgn,
+  exportGameAsFen,
   toggleFlip,
   joinNetworkGame,
   updateMatchType,
@@ -19,6 +21,8 @@ import {
   ONLINE,
   IMPORT,
   EXPORT,
+  EXPORT_PGN,
+  EXPORT_FEN,
   FLIP,
   ONE_VS_CPU,
 } from '~/presets';
@@ -102,9 +106,21 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => {
       },
       {
         key: EXPORT,
-        title: 'Export',
+        title: 'Export as Snapshot',
         disabled: thinking || noUndoYet || isConnected,
         onClick: () => dispatch(exportGame()),
+      },
+      {
+        key: EXPORT_PGN,
+        title: 'Export as PGN',
+        disabled: thinking || noUndoYet || isConnected,
+        onClick: () => dispatch(exportGameAsPgn()),
+      },
+      {
+        key: EXPORT_FEN,
+        title: 'Export as FEN',
+        disabled: thinking || noUndoYet || isConnected,
+        onClick: () => dispatch(exportGameAsFen()),
       },
       {
         key: ONLINE,
@@ -126,6 +142,10 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => {
   };
 };
 
-const MenuContainer = connect(mapStateToProps, mapDispatchToProps, mergeProps)(Menu);
+const MenuContainer = connect(
+  mapStateToProps,
+  mapDispatchToProps,
+  mergeProps
+)(Menu);
 
 export { MenuContainer };
