@@ -1,4 +1,3 @@
-import { batch } from 'react-redux';
 import { ActionCreators } from 'redux-undo';
 import { Snapshot, Turn, Side } from 'chess/es';
 import { peerNetwork } from '~/services/network';
@@ -72,18 +71,16 @@ export function toggleAwaiting() {
  */
 export function connectedPeerNetwork() {
   return (dispatch) => {
-    batch(() => {
-      dispatch(updateSnapshot(Snapshot));
-      dispatch(removeSelectedCode());
-      dispatch(removeMovableTiles());
-      dispatch(removeCheck());
-      dispatch(removeSheetData());
-      dispatch(updateTurn(Turn.w));
-      dispatch(ActionCreators.clearHistory());
+    dispatch(updateSnapshot(Snapshot));
+    dispatch(removeSelectedCode());
+    dispatch(removeMovableTiles());
+    dispatch(removeCheck());
+    dispatch(removeSheetData());
+    dispatch(updateTurn(Turn.w));
+    dispatch(ActionCreators.clearHistory());
 
-      dispatch({
-        type: CONNECTED_PEER_NETWORK,
-      });
+    dispatch({
+      type: CONNECTED_PEER_NETWORK,
     });
   };
 }
@@ -98,23 +95,21 @@ export function joinNetworkGame() {
 
     // TODO check same id
     if (id) {
-      batch(() => {
-        worker.close();
+      worker.close();
 
-        dispatch(updateSnapshot(Snapshot));
-        dispatch(removeSelectedCode());
-        dispatch(removeMovableTiles());
-        dispatch(removeCheck());
-        dispatch(removeSheetData());
-        dispatch(updateTurn(Turn.w));
-        dispatch(ActionCreators.clearHistory());
-        dispatch(decideSide(Side.white));
+      dispatch(updateSnapshot(Snapshot));
+      dispatch(removeSelectedCode());
+      dispatch(removeMovableTiles());
+      dispatch(removeCheck());
+      dispatch(removeSheetData());
+      dispatch(updateTurn(Turn.w));
+      dispatch(ActionCreators.clearHistory());
+      dispatch(decideSide(Side.white));
 
-        peerNetwork.join(id);
+      peerNetwork.join(id);
 
-        dispatch({
-          type: JOIN_NETWORK_GAME,
-        });
+      dispatch({
+        type: JOIN_NETWORK_GAME,
       });
     }
   };

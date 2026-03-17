@@ -1,4 +1,3 @@
-import { batch } from 'react-redux';
 import { ActionCreators } from 'redux-undo';
 import { Snapshot, Turn } from 'chess/es';
 import { debug } from '~/utils';
@@ -28,19 +27,17 @@ import {
  */
 export function updateMatchType(key) {
   return (dispatch) => {
-    batch(() => {
-      dispatch({
-        type: UPDATE_MATCH_TYPE,
-        payload: key,
-      });
-      dispatch(updateSnapshot(Snapshot));
-      dispatch(removeSelectedCode());
-      dispatch(removeMovableTiles());
-      dispatch(removeCheck());
-      dispatch(removeSheetData());
-      dispatch(updateTurn(Turn.w));
-      dispatch(ActionCreators.clearHistory());
+    dispatch({
+      type: UPDATE_MATCH_TYPE,
+      payload: key,
     });
+    dispatch(updateSnapshot(Snapshot));
+    dispatch(removeSelectedCode());
+    dispatch(removeMovableTiles());
+    dispatch(removeCheck());
+    dispatch(removeSheetData());
+    dispatch(updateTurn(Turn.w));
+    dispatch(ActionCreators.clearHistory());
   };
 }
 

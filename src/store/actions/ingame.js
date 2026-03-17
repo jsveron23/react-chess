@@ -1,4 +1,3 @@
-import { batch } from 'react-redux';
 import { ActionCreators } from 'redux-undo';
 import { compose, reject, equals, clone, isEmpty, head } from 'ramda';
 import * as Chess from 'chess/es';
@@ -82,13 +81,11 @@ export function removeSheetData() {
  */
 export function updateSelectedCode(code) {
   return (dispatch) => {
-    batch(() => {
-      // NOTE do not change sequence
-      dispatch(updateMovableTiles(code));
-      dispatch({
-        type: types.UPDATE_SELECTED_CODE,
-        payload: code,
-      });
+    // NOTE do not change sequence
+    dispatch(updateMovableTiles(code));
+    dispatch({
+      type: types.UPDATE_SELECTED_CODE,
+      payload: code,
     });
   };
 }
@@ -136,28 +133,26 @@ export function capturePiece(pretendCode, nextTileName) {
       },
     } = getState();
 
-    batch(() => {
-      if (connected && !awaiting) {
-        peerNetwork.send({
-          command: 'capture',
-          args: {
-            pretendCode,
-            nextTileName,
-            selectedCode,
-            snapshot,
-          },
-        });
+    if (connected && !awaiting) {
+      peerNetwork.send({
+        command: 'capture',
+        args: {
+          pretendCode,
+          nextTileName,
+          selectedCode,
+          snapshot,
+        },
+      });
 
-        dispatch(toggleAwaiting());
-      }
+      dispatch(toggleAwaiting());
+    }
 
-      const getNextSnapshot = compose(
-        reject(equals(selectedCode)),
-        Chess.replaceCode(snapshot, pretendCode)
-      );
+    const getNextSnapshot = compose(
+      reject(equals(selectedCode)),
+      Chess.replaceCode(snapshot, pretendCode)
+    );
 
-      dispatch(afterMoving(nextTileName, selectedCode, getNextSnapshot));
-    });
+    dispatch(afterMoving(nextTileName, selectedCode, getNextSnapshot));
   };
 }
 
@@ -175,24 +170,22 @@ export function movePiece(nextTileName) {
       },
     } = getState();
 
-    batch(() => {
-      if (connected && !awaiting) {
-        peerNetwork.send({
-          command: 'move',
-          args: {
-            nextTileName,
-            selectedCode,
-            snapshot,
-          },
-        });
+    if (connected && !awaiting) {
+      peerNetwork.send({
+        command: 'move',
+        args: {
+          nextTileName,
+          selectedCode,
+          snapshot,
+        },
+      });
 
-        dispatch(toggleAwaiting());
-      }
+      dispatch(toggleAwaiting());
+    }
 
-      const getNextSnapshot = Chess.replaceCode(snapshot, selectedCode);
+    const getNextSnapshot = Chess.replaceCode(snapshot, selectedCode);
 
-      dispatch(afterMoving(nextTileName, selectedCode, getNextSnapshot));
-    });
+    dispatch(afterMoving(nextTileName, selectedCode, getNextSnapshot));
   };
 }
 
