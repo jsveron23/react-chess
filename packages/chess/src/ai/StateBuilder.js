@@ -12,7 +12,7 @@ import {
   reject,
   equals,
 } from 'ramda';
-import { computePossibleMT } from '../core';
+import { computePossibleMT, computeRawMT } from '../core';
 import {
   parseCode,
   detectPiece,
@@ -48,6 +48,33 @@ class StateBuilder {
       snapshot,
       ...state,
     };
+  }
+
+  /**
+   * Build capture-only states using pseudo-legal move generation (no pin detection).
+   * Used in quiescence search for performance — avoids expensive predictPossibleCheck.
+   * @return {Array} capture states only
+   */
+  buildCaptures(currCode) {
+    this.currCode = currCode;
+    this.isPawn = detectPiece.Pawn(this.currCode);
+    [this.side, this.pKey] = compose(
+      props(['side', 'pKey']),
+      parseCode
+    )(this.currCode);
+
+    // computeRawMT: fast move generation without pin/check detection
+    const rawTiles = computeRawMT(this.timeline, this.currCode);
+
+    // Keep only tiles that have an enemy piece (potential captures)
+    const captureTiles = rawTiles.filter((tile) => {
+      const code = findCodeByTile(this.snapshot, tile);
+      if (!code) return false;
+      const { side } = parseCode(code);
+      return side !== this.side;
+    });
+
+    return compose(filter(Boolean), map(this.#buildState))(captureTiles);
   }
 
   /**

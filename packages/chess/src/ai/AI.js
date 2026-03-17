@@ -12,11 +12,6 @@ import StateBuilder from './StateBuilder';
 import { parseCode } from '../utils';
 import { PST, Side, File, Rank } from '../presets';
 
-// TODO
-// best way for boosting performance
-// 1. go rust
-// 2. implement core functions to another ways
-
 const _indexOfRank = flip(indexOf)(Rank);
 const _indexOfFile = flip(indexOf)(File);
 
@@ -25,13 +20,13 @@ class AI {
     wP: PST.P,
     bP: reverse(PST.P),
     wN: PST.N,
-    bN: PST.N,           // Knight PST is vertically symmetric — same for both sides
+    bN: PST.N,
     wB: PST.B,
     bB: reverse(PST.B),
     wR: PST.R,
     bR: reverse(PST.R),
     wQ: PST.Q,
-    bQ: reverse(PST.Q),  // Queen PST rows 4-6 are asymmetric — mirror for black
+    bQ: reverse(PST.Q),
     wK: PST.K,
     bK: reverse(PST.K),
   };
@@ -46,9 +41,86 @@ class AI {
   };
 
   /**
-   * Evaluate state (absolute: positive = white winning, negative = black winning)
-   * @param  {Object} state
-   * @return {Number}
+   * MVV-LVA (Most Valuable Victim - Least Valuable Attacker)
+   * Higher score = capture this first (e.g. pawn takes queen = +800)
+   */
+  static #mvvLva(state) {
+    const { piece: victimPiece } = parseCode(state.pretendCode);
+    const attackerCode = state.node[state.node.length - 2];
+    const { piece: attackerPiece } = parseCode(attackerCode);
+    return this.#Scores[victimPiece] - this.#Scores[attackerPiece];
+  }
+
+  /**
+   * Sort moves: captures first ordered by MVV-LVA, then quiet moves
+   */
+  static orderMoves(stateList) {
+    return [...stateList].sort((a, b) => {
+      const aScore = a.isCaptured ? 1000 + this.#mvvLva(a) : 0;
+      const bScore = b.isCaptured ? 1000 + this.#mvvLva(b) : 0;
+      return bScore - aScore;
+    });
+  }
+
+  /**
+   * Pawn structure evaluation: doubled, isolated, passed pawn
+   */
+  static #evalPawnStructure(snapshot) {
+    let score = 0;
+    const wPawns = snapshot.filter((c) => c.startsWith('wP'));
+    const bPawns = snapshot.filter((c) => c.startsWith('bP'));
+
+    for (const side of ['w', 'b']) {
+      const pawns = side === 'w' ? wPawns : bPawns;
+      const enemyPawns = side === 'w' ? bPawns : wPawns;
+      const mult = side === 'w' ? 1 : -1;
+      const isWhite = side === 'w';
+
+      const pawnFiles = pawns.map((c) => parseCode(c).fileName);
+      const fileCount = {};
+      for (const f of pawnFiles) {
+        fileCount[f] = (fileCount[f] || 0) + 1;
+      }
+
+      for (const code of pawns) {
+        const { fileName, rankName } = parseCode(code);
+        const fileIdx = File.indexOf(fileName);
+        const rank = Number(rankName);
+
+        // Doubled pawn: two friendly pawns on the same file
+        if (fileCount[fileName] > 1) {
+          score += mult * -10;
+        }
+
+        // Isolated pawn: no friendly pawn on adjacent files
+        const hasNeighbor =
+          (fileIdx > 0 && pawnFiles.includes(File[fileIdx - 1])) ||
+          (fileIdx < 7 && pawnFiles.includes(File[fileIdx + 1]));
+        if (!hasNeighbor) {
+          score += mult * -10;
+        }
+
+        // Passed pawn: no enemy pawn on same OR adjacent files ahead
+        const isBlocked = enemyPawns.some((ep) => {
+          const { fileName: ef, rankName: er } = parseCode(ep);
+          const erNum = Number(er);
+          const efIdx = File.indexOf(ef);
+          const isAdjacent =
+            efIdx === fileIdx - 1 || efIdx === fileIdx || efIdx === fileIdx + 1;
+          return isAdjacent && (isWhite ? erNum > rank : erNum < rank);
+        });
+        if (!isBlocked) {
+          const advance = isWhite ? rank - 2 : 7 - rank;
+          score += mult * (10 + advance * 5);
+        }
+      }
+    }
+
+    return score;
+  }
+
+  /**
+   * Static evaluation (positive = white winning, negative = black winning)
    */
   static #evaluate(state) {
     const { timeline } = state;
@@ -66,22 +138,74 @@ class AI {
       totalEvaluation += side === Side.w ? score : -score;
     }, snapshot);
 
+    totalEvaluation += this.#evalPawnStructure(snapshot);
+
     return totalEvaluation;
   }
 
   /**
-   * Minimax Algorithm
-   * TODO reduce running time
-   * @param  {Object}  currState
-   * @param  {Number}  depth
-   * @param  {Number}  alpha
-   * @param  {Number}  beta
-   * @param  {Boolean} isMaximisingPlayer
-   * @return {Number}
+   * Quiescence search: extend beyond depth=0 for captures only
+   * Prevents horizon effect (e.g. AI doesn't see recapture one move past depth limit)
+   */
+  static #quiescence(currState, alpha, beta, isMaximisingPlayer, qDepth = 0) {
+    const MAX_Q_DEPTH = 3;
+    const standPat = this.#evaluate(currState);
+
+    // Stand-pat pruning: if current position already beats the window, cut off
+    if (isMaximisingPlayer) {
+      if (standPat >= beta) return standPat;
+      if (standPat > alpha) alpha = standPat;
+    } else {
+      if (standPat <= alpha) return standPat;
+      if (standPat < beta) beta = standPat;
+    }
+
+    if (qDepth >= MAX_Q_DEPTH) return standPat;
+
+    // Generate capture moves only — uses pseudo-legal computeRawMT (no pin detection)
+    // for speed; full legal move generation would be too expensive here
+    const iV = StateBuilder.createInitialV(currState);
+    const codeList = this.createList(iV.side, iV.snapshot);
+    const captureList = [];
+
+    for (let i = 0, len = codeList.length; i < len; i++) {
+      const states = StateBuilder.of(iV).buildCaptures(codeList[i]);
+      if (!isEmpty(states)) {
+        captureList.push(...states);
+      }
+    }
+
+    if (captureList.length === 0) return standPat;
+
+    const ordered = this.orderMoves(captureList);
+
+    for (let i = 0, len = ordered.length; i < len; i++) {
+      const score = this.#quiescence(
+        ordered[i],
+        alpha,
+        beta,
+        !isMaximisingPlayer,
+        qDepth + 1
+      );
+
+      if (isMaximisingPlayer) {
+        if (score >= beta) return score;
+        if (score > alpha) alpha = score;
+      } else {
+        if (score <= alpha) return score;
+        if (score < beta) beta = score;
+      }
+    }
+
+    return isMaximisingPlayer ? alpha : beta;
+  }
+
+  /**
+   * Minimax with alpha-beta pruning + move ordering
    */
   static minimax(currState, depth, alpha, beta, isMaximisingPlayer) {
     if (depth === 0) {
-      return this.#evaluate(currState);
+      return this.#quiescence(currState, alpha, beta, isMaximisingPlayer);
     }
 
     const iV = StateBuilder.createInitialV(currState);
@@ -90,7 +214,6 @@ class AI {
     let bestMove = isMaximisingPlayer ? -9999 : 9999;
 
     for (let i = 0, len = codeList.length; i < len; i++) {
-      // TODO StateBuilder spent time that calculating movable tiles
       const state = StateBuilder.of(iV).build(codeList[i]);
 
       if (!isEmpty(state)) {
@@ -98,9 +221,11 @@ class AI {
       }
     }
 
-    for (let i = 0, len = stateList.length; i < len; i++) {
+    const orderedList = this.orderMoves(stateList);
+
+    for (let i = 0, len = orderedList.length; i < len; i++) {
       const score = this.minimax(
-        stateList[i],
+        orderedList[i],
         depth - 1,
         alpha,
         beta,

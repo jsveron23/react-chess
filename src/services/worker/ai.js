@@ -28,14 +28,21 @@ self.onmessage = ({ data }) => {
     }
   }
 
-  for (let i = 0, len = stateList.length; i < len; i++) {
-    const state = stateList[i];
-    const score = AI.minimax(state, depth - 1, -10000, 10000, !isAIMaximizer);
+  const orderedList = AI.orderMoves(stateList);
+  let alpha = -10000;
+  let beta = 10000;
 
-    if (isAIMaximizer ? score >= bestMove : score <= bestMove) {
+  for (let i = 0, len = orderedList.length; i < len; i++) {
+    const state = orderedList[i];
+    const score = AI.minimax(state, depth - 1, alpha, beta, !isAIMaximizer);
+
+    if (isAIMaximizer ? score > bestMove : score < bestMove) {
       bestMove = score;
       bestState = state;
     }
+
+    if (isAIMaximizer) alpha = Math.max(alpha, bestMove);
+    else beta = Math.min(beta, bestMove);
   }
   console.timeEnd('worker');
 
