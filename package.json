@@ -2,14 +2,15 @@
   "name": "react-chess",
   "version": "2.0.0",
   "description": "Chess game",
+  "type": "module",
   "main": "index.js",
   "engines": {
     "bun": ">=1.0.0"
   },
   "private": true,
   "scripts": {
-    "lint": "eslint '**/src/**/*.js'",
-    "prettier": "prettier -c **/src/**/*.js",
+    "lint": "eslint '{src,packages}/**/src/**/*.js'",
+    "prettier": "prettier -c '{src,packages}/**/src/**/*.js'",
     "clean": "rimraf public coverage",
     "prebuild": "bun ./build.mjs",
     "build": "bun build src/index.js --outdir public --sourcemap=external && bun build src/services/worker/ai.js --outdir public --sourcemap=external",
@@ -41,16 +42,18 @@
     "proseWrap": "always"
   },
   "devDependencies": {
-    "eslint": "^8.9.0",
-    "eslint-plugin-import": "^2.25.4",
-    "eslint-plugin-jsx-a11y": "^6.5.1",
+    "@eslint/js": "^9.4.0",
+    "eslint": "9.x",
+    "eslint-import-resolver-alias": "^1.1.2",
+    "eslint-plugin-check-file": "^3.3.1",
+    "eslint-plugin-import": "^2.32.0",
+    "eslint-plugin-jsdoc": "^62.6.1",
     "eslint-plugin-node": "^11.1.0",
-    "eslint-plugin-react": "^7.28.0",
-    "eslint-plugin-react-hooks": "^4.3.0",
+    "eslint-plugin-react": "^7.34.0",
+    "globals": "^17.3.0",
     "http-server": "^14.1.1",
     "prettier": "^2.5.1",
-    "rimraf": "^3.0.2",
-    "sinon": "^14.0.0"
+    "rimraf": "^3.0.2"
   },
   "dependencies": {
     "classnames": "^2.3.1",

@@ -1,5 +1,4 @@
 import { test, expect } from 'bun:test';
-// import sinon from 'sinon';
 import predictPossibleCheck from '../predictPossibleCheck';
 
 // prettier-ignore
@@ -31,15 +30,3 @@ test('Should be returned falsy value (no attacker)', () => {
 test('Should be returned an attacker code', () => {
   expect(predictPossibleCheck([snapshot2], 'bKe8')).toBe('wQa4');
 });
-
-// TODO investigate
-// test('Should be called functions with', () => {
-//   const spy1 = sinon.spy();
-//   predictPossibleCheck.__Rewire__('getAttackers', spy1);
-//
-//   predictPossibleCheck([snapshot2], 'bKe8');
-//
-//   expect(spy1.called).toBe(true);
-//
-//   sinon.restore();
-// });
