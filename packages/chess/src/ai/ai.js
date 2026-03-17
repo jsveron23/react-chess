@@ -282,6 +282,100 @@ class AI {
     return score;
   }
 
+  // ── King safety evaluation ─────────────────────────────────────────────────
+
+  /**
+   * Evaluate king safety based on enemy piece proximity and pawn shield.
+   *
+   * Danger score: count enemy major/minor pieces within a 2-square radius of
+   * the king, weighted by piece type (Q=4, R=3, B/N=2). Quadratic scaling
+   * means multiple attackers near the king are penalised much more heavily
+   * than a single attacker — reflecting real attacking chances.
+   *
+   * Pawn shield: friendly pawns directly in front of the king (same/adjacent
+   * file, 1–2 ranks ahead) are rewarded; a bare king with no shield is penalised.
+   *
+   * All values are from White's perspective (positive = good for White).
+   * @param {Array}  snapshot
+   * @param {Array<{file:string, rank:string}>} wPawns
+   * @param {Array<{file:string, rank:string}>} bPawns
+   * @return {number}
+   */
+  static #evalKingSafety(snapshot, wPawns, bPawns) {
+    let score = 0;
+    let wKFile = -1, wKRank = -1;
+    let bKFile = -1, bKRank = -1;
+
+    // Locate both kings in one pass.
+    for (let i = 0, len = snapshot.length; i < len; i++) {
+      const code = snapshot[i];
+      if (code[1] === 'K') {
+        if (code[0] === 'w') {
+          wKFile = this.#fileToIdx[code[2]];
+          wKRank = +code[3];
+        } else {
+          bKFile = this.#fileToIdx[code[2]];
+          bKRank = +code[3];
+        }
+      }
+    }
+
+    // Count enemy pieces within a 2-square king-zone radius.
+    let wDanger = 0; // threat to white king (black attackers)
+    let bDanger = 0; // threat to black king (white attackers)
+
+    for (let i = 0, len = snapshot.length; i < len; i++) {
+      const code = snapshot[i];
+      const side  = code[0];
+      const piece = code[1];
+      if (piece === 'K' || piece === 'P') continue;
+
+      const fIdx = this.#fileToIdx[code[2]];
+      const rNum = +code[3];
+      const w    = piece === 'Q' ? 4 : piece === 'R' ? 3 : 2;
+
+      if (side === 'b' && wKFile >= 0) {
+        if (Math.abs(fIdx - wKFile) <= 2 && Math.abs(rNum - wKRank) <= 2) {
+          wDanger += w;
+        }
+      } else if (side === 'w' && bKFile >= 0) {
+        if (Math.abs(fIdx - bKFile) <= 2 && Math.abs(rNum - bKRank) <= 2) {
+          bDanger += w;
+        }
+      }
+    }
+
+    // Quadratic penalty: 2 attackers is much worse than 1, 3 is critical.
+    score -= wDanger * wDanger * 4;
+    score += bDanger * bDanger * 4;
+
+    // Pawn shield: friendly pawns 1-2 ranks in front of the king on same/adj file.
+    // Only meaningful when the king is on its own back ranks (ranks 1-3 / 6-8).
+    if (wKFile >= 0 && wKRank <= 3) {
+      let shield = 0;
+      for (let i = 0; i < wPawns.length; i++) {
+        const fd = Math.abs(this.#fileToIdx[wPawns[i].file] - wKFile);
+        const rn = +wPawns[i].rank;
+        if (fd <= 1 && rn > wKRank && rn <= wKRank + 2) shield++;
+      }
+      score += shield * 10;
+      if (shield === 0) score -= 25; // bare king penalty
+    }
+
+    if (bKFile >= 0 && bKRank >= 6) {
+      let shield = 0;
+      for (let i = 0; i < bPawns.length; i++) {
+        const fd = Math.abs(this.#fileToIdx[bPawns[i].file] - bKFile);
+        const rn = +bPawns[i].rank;
+        if (fd <= 1 && rn < bKRank && rn >= bKRank - 2) shield++;
+      }
+      score -= shield * 10;
+      if (shield === 0) score += 25; // bare king penalty
+    }
+
+    return score;
+  }
+
   // ── Static evaluation ──────────────────────────────────────────────────────
 
   /**
@@ -330,6 +424,7 @@ class AI {
     }
 
     totalEvaluation += this.#evalPawnStructure(wPawns, bPawns);
+    totalEvaluation += this.#evalKingSafety(snapshot, wPawns, bPawns);
 
     return totalEvaluation;
   }
@@ -452,6 +547,12 @@ class AI {
    * @return {number} best score
    */
   static minimax(currState, depth, alpha, beta, isMaximisingPlayer) {
+    // Check extension: search one ply deeper when the king is in check so the
+    // AI never stops mid-check-sequence and misses forced defensive resources.
+    if (currState.attackerCode && depth > 0) {
+      depth += 1;
+    }
+
     if (depth === 0) {
       return this.#quiescence(currState, alpha, beta, isMaximisingPlayer);
     }
@@ -593,7 +694,7 @@ class AI {
       // Futility pruning at depth ≤ 2: quiet moves whose static eval + margin
       // can't reach alpha/beta are unlikely to be best — skip them.
       // depth=1 margin=150, depth=2 margin=300 (larger window needed further out).
-      if (depth <= 2 && !child.isCaptured) {
+      if (depth <= 2 && !child.isCaptured && !currState.attackerCode) {
         const futilityMargin = depth === 1 ? FUTILITY_MARGIN : 300;
         const futilityEval = this.#evaluate(child);
         if (isMaximisingPlayer && futilityEval + futilityMargin <= localAlpha) {
