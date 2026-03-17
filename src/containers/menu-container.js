@@ -28,23 +28,22 @@ import {
 } from '~/presets';
 import { PeerIdContainer } from './peer-id-container';
 import { ChatContainer } from './chat-container';
-import { CpuSideSelectorContainer } from './cpu-side-selector-container';
-import { OneVsOneSideSelectorContainer } from './one-vs-one-side-selector-container';
+import { SideSelectorContainer } from './side-selector-container';
 import { DifficultySelectorContainer } from './difficulty-selector-container';
 
 const mapStateToProps = ({
-  ai: { thinking },
-  general: { lastSaved },
+  ai: { thinking, playerSide },
+  general: { lastSaved, matchType },
   network: { connected },
   ingame: { past },
-}) => ({ past, connected, lastSaved, thinking });
+}) => ({ past, connected, lastSaved, thinking, matchType, playerSide });
 
 const mapDispatchToProps = (dispatch) => ({ dispatch });
 
 const mergeProps = (stateProps, dispatchProps, ownProps) => {
   const noUndoYet = stateProps.past.length === 0;
   const isConnected = stateProps.connected;
-  const { thinking } = stateProps;
+  const { thinking, matchType, playerSide } = stateProps;
   const lastSaved = stateProps.lastSaved
     ? `/ ${toLocaleDate(stateProps.lastSaved)}`
     : '';
@@ -67,12 +66,11 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => {
       {
         key: ONE_VS_ONE,
         title: '1 vs 1',
-        disabled: isConnected,
+        disabled: isConnected || (matchType === ONE_VS_ONE && playerSide === 'b'),
         onClick: () => {
           worker.close();
           dispatch(updateMatchType(ONE_VS_ONE));
         },
-        children: () => <OneVsOneSideSelectorContainer />,
       },
       {
         key: ONE_VS_CPU,
@@ -87,7 +85,7 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => {
         },
         children: () => (
           <>
-            <CpuSideSelectorContainer />
+            <SideSelectorContainer />
             <DifficultySelectorContainer />
           </>
         ),

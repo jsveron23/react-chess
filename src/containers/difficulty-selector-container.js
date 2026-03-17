@@ -1,5 +1,5 @@
 import { connect } from 'react-redux';
-import { DifficultySelector } from '~/components';
+import { DifficultySelector } from '~/components/difficulty-selector';
 import { updateDepth } from '~/store/actions';
 
 const mapStateToProps = ({ ai: { depth }, ingame: { past } }) => ({

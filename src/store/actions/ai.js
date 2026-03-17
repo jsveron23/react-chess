@@ -42,6 +42,20 @@ export function setPlayerSide(side) {
 }
 
 /**
+ * Set the player's side and sync cpuTurn without resetting the board.
+ * Use this for the unified "Play as" selector so side preference is always
+ * consistent regardless of which mode the user switches to next.
+ * @param {string} side - 'w' or 'b'
+ * @return {object} Action
+ */
+export function setSide(side) {
+  return {
+    type: UPDATE_CPU_SIDE,
+    payload: side,
+  };
+}
+
+/**
  * Update AI search depth (difficulty)
  * @param {number} depth
  * @return {object} Action

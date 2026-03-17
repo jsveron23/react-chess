@@ -41,5 +41,4 @@ const CpuSideSelector = memo(({ playerSide, onSelect }) => {
 
 CpuSideSelector.displayName = 'CpuSideSelector';
 
-
 export { CpuSideSelector };
