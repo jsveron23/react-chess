@@ -7,7 +7,7 @@ const LEVELS = [
   { label: 'Hard', depth: 4 },
 ];
 
-const DifficultySelector = memo(({ depth, onSelect }) => {
+const DifficultySelector = memo(({ depth, onSelect, disabled }) => {
   return (
     <FlexRow
       paddingLeft={10}
@@ -25,6 +25,7 @@ const DifficultySelector = memo(({ depth, onSelect }) => {
       <select
         value={depth}
         onChange={(e) => onSelect(Number(e.target.value))}
+        disabled={disabled}
       >
         {LEVELS.map(({ label, depth: d }) => (
           <option key={d} value={d}>
