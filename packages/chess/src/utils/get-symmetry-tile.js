@@ -1,0 +1,50 @@
+import {
+  curry,
+  compose,
+  map,
+  filter,
+  head,
+  xprod,
+  negate,
+  equals,
+  cond,
+  T,
+  F,
+} from 'ramda';
+import { convertAxisToTile } from './convert-axis-to-tile';
+import { Vertical, Horizontal } from '../presets';
+
+/**
+ * Get symmetry tile (eg. c6 - e4, d5 - d3)
+ * @param  {String} direction
+ * @param  {String} centralCode
+ * @param  {String} targetTile
+ * @return {String}
+ */
+function getSymmetryTile(direction, centralCode, targetTile) {
+  const _convertToTile = convertAxisToTile(centralCode);
+  const _detectSameAsTarget = compose(equals(targetTile), _convertToTile);
+  let startX = [1, -1];
+  let startY = [1, -1];
+
+  if (direction === Vertical) {
+    startX = [0];
+  } else if (direction === Horizontal) {
+    startY = [0];
+  }
+
+  return compose(
+    head,
+    filter(Boolean),
+    map(
+      cond([
+        [_detectSameAsTarget, compose(_convertToTile, map(negate))],
+        [T, F],
+      ])
+    ),
+    xprod(startX)
+  )(startY);
+}
+
+const getSymmetryTileCurried = curry(getSymmetryTile);
+export { getSymmetryTileCurried as getSymmetryTile };
