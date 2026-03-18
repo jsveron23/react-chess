@@ -10,6 +10,7 @@ import ingameReducer from './slices/ingame';
 import aiReducer from './slices/ai';
 import networkReducer from './slices/network';
 import animateReducer from './slices/animate';
+import analysisReducer from './slices/analysis';
 import { updateTurn } from './slices/ingame';
 
 const configureStore = (preloadedState) => {
@@ -38,6 +39,7 @@ const configureStore = (preloadedState) => {
       network: networkReducer,
       animate: animateReducer,
       ai: aiReducer,
+      analysis: analysisReducer,
     },
     middleware: (getDefaultMiddleware) =>
       getDefaultMiddleware({

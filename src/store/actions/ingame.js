@@ -20,6 +20,7 @@ import {
   removeSheetData,
   removeCheck,
 } from '../slices/ingame';
+import { addAnalysis } from '../slices/analysis';
 
 export {
   updateTurn,
@@ -512,5 +513,14 @@ export function updateSheetData(thinkingTime = null, analysisData = null) {
 
     dispatch(measureAxis(sheetData));
     dispatch(setSheetData(sheetData));
+
+    if (thinkingTime !== null && sheetData.length > 0) {
+      const lastRow = sheetData[sheetData.length - 1];
+      const cpuSide =
+        lastRow.black?.thinkingTime != null ? lastRow.black : lastRow.white;
+      if (cpuSide?.thinkingTime != null) {
+        dispatch(addAnalysis(cpuSide));
+      }
+    }
   };
 }

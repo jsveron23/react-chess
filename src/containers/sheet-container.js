@@ -1,5 +1,6 @@
 import { connect } from 'react-redux';
 import { Sheet } from '~/components';
+import { selectAnalysis } from '~/store/slices/analysis';
 
 const mapStateToProps = ({
   ingame: {
@@ -8,6 +9,10 @@ const mapStateToProps = ({
   ai: { depth },
 }) => ({ data: sheetData, depth });
 
-const SheetContainer = connect(mapStateToProps)(Sheet);
+const mapDispatchToProps = (dispatch) => ({
+  onAnalyze: (sideData) => dispatch(selectAnalysis(sideData)),
+});
+
+const SheetContainer = connect(mapStateToProps, mapDispatchToProps)(Sheet);
 
 export { SheetContainer };

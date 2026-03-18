@@ -43,6 +43,9 @@ export const theme = {
   sidebar: {
     width: 300,
   },
+  analysisPanel: {
+    width: 360,
+  },
   logo: {
     width: '100px',
     height: '100%',

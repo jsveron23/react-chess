@@ -17,6 +17,7 @@ import {
   saveToLocalstorage,
   toggleFlip,
 } from '../slices/general';
+import { resetAnalysis } from '../slices/analysis';
 
 export { toggleFlip };
 
@@ -34,6 +35,7 @@ export function updateMatchType(key) {
     dispatch(removeCheck());
     dispatch(removeSheetData());
     dispatch(updateTurn(Turn.w));
+    dispatch(resetAnalysis());
     dispatch(ActionCreators.clearHistory());
   };
 }
