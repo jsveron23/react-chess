@@ -8,71 +8,27 @@ import { debug } from '~/utils';
 import { toggleThinking } from './ai';
 import { toggleAwaiting } from './network';
 import { measureAxis } from './animate';
-import * as types from '../action-types';
+import {
+  updateTurn,
+  updateSnapshot,
+  setSelectedCode,
+  removeSelectedCode,
+  setMovableTiles,
+  removeMovableTiles,
+  setCheckData,
+  setSheetData,
+  removeSheetData,
+  removeCheck,
+} from '../slices/ingame';
 
-/**
- * Remove selected code (reset)
- * @return {Object}
- */
-export function removeSelectedCode() {
-  return {
-    type: types.REMOVE_SELECTED_CODE,
-  };
-}
-
-/**
- * Remove movable tiles (reset)
- * @return {Object}
- */
-export function removeMovableTiles() {
-  return {
-    type: types.REMOVE_MOVABLE_TILES,
-  };
-}
-
-/**
- * Remove check (reset)
- * @return {Object}
- */
-export function removeCheck() {
-  return {
-    type: types.REMOVE_CHECK,
-  };
-}
-
-/**
- * Update turn literally
- * @param  {String} turn
- * @return {Object}
- */
-export function updateTurn(turn) {
-  return {
-    type: types.UPDATE_TURN,
-    payload: turn,
-  };
-}
-
-/**
- * Update snapshot
- * @param  {String} snapshot
- * @return {Object}
- */
-export function updateSnapshot(snapshot) {
-  return {
-    type: types.UPDATE_SNAPSHOT,
-    payload: snapshot,
-  };
-}
-
-/**
- * Remove sheet data, notation data (reset)
- * @return {Object}
- */
-export function removeSheetData() {
-  return {
-    type: types.REMOVE_SHEET_DATA,
-  };
-}
+export {
+  updateTurn,
+  updateSnapshot,
+  removeSelectedCode,
+  removeMovableTiles,
+  removeCheck,
+  removeSheetData,
+};
 
 /**
  * Update selected code and compute movable tiles
@@ -83,10 +39,7 @@ export function updateSelectedCode(code) {
   return (dispatch) => {
     // NOTE do not change sequence
     dispatch(updateMovableTiles(code));
-    dispatch({
-      type: types.UPDATE_SELECTED_CODE,
-      payload: code,
-    });
+    dispatch(setSelectedCode(code));
   };
 }
 
@@ -108,13 +61,14 @@ export function updateMovableTiles(code) {
       },
     } = getState();
 
-    dispatch({
-      type: types.UPDATE_MOVABLE_TILES,
-      payload: compose(
-        Chess.computePossibleMT(attackerCode, attackerRoutes, code),
-        Chess.createTimeline(present)
-      )(past),
-    });
+    dispatch(
+      setMovableTiles(
+        compose(
+          Chess.computePossibleMT(attackerCode, attackerRoutes, code),
+          Chess.createTimeline(present)
+        )(past)
+      )
+    );
   };
 }
 
@@ -264,10 +218,7 @@ export function restoreSheetAnalysis(savedSheetData) {
       return next;
     });
 
-    dispatch({
-      type: types.UPDATE_SHEET_DATA,
-      payload: merged,
-    });
+    dispatch(setSheetData(merged));
   };
 }
 
@@ -402,7 +353,10 @@ export function playCpu() {
       ai: { cpuTurn, depth },
       general: { matchType },
       ingame: {
-        present: { turn, checkData: { isCheckmate, isStalemate } },
+        present: {
+          turn,
+          checkData: { isCheckmate, isStalemate },
+        },
         present,
         past,
       },
@@ -426,7 +380,13 @@ export function playCpu() {
         present,
         past,
       },
-      ({ bestState = {}, score = null, topMoves = [], breakdown = null, decisionTree = null }) => {
+      ({
+        bestState = {},
+        score = null,
+        topMoves = [],
+        breakdown = null,
+        decisionTree = null,
+      }) => {
         const { node = [], timeline: nextTimeline } = bestState;
         const [selectedCode, nextCode] = node;
 
@@ -471,15 +431,14 @@ export function updateCheckState(selectedCode) {
       timeline
     );
 
-    dispatch({
-      type: types.UPDATE_CHECK_CODE,
-      payload: {
+    dispatch(
+      setCheckData({
         isCheck,
         isStalemate,
         isCheckmate,
         ...data,
-      },
-    });
+      })
+    );
   };
 }
 
@@ -512,9 +471,15 @@ export function updateSheetData(thinkingTime = null, analysisData = null) {
             ...merged[side],
             thinkingTime: prev[side].thinkingTime,
             ...(prev[side].score != null && { score: prev[side].score }),
-            ...(prev[side].topMoves != null && { topMoves: prev[side].topMoves }),
-            ...(prev[side].breakdown != null && { breakdown: prev[side].breakdown }),
-            ...(prev[side].decisionTree != null && { decisionTree: prev[side].decisionTree }),
+            ...(prev[side].topMoves != null && {
+              topMoves: prev[side].topMoves,
+            }),
+            ...(prev[side].breakdown != null && {
+              breakdown: prev[side].breakdown,
+            }),
+            ...(prev[side].decisionTree != null && {
+              decisionTree: prev[side].decisionTree,
+            }),
           };
         }
       });
@@ -546,9 +511,6 @@ export function updateSheetData(thinkingTime = null, analysisData = null) {
     }
 
     dispatch(measureAxis(sheetData));
-    dispatch({
-      type: types.UPDATE_SHEET_DATA,
-      payload: sheetData,
-    });
+    dispatch(setSheetData(sheetData));
   };
 }

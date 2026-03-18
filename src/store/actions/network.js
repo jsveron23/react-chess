@@ -11,59 +11,22 @@ import {
   removeSheetData,
 } from './ingame';
 import {
-  DECIDE_SIDE,
-  SEND_MESSAGE,
-  RECEIVE_MESSAGE,
-  TOGGLE_AWAITING,
-  OPEN_NETWORK_GAME,
-  CLOSE_NETWORK_GAME,
-  JOIN_NETWORK_GAME,
-  CONNECTED_PEER_NETWORK,
-} from '../action-types';
+  openNetworkGame,
+  closeNetworkGame,
+  setConnected,
+  decideSide,
+  toggleAwaiting,
+  addMessage,
+  receiveMessage,
+} from '../slices/network';
 
-/**
- * Open network game with own peer ID
- * @param {string} ownId - Own peer ID
- * @return {object} Action
- */
-export function openNetworkGame(ownId) {
-  return {
-    type: OPEN_NETWORK_GAME,
-    payload: ownId,
-  };
-}
-
-/**
- * Close network game
- * @return {object} Action
- */
-export function closeNetworkGame() {
-  return {
-    type: CLOSE_NETWORK_GAME,
-  };
-}
-
-/**
- * Decide network side
- * @param {string} side - Side identifier
- * @return {object} Action
- */
-export function decideSide(side) {
-  return {
-    type: DECIDE_SIDE,
-    payload: side,
-  };
-}
-
-/**
- * Toggle awaiting state
- * @return {object} Action
- */
-export function toggleAwaiting() {
-  return {
-    type: TOGGLE_AWAITING,
-  };
-}
+export {
+  openNetworkGame,
+  closeNetworkGame,
+  decideSide,
+  toggleAwaiting,
+  receiveMessage,
+};
 
 /**
  * Handle connected peer network and reset game state
@@ -79,9 +42,7 @@ export function connectedPeerNetwork() {
     dispatch(updateTurn(Turn.w));
     dispatch(ActionCreators.clearHistory());
 
-    dispatch({
-      type: CONNECTED_PEER_NETWORK,
-    });
+    dispatch(setConnected());
   };
 }
 
@@ -108,9 +69,7 @@ export function joinNetworkGame() {
 
       peerNetwork.join(id);
 
-      dispatch({
-        type: JOIN_NETWORK_GAME,
-      });
+      dispatch(setConnected());
     }
   };
 }
@@ -136,24 +95,6 @@ export function sendMessage(message) {
       });
     }
 
-    dispatch({
-      type: SEND_MESSAGE,
-      payload: {
-        side,
-        message,
-      },
-    });
-  };
-}
-
-/**
- * Receive message from peer
- * @param {object} messageData - Message data
- * @return {object} Action
- */
-export function receiveMessage(messageData) {
-  return {
-    type: RECEIVE_MESSAGE,
-    payload: messageData,
+    dispatch(addMessage({ side, message }));
   };
 }

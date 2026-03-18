@@ -1,21 +1,16 @@
 import { ONE_VS_CPU } from '~/presets';
 import { updateMatchType } from './general';
 import {
-  TOGGLE_THINKING,
-  UPDATE_CPU_SIDE,
-  UPDATE_PLAYER_SIDE,
-  UPDATE_DEPTH,
-} from '../action-types';
+  toggleThinking,
+  setCpuSide,
+  updatePlayerSide,
+  updateDepth,
+} from '../slices/ai';
 
-/**
- * Toggle AI thinking state
- * @return {object} Action
- */
-export function toggleThinking() {
-  return {
-    type: TOGGLE_THINKING,
-  };
-}
+export { toggleThinking, updatePlayerSide, updateDepth };
+
+// alias kept for compatibility
+export const setPlayerSide = updatePlayerSide;
 
 /**
  * Set the side the human player will control in 1 vs CPU mode.
@@ -25,24 +20,8 @@ export function toggleThinking() {
  */
 export function updateCpuSide(side) {
   return (dispatch) => {
-    dispatch({
-      type: UPDATE_CPU_SIDE,
-      payload: side,
-    });
+    dispatch(setCpuSide(side));
     dispatch(updateMatchType(ONE_VS_CPU));
-  };
-}
-
-/**
- * Update which side the human player starts as, without touching cpuTurn.
- * Used by 1 vs 1 mode so the side selector UI stays in sync across modes.
- * @param {string} side - 'w' or 'b'
- * @return {object} Action
- */
-export function setPlayerSide(side) {
-  return {
-    type: UPDATE_PLAYER_SIDE,
-    payload: side,
   };
 }
 
@@ -53,21 +32,4 @@ export function setPlayerSide(side) {
  * @param {string} side - 'w' or 'b'
  * @return {object} Action
  */
-export function setSide(side) {
-  return {
-    type: UPDATE_CPU_SIDE,
-    payload: side,
-  };
-}
-
-/**
- * Update AI search depth (difficulty)
- * @param {number} depth
- * @return {object} Action
- */
-export function updateDepth(depth) {
-  return {
-    type: UPDATE_DEPTH,
-    payload: depth,
-  };
-}
+export const setSide = setCpuSide;

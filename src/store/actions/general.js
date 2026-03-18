@@ -13,12 +13,12 @@ import {
   removeSheetData,
 } from './ingame';
 import {
-  UPDATE_MATCH_TYPE,
-  SAVE_TO_LOCALSTORAGE,
-  IMPORT_GAME,
-  EXPORT_GAME,
-  TOGGLE_FLIP,
-} from '../action-types';
+  updateMatchType as setMatchType,
+  saveToLocalstorage,
+  toggleFlip,
+} from '../slices/general';
+
+export { toggleFlip };
 
 /**
  * Update match type and reset game state
@@ -27,10 +27,7 @@ import {
  */
 export function updateMatchType(key) {
   return (dispatch) => {
-    dispatch({
-      type: UPDATE_MATCH_TYPE,
-      payload: key,
-    });
+    dispatch(setMatchType(key));
     dispatch(updateSnapshot(Snapshot));
     dispatch(removeSelectedCode());
     dispatch(removeMovableTiles());
@@ -62,29 +59,21 @@ export function saveGame() {
 
     Storage.setItem(SAVE_GAME, data);
 
-    dispatch({
-      type: SAVE_TO_LOCALSTORAGE,
-      payload: lastSaved,
-    });
+    dispatch(saveToLocalstorage(lastSaved));
   };
 }
 
 /**
  * Import game from clipboard paste
- * @return {object} Action
+ * @return {void}
  */
 export function importGame() {
   const data = window.prompt('Paste export data here!');
 
   if (data) {
     Storage.setItem(INSTANT_IMPORT_DATA, data);
-
     window.location.reload();
   }
-
-  return {
-    type: IMPORT_GAME,
-  };
 }
 
 /**
@@ -106,10 +95,6 @@ export function exportGame() {
 
     navigator.clipboard.writeText(Compression.compress(data)).then(() => {
       alert('Copied current playing data to clipboard!');
-
-      dispatch({
-        type: EXPORT_GAME,
-      });
     }, debug.err('clipboard issue'));
   };
 }
@@ -270,15 +255,5 @@ export function exportGameAsFen() {
     navigator.clipboard.writeText(fen).then(() => {
       alert('Copied FEN to clipboard!');
     }, debug.err('clipboard issue'));
-  };
-}
-
-/**
- * Toggle board flip
- * @return {object} Action
- */
-export function toggleFlip() {
-  return {
-    type: TOGGLE_FLIP,
   };
 }

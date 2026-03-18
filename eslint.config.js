@@ -212,6 +212,14 @@ export default [
     },
   },
   {
+    name: 'Ignore rules object [src/store/slices/]',
+    files: ['src/store/slices/**/*.js'],
+    rules: {
+      'import/no-default-export': 'off',
+      'no-param-reassign': 'off',
+    },
+  },
+  {
     name: 'React rules object',
     files: ['**/*.js'],
     rules: {
