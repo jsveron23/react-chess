@@ -19,7 +19,6 @@
         "react-spring": "^9.4.4",
         "react-use-measure": "^2.1.1",
         "redux": "^4.1.2",
-        "redux-devtools-extension": "^2.13.9",
         "redux-thunk": "^2.4.1",
         "redux-undo": "^1.0.1",
       },
@@ -1006,8 +1005,6 @@
     "react-zdog": ["react-zdog@1.2.2", "", { "dependencies": { "react": "^18.2.0", "react-dom": "^18.2.0", "resize-observer-polyfill": "^1.5.1" } }, "sha512-Ix7ALha91aOEwiHuxumCeYbARS5XNpc/w0v145oGkM6poF/CvhKJwzLhM5sEZbtrghMA+psAhOJkCTzJoseicA=="],
 
     "redux": ["redux@4.2.1", "", { "dependencies": { "@babel/runtime": "^7.9.2" } }, "sha512-LAUYz4lc+Do8/g7aeRa8JkyDErK6ekstQaqWQrNRW//MY1TvCEpMtpTWvlQ+FPbWCx+Xixu/6SHt5N0HR+SB4w=="],
-
-    "redux-devtools-extension": ["redux-devtools-extension@2.13.9", "", { "peerDependencies": { "redux": "^3.1.0 || ^4.0.0" } }, "sha512-cNJ8Q/EtjhQaZ71c8I9+BPySIBVEKssbPpskBfsXqb8HJ002A3KRVHfeRzwRo6mGPqsm7XuHTqNSNeS1Khig0A=="],
 
     "redux-thunk": ["redux-thunk@2.4.2", "", { "peerDependencies": { "redux": "^4" } }, "sha512-+P3TjtnP0k/FEjcBL5FZpoovtvrTNT/UXd4/sluaSyrURlSlhLSzEdfsTBW7WsKB6yPvgd7q/iZPICFjW4o57Q=="],
 

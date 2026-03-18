@@ -1,15 +1,13 @@
 import { applyMiddleware, createStore } from 'redux';
 import thunk from 'redux-thunk';
-import { compose, apply, identity } from 'ramda';
-import { composeWithDevTools } from 'redux-devtools-extension';
-import { IS_DEV, INSTANT_IMPORT_DATA, SAVE_GAME } from '~/presets';
+import { apply } from 'ramda';
+import { INSTANT_IMPORT_DATA, SAVE_GAME } from '~/presets';
 import { Compression } from '~/services/io';
 import { Storage } from '~/services/storage';
 import { debug } from '~/utils';
 import { rootReducer } from './reducers';
 import { crashReporter } from './middlewares';
 
-const composeDev = IS_DEV ? composeWithDevTools : identity;
 const applyMiddlewareFn = apply(applyMiddleware);
 
 const configureStore = (preloadedState) => {
@@ -31,7 +29,7 @@ const configureStore = (preloadedState) => {
   return createStore(
     rootReducer,
     intitalState,
-    compose(composeDev, applyMiddlewareFn)([thunk, crashReporter])
+    applyMiddlewareFn([thunk, crashReporter])
   );
 };
 
