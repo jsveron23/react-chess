@@ -29,10 +29,6 @@ const App = () => {
 
   return (
     <FlexRow height={fh} minWidth={minMaxWidth} maxWidth={minMaxWidth}>
-      <Relative flexBasis={height}>
-        <DiagramContainer />
-      </Relative>
-
       <FlexOne
         backgroundColor={color.gray1}
         borderLeft={border}
@@ -69,6 +65,10 @@ const App = () => {
           <NotiBarContainer />
         </FlexCol>
       </FlexOne>
+
+      <Relative flexBasis={height}>
+        <DiagramContainer />
+      </Relative>
 
       <Box
         width={hintPanel.width}
