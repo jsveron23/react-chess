@@ -341,9 +341,21 @@ class AI {
         if (Math.abs(fIdx - wKFile) <= 2 && Math.abs(rNum - wKRank) <= 2) {
           wDanger += w;
         }
+        // Rooks/queens on the same rank or file as the king are a long-range threat.
+        if (piece === 'R' || piece === 'Q') {
+          if (fIdx === wKFile || rNum === wKRank) {
+            wDanger += w;
+          }
+        }
       } else if (side === 'w' && bKFile >= 0) {
         if (Math.abs(fIdx - bKFile) <= 2 && Math.abs(rNum - bKRank) <= 2) {
           bDanger += w;
+        }
+        // Rooks/queens on the same rank or file as the king are a long-range threat.
+        if (piece === 'R' || piece === 'Q') {
+          if (fIdx === bKFile || rNum === bKRank) {
+            bDanger += w;
+          }
         }
       }
     }
@@ -361,8 +373,8 @@ class AI {
         const rn = +wPawns[i].rank;
         if (fd <= 1 && rn > wKRank && rn <= wKRank + 2) shield++;
       }
-      score += shield * 10;
-      if (shield === 0) score -= 25; // bare king penalty
+      score += shield * 15;
+      if (shield === 0) score -= 60; // bare king penalty
     }
 
     if (bKFile >= 0 && bKRank >= 6) {
@@ -372,8 +384,8 @@ class AI {
         const rn = +bPawns[i].rank;
         if (fd <= 1 && rn < bKRank && rn >= bKRank - 2) shield++;
       }
-      score -= shield * 10;
-      if (shield === 0) score += 25; // bare king penalty
+      score -= shield * 15;
+      if (shield === 0) score += 60; // bare king penalty
     }
 
     return score;

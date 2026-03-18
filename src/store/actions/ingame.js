@@ -402,13 +402,17 @@ export function playCpu() {
       ai: { cpuTurn, depth },
       general: { matchType },
       ingame: {
-        present: { turn },
+        present: { turn, checkData: { isCheckmate, isStalemate } },
         present,
         past,
       },
     } = getState();
 
     if (matchType !== ONE_VS_CPU || turn !== cpuTurn) {
+      return;
+    }
+
+    if (isCheckmate || isStalemate) {
       return;
     }
 
