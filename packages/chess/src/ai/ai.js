@@ -161,6 +161,51 @@ class AI {
   }
 
   /**
+   * Bonus for quiet pawn moves that attack an enemy piece.
+   * Scores above killers (900) but below captures (2000+).
+   * @param {object} state
+   * @return {number}
+   */
+  static #quietAttackBonus(state) {
+    if (state.isCaptured) return 0;
+
+    const node = state.node;
+    const toCode = node[node.length - 1]; // e.g. "bPg6"
+    if (toCode[1] !== 'P') return 0; // pawn moves only
+
+    const side = toCode[0];
+    const fIdx = this.#fileToIdx[toCode[2]];
+    const rank = +toCode[3];
+    const attackRank = side === 'w' ? rank + 1 : rank - 1;
+    if (attackRank < 1 || attackRank > 8) return 0;
+
+    const files = 'abcdefgh';
+    const snapshot = state.timeline[0];
+    let best = 0;
+
+    for (let df = -1; df <= 1; df += 2) {
+      const aFIdx = fIdx + df;
+      if (aFIdx < 0 || aFIdx > 7) continue;
+      const attackTile = files[aFIdx] + attackRank;
+      for (let i = 0; i < snapshot.length; i++) {
+        const code = snapshot[i];
+        if (
+          code[0] !== side &&
+          code[2] === attackTile[0] &&
+          code[3] === attackTile[1]
+        ) {
+          const v = this.#Scores[code[1]];
+          if (v > best) best = v;
+          break;
+        }
+      }
+    }
+
+    // Queen attacked → ~1999, Rook → ~1555, minor → ~1355. Above killers (900), below captures (2000+).
+    return best > 0 ? 1000 + Math.round((best / 900) * 999) : 0;
+  }
+
+  /**
    * Sort moves: captures (ordered by MVV-LVA) → killer moves → quiet moves.
    * The optional depth parameter enables the killer-move heuristic.
    * @param {Array}  stateList
@@ -173,10 +218,14 @@ class AI {
     return [...stateList].sort((a, b) => {
       const aScore = a.isCaptured
         ? 2000 + this.#mvvLva(a)
-        : this.#killerScore(a, depth) + (history[this.#getMoveId(a)] || 0);
+        : this.#killerScore(a, depth) +
+          (history[this.#getMoveId(a)] || 0) +
+          this.#quietAttackBonus(a);
       const bScore = b.isCaptured
         ? 2000 + this.#mvvLva(b)
-        : this.#killerScore(b, depth) + (history[this.#getMoveId(b)] || 0);
+        : this.#killerScore(b, depth) +
+          (history[this.#getMoveId(b)] || 0) +
+          this.#quietAttackBonus(b);
 
       return bScore - aScore;
     });
@@ -394,6 +443,54 @@ class AI {
   // ── Static evaluation ──────────────────────────────────────────────────────
 
   /**
+   * Penalty for pieces attacked by a less-valuable enemy pawn.
+   * A 33% partial factor models the reality that the attacked piece usually retreats.
+   * Positive return value = bad for White; negative = bad for Black.
+   * @param {Array} snapshot
+   * @return {number}
+   */
+  static #evalHangingPenalty(snapshot) {
+    // Build tile → code map (≤32 entries)
+    const tileMap = {};
+    for (let i = 0; i < snapshot.length; i++) {
+      const c = snapshot[i];
+      tileMap[c[2] + c[3]] = c;
+    }
+
+    const files = 'abcdefgh';
+    let penalty = 0; // positive = bad for White
+
+    for (let i = 0; i < snapshot.length; i++) {
+      const code = snapshot[i];
+      const side = code[0],
+        piece = code[1];
+      if (piece === 'K') continue;
+
+      const fIdx = this.#fileToIdx[code[2]];
+      const rank = +code[3];
+      const pieceVal = this.#Scores[piece];
+      const enemySide = side === 'w' ? 'b' : 'w';
+
+      // Check whether an enemy pawn attacks this piece
+      const atkRank = side === 'w' ? rank + 1 : rank - 1;
+      if (atkRank < 1 || atkRank > 8) continue;
+
+      for (let df = -1; df <= 1; df += 2) {
+        const aFIdx = fIdx + df;
+        if (aFIdx < 0 || aFIdx > 7) continue;
+        const atk = tileMap[files[aFIdx] + atkRank];
+        if (atk && atk[0] === enemySide && atk[1] === 'P' && pieceVal > 100) {
+          const amount = Math.round(pieceVal * 0.33);
+          penalty += side === 'w' ? -amount : amount;
+          break;
+        }
+      }
+    }
+
+    return penalty;
+  }
+
+  /**
    * Static evaluation (positive = White winning, negative = Black winning).
    *
    * Optimised over the original:
@@ -440,6 +537,7 @@ class AI {
 
     totalEvaluation += this.#evalPawnStructure(wPawns, bPawns);
     totalEvaluation += this.#evalKingSafety(snapshot, wPawns, bPawns);
+    totalEvaluation += this.#evalHangingPenalty(snapshot);
 
     return totalEvaluation;
   }
@@ -852,13 +950,15 @@ class AI {
 
     const pawnStructure = this.#evalPawnStructure(wPawns, bPawns);
     const kingSafety = this.#evalKingSafety(snapshot, wPawns, bPawns);
+    const hangingPenalty = this.#evalHangingPenalty(snapshot);
 
     return {
       material,
       position,
       pawnStructure,
       kingSafety,
-      total: material + position + pawnStructure + kingSafety,
+      hangingPenalty,
+      total: material + position + pawnStructure + kingSafety + hangingPenalty,
     };
   }
 
