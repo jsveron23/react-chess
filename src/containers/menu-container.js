@@ -4,7 +4,6 @@ import { Menu } from '~/components';
 import { worker } from '~/services/worker/ai-worker';
 import {
   undo,
-  saveGame,
   importGame,
   exportGame,
   exportGameAsPgn,
@@ -13,10 +12,8 @@ import {
   updateMatchType,
   playCpu,
 } from '~/store/actions';
-import { toLocaleDate } from '~/utils';
 import {
   ONE_VS_ONE,
-  SAVE,
   IMPORT,
   EXPORT,
   EXPORT_PGN,
@@ -29,18 +26,15 @@ import { DifficultySelectorContainer } from './difficulty-selector-container';
 
 const mapStateToProps = ({
   ai: { thinking, playerSide },
-  general: { lastSaved, matchType },
+  general: { matchType },
   ingame: { past },
-}) => ({ past, lastSaved, thinking, matchType, playerSide });
+}) => ({ past, thinking, matchType, playerSide });
 
 const mapDispatchToProps = (dispatch) => ({ dispatch });
 
 const mergeProps = (stateProps, dispatchProps, ownProps) => {
   const noUndoYet = stateProps.past.length === 0;
   const { thinking } = stateProps;
-  const lastSaved = stateProps.lastSaved
-    ? `/ ${toLocaleDate(stateProps.lastSaved)}`
-    : '';
   const { dispatch } = dispatchProps;
 
   return {
@@ -79,23 +73,15 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => {
         disabled: false,
         onClick: () => dispatch(toggleFlip()),
       },
-      [
-        {
-          key: SAVE,
-          title: `Save ${lastSaved}`,
-          disabled: thinking || noUndoYet,
-          onClick: () => dispatch(saveGame()),
-        },
-        {
-          key: IMPORT,
-          title: 'Import',
-          disabled: thinking,
-          onClick: () => dispatch(importGame()),
-        },
-      ],
+      {
+        key: IMPORT,
+        title: 'Import a snapshot',
+        disabled: thinking,
+        onClick: () => dispatch(importGame()),
+      },
       {
         key: EXPORT,
-        title: 'Export as Snapshot',
+        title: 'Export a snapshot',
         disabled: thinking || noUndoYet,
         onClick: () => dispatch(exportGame()),
       },

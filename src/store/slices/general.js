@@ -6,14 +6,10 @@ const generalSlice = createSlice({
   initialState: {
     matchType: ONE_VS_ONE,
     flip: false,
-    lastSaved: 0,
   },
   reducers: {
     updateMatchType: (state, action) => {
       state.matchType = action.payload;
-    },
-    saveToLocalstorage: (state, action) => {
-      state.lastSaved = action.payload;
     },
     toggleFlip: (state) => {
       state.flip = !state.flip;
@@ -21,6 +17,5 @@ const generalSlice = createSlice({
   },
 });
 
-export const { updateMatchType, saveToLocalstorage, toggleFlip } =
-  generalSlice.actions;
+export const { updateMatchType, toggleFlip } = generalSlice.actions;
 export default generalSlice.reducer;

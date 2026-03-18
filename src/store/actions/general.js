@@ -3,7 +3,7 @@ import { Snapshot, Turn, parseNotation } from 'chess/es';
 import { debug } from '~/utils';
 import { Compression } from '~/services/io';
 import { Storage } from '~/services/storage';
-import { SAVE_GAME, INSTANT_IMPORT_DATA } from '~/presets';
+import { INSTANT_IMPORT_DATA } from '~/presets';
 import {
   updateTurn,
   updateSnapshot,
@@ -12,11 +12,7 @@ import {
   removeMovableTiles,
   removeSheetData,
 } from './ingame';
-import {
-  updateMatchType as setMatchType,
-  saveToLocalstorage,
-  toggleFlip,
-} from '../slices/general';
+import { updateMatchType as setMatchType, toggleFlip } from '../slices/general';
 import { resetAnalysis } from '../slices/analysis';
 
 export { toggleFlip };
@@ -37,31 +33,6 @@ export function updateMatchType(key) {
     dispatch(updateTurn(Turn.w));
     dispatch(resetAnalysis());
     dispatch(ActionCreators.clearHistory());
-  };
-}
-
-/**
- * Save game to localStorage
- * @return {Function} Thunk
- */
-export function saveGame() {
-  return (dispatch, getState) => {
-    dispatch(removeSelectedCode());
-    dispatch(removeMovableTiles());
-
-    const currState = getState();
-    const lastSaved = +new Date();
-    const data = {
-      ...currState,
-      general: {
-        lastSaved,
-        ...currState.general,
-      },
-    };
-
-    Storage.setItem(SAVE_GAME, data);
-
-    dispatch(saveToLocalstorage(lastSaved));
   };
 }
 

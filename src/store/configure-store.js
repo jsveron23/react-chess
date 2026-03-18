@@ -1,6 +1,6 @@
 import { configureStore as rtkConfigureStore } from '@reduxjs/toolkit';
 import undoable, { includeAction } from 'redux-undo';
-import { INSTANT_IMPORT_DATA, SAVE_GAME } from '~/presets';
+import { INSTANT_IMPORT_DATA } from '~/presets';
 import { Compression } from '~/services/io';
 import { Storage } from '~/services/storage';
 import { debug } from '~/utils';
@@ -17,11 +17,10 @@ const configureStore = (preloadedState) => {
 
   try {
     const importData = Storage.getItem(INSTANT_IMPORT_DATA);
-    const saveData = JSON.parse(Storage.getItem(SAVE_GAME));
 
     intitalState = importData
       ? JSON.parse(Compression.decompress(importData))
-      : saveData || preloadedState;
+      : preloadedState;
   } catch (err) {
     debug.err('Redux - intital-state issue: ', err);
   } finally {
