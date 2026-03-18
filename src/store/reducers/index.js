@@ -3,5 +3,4 @@
 export { default as generalReducer } from '../slices/general';
 export { default as ingameReducer } from '../slices/ingame';
 export { default as aiReducer } from '../slices/ai';
-export { default as networkReducer } from '../slices/network';
 export { default as animateReducer } from '../slices/animate';

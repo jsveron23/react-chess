@@ -2,11 +2,9 @@ import { ActionCreators } from 'redux-undo';
 import { compose, reject, equals, clone, isEmpty, head } from 'ramda';
 import * as Chess from 'chess/es';
 import { ONE_VS_ONE, ONE_VS_CPU } from '~/presets';
-import { peerNetwork } from '~/services/network';
 import { worker } from '~/services/worker/ai-worker';
 import { debug } from '~/utils';
 import { toggleThinking } from './ai';
-import { toggleAwaiting } from './network';
 import { measureAxis } from './animate';
 import {
   updateTurn,
@@ -82,25 +80,10 @@ export function updateMovableTiles(code) {
 export function capturePiece(pretendCode, nextTileName) {
   return (dispatch, getState) => {
     const {
-      network: { connected, awaiting },
       ingame: {
         present: { selectedCode, snapshot },
       },
     } = getState();
-
-    if (connected && !awaiting) {
-      peerNetwork.send({
-        command: 'capture',
-        args: {
-          pretendCode,
-          nextTileName,
-          selectedCode,
-          snapshot,
-        },
-      });
-
-      dispatch(toggleAwaiting());
-    }
 
     const getNextSnapshot = compose(
       reject(equals(selectedCode)),
@@ -119,24 +102,10 @@ export function capturePiece(pretendCode, nextTileName) {
 export function movePiece(nextTileName) {
   return (dispatch, getState) => {
     const {
-      network: { connected, awaiting },
       ingame: {
         present: { selectedCode, snapshot },
       },
     } = getState();
-
-    if (connected && !awaiting) {
-      peerNetwork.send({
-        command: 'move',
-        args: {
-          nextTileName,
-          selectedCode,
-          snapshot,
-        },
-      });
-
-      dispatch(toggleAwaiting());
-    }
 
     const getNextSnapshot = Chess.replaceCode(snapshot, selectedCode);
 

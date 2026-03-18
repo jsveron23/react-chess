@@ -8,7 +8,6 @@ import { crashReporter } from './middlewares';
 import generalReducer from './slices/general';
 import ingameReducer from './slices/ingame';
 import aiReducer from './slices/ai';
-import networkReducer from './slices/network';
 import animateReducer from './slices/animate';
 import analysisReducer from './slices/analysis';
 import { updateTurn } from './slices/ingame';
@@ -36,7 +35,6 @@ const configureStore = (preloadedState) => {
         filter: includeAction(updateTurn.type),
       }),
       general: generalReducer,
-      network: networkReducer,
       animate: animateReducer,
       ai: aiReducer,
       analysis: analysisReducer,

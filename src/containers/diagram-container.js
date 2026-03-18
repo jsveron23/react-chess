@@ -21,7 +21,6 @@ const flippedIncludes = flip(includes);
 const mapStateToProps = ({
   ai: { cpuTurn, playerSide },
   general: { flip: flipState, matchType },
-  network: { side, connected, awaiting },
   ingame: {
     present: {
       checkData: { kingCode, attackerCode, attackerRoutes, defenders } = {
@@ -37,11 +36,8 @@ const mapStateToProps = ({
   animate,
 }) => {
   const isUndoAction = future.length > 0;
-  const isAwating = connected && awaiting;
   const isCpuTurn = matchType === ONE_VS_CPU && turn === cpuTurn;
-  const isBlack =
-    (connected && side === Side.black) ||
-    (matchType === ONE_VS_CPU && playerSide === Side.black);
+  const isBlack = matchType === ONE_VS_CPU && playerSide === Side.black;
 
   return {
     detectEnPassantTile(tileName) {
@@ -66,7 +62,7 @@ const mapStateToProps = ({
     checkCode: attackerCode ? kingCode : '',
     checkRoute: attackerRoutes,
     checkDefenders: defenders,
-    preventEvent: isAwating || isCpuTurn,
+    preventEvent: isCpuTurn,
     animate: isUndoAction ? undefined : animate,
     flip: flipState || isBlack,
     movableTiles,

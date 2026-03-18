@@ -3,11 +3,10 @@ import { NotiBar } from '~/components';
 
 const mapStateToProps = ({
   ai: { thinking },
-  network: { connected, awaiting },
   ingame: {
     present: { turn, checkData },
   },
-}) => ({ turn, connected, awaiting, checkData, thinking });
+}) => ({ turn, checkData, thinking });
 
 const NotiBarContainer = connect(mapStateToProps)(NotiBar);
 

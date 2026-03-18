@@ -13,15 +13,12 @@ export function measureAxis(sheetData) {
     const {
       ai: { playerSide },
       general: { flip, matchType },
-      network: { side, connected },
       ingame: {
         present: { turn },
       },
     } = getState();
 
-    const isBlack =
-      (connected && side === Side.black) ||
-      (matchType === ONE_VS_CPU && playerSide === Side.black);
+    const isBlack = matchType === ONE_VS_CPU && playerSide === Side.black;
 
     dispatch(
       setAxis(
