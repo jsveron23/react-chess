@@ -49,7 +49,7 @@ self.onmessage = ({ data }) => {
       } else {
         // PVS: null window first; re-search at full window if it fails high.
         const pvAlpha = isAIMaximizer ? alpha : beta - 1;
-        const pvBeta  = isAIMaximizer ? alpha + 1 : beta;
+        const pvBeta = isAIMaximizer ? alpha + 1 : beta;
         score = AI.minimax(state, d - 1, pvAlpha, pvBeta, !isAIMaximizer);
         const failsHigh = isAIMaximizer ? score > alpha : score < beta;
         if (failsHigh) {

@@ -27,5 +27,4 @@ const NotationHeader = ({ data }) => {
   );
 };
 
-
 export { NotationHeader };

@@ -6,5 +6,4 @@ const Hr = ({ color = '#cacaca', ...props }) => {
   );
 };
 
-
 export { Hr };

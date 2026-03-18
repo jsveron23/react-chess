@@ -4,7 +4,12 @@ import { Text } from './text';
 
 const ClockLoader = _ClockLoader?.default ?? _ClockLoader;
 
-const Loading = memo(function Loading({ loading = false, text = '', size = 10, ...props }) {
+const Loading = memo(function Loading({
+  loading = false,
+  text = '',
+  size = 10,
+  ...props
+}) {
   if (!loading) {
     return '';
   }
@@ -18,6 +23,5 @@ const Loading = memo(function Loading({ loading = false, text = '', size = 10, .
     </>
   );
 });
-
 
 export { Loading };

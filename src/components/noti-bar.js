@@ -8,10 +8,12 @@ const NotiBar = memo(({ turn, connected, awaiting, thinking }) => {
   useEffect(() => {
     if (!thinking) {
       setElapsed(0);
+
       return;
     }
 
     const id = setInterval(() => setElapsed((s) => s + 1), 1000);
+
     return () => clearInterval(id);
   }, [thinking]);
   const { border, color, weight } = useTheme();
@@ -42,7 +44,11 @@ const NotiBar = memo(({ turn, connected, awaiting, thinking }) => {
         paddingLeft={10}
         paddingRight={10}
       >
-        <Loading text={`...Thinking... ${elapsed}s`} size={20} loading={thinking} />
+        <Loading
+          text={`...Thinking... ${elapsed}s`}
+          size={20}
+          loading={thinking}
+        />
         <Loading text="...Awaiting..." size={20} loading={isAwaiting} />
 
         {isTurn && <Text marginRight={10}>...Your turn...</Text>}
@@ -50,6 +56,5 @@ const NotiBar = memo(({ turn, connected, awaiting, thinking }) => {
     </FlexRow>
   );
 });
-
 
 export { NotiBar };

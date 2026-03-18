@@ -151,7 +151,10 @@ export function exportGameAsPgn() {
         const moveNum = `${idx + 1}.`;
         const whiteNotation = white ? parseNotation(white) : '';
         const blackNotation = black ? parseNotation(black) : '';
-        return `${moveNum} ${whiteNotation}${blackNotation ? ` ${blackNotation}` : ''}`;
+
+        return `${moveNum} ${whiteNotation}${
+          blackNotation ? ` ${blackNotation}` : ''
+        }`;
       })
       .join(' ');
 
@@ -210,6 +213,7 @@ export function exportGameAsFen() {
         });
 
         if (empty > 0) row += empty;
+
         return row;
       })
       .join('/');

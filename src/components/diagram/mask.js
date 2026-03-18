@@ -42,5 +42,4 @@ const Mask = ({ tileName, pretendCode }) => {
   );
 };
 
-
 export { Mask };

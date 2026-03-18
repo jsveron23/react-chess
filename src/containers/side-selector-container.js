@@ -3,11 +3,7 @@ import { ActionCreators } from 'redux-undo';
 import { Turn } from 'chess/es';
 import { CpuSideSelector } from '~/components/cpu-side-selector';
 import { worker } from '~/services/worker/ai-worker';
-import {
-  setSide,
-  updateMatchType,
-  updateTurn,
-} from '~/store/actions';
+import { setSide, updateMatchType, updateTurn } from '~/store/actions';
 import { ONE_VS_ONE, ONE_VS_CPU } from '~/presets';
 
 const mapStateToProps = ({ ai: { playerSide }, general: { matchType } }) => ({

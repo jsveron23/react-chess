@@ -9,5 +9,4 @@ const FlexMiddle = memo(function FlexMiddle({ children, ...props }) {
   );
 });
 
-
 export { FlexMiddle };

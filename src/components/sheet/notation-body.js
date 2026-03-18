@@ -21,5 +21,4 @@ const NotationBody = ({ data, children }) => {
   );
 };
 
-
 export { NotationBody };

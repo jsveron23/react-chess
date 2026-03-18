@@ -30,5 +30,4 @@ const Tile = ({ isDark = false, pKey = '', tileName }) => {
   );
 };
 
-
 export { Tile };

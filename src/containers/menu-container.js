@@ -43,7 +43,7 @@ const mapDispatchToProps = (dispatch) => ({ dispatch });
 const mergeProps = (stateProps, dispatchProps, ownProps) => {
   const noUndoYet = stateProps.past.length === 0;
   const isConnected = stateProps.connected;
-  const { thinking, matchType, playerSide } = stateProps;
+  const { thinking } = stateProps;
   const lastSaved = stateProps.lastSaved
     ? `/ ${toLocaleDate(stateProps.lastSaved)}`
     : '';

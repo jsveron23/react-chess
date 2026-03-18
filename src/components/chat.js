@@ -47,5 +47,4 @@ const Chat = memo(({ data = [], sendMessage }) => {
   );
 });
 
-
 export { Chat };

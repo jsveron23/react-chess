@@ -20,5 +20,4 @@ const PeerId = memo(({ peerId }) => {
   );
 });
 
-
 export { PeerId };

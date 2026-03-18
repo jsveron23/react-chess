@@ -71,5 +71,4 @@ const Piece = ({ pKey, pretendCode }) => {
   );
 };
 
-
 export { Piece };

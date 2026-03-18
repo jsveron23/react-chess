@@ -220,10 +220,16 @@ export function undo() {
  * @param {string} nextTileName - Target tile name
  * @param {string} selectedCode - Moving piece code
  * @param {Function|Array} getNextSnapshot - Snapshot getter or array
+ * @param {number|null} thinkingTime - AI thinking time in ms
  * @return {Function} Thunk
  */
 // before reset
-export function afterMoving(nextTileName, selectedCode, getNextSnapshot, thinkingTime = null) {
+export function afterMoving(
+  nextTileName,
+  selectedCode,
+  getNextSnapshot,
+  thinkingTime = null
+) {
   return (dispatch, getState) => {
     const {
       ingame: {
@@ -366,7 +372,14 @@ export function playCpu() {
           const tileName = Chess.parseCode.prop('tileName', nextCode);
           const thinkingTime = Math.round((Date.now() - startTime) / 1000);
 
-          dispatch(afterMoving(tileName, selectedCode, head(nextTimeline), thinkingTime));
+          dispatch(
+            afterMoving(
+              tileName,
+              selectedCode,
+              head(nextTimeline),
+              thinkingTime
+            )
+          );
           dispatch(toggleThinking());
         } else {
           debug.err('something went wrong!', bestState);
@@ -408,12 +421,17 @@ export function updateCheckState(selectedCode) {
 
 /**
  * Update sheet/notation data
+ * @param {number|null} thinkingTime - AI thinking time in ms
  * @return {Function} Thunk
  */
 export function updateSheetData(thinkingTime = null) {
   return (dispatch, getState) => {
     const {
-      ingame: { present, past, present: { sheetData: prevSheetData } },
+      ingame: {
+        present,
+        past,
+        present: { sheetData: prevSheetData },
+      },
     } = getState();
 
     let sheetData = Chess.createSheetData(present, past);
@@ -425,9 +443,13 @@ export function updateSheetData(thinkingTime = null) {
       const merged = { ...row };
       ['white', 'black'].forEach((side) => {
         if (merged[side] && prev[side]?.thinkingTime != null) {
-          merged[side] = { ...merged[side], thinkingTime: prev[side].thinkingTime };
+          merged[side] = {
+            ...merged[side],
+            thinkingTime: prev[side].thinkingTime,
+          };
         }
       });
+
       return merged;
     });
 

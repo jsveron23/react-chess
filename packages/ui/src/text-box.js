@@ -2,7 +2,13 @@ import { memo } from 'react';
 import { identity } from 'ramda';
 import { Box } from './box';
 
-const TextBox = memo(function TextBox({ value = '', placeholder = '', onChange, onKeyDown = identity, ...props }) {
+const TextBox = memo(function TextBox({
+  value = '',
+  placeholder = '',
+  onChange,
+  onKeyDown = identity,
+  ...props
+}) {
   return (
     <Box
       is="input"
@@ -14,6 +20,5 @@ const TextBox = memo(function TextBox({ value = '', placeholder = '', onChange, 
     />
   );
 });
-
 
 export { TextBox };

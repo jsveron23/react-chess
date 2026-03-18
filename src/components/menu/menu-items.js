@@ -22,5 +22,4 @@ const MenuItems = ({ data }) => {
   );
 };
 
-
 export { MenuItems };

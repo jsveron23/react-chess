@@ -23,5 +23,4 @@ const File = ({ rankName }) => {
   )(Files);
 };
 
-
 export { File };

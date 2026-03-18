@@ -36,5 +36,4 @@ const Diagram = ({
   );
 };
 
-
 export { Diagram };

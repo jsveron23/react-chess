@@ -18,11 +18,12 @@ const Notation = ({ sideData = null, ...props }) => {
     >
       {sideData && <Text>{parseNotation(sideData)}</Text>}
       {sideData?.thinkingTime != null && (
-        <Text fontSize={10} color={color.gray2} marginLeft={4}>{sideData.thinkingTime}s</Text>
+        <Text fontSize={10} color={color.gray2} marginLeft={4}>
+          {sideData.thinkingTime}s
+        </Text>
       )}
     </FlexOne>
   );
 };
-
 
 export { Notation };

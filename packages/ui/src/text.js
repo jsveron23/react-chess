@@ -9,5 +9,4 @@ const Text = memo(function Text({ children = '', ...props }) {
   );
 });
 
-
 export { Text };

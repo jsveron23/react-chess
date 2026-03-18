@@ -64,7 +64,12 @@ function computeCheckState(opponentCode, timeline) {
   const dodgeableTiles = compose(
     flatten,
     map((code) => {
-      const allPmt = computePossibleMT(attackerCode, attackerRoutes, code, timeline);
+      const allPmt = computePossibleMT(
+        attackerCode,
+        attackerRoutes,
+        code,
+        timeline
+      );
 
       if (!isEmpty(allPmt)) {
         hasAnyMove = true;

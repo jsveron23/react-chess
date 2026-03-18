@@ -31,5 +31,7 @@ test('Should return boolean value', () => {
     )
   ).toBe(true);
 
-  expect(detectEnemyOnTiles(['a3', 'a4', 'b4'], 'wPa2', 'bPa4', 'b4')).toBe(true);
+  expect(detectEnemyOnTiles(['a3', 'a4', 'b4'], 'wPa2', 'bPa4', 'b4')).toBe(
+    true
+  );
 });
