@@ -27,7 +27,9 @@ self.onmessage = ({ data }) => {
       const s = StateBuilder.of(iV).build(codeList[i]);
       if (s.length > 0) result.push(...s);
     }
-    return result;
+
+    
+return result;
   };
 
   /**
@@ -54,7 +56,9 @@ self.onmessage = ({ data }) => {
         bestChild = child;
       }
     }
-    return bestChild ? { state: bestChild, score: bestScore } : null;
+
+    
+return bestChild ? { state: bestChild, score: bestScore } : null;
   };
 
   const iV = StateBuilder.createInitialV({
@@ -189,11 +193,41 @@ self.onmessage = ({ data }) => {
       if (isChosen) {
         const counterResult = pickBestChild(replyState, isAIMaximizer);
         if (counterResult) {
+          // Depth 4: opponent's reply to CPU's counter
+          let counterReply = null;
+          const reply2Result = pickBestChild(
+            counterResult.state,
+            !isAIMaximizer
+          );
+          if (reply2Result) {
+            // Depth 5: CPU's counter to opponent's depth-4 reply
+            let counter2 = null;
+            const counter2Result = pickBestChild(
+              reply2Result.state,
+              isAIMaximizer
+            );
+            if (counter2Result) {
+              counter2 = {
+                node: counter2Result.state.node,
+                score: counter2Result.score,
+                isCaptured: counter2Result.state.isCaptured,
+                pretendCode: counter2Result.state.pretendCode || '',
+              };
+            }
+            counterReply = {
+              node: reply2Result.state.node,
+              score: reply2Result.score,
+              isCaptured: reply2Result.state.isCaptured,
+              pretendCode: reply2Result.state.pretendCode || '',
+              counter: counter2,
+            };
+          }
           counter = {
             node: counterResult.state.node,
             score: counterResult.score,
             isCaptured: counterResult.state.isCaptured,
             pretendCode: counterResult.state.pretendCode || '',
+            reply: counterReply,
           };
         }
       }
