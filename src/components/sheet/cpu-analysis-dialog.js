@@ -2,6 +2,7 @@ import { createPortal } from 'react-dom';
 import { Box, Text, FlexMiddle, FlexRow, FlexCol } from 'ui/es';
 import { useTheme } from '~/hooks';
 import { analyzeCpuMove, formatMoveLabel } from '~/utils/analyze-cpu-move';
+import { CpuDecisionTree } from './cpu-decision-tree';
 
 /**
  * Horizontal evaluation bar mirroring the style used by major chess sites.
@@ -147,21 +148,23 @@ const Divider = ({ border }) => (
 );
 
 /**
- * Portal dialog that explains a CPU move in four sections:
- *   1. Position Score  — eval bar showing overall advantage
- *   2. Why This Move   — heuristic bullet points from analyzeCpuMove
- *   3. Evaluation Breakdown — bar chart per eval component
- *   4. Alternatives Considered — ranked list of moves evaluated at full depth
+ * Portal dialog that explains a CPU move in five sections:
+ *   1. Position Score        — eval bar showing overall advantage
+ *   2. Why This Move         — heuristic bullet points from analyzeCpuMove
+ *   3. Search Tree           — horizontal tree of top candidate lines with continuations
+ *   4. Evaluation Breakdown  — bar chart per eval component
+ *   5. Alternatives Considered — ranked list of moves evaluated at full depth
  * Rendered into document.body via createPortal to avoid z-index conflicts.
  * @param {{ sideData: object, depth: number, onClose: Function }} props
  */
 const CpuAnalysisDialog = ({ sideData, depth, onClose }) => {
   const { color, border, borderRadius } = useTheme();
   const analysis = analyzeCpuMove(sideData, depth);
-  const { score, topMoves, breakdown } = sideData;
+  const { score, topMoves, breakdown, decisionTree } = sideData;
   const hasScore = score != null;
   const hasBreakdown = breakdown != null;
   const hasTopMoves = topMoves && topMoves.length > 0;
+  const hasDecisionTree = decisionTree && decisionTree.length > 0;
   const isMaximizer = score != null && score >= 0;
   const bestScore = hasTopMoves ? topMoves[0].score : 0;
 
@@ -252,6 +255,26 @@ const CpuAnalysisDialog = ({ sideData, depth, onClose }) => {
               • {point}
             </Text>
           ))}
+
+          {/* ── Search Tree ── */}
+          {hasDecisionTree && (
+            <>
+              <Divider border={border} />
+              <SectionHeader color={color}>Search Tree</SectionHeader>
+              <Text
+                display="block"
+                fontSize={10}
+                color={color.gray4}
+                marginBottom={8}
+              >
+                Top lines: CPU candidate → Opp reply → CPU counter (★ = chosen).
+                Scores in centipawns (+white / −black).
+              </Text>
+              <FlexRow justifyContent="center" marginBottom={4}>
+                <CpuDecisionTree decisionTree={decisionTree} color={color} />
+              </FlexRow>
+            </>
+          )}
 
           {/* ── Evaluation Breakdown ── */}
           {hasBreakdown && (
