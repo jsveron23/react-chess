@@ -1,5 +1,5 @@
 import { Hr, FlexCol, FlexRow, Text, Button } from 'ui/es';
-import { ONE_VS_CPU } from '~/presets';
+import { ONE_VS_CPU, ONE_VS_ONE } from '~/presets';
 import { MenuItems } from './menu/menu-items';
 
 const Menu = ({
@@ -9,6 +9,7 @@ const Menu = ({
   onGameModeChange,
   cpuChildren: CpuChildren,
   onStart,
+  onReset,
 }) => {
   return (
     <>
@@ -35,6 +36,7 @@ const Menu = ({
         </FlexRow>
         {matchType === ONE_VS_CPU && CpuChildren && <CpuChildren />}
         {matchType === ONE_VS_CPU && <Button onClick={onStart}>Start</Button>}
+        {matchType === ONE_VS_ONE && <Button onClick={onReset}>Reset</Button>}
       </FlexCol>
       <Hr is="p" marginTop={10} marginBottom={10} />
       <MenuItems data={mainMenu} />

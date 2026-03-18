@@ -71,6 +71,7 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => {
       dispatch(updateMatchType(ONE_VS_CPU));
       dispatch(playCpu());
     },
+    onReset: () => dispatch(updateMatchType(ONE_VS_ONE)),
     cpuChildren: () => (
       <>
         <SideSelectorContainer />
