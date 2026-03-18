@@ -804,6 +804,53 @@ class AI {
   }
 
   /**
+   * Compute evaluation breakdown by component (material, position, pawn structure, king safety).
+   * All values from White's perspective: positive = good for White.
+   * @param {object} state - State with timeline
+   * @return {{ material: number, position: number, pawnStructure: number, kingSafety: number, total: number }}
+   */
+  static evaluateBreakdown(state) {
+    const snapshot = state.timeline[0];
+    let material = 0;
+    let position = 0;
+    const wPawns = [];
+    const bPawns = [];
+
+    for (let i = 0, len = snapshot.length; i < len; i++) {
+      const code = snapshot[i];
+      const side = code[0];
+      const piece = code[1];
+      const file = code[2];
+      const rank = code[3];
+      const rIdx = this.#rankToIdx[rank];
+      const fIdx = this.#fileToIdx[file];
+      const matScore = this.#Scores[piece];
+      const pstScore = this.#PST[side + piece][rIdx][fIdx];
+
+      if (side === 'w') {
+        material += matScore;
+        position += pstScore;
+        if (piece === 'P') wPawns.push({ file, rank });
+      } else {
+        material -= matScore;
+        position -= pstScore;
+        if (piece === 'P') bPawns.push({ file, rank });
+      }
+    }
+
+    const pawnStructure = this.#evalPawnStructure(wPawns, bPawns);
+    const kingSafety = this.#evalKingSafety(snapshot, wPawns, bPawns);
+
+    return {
+      material,
+      position,
+      pawnStructure,
+      kingSafety,
+      total: material + position + pawnStructure + kingSafety,
+    };
+  }
+
+  /**
    * Create list of pieces for the given side.
    * @param {string} side     - 'w' | 'b'
    * @param {Array}  snapshot

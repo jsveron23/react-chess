@@ -197,17 +197,23 @@ export function undo() {
   return (dispatch, getState) => {
     const {
       general: { matchType },
-      ingame: { past },
+      ingame: { past, present },
     } = getState();
 
     // TODO
     // allow it from white/network
 
     if (matchType !== ONE_VS_ONE) {
+      // Save full sheetData (with analysis) before jumping.
+      // redux-undo only snapshots on UPDATE_TURN, which fires before
+      // updateSheetData, so past states never have analysis attached.
+      const savedSheetData = present.sheetData;
+
       const lastTurn = past.length - 2;
       const pastTurn = lastTurn < 0 ? 0 : lastTurn;
 
       dispatch(ActionCreators.jumpToPast(pastTurn));
+      dispatch(restoreSheetAnalysis(savedSheetData));
       dispatch(playCpu());
     } else {
       dispatch(ActionCreators.undo());
@@ -216,11 +222,59 @@ export function undo() {
 }
 
 /**
+ * Merge analysis data (thinkingTime, score, topMoves, breakdown) from a
+ * previously-saved sheetData snapshot into the current present.sheetData.
+ * Used after jumpToPast to re-attach analysis that was lost when redux-undo
+ * restored a history state that predates the updateSheetData dispatch.
+ * @param {Array} savedSheetData
+ * @return {Function} Thunk
+ */
+export function restoreSheetAnalysis(savedSheetData) {
+  return (dispatch, getState) => {
+    const {
+      ingame: {
+        present: { sheetData: currentSheetData },
+      },
+    } = getState();
+
+    const merged = currentSheetData.map((row, idx) => {
+      const saved = savedSheetData[idx];
+      if (!saved) return row;
+
+      const next = { ...row };
+      ['white', 'black'].forEach((side) => {
+        if (next[side] && saved[side]?.thinkingTime != null) {
+          next[side] = {
+            ...next[side],
+            thinkingTime: saved[side].thinkingTime,
+            ...(saved[side].score != null && { score: saved[side].score }),
+            ...(saved[side].topMoves != null && {
+              topMoves: saved[side].topMoves,
+            }),
+            ...(saved[side].breakdown != null && {
+              breakdown: saved[side].breakdown,
+            }),
+          };
+        }
+      });
+
+      return next;
+    });
+
+    dispatch({
+      type: types.UPDATE_SHEET_DATA,
+      payload: merged,
+    });
+  };
+}
+
+/**
  * Handle after-move actions
  * @param {string} nextTileName - Target tile name
  * @param {string} selectedCode - Moving piece code
  * @param {Function|Array} getNextSnapshot - Snapshot getter or array
- * @param {number|null} thinkingTime - AI thinking time in ms
+ * @param {number|null} thinkingTime - AI thinking time in seconds
+ * @param {Object|null} analysisData - AI analysis payload { score, topMoves, breakdown }
  * @return {Function} Thunk
  */
 // before reset
@@ -228,7 +282,8 @@ export function afterMoving(
   nextTileName,
   selectedCode,
   getNextSnapshot,
-  thinkingTime = null
+  thinkingTime = null,
+  analysisData = null
 ) {
   return (dispatch, getState) => {
     const {
@@ -329,7 +384,7 @@ export function afterMoving(
     dispatch(removeSelectedCode());
     dispatch(removeMovableTiles());
     dispatch(updateTurn(Chess.Opponent[turn]));
-    dispatch(updateSheetData(thinkingTime));
+    dispatch(updateSheetData(thinkingTime, analysisData));
     dispatch(playCpu());
   };
 }
@@ -364,20 +419,22 @@ export function playCpu() {
         present,
         past,
       },
-      ({ bestState = {} }) => {
+      ({ bestState = {}, score = null, topMoves = [], breakdown = null }) => {
         const { node = [], timeline: nextTimeline } = bestState;
         const [selectedCode, nextCode] = node;
 
         if (!isEmpty(node)) {
           const tileName = Chess.parseCode.prop('tileName', nextCode);
           const thinkingTime = Math.round((Date.now() - startTime) / 1000);
+          const analysisData = { score, topMoves, breakdown };
 
           dispatch(
             afterMoving(
               tileName,
               selectedCode,
               head(nextTimeline),
-              thinkingTime
+              thinkingTime,
+              analysisData
             )
           );
           dispatch(toggleThinking());
@@ -421,10 +478,11 @@ export function updateCheckState(selectedCode) {
 
 /**
  * Update sheet/notation data
- * @param {number|null} thinkingTime - AI thinking time in ms
+ * @param {number|null} thinkingTime - AI thinking time in seconds
+ * @param {Object|null} analysisData - AI analysis payload { score, topMoves, breakdown }
  * @return {Function} Thunk
  */
-export function updateSheetData(thinkingTime = null) {
+export function updateSheetData(thinkingTime = null, analysisData = null) {
   return (dispatch, getState) => {
     const {
       ingame: {
@@ -446,6 +504,9 @@ export function updateSheetData(thinkingTime = null) {
           merged[side] = {
             ...merged[side],
             thinkingTime: prev[side].thinkingTime,
+            ...(prev[side].score != null && { score: prev[side].score }),
+            ...(prev[side].topMoves != null && { topMoves: prev[side].topMoves }),
+            ...(prev[side].breakdown != null && { breakdown: prev[side].breakdown }),
           };
         }
       });
@@ -453,17 +514,24 @@ export function updateSheetData(thinkingTime = null) {
       return merged;
     });
 
-    // Attach new thinkingTime to the last entry
+    // Attach new thinkingTime and analysisData to the last entry
     if (thinkingTime !== null && sheetData.length > 0) {
       const lastIdx = sheetData.length - 1;
       const lastRow = sheetData[lastIdx];
       const lastSide = lastRow.black ? 'black' : 'white';
+      const extra = { thinkingTime };
+
+      if (analysisData !== null) {
+        extra.score = analysisData.score;
+        extra.topMoves = analysisData.topMoves;
+        extra.breakdown = analysisData.breakdown;
+      }
 
       sheetData = [
         ...sheetData.slice(0, lastIdx),
         {
           ...lastRow,
-          [lastSide]: { ...lastRow[lastSide], thinkingTime },
+          [lastSide]: { ...lastRow[lastSide], ...extra },
         },
       ];
     }

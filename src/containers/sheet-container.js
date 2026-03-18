@@ -5,7 +5,8 @@ const mapStateToProps = ({
   ingame: {
     present: { sheetData },
   },
-}) => ({ data: sheetData });
+  ai: { depth },
+}) => ({ data: sheetData, depth });
 
 const SheetContainer = connect(mapStateToProps)(Sheet);
 

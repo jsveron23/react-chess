@@ -30,10 +30,19 @@ self.onmessage = ({ data }) => {
     }
   }
 
-  // Run one root search pass at depth d within [a, b].
-  // Returns { score, state } for the best root move found.
+  /**
+   * Run one root search pass at depth d within the window [a, b].
+   * Applies PVS: the first move gets the full window; subsequent moves use a
+   * null window and are re-searched at full width only on a fail-high.
+   * Collects a scored list of all root moves for later top-move extraction.
+   * @param {number} d - Search depth for this iteration
+   * @param {number} a - Alpha bound
+   * @param {number} b - Beta bound
+   * @return {{ score: number, state: object|null, scoredList: Array<{state: object, score: number}> }}
+   */
   const searchRoot = (d, a, b) => {
     const orderedList = AI.orderMoves(stateList, d - 1);
+    const scoredList = [];
     let bestScore = isAIMaximizer ? -9999 : 9999;
     let bestRootState = null;
     let alpha = a;
@@ -57,6 +66,8 @@ self.onmessage = ({ data }) => {
         }
       }
 
+      scoredList.push({ state, score });
+
       if (isAIMaximizer ? score > bestScore : score < bestScore) {
         bestScore = score;
         bestRootState = state;
@@ -66,18 +77,15 @@ self.onmessage = ({ data }) => {
       else beta = Math.min(beta, bestScore);
     }
 
-    return { score: bestScore, state: bestRootState };
+    return { score: bestScore, state: bestRootState, scoredList };
   };
 
   let bestState = null;
   let aspirationScore = null;
+  let finalScoredList = [];
   const ASPIRATION_DELTA = 50;
 
   // Iterative deepening: search depth 1 → depth in sequence.
-  // Each iteration seeds TT / killers / history for the next, so move ordering
-  // improves with each pass — this is what makes PVS effective at full depth.
-  // Aspiration windows: from d=2 onward, try a narrow window around the
-  // previous iteration's score first; widen to full window only on failure.
   for (let d = 1; d <= depth; d++) {
     let result;
 
@@ -97,10 +105,28 @@ self.onmessage = ({ data }) => {
     aspirationScore = result.score;
     if (result.state !== null) {
       bestState = result.state;
+      finalScoredList = result.scoredList;
     }
   }
 
+  // Build top moves: sort by score (best for CPU first), take top 5
+  const sortedMoves = [...finalScoredList].sort((a, b) =>
+    isAIMaximizer ? b.score - a.score : a.score - b.score
+  );
+  const topMoves = sortedMoves.slice(0, 5).map(({ state, score }) => ({
+    node: state.node,
+    score,
+    isCaptured: state.isCaptured,
+    pretendCode: state.pretendCode || '',
+  }));
+
+  // Compute eval breakdown for the chosen position
+  const breakdown = bestState ? AI.evaluateBreakdown(bestState) : null;
+
   self.postMessage({
     bestState,
+    score: aspirationScore,
+    topMoves,
+    breakdown,
   });
 };
