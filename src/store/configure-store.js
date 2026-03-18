@@ -10,6 +10,7 @@ import ingameReducer from './slices/ingame';
 import aiReducer from './slices/ai';
 import animateReducer from './slices/animate';
 import analysisReducer from './slices/analysis';
+import hintReducer from './slices/hint';
 import { updateTurn } from './slices/ingame';
 
 const configureStore = (preloadedState) => {
@@ -37,6 +38,7 @@ const configureStore = (preloadedState) => {
       animate: animateReducer,
       ai: aiReducer,
       analysis: analysisReducer,
+      hint: hintReducer,
     },
     middleware: (getDefaultMiddleware) =>
       getDefaultMiddleware({

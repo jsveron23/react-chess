@@ -5,3 +5,4 @@ export const EXPORT = 'export';
 export const EXPORT_PGN = 'export-pgn';
 export const EXPORT_FEN = 'export-fen';
 export const FLIP = 'flip';
+export const HINT = 'hint';

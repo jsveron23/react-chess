@@ -46,6 +46,9 @@ export const theme = {
   analysisPanel: {
     width: 360,
   },
+  hintPanel: {
+    width: 360,
+  },
   logo: {
     width: '100px',
     height: '100%',

@@ -309,4 +309,4 @@ const AnalysisPanel = ({ history, index, depth, onSetIndex }) => {
   );
 };
 
-export { AnalysisPanel };
+export { AnalysisPanel, AnalysisContent };

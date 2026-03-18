@@ -4,6 +4,7 @@ import { debug } from '~/utils';
 import { Compression } from '~/services/io';
 import { Storage } from '~/services/storage';
 import { INSTANT_IMPORT_DATA } from '~/presets';
+import { worker } from '~/services/worker/ai-worker';
 import {
   updateTurn,
   updateSnapshot,
@@ -14,6 +15,7 @@ import {
 } from './ingame';
 import { updateMatchType as setMatchType, toggleFlip } from '../slices/general';
 import { resetAnalysis } from '../slices/analysis';
+import { setHintLoading, setHintData, clearHint } from '../slices/hint';
 
 export { toggleFlip };
 
@@ -228,5 +230,44 @@ export function exportGameAsFen() {
     navigator.clipboard.writeText(fen).then(() => {
       alert('Copied FEN to clipboard!');
     }, debug.err('clipboard issue'));
+  };
+}
+
+/**
+ * Run the AI engine on the current position and store the result as a hint
+ * @return {Function} Thunk
+ */
+export function requestHint() {
+  return (dispatch, getState) => {
+    const {
+      ai: { depth },
+      ingame: {
+        present: {
+          checkData: { isCheckmate, isStalemate },
+        },
+        present,
+        past,
+      },
+    } = getState();
+
+    if (isCheckmate || isStalemate) return;
+
+    dispatch(setHintLoading(true));
+
+    worker.task(
+      { depth, present, past },
+      ({
+        bestState = {},
+        score = null,
+        topMoves = [],
+        breakdown = null,
+        decisionTree = null,
+      }) => {
+        dispatch(
+          setHintData({ bestState, score, topMoves, breakdown, decisionTree })
+        );
+      },
+      () => dispatch(clearHint())
+    );
   };
 }
