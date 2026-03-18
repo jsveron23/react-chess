@@ -62,34 +62,22 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => {
         onClick: () => dispatch(undo()),
       },
     ],
+    onGameModeChange: (value) => {
+      worker.close();
+      dispatch(updateMatchType(value));
+    },
+    onStart: () => {
+      worker.close();
+      dispatch(updateMatchType(ONE_VS_CPU));
+      dispatch(playCpu());
+    },
+    cpuChildren: () => (
+      <>
+        <SideSelectorContainer />
+        <DifficultySelectorContainer />
+      </>
+    ),
     mainMenu: [
-      {
-        key: ONE_VS_ONE,
-        title: '1 vs 1',
-        disabled: isConnected || (matchType === ONE_VS_ONE && playerSide === 'b'),
-        onClick: () => {
-          worker.close();
-          dispatch(updateMatchType(ONE_VS_ONE));
-        },
-      },
-      {
-        key: ONE_VS_CPU,
-        title: '1 vs CPU (Alpha)',
-        disabled: isConnected,
-        onClick: () => {
-          worker.close();
-          dispatch(updateMatchType(ONE_VS_CPU));
-          // If the player had previously chosen Black, the CPU (White) goes first.
-          // playCpu guards itself and does nothing when it's not the CPU's turn.
-          dispatch(playCpu());
-        },
-        children: () => (
-          <>
-            <SideSelectorContainer />
-            <DifficultySelectorContainer />
-          </>
-        ),
-      },
       {
         key: FLIP,
         title: 'Flip diagram (Up & Down)',

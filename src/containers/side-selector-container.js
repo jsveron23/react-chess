@@ -7,7 +7,6 @@ import {
   setSide,
   updateMatchType,
   updateTurn,
-  playCpu,
 } from '~/store/actions';
 import { ONE_VS_ONE, ONE_VS_CPU } from '~/presets';
 
@@ -22,17 +21,15 @@ const mergeProps = ({ playerSide, matchType }, { dispatch }) => ({
   playerSide,
   onSelect: (side) => {
     worker.close();
-    // setSide always keeps playerSide and cpuTurn in sync, regardless of mode.
     dispatch(setSide(side));
-    if (matchType === ONE_VS_CPU) {
-      dispatch(updateMatchType(ONE_VS_CPU));
-      dispatch(playCpu());
-    } else {
+    if (matchType === ONE_VS_ONE) {
       dispatch(updateMatchType(ONE_VS_ONE));
       if (side === 'b') {
         dispatch(updateTurn(Turn.b));
         dispatch(ActionCreators.clearHistory());
       }
+    } else if (matchType === ONE_VS_CPU) {
+      dispatch(updateMatchType(ONE_VS_CPU));
     }
   },
 });

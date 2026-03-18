@@ -19,7 +19,7 @@ const detectPawn = memoizeOne(detectPiece.Pawn);
 const flippedIncludes = flip(includes);
 
 const mapStateToProps = ({
-  ai: { cpuTurn },
+  ai: { cpuTurn, playerSide },
   general: { flip: flipState, matchType },
   network: { side, connected, awaiting },
   ingame: {
@@ -39,7 +39,9 @@ const mapStateToProps = ({
   const isUndoAction = future.length > 0;
   const isAwating = connected && awaiting;
   const isCpuTurn = matchType === ONE_VS_CPU && turn === cpuTurn;
-  const isBlack = connected && side === Side.black;
+  const isBlack =
+    (connected && side === Side.black) ||
+    (matchType === ONE_VS_CPU && playerSide === Side.black);
 
   return {
     detectEnPassantTile(tileName) {
