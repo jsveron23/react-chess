@@ -84,7 +84,7 @@ function getMaterialAnalysis(attackerPiece, capturedPiece) {
  * @return {string}
  */
 export function formatMoveLabel(move) {
-  const { node, isCaptured, pretendCode } = move;
+  const { node, isCaptured } = move;
   if (!node || node.length < 2) return '?';
 
   const toCode = node[node.length - 1];
@@ -95,7 +95,10 @@ export function formatMoveLabel(move) {
   // Castling: King moved 2 files
   const fromFile = fromCode[2];
   const toFile = toCode[2];
-  if (fromPiece === 'K' && Math.abs(fromFile.charCodeAt(0) - toFile.charCodeAt(0)) === 2) {
+  if (
+    fromPiece === 'K' &&
+    Math.abs(fromFile.charCodeAt(0) - toFile.charCodeAt(0)) === 2
+  ) {
     return toFile < fromFile ? 'O-O-O' : 'O-O';
   }
 
