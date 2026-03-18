@@ -85,36 +85,40 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => {
         disabled: isConnected,
         onClick: () => dispatch(toggleFlip()),
       },
-      {
-        key: SAVE,
-        title: `Save ${lastSaved}`,
-        disabled: thinking || noUndoYet || isConnected,
-        onClick: () => dispatch(saveGame()),
-      },
-      {
-        key: IMPORT,
-        title: 'Import',
-        disabled: thinking || isConnected,
-        onClick: () => dispatch(importGame()),
-      },
+      [
+        {
+          key: SAVE,
+          title: `Save ${lastSaved}`,
+          disabled: thinking || noUndoYet || isConnected,
+          onClick: () => dispatch(saveGame()),
+        },
+        {
+          key: IMPORT,
+          title: 'Import',
+          disabled: thinking || isConnected,
+          onClick: () => dispatch(importGame()),
+        },
+      ],
       {
         key: EXPORT,
         title: 'Export as Snapshot',
         disabled: thinking || noUndoYet || isConnected,
         onClick: () => dispatch(exportGame()),
       },
-      {
-        key: EXPORT_PGN,
-        title: 'Export as PGN',
-        disabled: thinking || noUndoYet || isConnected,
-        onClick: () => dispatch(exportGameAsPgn()),
-      },
-      {
-        key: EXPORT_FEN,
-        title: 'Export as FEN',
-        disabled: thinking || noUndoYet || isConnected,
-        onClick: () => dispatch(exportGameAsFen()),
-      },
+      [
+        {
+          key: EXPORT_PGN,
+          title: 'Export as PGN',
+          disabled: thinking || noUndoYet || isConnected,
+          onClick: () => dispatch(exportGameAsPgn()),
+        },
+        {
+          key: EXPORT_FEN,
+          title: 'Export as FEN',
+          disabled: thinking || noUndoYet || isConnected,
+          onClick: () => dispatch(exportGameAsFen()),
+        },
+      ],
       {
         key: ONLINE,
         title: 'Network (WebRTC)',
