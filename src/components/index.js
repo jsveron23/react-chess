@@ -1,6 +1,6 @@
-export { Menu } from './Menu';
-export { Diagram } from './Diagram';
-export { Sheet } from './Sheet';
+export { Menu } from './menu';
+export { Diagram } from './diagram';
+export { Sheet } from './sheet';
 export { NotiBar } from './noti-bar';
 export { CpuSideSelector } from './cpu-side-selector';
 export { DifficultySelector } from './difficulty-selector';

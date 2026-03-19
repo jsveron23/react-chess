@@ -29,7 +29,8 @@ const App = () => {
 
   return (
     <FlexRow height={fh} minWidth={minMaxWidth} maxWidth={minMaxWidth}>
-      <FlexOne
+      <Box
+        width="220px"
         backgroundColor={color.gray1}
         borderLeft={border}
         borderRight={border}
@@ -64,21 +65,11 @@ const App = () => {
 
           <NotiBarContainer />
         </FlexCol>
-      </FlexOne>
+      </Box>
 
       <Relative flexBasis={height}>
         <DiagramContainer />
       </Relative>
-
-      <Box
-        width={hintPanel.width}
-        borderLeft={border}
-        borderRight={border}
-        borderBottom={border}
-        style={{ flexShrink: 0, height: '100%', overflow: 'hidden' }}
-      >
-        <HintPanelContainer />
-      </Box>
 
       <Box
         width={analysisPanel.width}
@@ -88,6 +79,16 @@ const App = () => {
         style={{ flexShrink: 0, height: '100%', overflow: 'hidden' }}
       >
         <AnalysisPanelContainer />
+      </Box>
+
+      <Box
+        width={hintPanel.width}
+        borderLeft={border}
+        borderRight={border}
+        borderBottom={border}
+        style={{ flexShrink: 0, height: '100%', overflow: 'hidden' }}
+      >
+        <HintPanelContainer />
       </Box>
     </FlexRow>
   );
