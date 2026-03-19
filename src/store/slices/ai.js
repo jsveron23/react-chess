@@ -16,6 +16,9 @@ const aiSlice = createSlice({
     toggleThinking: (state) => {
       state.thinking = !state.thinking;
     },
+    setThinking: (state, action) => {
+      state.thinking = action.payload;
+    },
     // primitive: set playerSide + cpuTurn directly (thunk updateCpuSide dispatches this)
     setCpuSide: (state, action) => {
       state.playerSide = action.payload;
@@ -38,6 +41,11 @@ const aiSlice = createSlice({
   },
 });
 
-export const { toggleThinking, setCpuSide, updatePlayerSide, updateDepth } =
-  aiSlice.actions;
+export const {
+  toggleThinking,
+  setThinking,
+  setCpuSide,
+  updatePlayerSide,
+  updateDepth,
+} = aiSlice.actions;
 export default aiSlice.reducer;

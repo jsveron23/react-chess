@@ -4,8 +4,8 @@ import * as Chess from 'chess/es';
 import { ONE_VS_ONE, ONE_VS_CPU } from '~/presets';
 import { worker } from '~/services/worker/ai-worker';
 import { debug } from '~/utils';
-import { toggleThinking } from './ai';
 import { measureAxis } from './animate';
+import { setThinking } from '../slices/ai';
 import {
   updateTurn,
   updateSnapshot,
@@ -340,7 +340,7 @@ export function playCpu() {
       return;
     }
 
-    dispatch(toggleThinking());
+    dispatch(setThinking(true));
 
     const startTime = Date.now();
 
@@ -374,12 +374,12 @@ export function playCpu() {
               analysisData
             )
           );
-          dispatch(toggleThinking());
+          dispatch(setThinking(false));
         } else {
           debug.err('something went wrong!', bestState);
         }
       },
-      () => dispatch(toggleThinking())
+      () => dispatch(setThinking(false))
     );
   };
 }
