@@ -6,4 +6,3 @@ export { AnalysisPanelContainer } from './analysis-panel-container';
 export { CpuSideSelectorContainer } from './cpu-side-selector-container';
 export { OneVsOneSideSelectorContainer } from './one-vs-one-side-selector-container';
 export { DifficultySelectorContainer } from './difficulty-selector-container';
-export { HintPanelContainer } from './hint-panel-container';

@@ -11,7 +11,9 @@ import {
   toggleFlip,
   updateMatchType,
   playCpu,
+  requestHint,
 } from '~/store/actions';
+import { clearHint } from '~/store/slices/hint';
 import {
   ONE_VS_ONE,
   IMPORT,
@@ -21,26 +23,51 @@ import {
   FLIP,
   ONE_VS_CPU,
 } from '~/presets';
+import { Turn } from 'chess/es';
 import { SideSelectorContainer } from './side-selector-container';
 import { DifficultySelectorContainer } from './difficulty-selector-container';
 
 const mapStateToProps = ({
-  ai: { thinking, playerSide },
+  ai: { thinking, playerSide, depth },
   general: { matchType },
-  ingame: { past },
-}) => ({ past, thinking, matchType, playerSide });
+  hint: { data: hintData, loading: hintLoading },
+  ingame: {
+    past,
+    present: { turn },
+  },
+}) => ({
+  past,
+  thinking,
+  matchType,
+  playerSide,
+  depth,
+  hintData,
+  hintLoading,
+  turn,
+});
 
 const mapDispatchToProps = (dispatch) => ({ dispatch });
 
 const mergeProps = (stateProps, dispatchProps, ownProps) => {
   const noUndoYet = stateProps.past.length === 0;
-  const { thinking } = stateProps;
+  const { thinking, matchType, playerSide, past, turn } = stateProps;
   const { dispatch } = dispatchProps;
+
+  const hintEnabled =
+    matchType === ONE_VS_CPU &&
+    !thinking &&
+    Turn[playerSide] === turn &&
+    past.length >= (playerSide === 'w' ? 2 : 1);
 
   return {
     ...stateProps,
     ...dispatchProps,
     ...ownProps,
+    hintEnabled,
+    onHint: () => {
+      dispatch(clearHint());
+      dispatch(requestHint());
+    },
 
     ingameMenu: [
       {

@@ -14,7 +14,6 @@ import {
   SheetContainer,
   NotiBarContainer,
   AnalysisPanelContainer,
-  HintPanelContainer,
 } from '~/containers';
 import { useTheme, useWindowSize } from '~/hooks';
 import Logo from '~/assets/logo.svg';
@@ -22,10 +21,8 @@ import '~/styles/app.css';
 
 const App = () => {
   const [, height] = useWindowSize();
-  const { sidebar, analysisPanel, hintPanel, logo, fh, border, color } =
-    useTheme();
-  const minMaxWidth =
-    height + sidebar.width + hintPanel.width + analysisPanel.width;
+  const { sidebar, analysisPanel, logo, fh, border, color } = useTheme();
+  const minMaxWidth = height + sidebar.width + analysisPanel.width;
 
   return (
     <FlexRow height={fh} minWidth={minMaxWidth} maxWidth={minMaxWidth}>
@@ -79,16 +76,6 @@ const App = () => {
         style={{ flexShrink: 0, height: '100%', overflow: 'hidden' }}
       >
         <AnalysisPanelContainer />
-      </Box>
-
-      <Box
-        width={hintPanel.width}
-        borderLeft={border}
-        borderRight={border}
-        borderBottom={border}
-        style={{ flexShrink: 0, height: '100%', overflow: 'hidden' }}
-      >
-        <HintPanelContainer />
       </Box>
     </FlexRow>
   );
