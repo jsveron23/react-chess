@@ -6,25 +6,25 @@ Programs must be written for people to read, and only incidentally for machines 
 
 ## Overview
 
-React Chess 2 is a full-featured chess application built with modern React and Redux. It provides a complete chess experience with a responsive UI, AI opponent, real-time peer-to-peer gameplay, and comprehensive game controls.
+React Chess 2 is a full-featured chess application built with modern React and Redux Toolkit. It provides a complete chess experience with a responsive UI, AI opponent, and comprehensive game controls.
 
 **Live Demo:** https://react-chess.app
 
 ## Features
 
-- ♟ **Full Chess Implementation** - Complete chess rules and piece movement validation
-- 🤖 **AI Opponent** - Built-in artificial intelligence for single-player games
-- 👥 **Multiplayer** - Real-time peer-to-peer gameplay using WebRTC (PeerJS)
-- 📱 **Responsive Design** - Works seamlessly on desktop and mobile devices
-- ⏱️ **Game Controls** - Undo/redo moves, reset board, game history
-- 🎨 **Customizable UI** - Theme support and board customization options
-- 📊 **Game Tracking** - Track moves and game history
-- ♿ **Performance Optimized** - Efficient rendering and memoization
+- **Full Chess Implementation** - Complete chess rules and piece movement validation
+- **AI Opponent** - Built-in artificial intelligence with adjustable difficulty for single-player games
+- **CPU Analysis** - Decision tree visualization and move evaluation
+- **Move Hints** - Suggested moves to assist during gameplay
+- **Responsive Design** - Works seamlessly on desktop and mobile devices
+- **Game Controls** - Undo/redo moves, reset board, game history
+- **Theme Support** - Board customization options
+- **Game Tracking** - Move notation and game history sheet
+- **Performance Optimized** - Efficient rendering and memoization
 
 ## Prerequisites
 
 - **Node.js runtime:** [Bun](https://bun.sh/) v1.0.0 or later
-  - Alternatively, you can use npm or yarn (adjust commands accordingly)
 
 ## Installation & Setup
 
@@ -73,11 +73,19 @@ src/
 ├── app.js                  # Root component
 ├── index.js                # Entry point
 ├── components/             # Reusable React components
+│   ├── diagram/            # Board diagram sub-components
+│   ├── menu/               # Menu sub-components
+│   └── sheet/              # Game notation components
 ├── containers/             # Container components (logic + UI)
 ├── hooks/                  # Custom React hooks
 ├── services/               # Business logic and services
+│   ├── io/                 # Compression and I/O
+│   ├── storage/            # Local storage
 │   └── worker/             # Web Worker for AI calculations
-├── store/                  # Redux store, reducers, actions
+├── store/                  # Redux store configuration
+│   ├── actions/            # Action creators
+│   ├── slices/             # Redux Toolkit slices
+│   └── middlewares/        # Custom middleware
 ├── utils/                  # Utility functions
 ├── presets/                # Game presets and configurations
 ├── styles/                 # CSS stylesheets
@@ -92,14 +100,14 @@ packages/                   # Monorepo workspaces
 
 ### Core
 - **React** v19 - UI framework
-- **Redux** - State management
-- **Redux Thunk** - Async actions
+- **Redux Toolkit** - State management with slices
+- **React Redux** - React bindings for Redux
 - **Redux Undo** - Undo/redo functionality
 
-### Networking & Performance
-- **PeerJS** - WebRTC peer-to-peer communication
+### Performance
 - **Memoize One** - Performance optimization
 - **Fast Deep Equal** - Efficient equality checking
+- **React Use Measure** - DOM measurement hook
 
 ### Utilities
 - **Ramda** - Functional programming utilities
@@ -108,9 +116,11 @@ packages/                   # Monorepo workspaces
 - **React Spinners** - Loading indicators
 
 ### Development Tools
-- **Bun** - JavaScript runtime and package manager
+- **Bun** - JavaScript runtime, package manager, and test runner
 - **ESLint** - Code linting
 - **Prettier** - Code formatting
+- **Husky** - Git hooks
+- **lint-staged** - Run linters on staged files
 - **http-server** - Local development server
 
 ## Deployment
