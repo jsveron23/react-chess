@@ -13,7 +13,6 @@ import { Diagram, Menu, Sheet, NotiBar, AnalysisPanel } from '~/components';
 import { useTheme, useWindowSize } from '~/hooks';
 import { ONE_VS_CPU } from '~/presets/menu-keys';
 import Logo from '~/assets/logo.svg';
-import '~/styles/app.css';
 
 const App = () => {
   const isCpu = useSelector(({ general }) => general.matchType === ONE_VS_CPU);
