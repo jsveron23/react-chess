@@ -73,7 +73,7 @@ const Diagram = () => {
   return (
     <DiagramProvider
       value={{
-        flip: flipState || isBlack,
+        flip: flipState !== isBlack,
         animate: isUndoAction ? undefined : animate,
         getPKey: getPKeyByTile(snapshot),
         detectOn: flippedIncludes([selectedCode, ...movableTiles]),
