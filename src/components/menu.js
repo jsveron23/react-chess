@@ -29,6 +29,7 @@ import {
 } from '~/presets';
 import { MenuItems } from './menu/menu-items';
 import { HintDialog } from './hint-dialog';
+import { CheckmateDialog } from './checkmate-dialog';
 import { CpuSideSelector } from './cpu-side-selector';
 import { DifficultySelector } from './difficulty-selector';
 
@@ -59,16 +60,16 @@ const Menu = () => {
 
   const ingameMenu = [
     {
-      key: ActionTypes.UNDO,
-      title: 'Undo',
-      disabled: noUndoYet,
-      onClick: () => dispatch(undo()),
-    },
-    {
       key: FLIP,
       title: 'Flip diagram',
       disabled: false,
       onClick: () => dispatch(toggleFlip()),
+    },
+    {
+      key: ActionTypes.UNDO,
+      title: 'Undo',
+      disabled: noUndoYet,
+      onClick: () => dispatch(undo()),
     },
   ];
 
@@ -184,6 +185,7 @@ const Menu = () => {
       </FlexCol>
       <Hr is="p" marginTop={10} marginBottom={10} />
       <MenuItems data={mainMenu} />
+      <CheckmateDialog />
       <HintDialog
         isOpen={hintOpen}
         onClose={() => setHintOpen(false)}
