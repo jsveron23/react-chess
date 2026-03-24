@@ -79,6 +79,107 @@ function getMaterialAnalysis(attackerPiece, capturedPiece) {
 }
 
 /**
+ * Convert a centipawn score to white's win probability (0–100).
+ * Uses a tanh sigmoid so ±400 cp ≈ ±22%, ±800 cp ≈ ±38%.
+ * @param {number} score
+ * @return {number} integer 0–100
+ */
+export function winProbability(score) {
+  return Math.round(50 + 50 * Math.tanh((score ?? 0) / 400));
+}
+
+/**
+ * Return a move-quality label and colour.
+ * When prevScore is available it reflects move quality (delta in CPU's favour).
+ * When not, it falls back to an absolute position assessment.
+ * @param {number} score - centipawn eval after the move
+ * @param {number|null} prevScore - centipawn eval before the move
+ * @param {'w'|'b'} moveSide - which side made the move
+ * @return {{ label: string, color: string }}
+ */
+export function getMoveQualityLabel(score, prevScore, moveSide) {
+  if (prevScore != null) {
+    const delta =
+      moveSide === 'b' ? prevScore - (score ?? 0) : (score ?? 0) - prevScore;
+    if (delta > 150) return { label: 'Excellent!', color: '#2a7a2a' };
+    if (delta > 60) return { label: 'Good move', color: '#4a8a4a' };
+    if (delta > 10) return { label: 'Solid', color: '#666' };
+    if (delta > -60) return { label: 'Neutral', color: '#888' };
+
+    
+return { label: 'Inaccuracy', color: '#b05010' };
+  }
+  // No previous score — assess absolute position
+  const adj = moveSide === 'b' ? -(score ?? 0) : score ?? 0;
+  if (adj > 300) return { label: 'Winning', color: '#2a7a2a' };
+  if (adj > 100) return { label: 'Advantage', color: '#4a8a4a' };
+  if (adj > 30) return { label: 'Slight edge', color: '#777' };
+  if (adj > -30) return { label: 'Equal', color: '#777' };
+
+  
+return { label: 'Difficult', color: '#b05010' };
+}
+
+/**
+ * Return a plain-English label describing how forced the chosen move was,
+ * based on the score gap between the top two candidates.
+ * @param {Array} topMoves
+ * @return {string|null}
+ */
+export function getForcedLabel(topMoves) {
+  if (!topMoves || topMoves.length < 2) return null;
+  const gap = Math.abs(topMoves[0].score - topMoves[1].score);
+  if (gap > 200) return 'Only good move';
+  if (gap > 80) return 'Clear best move';
+  if (gap > 30) return 'Slight preference';
+
+  
+return 'Multiple options';
+}
+
+/**
+ * Return a plain-English description of which evaluation factor is dominant.
+ * @param {Object} breakdown
+ * @return {string|null}
+ */
+export function getDominantFactor(breakdown) {
+  if (!breakdown) return null;
+  const factors = [
+    { label: 'Material', value: breakdown.material, max: 2000 },
+    { label: 'Position', value: breakdown.position, max: 150 },
+    { label: 'Pawn Structure', value: breakdown.pawnStructure, max: 80 },
+    { label: 'King Safety', value: breakdown.kingSafety, max: 150 },
+  ];
+  const dominant = factors.reduce((a, b) =>
+    Math.abs(a.value) / a.max > Math.abs(b.value) / b.max ? a : b
+  );
+  if (Math.abs(dominant.value) / dominant.max < 0.1) return null;
+  const side = dominant.value > 0 ? 'White' : 'Black';
+
+  
+return `${side} leads in ${dominant.label}`;
+}
+
+/**
+ * Convert a raw material centipawn score to a human-readable piece description.
+ * @param {number} material
+ * @return {string}
+ */
+export function getMaterialDescription(material) {
+  if (material == null) return null;
+  const abs = Math.abs(material);
+  const side = material > 0 ? 'White' : 'Black';
+  if (abs < 50) return 'Material is even';
+  if (abs >= 850) return `${side} is up a Queen`;
+  if (abs >= 450) return `${side} is up a Rook`;
+  if (abs >= 250) return `${side} is up a minor piece`;
+  if (abs >= 80) return `${side} is up a pawn`;
+
+  
+return 'Material is roughly even';
+}
+
+/**
  * Format a move from node array into a readable label.
  * @param {{ node: string[], isCaptured: boolean, pretendCode: string }} move
  * @return {string}

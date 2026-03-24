@@ -87,6 +87,46 @@ const AlternativeScoreBar = ({ score, bestScore }) => {
   );
 };
 
+const WinProbabilityBar = ({ whitePct }) => {
+  const W = 260;
+  const H = 10;
+  const whiteW = Math.round((whitePct / 100) * W);
+  const blackW = W - whiteW;
+
+  return (
+    <Box>
+      <svg width={W} height={H} style={{ display: 'block' }}>
+        <rect x={0} y={0} width={W} height={H} fill="#888" rx={3} />
+        <rect x={blackW} y={0} width={whiteW} height={H} fill="#222" rx={3} />
+      </svg>
+      <FlexRow justifyContent="space-between" marginTop={3}>
+        <Text fontSize={9} color="#888">
+          Black {100 - whitePct}%
+        </Text>
+        <Text fontSize={9} color="#444">
+          White {whitePct}%
+        </Text>
+      </FlexRow>
+    </Box>
+  );
+};
+
+const QualityBadge = ({ label, badgeColor }) => (
+  <Box
+    style={{
+      display: 'inline-block',
+      padding: '2px 8px',
+      borderRadius: 10,
+      border: `1px solid ${badgeColor}`,
+      backgroundColor: `${badgeColor}22`,
+    }}
+  >
+    <Text fontSize={10} fontWeight="bold" color={badgeColor}>
+      {label}
+    </Text>
+  </Box>
+);
+
 const SectionHeader = ({ children, color }) => (
   <Text
     display="block"
@@ -104,4 +144,12 @@ const Divider = ({ border }) => (
   <Box borderTop={border} marginTop={12} marginBottom={12} />
 );
 
-export { EvalBar, BreakdownBar, AlternativeScoreBar, SectionHeader, Divider };
+export {
+  EvalBar,
+  BreakdownBar,
+  AlternativeScoreBar,
+  WinProbabilityBar,
+  QualityBadge,
+  SectionHeader,
+  Divider,
+};

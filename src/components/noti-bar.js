@@ -1,8 +1,11 @@
 import { memo, useState, useEffect } from 'react';
+import { useSelector } from 'react-redux';
 import { Flex, FlexOne, FlexRow, FlexMiddle, Text, Loading } from 'ui/es';
 import { useTheme } from '~/hooks';
 
-const NotiBar = memo(({ turn, connected, awaiting, thinking }) => {
+const NotiBar = memo(({ connected, awaiting }) => {
+  const thinking = useSelector(({ ai }) => ai.thinking);
+  const turn = useSelector(({ ingame }) => ingame.present.turn);
   const [elapsed, setElapsed] = useState(0);
 
   useEffect(() => {

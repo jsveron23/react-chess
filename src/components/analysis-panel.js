@@ -1,10 +1,23 @@
+import { useSelector, useDispatch } from 'react-redux';
 import { Box, Text, FlexRow, FlexCol, FlexOne, Scroll } from 'ui/es';
 import { useTheme } from '~/hooks';
-import { analyzeCpuMove, formatMoveLabel } from '~/utils/analyze-cpu-move';
+import { setIndex } from '~/store/slices/analysis';
+import { ONE_VS_CPU } from '~/presets/menu-keys';
+import {
+  analyzeCpuMove,
+  formatMoveLabel,
+  winProbability,
+  getMoveQualityLabel,
+  getForcedLabel,
+  getDominantFactor,
+  getMaterialDescription,
+} from '~/utils/analyze-cpu-move';
 import {
   EvalBar,
   BreakdownBar,
   AlternativeScoreBar,
+  WinProbabilityBar,
+  QualityBadge,
   SectionHeader,
   Divider,
 } from './sheet/eval-components';
@@ -25,14 +38,23 @@ const PaginationButton = ({ onClick, disabled, children, color, border }) => (
   </Box>
 );
 
-const AnalysisContent = ({ sideData, depth, color, border }) => {
+const AnalysisContent = ({ sideData, depth, color, border, prevScore }) => {
   const analysis = analyzeCpuMove(sideData, depth);
   const { score, topMoves, breakdown } = sideData;
   const hasScore = score != null;
   const hasBreakdown = breakdown != null;
   const hasTopMoves = topMoves && topMoves.length > 0;
-  const isMaximizer = score != null && score >= 0;
   const bestScore = hasTopMoves ? topMoves[0].score : 0;
+  const isMaximizer = score != null && score >= 0;
+
+  const moveSide = sideData.from?.[0]?.[0];
+  const whitePct = hasScore ? winProbability(score) : null;
+  const quality = hasScore
+    ? getMoveQualityLabel(score, prevScore ?? null, moveSide)
+    : null;
+  const forcedLabel = getForcedLabel(topMoves);
+  const dominantFactor = getDominantFactor(breakdown);
+  const materialDesc = getMaterialDescription(breakdown?.material);
 
   return (
     <Box padding="12px 16px">
@@ -40,22 +62,22 @@ const AnalysisContent = ({ sideData, depth, color, border }) => {
       {hasScore && (
         <>
           <SectionHeader color={color}>Position Score</SectionHeader>
-          <FlexRow justifyContent="center" marginBottom={4}>
+          <FlexRow justifyContent="center" marginBottom={6}>
             <EvalBar score={score} />
           </FlexRow>
-          <Text
-            display="block"
-            fontSize={10}
-            color={color.gray4}
-            textAlign="center"
-            marginBottom={2}
-          >
-            {score > 50
-              ? '▲ White is better'
-              : score < -50
-              ? '▼ Black is better'
-              : '≈ Position is roughly equal'}
-          </Text>
+          <FlexRow justifyContent="center" marginBottom={6}>
+            <WinProbabilityBar whitePct={whitePct} />
+          </FlexRow>
+          <FlexRow justifyContent="center" alignItems="center" marginBottom={4}>
+            {quality && (
+              <QualityBadge label={quality.label} badgeColor={quality.color} />
+            )}
+            {forcedLabel && (
+              <Text fontSize={10} color={color.gray4} marginLeft={8}>
+                {forcedLabel}
+              </Text>
+            )}
+          </FlexRow>
           <Divider border={border} />
         </>
       )}
@@ -79,14 +101,26 @@ const AnalysisContent = ({ sideData, depth, color, border }) => {
         <>
           <Divider border={border} />
           <SectionHeader color={color}>Evaluation Breakdown</SectionHeader>
-          <Text
-            display="block"
-            fontSize={10}
-            color={color.gray4}
-            marginBottom={8}
-          >
-            Each bar shows White (dark) vs Black (gray) advantage
-          </Text>
+          {dominantFactor && (
+            <Text
+              display="block"
+              fontSize={11}
+              color={color.black}
+              marginBottom={4}
+            >
+              {dominantFactor}
+            </Text>
+          )}
+          {materialDesc && (
+            <Text
+              display="block"
+              fontSize={10}
+              color={color.gray4}
+              marginBottom={8}
+            >
+              {materialDesc} · each bar: White (dark) vs Black (gray)
+            </Text>
+          )}
           <BreakdownBar
             label="Material"
             score={breakdown.material}
@@ -130,6 +164,28 @@ const AnalysisContent = ({ sideData, depth, color, border }) => {
         <>
           <Divider border={border} />
           <SectionHeader color={color}>Alternatives Considered</SectionHeader>
+          {topMoves.length >= 2 &&
+            (() => {
+              const alt = topMoves[1];
+              const altLabel = formatMoveLabel(alt);
+              const sign = alt.score > 0 ? '+' : '';
+              const altScore = `${sign}${(alt.score / 100).toFixed(2)}`;
+
+              return (
+                <Text
+                  display="block"
+                  fontSize={11}
+                  color={color.black}
+                  marginBottom={6}
+                >
+                  Best alternative:{' '}
+                  <Text fontFamily="monospace" fontWeight="bold">
+                    {altLabel}
+                  </Text>
+                  <Text color={color.gray4}> ({altScore})</Text>
+                </Text>
+              );
+            })()}
           <Text
             display="block"
             fontSize={10}
@@ -207,12 +263,20 @@ const AnalysisContent = ({ sideData, depth, color, border }) => {
   );
 };
 
-const AnalysisPanel = ({ history, index, depth, onSetIndex, isCpu }) => {
+const AnalysisPanel = () => {
+  const history = useSelector(({ analysis }) => analysis.history);
+  const index = useSelector(({ analysis }) => analysis.index);
+  const depth = useSelector(({ ai }) => ai.depth);
+  const isCpu = useSelector(({ general }) => general.matchType === ONE_VS_CPU);
+  const dispatch = useDispatch();
+  const onSetIndex = (n) => dispatch(setIndex(n));
+
   if (!isCpu) return null;
   const { color, border } = useTheme();
   const isEmpty = history.length === 0;
   const isLatest = index === history.length - 1;
   const current = index >= 0 ? history[index] : null;
+  const prevScore = index > 0 ? history[index - 1]?.score ?? null : null;
 
   return (
     <FlexCol height="100%">
@@ -252,6 +316,7 @@ const AnalysisPanel = ({ history, index, depth, onSetIndex, isCpu }) => {
             depth={depth}
             color={color}
             border={border}
+            prevScore={prevScore}
           />
         )}
       </Scroll>

@@ -1,24 +1,132 @@
 import { useState } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
+import { ActionTypes, ActionCreators } from 'redux-undo';
+import { Turn } from 'chess/es';
 import { Hr, FlexCol, FlexRow, Text, Button } from 'ui/es';
-import { ONE_VS_CPU, ONE_VS_ONE } from '~/presets';
+import { worker } from '~/services/worker/ai-worker';
+import {
+  undo,
+  importGame,
+  exportGame,
+  exportGameAsPgn,
+  exportGameAsFen,
+  toggleFlip,
+  updateMatchType,
+  playCpu,
+  requestHint,
+  setSide,
+  updateTurn,
+} from '~/store/actions';
+import { clearHint } from '~/store/slices/hint';
+import {
+  ONE_VS_ONE,
+  ONE_VS_CPU,
+  IMPORT,
+  EXPORT,
+  EXPORT_PGN,
+  EXPORT_FEN,
+  FLIP,
+} from '~/presets';
 import { MenuItems } from './menu/menu-items';
 import { HintDialog } from './hint-dialog';
+import { CpuSideSelector } from './cpu-side-selector';
+import { DifficultySelector } from './difficulty-selector';
 
-const Menu = ({
-  ingameMenu,
-  mainMenu,
-  matchType,
-  onGameModeChange,
-  cpuChildren: CpuChildren,
-  onStart,
-  onReset,
-  hintEnabled,
-  hintData,
-  hintLoading,
-  depth,
-  onHint,
-}) => {
+const Menu = () => {
   const [hintOpen, setHintOpen] = useState(false);
+
+  const thinking = useSelector(({ ai }) => ai.thinking);
+  const playerSide = useSelector(({ ai }) => ai.playerSide);
+  const depth = useSelector(({ ai }) => ai.depth);
+  const matchType = useSelector(({ general }) => general.matchType);
+  const hintData = useSelector(({ hint }) => hint.data);
+  const hintLoading = useSelector(({ hint }) => hint.loading);
+  const past = useSelector(({ ingame }) => ingame.past);
+  const turn = useSelector(({ ingame }) => ingame.present.turn);
+  const dispatch = useDispatch();
+
+  const noUndoYet = past.length === 0;
+  const hintEnabled =
+    matchType === ONE_VS_CPU &&
+    !thinking &&
+    Turn[playerSide] === turn &&
+    past.length >= (playerSide === 'w' ? 2 : 1);
+
+  const onHint = () => {
+    dispatch(clearHint());
+    dispatch(requestHint());
+  };
+
+  const ingameMenu = [
+    {
+      key: ActionTypes.UNDO,
+      title: 'Undo',
+      disabled: noUndoYet,
+      onClick: () => dispatch(undo()),
+    },
+  ];
+
+  const onGameModeChange = (value) => {
+    worker.close();
+    dispatch(updateMatchType(value));
+  };
+
+  const onStart = () => {
+    worker.close();
+    dispatch(updateMatchType(ONE_VS_CPU));
+    dispatch(playCpu());
+  };
+
+  const onReset = () => dispatch(updateMatchType(ONE_VS_ONE));
+
+  const onSelectSide = (side) => {
+    worker.close();
+    dispatch(setSide(side));
+    if (matchType === ONE_VS_ONE) {
+      dispatch(updateMatchType(ONE_VS_ONE));
+      if (side === 'b') {
+        dispatch(updateTurn(Turn.b));
+        dispatch(ActionCreators.clearHistory());
+      }
+    } else if (matchType === ONE_VS_CPU) {
+      dispatch(updateMatchType(ONE_VS_CPU));
+    }
+  };
+
+  const mainMenu = [
+    {
+      key: FLIP,
+      title: 'Flip diagram (Up & Down)',
+      disabled: false,
+      onClick: () => dispatch(toggleFlip()),
+    },
+    {
+      key: IMPORT,
+      title: 'Import a snapshot',
+      disabled: thinking,
+      onClick: () => dispatch(importGame()),
+    },
+    {
+      key: EXPORT,
+      title: 'Export a snapshot',
+      disabled: thinking || noUndoYet,
+      onClick: () => dispatch(exportGame()),
+    },
+    [
+      {
+        key: EXPORT_PGN,
+        title: 'Export as PGN',
+        disabled: thinking || noUndoYet,
+        onClick: () => dispatch(exportGameAsPgn()),
+      },
+      {
+        key: EXPORT_FEN,
+        title: 'Export as FEN',
+        disabled: thinking || noUndoYet,
+        onClick: () => dispatch(exportGameAsFen()),
+      },
+    ],
+  ];
 
   return (
     <>
@@ -43,7 +151,12 @@ const Menu = ({
             <option value="1vscpu">1 vs CPU</option>
           </select>
         </FlexRow>
-        {matchType === ONE_VS_CPU && CpuChildren && <CpuChildren />}
+        {matchType === ONE_VS_CPU && (
+          <>
+            <CpuSideSelector playerSide={playerSide} onSelect={onSelectSide} />
+            <DifficultySelector />
+          </>
+        )}
         {matchType === ONE_VS_CPU && <Button onClick={onStart}>Start</Button>}
         {matchType === ONE_VS_CPU && (
           <Button

@@ -1,4 +1,4 @@
-import { connect } from 'react-redux';
+import { useSelector } from 'react-redux';
 import {
   Box,
   Relative,
@@ -9,19 +9,14 @@ import {
   Text,
   Scroll,
 } from 'ui/es';
-import {
-  DiagramContainer,
-  MenuContainer,
-  SheetContainer,
-  NotiBarContainer,
-  AnalysisPanelContainer,
-} from '~/containers';
+import { Diagram, Menu, Sheet, NotiBar, AnalysisPanel } from '~/components';
 import { useTheme, useWindowSize } from '~/hooks';
 import { ONE_VS_CPU } from '~/presets/menu-keys';
 import Logo from '~/assets/logo.svg';
 import '~/styles/app.css';
 
-const App = ({ isCpu }) => {
+const App = () => {
+  const isCpu = useSelector(({ general }) => general.matchType === ONE_VS_CPU);
   const [, height] = useWindowSize();
   const { sidebar, analysisPanel, logo, fh, border, color } = useTheme();
   const minMaxWidth =
@@ -51,7 +46,7 @@ const App = ({ isCpu }) => {
           </Flex>
 
           <Box padding={20} paddingTop={0} paddingBottom={10} marginTop={20}>
-            <MenuContainer />
+            <Menu />
           </Box>
 
           <Scroll
@@ -60,15 +55,15 @@ const App = ({ isCpu }) => {
             margin={20}
             marginTop={0}
           >
-            <SheetContainer />
+            <Sheet />
           </Scroll>
 
-          <NotiBarContainer />
+          <NotiBar />
         </FlexCol>
       </Box>
 
       <Relative flexBasis={height}>
-        <DiagramContainer />
+        <Diagram />
       </Relative>
 
       {isCpu && (
@@ -79,15 +74,11 @@ const App = ({ isCpu }) => {
           borderBottom={border}
           style={{ flexShrink: 0, height: '100%', overflow: 'hidden' }}
         >
-          <AnalysisPanelContainer />
+          <AnalysisPanel />
         </Box>
       )}
     </FlexRow>
   );
 };
 
-const ConnectedApp = connect(({ general: { matchType } }) => ({
-  isCpu: matchType === ONE_VS_CPU,
-}))(App);
-
-export { ConnectedApp as App };
+export { App };

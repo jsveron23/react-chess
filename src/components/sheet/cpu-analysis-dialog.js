@@ -1,11 +1,21 @@
 import { createPortal } from 'react-dom';
 import { Box, Text, FlexMiddle, FlexRow } from 'ui/es';
 import { useTheme } from '~/hooks';
-import { analyzeCpuMove, formatMoveLabel } from '~/utils/analyze-cpu-move';
+import {
+  analyzeCpuMove,
+  formatMoveLabel,
+  winProbability,
+  getMoveQualityLabel,
+  getForcedLabel,
+  getDominantFactor,
+  getMaterialDescription,
+} from '~/utils/analyze-cpu-move';
 import {
   EvalBar,
   BreakdownBar,
   AlternativeScoreBar,
+  WinProbabilityBar,
+  QualityBadge,
   SectionHeader,
   Divider,
 } from './eval-components';
@@ -29,6 +39,13 @@ const CpuAnalysisDialog = ({ sideData, depth, onClose }) => {
   const hasBreakdown = breakdown != null;
   const hasTopMoves = topMoves && topMoves.length > 0;
   const bestScore = hasTopMoves ? topMoves[0].score : 0;
+
+  const moveSide = sideData.from?.[0]?.[0];
+  const whitePct = hasScore ? winProbability(score) : null;
+  const quality = hasScore ? getMoveQualityLabel(score, null, moveSide) : null;
+  const forcedLabel = getForcedLabel(topMoves);
+  const dominantFactor = getDominantFactor(breakdown);
+  const materialDesc = getMaterialDescription(breakdown?.material);
 
   return createPortal(
     <FlexMiddle
@@ -89,22 +106,29 @@ const CpuAnalysisDialog = ({ sideData, depth, onClose }) => {
           {hasScore && (
             <>
               <SectionHeader color={color}>Position Score</SectionHeader>
-              <FlexRow justifyContent="center" marginBottom={4}>
+              <FlexRow justifyContent="center" marginBottom={6}>
                 <EvalBar score={score} />
               </FlexRow>
-              <Text
-                display="block"
-                fontSize={10}
-                color={color.gray4}
-                textAlign="center"
-                marginBottom={2}
+              <FlexRow justifyContent="center" marginBottom={6}>
+                <WinProbabilityBar whitePct={whitePct} />
+              </FlexRow>
+              <FlexRow
+                justifyContent="center"
+                alignItems="center"
+                marginBottom={4}
               >
-                {score > 50
-                  ? '▲ White is better'
-                  : score < -50
-                  ? '▼ Black is better'
-                  : '≈ Position is roughly equal'}
-              </Text>
+                {quality && (
+                  <QualityBadge
+                    label={quality.label}
+                    badgeColor={quality.color}
+                  />
+                )}
+                {forcedLabel && (
+                  <Text fontSize={10} color={color.gray4} marginLeft={8}>
+                    {forcedLabel}
+                  </Text>
+                )}
+              </FlexRow>
               <Divider border={border} />
             </>
           )}
@@ -128,14 +152,36 @@ const CpuAnalysisDialog = ({ sideData, depth, onClose }) => {
             <>
               <Divider border={border} />
               <SectionHeader color={color}>Evaluation Breakdown</SectionHeader>
-              <Text
-                display="block"
-                fontSize={10}
-                color={color.gray4}
-                marginBottom={8}
-              >
-                Each bar shows White (dark) vs Black (gray) advantage
-              </Text>
+              {dominantFactor && (
+                <Text
+                  display="block"
+                  fontSize={11}
+                  color={color.black}
+                  marginBottom={4}
+                >
+                  {dominantFactor}
+                </Text>
+              )}
+              {materialDesc && (
+                <Text
+                  display="block"
+                  fontSize={10}
+                  color={color.gray4}
+                  marginBottom={8}
+                >
+                  {materialDesc} · each bar: White (dark) vs Black (gray)
+                </Text>
+              )}
+              {!materialDesc && (
+                <Text
+                  display="block"
+                  fontSize={10}
+                  color={color.gray4}
+                  marginBottom={8}
+                >
+                  Each bar shows White (dark) vs Black (gray) advantage
+                </Text>
+              )}
               <BreakdownBar
                 label="Material"
                 score={breakdown.material}
@@ -185,6 +231,29 @@ const CpuAnalysisDialog = ({ sideData, depth, onClose }) => {
               <SectionHeader color={color}>
                 Alternatives Considered
               </SectionHeader>
+              {topMoves.length >= 2 &&
+                (() => {
+                  const alt = topMoves[1];
+                  const altLabel = formatMoveLabel(alt);
+                  const sign = alt.score > 0 ? '+' : '';
+                  const altScore = `${sign}${(alt.score / 100).toFixed(2)}`;
+
+                  
+return (
+                    <Text
+                      display="block"
+                      fontSize={11}
+                      color={color.black}
+                      marginBottom={6}
+                    >
+                      Best alternative:{' '}
+                      <Text fontFamily="monospace" fontWeight="bold">
+                        {altLabel}
+                      </Text>
+                      <Text color={color.gray4}> ({altScore})</Text>
+                    </Text>
+                  );
+                })()}
               <Text
                 display="block"
                 fontSize={10}

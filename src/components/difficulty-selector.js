@@ -1,5 +1,7 @@
 import { memo } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
 import { FlexRow, Text } from 'ui/es';
+import { updateDepth } from '~/store/actions';
 
 const LEVELS = [
   { label: 'Easy', depth: 2 },
@@ -7,7 +9,12 @@ const LEVELS = [
   { label: 'Hard', depth: 4 },
 ];
 
-const DifficultySelector = memo(({ depth, onSelect, disabled }) => {
+const DifficultySelector = memo(() => {
+  const depth = useSelector(({ ai }) => ai.depth);
+  const disabled = useSelector(({ ingame }) => ingame.past.length > 0);
+  const dispatch = useDispatch();
+  const onSelect = (d) => dispatch(updateDepth(d));
+
   return (
     <FlexRow
       paddingLeft={10}
