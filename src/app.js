@@ -1,4 +1,5 @@
-import { useSelector } from 'react-redux';
+import { useEffect } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
 import {
   Box,
   Relative,
@@ -11,11 +12,17 @@ import {
 } from 'ui/es';
 import { Diagram, Menu, Sheet, NotiBar, AnalysisPanel } from '~/components';
 import { useTheme, useWindowSize } from '~/hooks';
+import { playCpu } from '~/store/actions';
 import { ONE_VS_CPU } from '~/presets/menu-keys';
 import Logo from '~/assets/logo.svg';
 
 const App = () => {
+  const dispatch = useDispatch();
   const isCpu = useSelector(({ general }) => general.matchType === ONE_VS_CPU);
+
+  useEffect(() => {
+    dispatch(playCpu());
+  }, []);
   const [, height] = useWindowSize();
   const { sidebar, analysisPanel, logo, fh, border, color } = useTheme();
   const minMaxWidth =

@@ -1,10 +1,10 @@
 import { configureStore as rtkConfigureStore } from '@reduxjs/toolkit';
 import undoable, { includeAction } from 'redux-undo';
-import { INSTANT_IMPORT_DATA } from '~/presets';
+import { INSTANT_IMPORT_DATA, GAME_AUTOSAVE } from '~/presets';
 import { Compression } from '~/services/io';
 import { Storage } from '~/services/storage';
 import { debug } from '~/utils';
-import { crashReporter } from './middlewares';
+import { crashReporter, autoSave } from './middlewares';
 import generalReducer from './slices/general';
 import ingameReducer from './slices/ingame';
 import aiReducer from './slices/ai';
@@ -18,10 +18,17 @@ const configureStore = (preloadedState) => {
 
   try {
     const importData = Storage.getItem(INSTANT_IMPORT_DATA);
+    const autosaveData = Storage.getItem(GAME_AUTOSAVE);
 
-    intitalState = importData
-      ? JSON.parse(Compression.decompress(importData))
-      : preloadedState;
+    if (importData) {
+      intitalState = JSON.parse(Compression.decompress(importData));
+    } else if (autosaveData) {
+      const parsed = JSON.parse(autosaveData);
+      intitalState = {
+        ...parsed,
+        ai: { ...parsed.ai, thinking: false },
+      };
+    }
   } catch (err) {
     debug.err('Redux - intital-state issue: ', err);
   } finally {
@@ -44,7 +51,7 @@ const configureStore = (preloadedState) => {
       getDefaultMiddleware({
         serializableCheck: false,
         immutableCheck: false,
-      }).concat(crashReporter),
+      }).concat(crashReporter, autoSave),
     preloadedState: intitalState,
   });
 };
