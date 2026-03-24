@@ -178,9 +178,6 @@ export function restoreSheetAnalysis(savedSheetData) {
             ...(saved[side].breakdown != null && {
               breakdown: saved[side].breakdown,
             }),
-            ...(saved[side].decisionTree != null && {
-              decisionTree: saved[side].decisionTree,
-            }),
           };
         }
       });
@@ -350,20 +347,14 @@ export function playCpu() {
         present,
         past,
       },
-      ({
-        bestState = {},
-        score = null,
-        topMoves = [],
-        breakdown = null,
-        decisionTree = null,
-      }) => {
+      ({ bestState = {}, score = null, topMoves = [], breakdown = null }) => {
         const { node = [], timeline: nextTimeline } = bestState;
         const [selectedCode, nextCode] = node;
 
         if (!isEmpty(node)) {
           const tileName = Chess.parseCode.prop('tileName', nextCode);
           const thinkingTime = Math.round((Date.now() - startTime) / 1000);
-          const analysisData = { score, topMoves, breakdown, decisionTree };
+          const analysisData = { score, topMoves, breakdown };
 
           dispatch(
             afterMoving(
@@ -447,9 +438,6 @@ export function updateSheetData(thinkingTime = null, analysisData = null) {
             ...(prev[side].breakdown != null && {
               breakdown: prev[side].breakdown,
             }),
-            ...(prev[side].decisionTree != null && {
-              decisionTree: prev[side].decisionTree,
-            }),
           };
         }
       });
@@ -468,7 +456,6 @@ export function updateSheetData(thinkingTime = null, analysisData = null) {
         extra.score = analysisData.score;
         extra.topMoves = analysisData.topMoves;
         extra.breakdown = analysisData.breakdown;
-        extra.decisionTree = analysisData.decisionTree;
       }
 
       sheetData = [

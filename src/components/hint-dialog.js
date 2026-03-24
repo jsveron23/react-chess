@@ -12,7 +12,7 @@ const HintDialog = ({ isOpen, onClose, hintData, loading, depth }) => {
   let sideData = null;
 
   if (hintData) {
-    const { bestState, score, topMoves, breakdown, decisionTree } = hintData;
+    const { bestState, score, topMoves, breakdown } = hintData;
     const timeline = bestState?.timeline || [];
     const { from = [], to = [] } =
       timeline.length >= 2 ? diffSnapshot(timeline[1], timeline[0]) : {};
@@ -24,7 +24,6 @@ const HintDialog = ({ isOpen, onClose, hintData, loading, depth }) => {
       score,
       topMoves,
       breakdown,
-      decisionTree,
       thinkingTime: null,
     };
   }

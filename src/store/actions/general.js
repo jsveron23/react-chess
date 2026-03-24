@@ -256,16 +256,8 @@ export function requestHint() {
 
     worker.task(
       { depth, present, past },
-      ({
-        bestState = {},
-        score = null,
-        topMoves = [],
-        breakdown = null,
-        decisionTree = null,
-      }) => {
-        dispatch(
-          setHintData({ bestState, score, topMoves, breakdown, decisionTree })
-        );
+      ({ bestState = {}, score = null, topMoves = [], breakdown = null }) => {
+        dispatch(setHintData({ bestState, score, topMoves, breakdown }));
       },
       () => dispatch(clearHint())
     );

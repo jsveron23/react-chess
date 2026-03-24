@@ -20,7 +20,7 @@ const Notation = ({ sideData = null, onAnalyze = null, ...props }) => {
       onClick={isClickable ? () => onAnalyze(sideData) : undefined}
       {...props}
     >
-      {sideData && <Text>{parseNotation(sideData)}</Text>}
+      {sideData && <Text fontSize={13}>{parseNotation(sideData)}</Text>}
       {isCpuMove && (
         <Text fontSize={10} color={color.gray2} marginLeft={4}>
           {sideData.thinkingTime}s

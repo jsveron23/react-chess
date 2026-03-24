@@ -1,7 +1,6 @@
 import { Box, Text, FlexRow, FlexCol, FlexOne, Scroll } from 'ui/es';
 import { useTheme } from '~/hooks';
 import { analyzeCpuMove, formatMoveLabel } from '~/utils/analyze-cpu-move';
-import { CpuDecisionTree } from './sheet/cpu-decision-tree';
 import {
   EvalBar,
   BreakdownBar,
@@ -28,11 +27,10 @@ const PaginationButton = ({ onClick, disabled, children, color, border }) => (
 
 const AnalysisContent = ({ sideData, depth, color, border }) => {
   const analysis = analyzeCpuMove(sideData, depth);
-  const { score, topMoves, breakdown, decisionTree } = sideData;
+  const { score, topMoves, breakdown } = sideData;
   const hasScore = score != null;
   const hasBreakdown = breakdown != null;
   const hasTopMoves = topMoves && topMoves.length > 0;
-  const hasDecisionTree = decisionTree && decisionTree.length > 0;
   const isMaximizer = score != null && score >= 0;
   const bestScore = hasTopMoves ? topMoves[0].score : 0;
 
@@ -75,26 +73,6 @@ const AnalysisContent = ({ sideData, depth, color, border }) => {
           • {point}
         </Text>
       ))}
-
-      {/* ── Search Tree ── */}
-      {hasDecisionTree && (
-        <>
-          <Divider border={border} />
-          <SectionHeader color={color}>Search Tree</SectionHeader>
-          <Text
-            display="block"
-            fontSize={10}
-            color={color.gray4}
-            marginBottom={8}
-          >
-            Top lines: CPU candidate → Opp reply → CPU counter (★ = chosen).
-            Scores in centipawns (+white / −black).
-          </Text>
-          <FlexRow justifyContent="center" marginBottom={4}>
-            <CpuDecisionTree decisionTree={decisionTree} color={color} />
-          </FlexRow>
-        </>
-      )}
 
       {/* ── Evaluation Breakdown ── */}
       {hasBreakdown && (
@@ -229,7 +207,8 @@ const AnalysisContent = ({ sideData, depth, color, border }) => {
   );
 };
 
-const AnalysisPanel = ({ history, index, depth, onSetIndex }) => {
+const AnalysisPanel = ({ history, index, depth, onSetIndex, isCpu }) => {
+  if (!isCpu) return null;
   const { color, border } = useTheme();
   const isEmpty = history.length === 0;
   const isLatest = index === history.length - 1;

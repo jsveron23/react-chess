@@ -1,3 +1,4 @@
+import { connect } from 'react-redux';
 import {
   Box,
   Relative,
@@ -16,13 +17,15 @@ import {
   AnalysisPanelContainer,
 } from '~/containers';
 import { useTheme, useWindowSize } from '~/hooks';
+import { ONE_VS_CPU } from '~/presets/menu-keys';
 import Logo from '~/assets/logo.svg';
 import '~/styles/app.css';
 
-const App = () => {
+const App = ({ isCpu }) => {
   const [, height] = useWindowSize();
   const { sidebar, analysisPanel, logo, fh, border, color } = useTheme();
-  const minMaxWidth = height + sidebar.width + analysisPanel.width;
+  const minMaxWidth =
+    height + sidebar.width + (isCpu ? analysisPanel.width : 0);
 
   return (
     <FlexRow height={fh} minWidth={minMaxWidth} maxWidth={minMaxWidth}>
@@ -68,17 +71,23 @@ const App = () => {
         <DiagramContainer />
       </Relative>
 
-      <Box
-        width={analysisPanel.width}
-        borderLeft={border}
-        borderRight={border}
-        borderBottom={border}
-        style={{ flexShrink: 0, height: '100%', overflow: 'hidden' }}
-      >
-        <AnalysisPanelContainer />
-      </Box>
+      {isCpu && (
+        <Box
+          width={analysisPanel.width}
+          borderLeft={border}
+          borderRight={border}
+          borderBottom={border}
+          style={{ flexShrink: 0, height: '100%', overflow: 'hidden' }}
+        >
+          <AnalysisPanelContainer />
+        </Box>
+      )}
     </FlexRow>
   );
 };
 
-export { App };
+const ConnectedApp = connect(({ general: { matchType } }) => ({
+  isCpu: matchType === ONE_VS_CPU,
+}))(App);
+
+export { ConnectedApp as App };

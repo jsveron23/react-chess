@@ -18,7 +18,9 @@ const NotationHeader = ({ data }) => {
               color={reColor.color}
               padding={5}
             >
-              <Text fontWeight="bold">{side}</Text>
+              <Text fontWeight="bold" fontSize={13}>
+                {side}
+              </Text>
             </FlexOne>
           );
         })}
