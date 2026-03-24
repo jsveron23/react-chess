@@ -64,6 +64,12 @@ const Menu = () => {
       disabled: noUndoYet,
       onClick: () => dispatch(undo()),
     },
+    {
+      key: FLIP,
+      title: 'Flip diagram',
+      disabled: false,
+      onClick: () => dispatch(toggleFlip()),
+    },
   ];
 
   const onGameModeChange = (value) => {
@@ -94,12 +100,6 @@ const Menu = () => {
   };
 
   const mainMenu = [
-    {
-      key: FLIP,
-      title: 'Flip diagram (Up & Down)',
-      disabled: false,
-      onClick: () => dispatch(toggleFlip()),
-    },
     {
       key: IMPORT,
       title: 'Import a snapshot',
@@ -133,24 +133,35 @@ const Menu = () => {
       <MenuItems data={ingameMenu} />
       <Hr is="p" marginTop={10} marginBottom={10} />
       <FlexCol gap={10} alignItems="center">
-        <FlexRow
+        <FlexCol
           paddingLeft={10}
           paddingRight={10}
-          gap={6}
+          gap={4}
           alignItems="center"
           fontSize="80%"
         >
-          <Text flexShrink={0} marginRight={4}>
-            Mode:
-          </Text>
-          <select
-            value={matchType}
-            onChange={(e) => onGameModeChange(e.target.value)}
-          >
-            <option value="1v1">1 vs 1</option>
-            <option value="1vscpu">1 vs CPU</option>
-          </select>
-        </FlexRow>
+          <Text>Mode:</Text>
+          <FlexRow gap={6}>
+            <Button
+              width="auto"
+              paddingLeft={10}
+              paddingRight={10}
+              disabled={matchType === ONE_VS_ONE}
+              onClick={() => onGameModeChange(ONE_VS_ONE)}
+            >
+              1 vs 1
+            </Button>
+            <Button
+              width="auto"
+              paddingLeft={10}
+              paddingRight={10}
+              disabled={matchType === ONE_VS_CPU}
+              onClick={() => onGameModeChange(ONE_VS_CPU)}
+            >
+              1 vs CPU
+            </Button>
+          </FlexRow>
+        </FlexCol>
         {matchType === ONE_VS_CPU && (
           <>
             <CpuSideSelector playerSide={playerSide} onSelect={onSelectSide} />

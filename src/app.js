@@ -61,14 +61,13 @@ const App = () => {
         </FlexCol>
       </Box>
 
-      <Relative flexBasis={height}>
+      <Relative flexBasis={height} borderRight={border}>
         <Diagram />
       </Relative>
 
       {isCpu && (
         <Box
           width={analysisPanel.width}
-          borderLeft={border}
           borderRight={border}
           borderBottom={border}
           style={{ flexShrink: 0, height: '100%', overflow: 'hidden' }}
