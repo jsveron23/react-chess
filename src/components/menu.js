@@ -32,11 +32,15 @@ import { HintDialog } from './hint-dialog';
 import { CheckmateDialog } from './checkmate-dialog';
 import { CpuSideSelector } from './cpu-side-selector';
 import { DifficultySelector } from './difficulty-selector';
+import { ReplayControls } from './replay-controls';
+import { GameHistoryDialog } from './game-history-dialog';
 
 const Menu = () => {
   const [hintOpen, setHintOpen] = useState(false);
+  const [historyOpen, setHistoryOpen] = useState(false);
 
   const thinking = useSelector(({ ai }) => ai.thinking);
+  const isReplaying = useSelector(({ replay }) => replay.isReplaying);
   const playerSide = useSelector(({ ai }) => ai.playerSide);
   const depth = useSelector(({ ai }) => ai.depth);
   const matchType = useSelector(({ general }) => general.matchType);
@@ -70,6 +74,12 @@ const Menu = () => {
       title: 'Undo',
       disabled: noUndoYet,
       onClick: () => dispatch(undo()),
+    },
+    {
+      key: 'REPLAY',
+      title: 'Replay',
+      disabled: false,
+      onClick: () => setHistoryOpen(true),
     },
   ];
 
@@ -128,6 +138,10 @@ const Menu = () => {
       },
     ],
   ];
+
+  if (isReplaying) {
+    return <ReplayControls />;
+  }
 
   return (
     <>
@@ -192,6 +206,10 @@ const Menu = () => {
         hintData={hintData}
         loading={hintLoading}
         depth={depth}
+      />
+      <GameHistoryDialog
+        isOpen={historyOpen}
+        onClose={() => setHistoryOpen(false)}
       />
     </>
   );

@@ -1,10 +1,17 @@
+import { useState } from 'react';
 import { createPortal } from 'react-dom';
 import { useSelector, useDispatch } from 'react-redux';
 import { ActionCreators } from 'redux-undo';
 import { Turn } from 'chess/es';
 import { Box, Text, FlexMiddle, FlexCol, FlexRow, Button } from 'ui/es';
 import { worker } from '~/services/worker/ai-worker';
-import { updateMatchType, playCpu, setSide, updateTurn } from '~/store/actions';
+import {
+  updateMatchType,
+  playCpu,
+  setSide,
+  updateTurn,
+  saveGame,
+} from '~/store/actions';
 import { ONE_VS_ONE, ONE_VS_CPU } from '~/presets';
 import { useTheme } from '~/hooks';
 import { CpuSideSelector } from './cpu-side-selector';
@@ -12,16 +19,18 @@ import { DifficultySelector } from './difficulty-selector';
 
 const CheckmateDialog = () => {
   const { color, border, borderRadius } = useTheme();
+  const [recorded, setRecorded] = useState(false);
 
-  const isCheckmate = useSelector(
-    ({ ingame }) => ingame.present.checkData.isCheckmate
+  const { isCheckmate, isStalemate } = useSelector(
+    ({ ingame }) => ingame.present.checkData
   );
+  const isReplaying = useSelector(({ replay }) => replay.isReplaying);
   const turn = useSelector(({ ingame }) => ingame.present.turn);
   const matchType = useSelector(({ general }) => general.matchType);
   const playerSide = useSelector(({ ai }) => ai.playerSide);
   const dispatch = useDispatch();
 
-  if (!isCheckmate) return null;
+  if ((!isCheckmate && !isStalemate) || isReplaying) return null;
 
   const winner = turn === Turn.w ? 'Black' : 'White';
 
@@ -81,10 +90,10 @@ const CheckmateDialog = () => {
           zIndex={1}
         >
           <Text display="block" fontWeight="bold" fontSize={16}>
-            Checkmate!
+            {isStalemate ? 'Stalemate!' : 'Checkmate!'}
           </Text>
           <Text display="block" fontSize={14} color={color.gray4}>
-            {winner} wins
+            {isStalemate ? 'Draw' : `${winner} wins`}
           </Text>
         </Box>
 
@@ -130,6 +139,23 @@ const CheckmateDialog = () => {
           )}
           {matchType === ONE_VS_CPU && <Button onClick={onStart}>Start</Button>}
           {matchType === ONE_VS_ONE && <Button onClick={onReset}>Reset</Button>}
+          {recorded ? (
+            <Text fontSize={13} color={color.gray4}>
+              Saved!
+            </Text>
+          ) : (
+            <Button
+              width="auto"
+              paddingLeft={10}
+              paddingRight={10}
+              onClick={() => {
+                dispatch(saveGame());
+                setRecorded(true);
+              }}
+            >
+              Record
+            </Button>
+          )}
         </FlexCol>
       </Box>
     </FlexMiddle>,
