@@ -9,6 +9,7 @@ sourcemap = "external"
 
 [build.define]
 "process.env" = "{}"
+"process.env.NODE_ENV" = "\"production\""
 
 # Path aliases matching jsconfig.json
 [resolve]
