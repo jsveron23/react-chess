@@ -1,6 +1,7 @@
-export { default as Menu } from './Menu';
-export { default as Diagram } from './Diagram';
-export { default as Sheet } from './Sheet';
-export { default as NotiBar } from './NotiBar';
-export { default as PeerId } from './PeerId';
-export { default as Chat } from './Chat';
+export { Menu } from './menu';
+export { Diagram } from './diagram';
+export { Sheet } from './sheet';
+export { NotiBar } from './noti-bar';
+export { CpuSideSelector } from './cpu-side-selector';
+export { DifficultySelector } from './difficulty-selector';
+export { AnalysisPanel } from './analysis-panel';

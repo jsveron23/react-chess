@@ -11,6 +11,11 @@ import WhitePawn from './white_pawn.svg';
 import WhiteQueen from './white_queen.svg';
 import WhiteRook from './white_rook.svg';
 
+/**
+ * Get piece SVG by piece key.
+ * @param {string} key - Piece key (e.g. 'wP', 'bK')
+ * @return {string} SVG import
+ */
 export function getPiece(key) {
   const map = {
     bB: BlackBishop,

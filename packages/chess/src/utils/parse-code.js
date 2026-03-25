@@ -1,0 +1,36 @@
+import { compose, prop, equals, curry, split } from 'ramda';
+import { parseTile } from './parse-tile';
+import { validateCode } from './validate-code';
+
+/**
+ * Parse code
+ * @param  {String} code
+ * @return {Object}
+ */
+function parseCode(code) {
+  if (!validateCode(code)) {
+    return {};
+  }
+
+  const [side, piece, fileName, rankName] = split('', code);
+
+  return {
+    ...parseTile(`${fileName}${rankName}`),
+    pKey: `${side}${piece}`,
+    code,
+    side,
+    piece,
+  };
+}
+
+parseCode.eq = curry((kV, code) => {
+  const [key, val] = kV;
+
+  return compose(equals(val), prop(key), parseCode)(code);
+});
+
+parseCode.prop = curry((key, code) => {
+  return compose(prop(key), parseCode)(code);
+});
+
+export { parseCode };

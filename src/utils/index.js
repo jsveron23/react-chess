@@ -1,2 +1,2 @@
-export { default as toLocaleDate } from './toLocaleDate';
-export { default as debug } from './debug';
+export { debug } from './debug';
+export { analyzeCpuMove } from './analyze-cpu-move';

@@ -1,1 +1,2 @@
-export { default as crashReporter } from './crashReporter';
+export { crashReporter } from './crash-reporter';
+export { autoSave } from './auto-save';

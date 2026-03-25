@@ -1,6 +1,11 @@
 import zlib from 'zlib';
 import { debug } from '~/utils';
 
+/**
+ * Compress data to base64 string
+ * @param {*} data - Data to compress
+ * @return {string} Compressed base64 string
+ */
 export function compress(data) {
   let compressedStr;
 
@@ -15,6 +20,11 @@ export function compress(data) {
   return compressedStr;
 }
 
+/**
+ * Decompress base64 string to original data
+ * @param {string} data - Base64 compressed string
+ * @return {string} Decompressed string
+ */
 export function decompress(data) {
   let decompressedStr;
 

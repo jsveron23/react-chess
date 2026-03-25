@@ -1,0 +1,21 @@
+import { test, expect } from 'bun:test';
+import { getDoubleStepTile } from '../get-double-step-tile';
+
+// prettier-ignore
+const snapshot = [
+  'bRa8', 'bNb8', 'bBc8', 'bQb4', 'bKe8', 'bBf8', 'bNg8', 'bRh8',
+  'bPa7', 'bPb7', 'bPc7', 'bPd7', 'bPe5', 'bPf7', 'bPg7', 'bPh7',
+  'wPa2', 'wPb2', 'wPc2', 'wPd4', 'wPe2', 'wPf2', 'wPg2', 'wPh2',
+  'wRa1', 'wNb1', 'wBc1', 'wQc3', 'wKe1', 'wBf1', 'wNg1', 'wRh1',
+];
+
+test('Should be returned empty value', () => {
+  expect(getDoubleStepTile('wPa3', snapshot)).toBe('');
+  expect(getDoubleStepTile('bPh6', snapshot)).toBe('');
+  expect(getDoubleStepTile('wPc2', snapshot)).toBe('');
+});
+
+test('Should be returned a tile', () => {
+  expect(getDoubleStepTile('wPa2', snapshot)).toBe('a4');
+  expect(getDoubleStepTile('bPh7', snapshot)).toBe('h5');
+});

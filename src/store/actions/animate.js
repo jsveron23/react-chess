@@ -1,6 +1,7 @@
 import { compose, last, apply, props, prop } from 'ramda';
 import { Side, getAnimationAxis, Opponent } from 'chess/es';
-import { MEASURE_AXIS } from '../actionTypes';
+import { ONE_VS_CPU } from '~/presets';
+import { setAxis } from '../slices/animate';
 
 /**
  * Measure axis for animation
@@ -10,21 +11,24 @@ import { MEASURE_AXIS } from '../actionTypes';
 export function measureAxis(sheetData) {
   return (dispatch, getState) => {
     const {
-      general: { flip },
-      network: { side, connected },
+      ai: { playerSide },
+      general: { flip, matchType },
       ingame: {
         present: { turn },
       },
     } = getState();
 
-    dispatch({
-      type: MEASURE_AXIS,
-      payload: compose(
-        apply(getAnimationAxis(flip || (connected && side === Side.black))),
-        props(['from', 'to']),
-        prop(Opponent[turn]),
-        last
-      )(sheetData),
-    });
+    const isBlack = matchType === ONE_VS_CPU && playerSide === Side.black;
+
+    dispatch(
+      setAxis(
+        compose(
+          apply(getAnimationAxis(flip || isBlack)),
+          props(['from', 'to']),
+          prop(Opponent[turn]),
+          last
+        )(sheetData)
+      )
+    );
   };
 }

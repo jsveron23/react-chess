@@ -1,19 +1,6 @@
-import { combineReducers } from 'redux';
-import undoable, { includeAction } from 'redux-undo';
-import general from './general';
-import ingame from './ingame';
-import network from './network';
-import animate from './animate';
-import ai from './ai';
-import { UPDATE_TURN } from '../actionTypes';
-
-export default combineReducers({
-  ingame: undoable(ingame, {
-    limit: false,
-    filter: includeAction(UPDATE_TURN),
-  }),
-  general,
-  network,
-  animate,
-  ai,
-});
+// Reducers have been migrated to slices. This file is kept for compatibility.
+// The root reducer is now configured directly in configure-store.js.
+export { default as generalReducer } from '../slices/general';
+export { default as ingameReducer } from '../slices/ingame';
+export { default as aiReducer } from '../slices/ai';
+export { default as animateReducer } from '../slices/animate';
