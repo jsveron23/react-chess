@@ -1,4 +1,4 @@
-# React Chess 2 &middot; [![MIT license](http://img.shields.io/badge/license-MIT-brightgreen.svg)](LICENSE.md) [![Netlify Status](https://api.netlify.com/api/v1/badges/622d7c96-5d7f-4342-b627-9c18f2166f45/deploy-status)](https://app.netlify.com/sites/react-chess-065995/deploys)
+# React Chess 3 &middot; [![MIT license](http://img.shields.io/badge/license-MIT-brightgreen.svg)](LICENSE.md) [![Netlify Status](https://api.netlify.com/api/v1/badges/622d7c96-5d7f-4342-b627-9c18f2166f45/deploy-status)](https://app.netlify.com/sites/react-chess-065995/deploys)
 
 Programs must be written for people to read, and only incidentally for machines to execute.
 
@@ -6,21 +6,26 @@ Programs must be written for people to read, and only incidentally for machines 
 
 ## Overview
 
-React Chess 2 is a full-featured chess application built with modern React and Redux Toolkit. It provides a complete chess experience with a responsive UI, AI opponent, and comprehensive game controls.
+React Chess 3 is a full-featured chess application built with modern React and Redux Toolkit. It provides a complete chess experience with a responsive UI, AI opponent, and comprehensive game controls.
 
 **Live Demo:** https://react-chess.app
 
 ## Features
 
 - **Full Chess Implementation** - Complete chess rules and piece movement validation
-- **AI Opponent** - Built-in artificial intelligence with adjustable difficulty for single-player games
-- **CPU Analysis** - Decision tree visualization and move evaluation
-- **Move Hints** - Suggested moves to assist during gameplay
-- **Responsive Design** - Works seamlessly on desktop and mobile devices
-- **Game Controls** - Undo/redo moves, reset board, game history
-- **Theme Support** - Board customization options
-- **Game Tracking** - Move notation and game history sheet
-- **Performance Optimized** - Efficient rendering and memoization
+- **Game Modes** - Play 1 vs 1 locally or against the CPU
+- **AI Opponent** - Built-in AI with adjustable search depth (difficulty) running in a Web Worker
+- **CPU Analysis Panel** - Per-move breakdown showing position score, win probability, move quality badge, evaluation breakdown (material, position, pawn structure, king safety), and top alternatives considered
+- **Move Hints** - Request a suggested move from the AI during your turn in CPU mode
+- **Replay** - Save finished games at checkmate/stalemate and replay them step by step from the Game History dialog
+- **Autosave** - Game state is automatically persisted to localStorage and restored on next visit
+- **Checkmate / Stalemate Dialog** - Announces the result and lets you record the game or start a new one
+- **Game Export / Import** - Export and import game snapshots, PGN, and FEN formats
+- **Undo** - Take back moves during a game
+- **Flip Board** - Rotate the board to view from either side
+- **Move Notation Sheet** - Running move list displayed alongside the board
+- **Responsive Design** - Adapts to different window sizes
+- **Performance Optimized** - Memoization, efficient equality checks, and Web Worker offloading for AI
 
 ## Prerequisites
 
@@ -72,23 +77,21 @@ bun run test:coverage       # Run tests with coverage report
 src/
 ├── app.js                  # Root component
 ├── index.js                # Entry point
-├── components/             # Reusable React components
+├── components/             # React components
 │   ├── diagram/            # Board diagram sub-components
 │   ├── menu/               # Menu sub-components
-│   └── sheet/              # Game notation components
-├── containers/             # Container components (logic + UI)
+│   └── sheet/              # Move notation and analysis components
 ├── hooks/                  # Custom React hooks
 ├── services/               # Business logic and services
-│   ├── io/                 # Compression and I/O
-│   ├── storage/            # Local storage
+│   ├── io/                 # Compression and I/O helpers
+│   ├── storage/            # localStorage wrapper
 │   └── worker/             # Web Worker for AI calculations
 ├── store/                  # Redux store configuration
-│   ├── actions/            # Action creators
+│   ├── actions/            # Thunk action creators
 │   ├── slices/             # Redux Toolkit slices
-│   └── middlewares/        # Custom middleware
+│   └── middlewares/        # Custom middleware (autosave, etc.)
 ├── utils/                  # Utility functions
-├── presets/                # Game presets and configurations
-├── styles/                 # CSS stylesheets
+├── presets/                # Constants and configuration presets
 └── assets/                 # Images, SVGs, and static assets
 
 packages/                   # Monorepo workspaces
