@@ -1,3 +1,5 @@
+[build]
+  command = "bun run build"
+
 [build.environment]
-  NPM_VERSION = "8.5.5"
-  NODE_VERSION = "14.18.1"
+  BUN_VERSION = "1.2.5"
