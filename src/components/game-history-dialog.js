@@ -10,7 +10,9 @@ const GameHistoryDialog = ({ isOpen, onClose }) => {
   const savedGames = useSelector(({ replay }) => replay.savedGames);
   const dispatch = useDispatch();
 
-  if (!isOpen) return null;
+  if (!isOpen) {
+    return null;
+  }
 
   const onReplay = (game) => {
     dispatch(startReplay(game));

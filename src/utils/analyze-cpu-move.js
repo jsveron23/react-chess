@@ -67,13 +67,18 @@ function getPositionalReason(piece, tileName) {
  * @return {string}
  */
 function getMaterialAnalysis(attackerPiece, capturedPiece) {
-  if (!capturedPiece) return 'Material gain.';
+  if (!capturedPiece) {
+    return 'Material gain.';
+  }
   const atk = PieceValues[attackerPiece] || 0;
   const vic = PieceValues[capturedPiece] || 0;
 
-  if (vic > atk)
+  if (vic > atk) {
     return `Material gain — winning a ${PieceNames[capturedPiece]} with a less valuable piece.`;
-  if (vic === atk) return `Equal exchange to simplify the position.`;
+  }
+  if (vic === atk) {
+    return `Equal exchange to simplify the position.`;
+  }
 
   return `Sacrifice — giving up material for a positional or tactical advantage.`;
 }
@@ -101,23 +106,37 @@ export function getMoveQualityLabel(score, prevScore, moveSide) {
   if (prevScore != null) {
     const delta =
       moveSide === 'b' ? prevScore - (score ?? 0) : (score ?? 0) - prevScore;
-    if (delta > 150) return { label: 'Excellent!', color: '#2a7a2a' };
-    if (delta > 60) return { label: 'Good move', color: '#4a8a4a' };
-    if (delta > 10) return { label: 'Solid', color: '#666' };
-    if (delta > -60) return { label: 'Neutral', color: '#888' };
+    if (delta > 150) {
+      return { label: 'Excellent!', color: '#2a7a2a' };
+    }
+    if (delta > 60) {
+      return { label: 'Good move', color: '#4a8a4a' };
+    }
+    if (delta > 10) {
+      return { label: 'Solid', color: '#666' };
+    }
+    if (delta > -60) {
+      return { label: 'Neutral', color: '#888' };
+    }
 
-    
-return { label: 'Inaccuracy', color: '#b05010' };
+    return { label: 'Inaccuracy', color: '#b05010' };
   }
   // No previous score — assess absolute position
   const adj = moveSide === 'b' ? -(score ?? 0) : score ?? 0;
-  if (adj > 300) return { label: 'Winning', color: '#2a7a2a' };
-  if (adj > 100) return { label: 'Advantage', color: '#4a8a4a' };
-  if (adj > 30) return { label: 'Slight edge', color: '#777' };
-  if (adj > -30) return { label: 'Equal', color: '#777' };
+  if (adj > 300) {
+    return { label: 'Winning', color: '#2a7a2a' };
+  }
+  if (adj > 100) {
+    return { label: 'Advantage', color: '#4a8a4a' };
+  }
+  if (adj > 30) {
+    return { label: 'Slight edge', color: '#777' };
+  }
+  if (adj > -30) {
+    return { label: 'Equal', color: '#777' };
+  }
 
-  
-return { label: 'Difficult', color: '#b05010' };
+  return { label: 'Difficult', color: '#b05010' };
 }
 
 /**
@@ -127,14 +146,21 @@ return { label: 'Difficult', color: '#b05010' };
  * @return {string|null}
  */
 export function getForcedLabel(topMoves) {
-  if (!topMoves || topMoves.length < 2) return null;
+  if (!topMoves || topMoves.length < 2) {
+    return null;
+  }
   const gap = Math.abs(topMoves[0].score - topMoves[1].score);
-  if (gap > 200) return 'Only good move';
-  if (gap > 80) return 'Clear best move';
-  if (gap > 30) return 'Slight preference';
+  if (gap > 200) {
+    return 'Only good move';
+  }
+  if (gap > 80) {
+    return 'Clear best move';
+  }
+  if (gap > 30) {
+    return 'Slight preference';
+  }
 
-  
-return 'Multiple options';
+  return 'Multiple options';
 }
 
 /**
@@ -143,7 +169,9 @@ return 'Multiple options';
  * @return {string|null}
  */
 export function getDominantFactor(breakdown) {
-  if (!breakdown) return null;
+  if (!breakdown) {
+    return null;
+  }
   const factors = [
     { label: 'Material', value: breakdown.material, max: 2000 },
     { label: 'Position', value: breakdown.position, max: 150 },
@@ -153,11 +181,12 @@ export function getDominantFactor(breakdown) {
   const dominant = factors.reduce((a, b) =>
     Math.abs(a.value) / a.max > Math.abs(b.value) / b.max ? a : b
   );
-  if (Math.abs(dominant.value) / dominant.max < 0.1) return null;
+  if (Math.abs(dominant.value) / dominant.max < 0.1) {
+    return null;
+  }
   const side = dominant.value > 0 ? 'White' : 'Black';
 
-  
-return `${side} leads in ${dominant.label}`;
+  return `${side} leads in ${dominant.label}`;
 }
 
 /**
@@ -166,17 +195,28 @@ return `${side} leads in ${dominant.label}`;
  * @return {string}
  */
 export function getMaterialDescription(material) {
-  if (material == null) return null;
+  if (material == null) {
+    return null;
+  }
   const abs = Math.abs(material);
   const side = material > 0 ? 'White' : 'Black';
-  if (abs < 50) return 'Material is even';
-  if (abs >= 850) return `${side} is up a Queen`;
-  if (abs >= 450) return `${side} is up a Rook`;
-  if (abs >= 250) return `${side} is up a minor piece`;
-  if (abs >= 80) return `${side} is up a pawn`;
+  if (abs < 50) {
+    return 'Material is even';
+  }
+  if (abs >= 850) {
+    return `${side} is up a Queen`;
+  }
+  if (abs >= 450) {
+    return `${side} is up a Rook`;
+  }
+  if (abs >= 250) {
+    return `${side} is up a minor piece`;
+  }
+  if (abs >= 80) {
+    return `${side} is up a pawn`;
+  }
 
-  
-return 'Material is roughly even';
+  return 'Material is roughly even';
 }
 
 /**
@@ -186,7 +226,9 @@ return 'Material is roughly even';
  */
 export function formatMoveLabel(move) {
   const { node, isCaptured } = move;
-  if (!node || node.length < 2) return '?';
+  if (!node || node.length < 2) {
+    return '?';
+  }
 
   const toCode = node[node.length - 1];
   const fromCode = node[node.length - 2];
@@ -254,7 +296,9 @@ export function analyzeCpuMove(sideData, depth = 3) {
   } else if (isPromotion) {
     points.push(`Pawn promotes to ${pieceName} on ${tileName}!`);
     points.push(`Major material gain — a Pawn becomes a ${pieceName}.`);
-    if (isCheck) points.push('The promoted piece immediately gives check.');
+    if (isCheck) {
+      points.push('The promoted piece immediately gives check.');
+    }
   } else if (isCaptured) {
     const capturedCode = from.find((c) => parseCode(c).side !== side);
     const capturedPiece = capturedCode ? parseCode(capturedCode).piece : null;
@@ -262,13 +306,15 @@ export function analyzeCpuMove(sideData, depth = 3) {
 
     points.push(`${pieceName} captures ${capturedName} on ${tileName}.`);
     points.push(getMaterialAnalysis(piece, capturedPiece));
-    if (isCheck)
+    if (isCheck) {
       points.push('This capture also gives check, forcing a response.');
+    }
   } else if (isMoved) {
     points.push(`${pieceName} moves to ${tileName}.`);
     points.push(getPositionalReason(piece, tileName));
-    if (isCheck)
+    if (isCheck) {
       points.push("This move gives check, restricting the opponent's options.");
+    }
   }
 
   const difficulty = DepthNames[depth] || 'Normal';

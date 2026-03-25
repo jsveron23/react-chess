@@ -7,7 +7,9 @@ import { AnalysisContent } from './analysis-panel';
 const HintDialog = ({ isOpen, onClose, hintData, loading, depth }) => {
   const { color, border, borderRadius } = useTheme();
 
-  if (!isOpen) return null;
+  if (!isOpen) {
+    return null;
+  }
 
   let sideData = null;
 

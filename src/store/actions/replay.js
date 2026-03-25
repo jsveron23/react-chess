@@ -8,7 +8,9 @@ import {
 } from '../slices/replay';
 
 const stripAnalysis = (side) => {
-  if (!side) return side;
+  if (!side) {
+    return side;
+  }
   const rest = { ...side };
   delete rest.topMoves;
   delete rest.breakdown;

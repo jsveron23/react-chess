@@ -65,6 +65,7 @@ export default [
       ],
       'import/named': 'off',
       'import/no-extraneous-dependencies': 'error',
+      curly: ['error', 'all'],
     },
   },
   {

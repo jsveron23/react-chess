@@ -238,8 +238,7 @@ const CpuAnalysisDialog = ({ sideData, depth, onClose }) => {
                   const sign = alt.score > 0 ? '+' : '';
                   const altScore = `${sign}${(alt.score / 100).toFixed(2)}`;
 
-                  
-return (
+                  return (
                     <Text
                       display="block"
                       fontSize={11}

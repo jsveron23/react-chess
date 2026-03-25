@@ -172,7 +172,9 @@ export function exportGameAsFen() {
           }
         });
 
-        if (empty > 0) row += empty;
+        if (empty > 0) {
+          row += empty;
+        }
 
         return row;
       })
@@ -181,14 +183,24 @@ export function exportGameAsFen() {
     // Castling rights (inferred from king/rook positions)
     let castling = '';
     if (tileMap['e1'] && tileMap['e1'][1] === 'K') {
-      if (tileMap['h1'] === 'wRh1') castling += 'K';
-      if (tileMap['a1'] === 'wRa1') castling += 'Q';
+      if (tileMap['h1'] === 'wRh1') {
+        castling += 'K';
+      }
+      if (tileMap['a1'] === 'wRa1') {
+        castling += 'Q';
+      }
     }
     if (tileMap['e8'] && tileMap['e8'][1] === 'K') {
-      if (tileMap['h8'] === 'bRh8') castling += 'k';
-      if (tileMap['a8'] === 'bRa8') castling += 'q';
+      if (tileMap['h8'] === 'bRh8') {
+        castling += 'k';
+      }
+      if (tileMap['a8'] === 'bRa8') {
+        castling += 'q';
+      }
     }
-    if (!castling) castling = '-';
+    if (!castling) {
+      castling = '-';
+    }
 
     // En passant: detect if the last move was a pawn double push
     let enPassant = '-';
@@ -250,7 +262,9 @@ export function requestHint() {
       },
     } = getState();
 
-    if (isCheckmate || isStalemate) return;
+    if (isCheckmate || isStalemate) {
+      return;
+    }
 
     dispatch(setHintLoading(true));
 

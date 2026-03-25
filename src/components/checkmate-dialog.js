@@ -30,7 +30,9 @@ const CheckmateDialog = () => {
   const playerSide = useSelector(({ ai }) => ai.playerSide);
   const dispatch = useDispatch();
 
-  if ((!isCheckmate && !isStalemate) || isReplaying) return null;
+  if ((!isCheckmate && !isStalemate) || isReplaying) {
+    return null;
+  }
 
   const winner = turn === Turn.w ? 'Black' : 'White';
 

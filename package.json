@@ -10,7 +10,7 @@
   "private": true,
   "scripts": {
     "lint": "eslint '{src,packages}/**/*.js'",
-    "prettier": "prettier -c '{src,packages}/**/*.js'",
+    "prettier": "prettier --write -c '{src,packages}/**/*.js'",
     "clean": "rimraf public coverage",
     "prebuild": "bun ./build.mjs",
     "build": "bun build src/index.js --outdir public --sourcemap=external && bun build src/services/worker/ai.js --outdir public --sourcemap=external",

@@ -45,8 +45,7 @@ const MenuItems = ({ data }) => {
           ...itemProps
         } = entry;
 
-        
-return (
+        return (
           <Fragment key={key}>
             <Button onClick={onClick} {...itemProps}>
               {title}

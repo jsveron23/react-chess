@@ -167,17 +167,23 @@ class AI {
    * @return {number}
    */
   static #quietAttackBonus(state) {
-    if (state.isCaptured) return 0;
+    if (state.isCaptured) {
+      return 0;
+    }
 
     const node = state.node;
     const toCode = node[node.length - 1]; // e.g. "bPg6"
-    if (toCode[1] !== 'P') return 0; // pawn moves only
+    if (toCode[1] !== 'P') {
+      return 0;
+    } // pawn moves only
 
     const side = toCode[0];
     const fIdx = this.#fileToIdx[toCode[2]];
     const rank = +toCode[3];
     const attackRank = side === 'w' ? rank + 1 : rank - 1;
-    if (attackRank < 1 || attackRank > 8) return 0;
+    if (attackRank < 1 || attackRank > 8) {
+      return 0;
+    }
 
     const files = 'abcdefgh';
     const snapshot = state.timeline[0];
@@ -185,7 +191,9 @@ class AI {
 
     for (let df = -1; df <= 1; df += 2) {
       const aFIdx = fIdx + df;
-      if (aFIdx < 0 || aFIdx > 7) continue;
+      if (aFIdx < 0 || aFIdx > 7) {
+        continue;
+      }
       const attackTile = files[aFIdx] + attackRank;
       for (let i = 0; i < snapshot.length; i++) {
         const code = snapshot[i];
@@ -195,7 +203,9 @@ class AI {
           code[3] === attackTile[1]
         ) {
           const v = this.#Scores[code[1]];
-          if (v > best) best = v;
+          if (v > best) {
+            best = v;
+          }
           break;
         }
       }
@@ -380,7 +390,9 @@ class AI {
       const code = snapshot[i];
       const side = code[0];
       const piece = code[1];
-      if (piece === 'K' || piece === 'P') continue;
+      if (piece === 'K' || piece === 'P') {
+        continue;
+      }
 
       const fIdx = this.#fileToIdx[code[2]];
       const rNum = +code[3];
@@ -420,10 +432,14 @@ class AI {
       for (let i = 0; i < wPawns.length; i++) {
         const fd = Math.abs(this.#fileToIdx[wPawns[i].file] - wKFile);
         const rn = +wPawns[i].rank;
-        if (fd <= 1 && rn > wKRank && rn <= wKRank + 2) shield++;
+        if (fd <= 1 && rn > wKRank && rn <= wKRank + 2) {
+          shield++;
+        }
       }
       score += shield * 15;
-      if (shield === 0) score -= 60; // bare king penalty
+      if (shield === 0) {
+        score -= 60;
+      } // bare king penalty
     }
 
     if (bKFile >= 0 && bKRank >= 6) {
@@ -431,10 +447,14 @@ class AI {
       for (let i = 0; i < bPawns.length; i++) {
         const fd = Math.abs(this.#fileToIdx[bPawns[i].file] - bKFile);
         const rn = +bPawns[i].rank;
-        if (fd <= 1 && rn < bKRank && rn >= bKRank - 2) shield++;
+        if (fd <= 1 && rn < bKRank && rn >= bKRank - 2) {
+          shield++;
+        }
       }
       score -= shield * 15;
-      if (shield === 0) score += 60; // bare king penalty
+      if (shield === 0) {
+        score += 60;
+      } // bare king penalty
     }
 
     return score;
@@ -464,7 +484,9 @@ class AI {
       const code = snapshot[i];
       const side = code[0],
         piece = code[1];
-      if (piece === 'K') continue;
+      if (piece === 'K') {
+        continue;
+      }
 
       const fIdx = this.#fileToIdx[code[2]];
       const rank = +code[3];
@@ -473,11 +495,15 @@ class AI {
 
       // Check whether an enemy pawn attacks this piece
       const atkRank = side === 'w' ? rank + 1 : rank - 1;
-      if (atkRank < 1 || atkRank > 8) continue;
+      if (atkRank < 1 || atkRank > 8) {
+        continue;
+      }
 
       for (let df = -1; df <= 1; df += 2) {
         const aFIdx = fIdx + df;
-        if (aFIdx < 0 || aFIdx > 7) continue;
+        if (aFIdx < 0 || aFIdx > 7) {
+          continue;
+        }
         const atk = tileMap[files[aFIdx] + atkRank];
         if (atk && atk[0] === enemySide && atk[1] === 'P' && pieceVal > 100) {
           const amount = Math.round(pieceVal * 0.33);
@@ -940,11 +966,15 @@ class AI {
       if (side === 'w') {
         material += matScore;
         position += pstScore;
-        if (piece === 'P') wPawns.push({ file, rank });
+        if (piece === 'P') {
+          wPawns.push({ file, rank });
+        }
       } else {
         material -= matScore;
         position -= pstScore;
-        if (piece === 'P') bPawns.push({ file, rank });
+        if (piece === 'P') {
+          bPawns.push({ file, rank });
+        }
       }
     }
 

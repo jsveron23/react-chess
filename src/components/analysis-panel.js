@@ -271,7 +271,9 @@ const AnalysisPanel = () => {
   const dispatch = useDispatch();
   const onSetIndex = (n) => dispatch(setIndex(n));
 
-  if (!isCpu) return null;
+  if (!isCpu) {
+    return null;
+  }
   const { color, border } = useTheme();
   const isEmpty = history.length === 0;
   const isLatest = index === history.length - 1;

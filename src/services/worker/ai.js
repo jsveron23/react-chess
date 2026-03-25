@@ -73,8 +73,11 @@ self.onmessage = ({ data }) => {
         bestRootState = state;
       }
 
-      if (isAIMaximizer) alpha = Math.max(alpha, bestScore);
-      else beta = Math.min(beta, bestScore);
+      if (isAIMaximizer) {
+        alpha = Math.max(alpha, bestScore);
+      } else {
+        beta = Math.min(beta, bestScore);
+      }
     }
 
     return { score: bestScore, state: bestRootState, scoredList };

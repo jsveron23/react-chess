@@ -8,7 +8,9 @@ const ReplayControls = () => {
   const { currentGame, currentStep } = useSelector(({ replay }) => replay);
   const dispatch = useDispatch();
 
-  if (!currentGame) return null;
+  if (!currentGame) {
+    return null;
+  }
 
   const total = currentGame.snapshots.length - 1;
   const dateStr = new Date(currentGame.date).toLocaleDateString();

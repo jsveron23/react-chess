@@ -67,7 +67,9 @@ const Diagram = () => {
   };
 
   const onClickTile = (nextTileName, pretendCode) => {
-    if (preventEvent) return;
+    if (preventEvent) {
+      return;
+    }
 
     const isPieceTile = validateCode(pretendCode);
     const isOTW = includes(nextTileName, movableTiles);
@@ -76,9 +78,15 @@ const Diagram = () => {
     const isEnemyTile = isPieceTile && detectEnemy(pretendCode, nextTileName);
     const isMovable = !isPieceTile && !isSameSide && isOTW;
 
-    if (isSameSide) dispatch(updateSelectedCode(pretendCode));
-    if (isEnemyTile) dispatch(capturePiece(pretendCode, nextTileName));
-    if (isMovable) dispatch(movePiece(nextTileName));
+    if (isSameSide) {
+      dispatch(updateSelectedCode(pretendCode));
+    }
+    if (isEnemyTile) {
+      dispatch(capturePiece(pretendCode, nextTileName));
+    }
+    if (isMovable) {
+      dispatch(movePiece(nextTileName));
+    }
   };
 
   return (

@@ -163,7 +163,9 @@ export function restoreSheetAnalysis(savedSheetData) {
 
     const merged = currentSheetData.map((row, idx) => {
       const saved = savedSheetData[idx];
-      if (!saved) return row;
+      if (!saved) {
+        return row;
+      }
 
       const next = { ...row };
       ['white', 'black'].forEach((side) => {
@@ -424,7 +426,9 @@ export function updateSheetData(thinkingTime = null, analysisData = null) {
     // Preserve thinkingTime from previous sheetData entries
     sheetData = sheetData.map((row, idx) => {
       const prev = prevSheetData[idx];
-      if (!prev) return row;
+      if (!prev) {
+        return row;
+      }
       const merged = { ...row };
       ['white', 'black'].forEach((side) => {
         if (merged[side] && prev[side]?.thinkingTime != null) {
